@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <style>
+        .titulo-miforma {
+            display: flex;
+            justify-content: center;
+            color: #223E3C;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MI FORMA DE CUIDAR -->
+    <section class="container mt-4">
+        <p class="titulo-miforma">Mi forma de cuidar</p>
+
+        <div class="row row-cols-1 row-cols-lg-3 g-4">
+
+            <!-- Tarjeta 1 -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="row g-0 h-100">
+                        <div class="col-md-4">
+                            <img src="/ProyectoFinalJava13-Grupo6/img/icon-corazon.png"
+                                class="img-fluid rounded-start h-100 object-fit-cover" alt="icon-corazon">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Atencion cercana</h5>
+                                <p class="card-text">Cuidado empatico y personalizado para cada mascota y familia.</p>
+                                <p class="card-text"><small class="text-body-secondary"></small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2 -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="row g-0 h-100">
+                        <div class="col-md-4">
+                            <img src="/ProyectoFinalJava13-Grupo6/img/icon-huella-de-perro.png"
+                                class="img-fluid rounded-start h-100 object-fit-cover" alt="icon-huella-de-perro">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Bienestar animal</h5>
+                                <p class="card-text">Prioriozo la salud integral y el bienestar en cada etapa.</p>
+                                <p class="card-text"><small class="text-body-secondary"></small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3 -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="row g-0 h-100">
+                        <div class="col-md-4">
+                            <img src="/ProyectoFinalJava13-Grupo6/img/icon-mensaje.png"
+                                class="img-fluid rounded-start h-100 object-fit-cover" alt="icon-mensaje">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Comunicacion clara</h5>
+                                <p class="card-text">Te explico cada paso con confianza y trasparencia y confianza.</p>
+                                <p class="card-text"><small class="text-body-secondary"></small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
