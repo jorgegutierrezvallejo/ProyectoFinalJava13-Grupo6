@@ -1,0 +1,104 @@
+<!-- Hero - Responsable Lizeth Londoño-->
+
+<!-- Aqui creo la seccion principal donde se va a presentar al 
+ veterinario, utilizando la etiqueta (<section> </section>) porque el bloque
+ representa una parte completa e independiente dentro de la pagina de Acerca de mi
+ 
+ Entonces agregando el (id="hero-veterinario") para poder identificar
+ esta seccion desde el CSS, desde enlaces internos-->
+<section id="hero-veterinario">
+
+    <!--Utilizo la clase container de bootstrap para centrar
+    el contenido y evitar que ocupe todo el ancho de la pagina y
+    tambien permitira mantener margenes laterales adecuados en 
+    dispositivos grandes y pequeños-->
+    <div class="container">
+
+        <!--Utilizo la clase row de bootstrap para crear una fila
+        y organizar el contenido en columnas
+        -columna para la imagen
+        -columna para la informacion-->
+        <div class="row">
+
+            <!--Creo la primera columna para mostrar la fotografia
+            col-12: en celulares esta columna ocupara las 12 columnas
+            disponibles, es decir todo el ancho.
+            
+            Col-lg-6: desde pantallas mas grandes esta columna ocupara
+            6 de las 12 columnas de bootstrap, es decir la mitad del
+            ancho.-->
+            <div class="col-12 col-lg-6">
+
+                <!--Aqui va la fotografia prosefional del veterinario y
+                remplazare este comentario por una etiqueta img-->
+                <img src="../imagenes/dante.jpg" alt="Dante Londoño" class="img-fluid">
+                <h1>Dante Londoño</h1>
+                <p>Veterinario apasionado por el cuidado de los animales.</p>
+                <a href="#contacto" class="btn btn-primary">Contactar</a>
+
+            </div>
+
+            <!--Ahora creo la segunda columna para presentar la informacion
+            del veterianario con col-12: que en celulares ocupa todo el
+            ancho y se ubica debajo de la fotografia y con col-lg-6: desde
+            pantallas mas grandes ocupara la otra mitad de la fila y queda al lado
+            de la imagen-->
+            <div class="col-12 col-lg-6">
+
+                <!--Aqui va un texto introductorio, el nombre del veterinario, su
+                profesion, una descropcion breve y el boton para agendar una cita-->
+                <h2>Sobre Dante Londoño</h2>
+                <p>Dante Londoño es una veterinaria apasionada por el cuidado de los animales. Con más de 10 años de
+                    experiencia, se especializa en atención integral para mascotas.</p>
+                <a href="#contacto" class="btn btn-primary">Agendar Cita</a>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+<!-- Mi Historia - Responsable Lizeth Londoño-->
+
+<!-- Aqui creo la seccion donde se va a presentar la historia del 
+ veterinario, utilizando la etiqueta (<section> </section>) porque 
+ el bloque representa una parte completa e independiente dentro 
+ de la pagina de Acerca de mi
+ 
+ Entonces agregando el (id="mi-historia") para poder identificar
+ esta seccion desde el CSS, desde enlaces internos-->
+<section id="mi-historia">
+
+    <!--Aqui va la clase container de bootstrap para mantener
+    la seccion centrada y alineada con el contenido del hero -->
+    <div class="container">
+
+        <!--Utilizo la etiqueta article porque este bloque contiene
+        informacion completa e independiente sobre la historia 
+        del veterinario y agrego la clase card de bootstrap para 
+        presentar el contenido dentro de una tarjeta-->
+        <article class="card">
+
+            <!--Ahora utilizo la clase card-body de bootstrap para crear
+            el espacio interno de la tarjeta y dentro de este bloque
+            voy a colocar el titulo de los parrafos y cualquier elemento
+            visual relacionado con la historia-->
+            <div class="card-body">
+
+                <!--Aqui voy a incluir el titulo de mi historia y dos parrafos, con
+                una imagen o ilustrancion decorativa, tambien informacion sobre
+                la vocacion y experiencia del veterinario-->
+                <h2>Mi Historia</h2>
+                <p>Desde pequeño, Dante Londoño mostró un profundo amor por los animales. Su pasión la llevó a estudiar veterinaria y dedicarse a brindar atención de calidad a las mascotas. A lo largo de su carrera, ha trabajado en diversas clínicas y ha participado en programas de rescate animal.</p>
+                <p>Su compromiso con el bienestar animal se refleja en cada consulta y tratamiento que realiza, siempre buscando mejorar la vida de sus pacientes peludos.</p>
+
+            </div>
+
+        </article>
+
+
+</section>
