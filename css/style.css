@@ -69,3 +69,42 @@ body {
 }
 
 /* Fin Navbar HV */
+
+/* CTA / Cards Dev Team - Tatiana */
+.icono-mascota {
+    width: 20px;
+    height: 20px;
+    opacity: 0.8;
+}
+
+.banner {
+    background-color: var(--color-fondo-claro);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .banner {
+        flex-direction: row;
+    }
+}
+
+.banner .btn {
+    background-color: var(--color-primario-oscuro);
+    border-radius: 8px;
+    color: #fff;
+}
+
+.banner .text-dark {
+    color: var(--color-texto-oscuro) !important;
+}
+
+.card.h-100 {
+    height: 100%;
+}
+/* Fin CTA / Cards Dev Team */
