@@ -1,11 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>desarroladores</title>
+    <title>desarrolladores</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --color-primario: #17A9A7;
+            --color-primario-oscuro: #007981;
+            --color-secundario-claro: #A5D9CF;
+            --color-acento: #BAD641;
+            --color-fondo-claro: #EEF5E5;
+            --color-texto-oscuro: #223E3C;
+            --fuente-principal: "Quicksand", sans-serif;
+            --fuente-marca: "Sour Gummy", sans-serif;
+        }
+
+        .icono-mascota {
+            width: 20px;
+            height: 20px;
+            opacity: 0.8;
+        }
+
+        .banner {
+            background-color: var(--color-fondo-claro);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .banner {
+                flex-direction: row;
+            }
+
+            body {
+                font-family: var(--fuente-principal);
+            }
+
+            h1,
+            .card-title,
+            .card-text,
+            .banner p {
+                font-family: var(--fuente-principal);
+            }
+
+        }
+
+        .banner .btn {
+            background-color: var(--color-primario-oscuro);
+            border-radius: 8px;
+            color: #fff;
+        }
+
+        .banner .text-dark {
+            color: var(--color-texto-oscuro) !important;
+        }
+
+        .card.h-100 {
+            height: 100%;
+        }
+    </style>
 </head>
+
 <body>
-    
+    <div class="container my-5">
+        <h1 class="text-center mb-4"><strong>Nuestros desarrolladores</strong></h1>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-5 g-4 justify-content-center">
+            <!-- tarjeta lina -->
+            <div class="col mb-4">
+                <div class="card h-100">
+                    <img src="../img/lina.png" class="card-img-top" alt="Lina">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Lina Lizeth Londoño Marín</strong></h5>
+                        <p class="card-text">Desarrolladora Junior Full Stack</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- tarjeta tatiana -->
+            <div class="col mb-4">
+                <div class="card h-100">
+                    <img src="../img/tatiana.png" class="card-img-top" alt="Tatiana">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Tatana Luna Pérez Suancha</strong></h5>
+                        <p class="card-text">Desarrolladora Junior Full Stack</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- tarjeta snyder -->
+            <div class="col mb-4">
+                <div class="card h-100">
+                    <img src="../img/sneyder.png" class="card-img-top" alt="Jimmyan">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Jimmyan Sneyder Rodríguez Delgadillo</strong></h5>
+                        <p class="card-text">Desarrollador Junior Full Stack</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- tarjeta camilo -->
+            <div class="col mb-4">
+                <div class="card h-100">
+                    <img src="../img/bryan.png" class="card-img-top" alt="Bryan">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Bryan Camilo Díaz Sánchez</strong></h5>
+                        <p class="card-text">Desarrollador Junior Full Stack</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- tarjeta jorge -->
+            <div class="col mb-4">
+                <div class="card h-100">
+                    <img src="../img/jorge.png" class="card-img-top" alt="Jorge">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Jorge Gutiérrez Vallejo</strong></h5>
+                        <p class="card-text">Desarrollador Junior Full Stack</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to action -->
+        <div
+            class="p-4 mt-4 rounded-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 banner">
+            <div class="d-flex align-items-center gap-3">
+                <img src="../img/icono_mascota.png" alt="Icono de mascota" class="icono-mascota">
+                <div>
+                    <p class="mb-1 text-dark fs-5"><strong>¿Tu mascota necesita atención?</strong></p>
+                    <p class="mb-0 text-muted">Estoy aquí para cuidar de su salud y bienestar.</p>
+                </div>
+            </div>
+            <div>
+                <a href="#" class="btn px-4 py-2">
+                    <i class="bi bi-calendar-event me-2"></i>Agendar cita
+                </a>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
