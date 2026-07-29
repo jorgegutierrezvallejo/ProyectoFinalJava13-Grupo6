@@ -1,104 +1,341 @@
-<!-- Hero - Responsable Lizeth Londoño-->
+<!DOCTYPE html>
 
-<!-- Aqui creo la seccion principal donde se va a presentar al 
- veterinario, utilizando la etiqueta (<section> </section>) porque el bloque
- representa una parte completa e independiente dentro de la pagina de Acerca de mi
- 
- Entonces agregando el (id="hero-veterinario") para poder identificar
- esta seccion desde el CSS, desde enlaces internos-->
-<section id="hero-veterinario">
+<html lang="es">
 
-    <!--Utilizo la clase container de bootstrap para centrar
-    el contenido y evitar que ocupe todo el ancho de la pagina y
-    tambien permitira mantener margenes laterales adecuados en 
-    dispositivos grandes y pequeños-->
-    <div class="container">
+<head>
 
-        <!--Utilizo la clase row de bootstrap para crear una fila
-        y organizar el contenido en columnas
-        -columna para la imagen
-        -columna para la informacion-->
-        <div class="row">
+    <meta charset="UTF-8" />
 
-            <!--Creo la primera columna para mostrar la fotografia
-            col-12: en celulares esta columna ocupara las 12 columnas
-            disponibles, es decir todo el ancho.
-            
-            Col-lg-6: desde pantallas mas grandes esta columna ocupara
-            6 de las 12 columnas de bootstrap, es decir la mitad del
-            ancho.-->
-            <div class="col-12 col-lg-6">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-                <!--Aqui va la fotografia prosefional del veterinario y
-                remplazare este comentario por una etiqueta img-->
-                <img src="../imagenes/dante.jpg" alt="Dante Londoño" class="img-fluid">
-                <h1>Dante Londoño</h1>
-                <p>Veterinario apasionado por el cuidado de los animales.</p>
-                <a href="#contacto" class="btn btn-primary">Contactar</a>
+    <!--Defino el texto que aparece en la pestaña del navegador-->
+    <title>Hero y Mi historia | HuellaVet</title>
 
+    <!--BOOTSTRAP
+    Conecto Bootstrap para utilizar su sistema de columnas,
+    sus botones, sus tarjetas y sus clases responsive-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+
+    <!--BOOTSTRAP ICONS
+    Conecto Bootstrap Icons para utilizar iconos
+    de calendario y atención veterinaria-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
+
+    <!--GOOGLE FONTS
+    Preparo la conexión con Google Fonts
+    para ayudar a que las fuentes carguen más rápido-->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <!--Preparo la conexión con el servidor que contiene los archivos de las fuentes    -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!--Conecto Quicksand como fuente principal y Sour Gummy como fuente para títulos -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet" />
+
+    <!--ESTILOS DE MIS SECCIONES-->
+
+    <style>
+        /*Creo variables para reutilizar los colores y las fuentes definidas por mi equipo */
+        :root {
+
+            /* Utilizo este color como tono principal. */
+            --color-primario: #17a9a7;
+
+            /* Utilizo este tono oscuro para el efecto del botón. */
+            --color-primario-oscuro: #007981;
+
+            /* Utilizo este tono para detalles suaves. */
+            --color-secundario-claro: #a5d9cf;
+
+            /* Utilizo este color para destacar el botón. */
+            --color-acento: #bad641;
+
+            /* Utilizo este color para los fondos claros. */
+            --color-fondo-claro: #eef5e5;
+
+            /* Utilizo este color para los textos principales. */
+            --color-texto-oscuro: #223e3c;
+
+            /* Utilizo Quicksand para los textos generales. */
+            --fuente-principal: "Quicksand", sans-serif;
+
+            /* Utilizo Sour Gummy para los títulos. */
+            --fuente-marca: "Sour Gummy", sans-serif;
+        }
+
+        /* Aplico la fuente principal y el color oscuro a toda mi página */
+        body {
+            color: var(--color-texto-oscuro);
+            font-family: var(--fuente-principal);
+        }
+
+        /*  ESTILOS DEL HERO
+        Aplico el fondo claro aprobado a la sección del Hero.
+      */
+        .hero-veterinario {
+            background-color: var(--color-fondo-claro);
+        }
+
+        /*Hago que la fotografía ocupe el ancho disponible y evito que se deforme */
+        .hero-veterinario__imagen {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        /*Destaco el texto introductorio con el color principal  */
+        .hero-veterinario__etiqueta {
+            color: var(--color-primario);
+            font-weight: 700;
+        }
+
+        /* Aplico la fuente especial al nombre del veterinario */
+        .hero-veterinario__titulo {
+            color: var(--color-texto-oscuro);
+            font-family: var(--fuente-marca);
+            font-size: 3rem;
+        }
+
+        /*Destaco la profesión del veterinario  */
+        .hero-veterinario__profesion {
+            color: var(--color-primario);
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        /*Aumento el espacio entre líneas para facilitar la lectura */
+        .hero-veterinario__descripcion {
+            line-height: 1.7;
+        }
+
+        /*Personalizo el botón de Bootstrap con el color de acento  */
+        .btn-agendar {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+            border-color: var(--color-acento);
+            font-weight: 700;
+        }
+
+        /*Cambio el color del botón cuando paso el cursor sobre él y este es el efecto CSS de mi sección */
+        .btn-agendar:hover {
+            color: #ffffff;
+            background-color: var(--color-primario-oscuro);
+            border-color: var(--color-primario-oscuro);
+        }
+
+        /* ESTILOS DE MI HISTORIA Aplico un fondo blanco a la sección para separarla visualmente del Hero */
+        .mi-historia {
+            background-color: #ffffff;
+        }
+
+        /* Personalizo la tarjeta de Mi historia con el fondo claro del proyecto */
+        .historia-card {
+            background-color: var(--color-fondo-claro);
+            border-radius: 16px;
+            transition: transform 0.3s;
+        }
+
+        /* Elevo ligeramente la tarjeta cuando paso el cursor sobre ella y este es otro efecto sencillo realizado con CSS */
+        .historia-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /*Creo un espacio circular para mostrar el icono de la historia */
+        .historia-card__icono {
+            display: flex;
+            width: 60px;
+            height: 60px;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+            background-color: var(--color-primario);
+            border-radius: 50%;
+            font-size: 1.7rem;
+        }
+
+        /* Aplico la fuente especial al título Mi historia */
+        .historia-card__titulo {
+            color: var(--color-texto-oscuro);
+            font-family: var(--fuente-marca);
+            font-size: 2.5rem;
+        }
+
+        /* Mejoro la lectura de los párrafos aumentando el espacio entre líneas */
+        .historia-card__texto {
+            line-height: 1.7;
+        }
+
+        /*Ajusto la imagen decorativa para que no sea demasiado grande */
+        .historia-card__imagen {
+            max-width: 230px;
+        }
+
+        /*AJUSTE PARA CELULARES Y TABLETAS 
+        Aplico estos cambios cuando la pantalla tiene un ancho menor a 992 píxeles */
+        @media (max-width: 991px) {
+
+            /* Centro el texto del Hero cuando la imagen y la información aparecen una debajo de la otra */
+            .hero-veterinario__contenido {
+                text-align: center;
+            }
+
+            /*Reduzco el tamaño del título para que se vea bien en móvil  */
+            .hero-veterinario__titulo {
+                font-size: 2.3rem;
+            }
+
+            /* Reduzco la altura de la fotografía en dispositivos más pequeños */
+            .hero-veterinario__imagen {
+                height: 280px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- HERO
+    Creo la sección principal para presentar al veterinario y con ega espacio arriba y abajo
+      mediante una clase de Bootstrap -->
+    <section id="hero-veterinario" class="hero-veterinario py-5">
+        <!-- Utilizo container para centrar el contenido y conservar márgenes a los lados-->
+        <div class="container">
+
+            <!--Creo una fila para organizar la imagen
+        y la información.
+
+        align-items-center centra ambas columnas.
+
+        g-4 agrega separación entre ellas -->
+
+            <div class="row align-items-center g-4">
+                <!--Creo la columna de la imagen.
+
+            En móvil ocupa todo el ancho.
+
+            Desde pantallas grandes ocupa la mitad de la fila -->
+                <div class="col-12 col-lg-6">
+                    <!--Muestro la fotografía del veterinario.
+
+              img-fluid permite que sea responsive.
+
+              rounded-4 agrega esquinas redondeadas.
+
+              shadow-sm agrega una sombra sencilla-->
+                    <img src="../img/veterinario.jpg" class="img-fluid rounded-4 shadow-sm hero-veterinario__imagen"
+                        alt="Veterinario acompañado por una mascota" />
+                </div>
+
+                <!--Creo la columna donde presentaréla información del veterinario -->
+                <div class="col-12 col-lg-6 hero-veterinario__contenido">
+                    <!--Presento un texto introductorio acompañado por un icono-->
+                    <p class="hero-veterinario__etiqueta mb-2">
+
+                        <!--Muestro un icono decorativo relacionado con la salud -->
+                        <i class="bi bi-heart-pulse me-2" aria-hidden="true"></i>
+
+                        Conoce a tu veterinario
+                    </p>
+
+                    <!--Presento el nombre del veterinario como título principal   -->
+                    <h1 class="hero-veterinario__titulo mb-2">
+                        Dr./Dra. [Nombre del veterinario]
+                    </h1>
+
+                    <!-- Presento la profesión -->
+                    <p class="hero-veterinario__profesion mb-3">
+                        Médico/a veterinario/a
+                    </p>
+
+                    <!--Agrego una descripción breve sobre el profesional -->
+                    <p class="hero-veterinario__descripcion mb-4">
+                        Profesional comprometido con el bienestar
+                        animal, la atención cercana y el cuidado
+                        responsable de cada mascota y su familia.
+                    </p>
+
+                    <!--Creo el botón para dirigir al usuario hacia el agendamiento de una cita -->
+                    <a href="#agendar-cita" class="btn btn-agendar btn-lg">
+                        <!--Muestro un icono de calendario dentro del botón  -->
+                        <i class="bi bi-calendar-check me-2" aria-hidden="true"></i>
+
+                        Agendar cita
+                    </a>
+                </div>
             </div>
-
-            <!--Ahora creo la segunda columna para presentar la informacion
-            del veterianario con col-12: que en celulares ocupa todo el
-            ancho y se ubica debajo de la fotografia y con col-lg-6: desde
-            pantallas mas grandes ocupara la otra mitad de la fila y queda al lado
-            de la imagen-->
-            <div class="col-12 col-lg-6">
-
-                <!--Aqui va un texto introductorio, el nombre del veterinario, su
-                profesion, una descropcion breve y el boton para agendar una cita-->
-                <h2>Sobre Dante Londoño</h2>
-                <p>Dante Londoño es una veterinaria apasionada por el cuidado de los animales. Con más de 10 años de
-                    experiencia, se especializa en atención integral para mascotas.</p>
-                <a href="#contacto" class="btn btn-primary">Agendar Cita</a>
-
-            </div>
-
         </div>
+    </section>
 
+    <!--MI HISTORIA Responsable: Lizeth
+    Creo una segunda sección para presentar la historia del veterinario-->
+    <section id="mi-historia" class="mi-historia py-5">
+        <!--Utilizo container para alinear esta sección con el contenido del Hero-->
+        <div class="container">
 
-    </div>
+            <!--Creo una fila y centro su contenido-->
+            <div class="row justify-content-center">
 
+                <!--En móvil utilizo todo el ancho y desde pantallas grandes utilizo 10 de las 12 columnas -->
+                <div class="col-12 col-lg-10">
 
-</section>
+                    <!--Utilizo una Card de Bootstrap para agrupar la historia-->
+                    <article class="card historia-card border-0 shadow-sm">
+                        <!--Agrego espacio interno dentro de la Card-->
+                        <div class="card-body p-4">
 
-<!-- Mi Historia - Responsable Lizeth Londoño-->
+                            <!--Creo una fila interna para separar el texto y la imagen decorativa-->
+                            <div class="row align-items-center g-4">
 
-<!-- Aqui creo la seccion donde se va a presentar la historia del 
- veterinario, utilizando la etiqueta (<section> </section>) porque 
- el bloque representa una parte completa e independiente dentro 
- de la pagina de Acerca de mi
- 
- Entonces agregando el (id="mi-historia") para poder identificar
- esta seccion desde el CSS, desde enlaces internos-->
-<section id="mi-historia">
+                                <!--Creo la columna principal donde irá el contenido -->
+                                <div class="col-12 col-lg-8">
 
-    <!--Aqui va la clase container de bootstrap para mantener
-    la seccion centrada y alineada con el contenido del hero -->
-    <div class="container">
+                                    <!--Creo un círculo para mostrar el icono de atención veterinaria-->
+                                    <div class="historia-card__icono mb-3" aria-hidden="true">
+                                        <i class="bi bi-heart-pulse"></i>
+                                    </div>
 
-        <!--Utilizo la etiqueta article porque este bloque contiene
-        informacion completa e independiente sobre la historia 
-        del veterinario y agrego la clase card de bootstrap para 
-        presentar el contenido dentro de una tarjeta-->
-        <article class="card">
+                                    <!--Presento el título de la sección-->
+                                    <h2 class="historia-card__titulo mb-3">
+                                        Mi historia
+                                    </h2>
 
-            <!--Ahora utilizo la clase card-body de bootstrap para crear
-            el espacio interno de la tarjeta y dentro de este bloque
-            voy a colocar el titulo de los parrafos y cualquier elemento
-            visual relacionado con la historia-->
-            <div class="card-body">
+                                    <!--Presento el primer párrafo de la historia-->
+                                    <p class="historia-card__texto">
+                                        Desde el inicio de mi formación descubrí
+                                        que mi propósito estaba relacionado con
+                                        el cuidado y el bienestar de los animales.
+                                    </p>
 
-                <!--Aqui voy a incluir el titulo de mi historia y dos parrafos, con
-                una imagen o ilustrancion decorativa, tambien informacion sobre
-                la vocacion y experiencia del veterinario-->
-                <h2>Mi Historia</h2>
-                <p>Desde pequeño, Dante Londoño mostró un profundo amor por los animales. Su pasión la llevó a estudiar veterinaria y dedicarse a brindar atención de calidad a las mascotas. A lo largo de su carrera, ha trabajado en diversas clínicas y ha participado en programas de rescate animal.</p>
-                <p>Su compromiso con el bienestar animal se refleja en cada consulta y tratamiento que realiza, siempre buscando mejorar la vida de sus pacientes peludos.</p>
+                                    <!--Complemento la información con un segundo párrafo -->
+                                    <p class="historia-card__texto mb-0">
+                                        Mi compromiso es acompañar a cada familia,
+                                        brindar una orientación clara y ofrecer
+                                        una atención basada en el respeto y
+                                        el bienestar de cada mascota.
+                                    </p>
+                                </div>
 
+                                <!--Creo una columna para mostrar una imagen decorativa, con d-none la oculta en pantallas pequeñas y
+                d-lg-block la muestra en pantallas grandes-->
+                                <div class="col-lg-4 d-none d-lg-block text-center">
+                                    <img src="../img/historia-mascotas.png" class="img-fluid historia-card__imagen"
+                                        alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
             </div>
+        </div>
+    </section>
 
-        </article>
+    <!--Conecto el JavaScript de Bootstrap aunque mis secciones actuales no tienen componentes
+    complejos, lo dejo preparado para la integración -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
 
-
-</section>
+</html>
