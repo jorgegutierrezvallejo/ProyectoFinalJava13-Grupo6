@@ -14,15 +14,88 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style.css">
     <title> Quiénes Somos | HuellaVet - Sistema de Reservas Veterinarias</title>
 
+    <style>
+        :root {
+            --color-primario: #17A9A7;
+            --color-primario-oscuro: #007981;
+            --color-secundario-claro: #A5D9CF;
+            --color-acento: #BAD641;
+            --color-fondo-claro: #EEF5E5;
+            --color-texto-oscuro: #223E3C;
+
+            --fuente-principal: "Quicksand", sans-serif;
+            --fuente-marca: "Sour Gummy", sans-serif;
+        }
+        body {
+        font-family: var(--fuente-principal);
+        }
+
+        /* Fondo general de la navbar */
+.navbar-huellavet {
+  background-color: var(--color-texto-oscuro);
+  padding: 0.7rem 1.5rem;
+}
+
+/* Logo y nombre */
+.navbar-huellavet .navbar-brand {
+  color: white;
+}
+
+.navbar-huellavet .navbar-brand:hover {
+  color: white;
+}
+
+/* Nombre HuellaVet */
+#nombreMarca {
+  font-family: var(--fuente-marca);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+}
+
+/* Enlaces de navegación */
+.navbar-huellavet .nav-link {
+  color: white;
+  font-weight: 600;
+  margin: 0 0.5rem;
+  padding: 0.5rem 0.7rem;
+}
+
+.navbar-huellavet .nav-link:hover {
+  color: var(--color-acento);
+}
+
+/* Enlace de la página actual */
+.navbar-huellavet .nav-link.active {
+  color: var(--color-acento);
+  border-bottom: 2px solid var(--color-acento);
+}
+
+.btn-agendar {
+  background-color: var(--color-acento);
+  color: var(--color-texto-oscuro);
+  border: none;
+  font-weight: 700;
+  padding: 0.6rem 1.2rem;
+}
+
+.btn-agendar:hover {
+  background-color: var(--color-secundario-claro);
+  color: var(--color-texto-oscuro);
+}
+    </style>
 </head>
 
 <body>
 
     <!-- Navbar HV -->
-    <nav class="navbar navbar-expand-lg navbar-huellavet" data-bs-theme="dark">
+    <nav
+  class="navbar navbar-expand-lg navbar-huellavet"
+  data-bs-theme="dark"
+>
         <div class="container-fluid">
 
             <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
@@ -57,7 +130,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="contacto.html">
+                        <a class="nav-link" active href="contacto.html">
                             Contacto
                         </a>
                     </li>
@@ -85,28 +158,27 @@
     </nav>
     <!-- FIN Navbar HV -->
 
-    <!-- Contenido -->
+<!-- Contenido -->
+
+<!-- HERO + MI HISTORIA - LIZETH -->
 
 
-    <!-- HERO + MI HISTORIA - LIZETH -->
-
-
-    <!-- FORMACIÓN / EXPERIENCIA - SNEYDER -->
-
-
-
-    <!-- MI FORMA DE CUIDAR - CAMILO -->
-
-
-    <!-- CTA / CARDS DEV TEAM - TATIANA -->
+<!-- FORMACIÓN / EXPERIENCIA - SNEYDER -->
 
 
 
-    <!-- FIN Contenido -->
+<!-- MI FORMA DE CUIDAR - CAMILO -->
 
-    <!-- Footer -->
 
-    <!-- Fin Footer -->
+<!-- CTA / CARDS DEV TEAM - TATIANA -->
+
+
+
+<!-- FIN Contenido -->
+
+<!-- Footer -->
+
+<!-- Fin Footer -->
 
 
 
