@@ -1,0 +1,110 @@
+:root {
+    --color-primario: #17A9A7;
+    --color-primario-oscuro: #007981;
+    --color-secundario-claro: #A5D9CF;
+    --color-acento: #BAD641;
+    --color-fondo-claro: #EEF5E5;
+    --color-texto-oscuro: #223E3C;
+
+    --fuente-principal: "Quicksand", sans-serif;
+    --fuente-marca: "Sour Gummy", sans-serif;
+}
+
+body {
+    font-family: var(--fuente-principal);
+}
+
+/* Nav bar HV */
+.navbar-huellavet {
+    background-color: var(--color-texto-oscuro);
+    padding: 0.7rem 1.5rem;
+}
+
+/* Logo y nombre */
+.navbar-huellavet .navbar-brand {
+    color: white;
+}
+
+.navbar-huellavet .navbar-brand:hover {
+    color: white;
+}
+
+/* Nombre HuellaVet */
+#nombreMarca {
+    font-family: var(--fuente-marca);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+}
+
+/* Enlaces de navegación */
+.navbar-huellavet .nav-link {
+    color: white;
+    font-weight: 600;
+    margin: 0 0.5rem;
+    padding: 0.5rem 0.7rem;
+}
+
+.navbar-huellavet .nav-link:hover {
+    color: var(--color-acento);
+}
+
+/* Enlace de la página actual */
+.navbar-huellavet .nav-link.active {
+    color: var(--color-acento);
+    border-bottom: 2px solid var(--color-acento);
+}
+
+.btn-agendar {
+    background-color: var(--color-acento);
+    color: var(--color-texto-oscuro);
+    border: none;
+    font-weight: 700;
+    padding: 0.6rem 1.2rem;
+}
+
+.btn-agendar:hover {
+    background-color: var(--color-secundario-claro);
+    color: var(--color-texto-oscuro);
+}
+
+/* Fin Navbar HV */
+
+/* CTA / Cards Dev Team - Tatiana */
+.icono-mascota {
+    width: 20px;
+    height: 20px;
+    opacity: 0.8;
+}
+
+.banner {
+    background-color: var(--color-fondo-claro);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .banner {
+        flex-direction: row;
+    }
+}
+
+.banner .btn {
+    background-color: var(--color-primario-oscuro);
+    border-radius: 8px;
+    color: #fff;
+}
+
+.banner .text-dark {
+    color: var(--color-texto-oscuro) !important;
+}
+
+.card.h-100 {
+    height: 100%;
+}
+/* Fin CTA / Cards Dev Team */
