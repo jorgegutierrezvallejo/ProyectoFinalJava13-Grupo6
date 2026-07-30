@@ -90,10 +90,143 @@
 
 
     <!-- HERO + MI HISTORIA - LIZETH -->
+ <!-- HERO
+    Creo la sección principal para presentar al veterinario y con ega espacio arriba y abajo
+      mediante una clase de Bootstrap -->
+    <section id="hero-veterinario" class="hero-veterinario py-5">
+        <!-- Utilizo container para centrar el contenido y conservar márgenes a los lados-->
+        <div class="container">
 
+            <!--Creo una fila para organizar la imagen
+        y la información.
+
+        align-items-center centra ambas columnas.
+
+        g-4 agrega separación entre ellas -->
+
+            <div class="row align-items-center g-4">
+                <!--Creo la columna de la imagen.
+
+            En móvil ocupa todo el ancho.
+
+            Desde pantallas grandes ocupa la mitad de la fila -->
+                <div class="col-12 col-lg-6">
+                    <!--Muestro la fotografía del veterinario.
+
+              img-fluid permite que sea responsive.
+
+              rounded-4 agrega esquinas redondeadas.
+
+              shadow-sm agrega una sombra sencilla-->
+                    <img src="https://hospitalveterinariomdc.com/wp-content/uploads/2025/04/NORMAL-iStockPhoto-1995860800-1.png" class="img-fluid rounded-4 shadow-sm hero-veterinario__imagen"
+                        alt="Veterinario acompañado por una mascota" />
+                </div>
+
+                <!--Creo la columna donde presentaréla información del veterinario -->
+                <div class="col-12 col-lg-6 hero-veterinario__contenido">
+                    <!--Presento un texto introductorio acompañado por un icono-->
+                    <p class="hero-veterinario__etiqueta mb-2">
+
+                        <!--Muestro un icono decorativo relacionado con la salud -->
+                        <i class="bi bi-heart-pulse me-2" aria-hidden="true"></i>
+
+                        Conoce a tu veterinario
+                    </p>
+
+                    <!--Presento el nombre del veterinario como título principal   -->
+                    <h1 class="hero-veterinario__titulo mb-2">
+                        Dr./Dra. [Nombre del veterinario]
+                    </h1>
+
+                    <!-- Presento la profesión -->
+                    <p class="hero-veterinario__profesion mb-3">
+                        Médico/a veterinario/a
+                    </p>
+
+                    <!--Agrego una descripción breve sobre el profesional -->
+                    <p class="hero-veterinario__descripcion mb-4">
+                        Profesional comprometido con el bienestar
+                        animal, la atención cercana y el cuidado
+                        responsable de cada mascota y su familia.
+                    </p>
+
+                    <!--Creo el botón para dirigir al usuario hacia el agendamiento de una cita -->
+                    <a href="#agendar-cita" class="btn btn-agendar btn-lg">
+                        <!--Muestro un icono de calendario dentro del botón  -->
+                        <i class="bi bi-calendar-check me-2" aria-hidden="true"></i>
+
+                        Agendar cita
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!--MI HISTORIA Responsable: Lizeth
+    Creo una segunda sección para presentar la historia del veterinario-->
+    <section id="mi-historia" class="mi-historia py-5">
+        <!--Utilizo container para alinear esta sección con el contenido del Hero-->
+        <div class="container">
+
+            <!--Creo una fila y centro su contenido-->
+            <div class="row justify-content-center">
+
+                <!--En móvil utilizo todo el ancho y desde pantallas grandes utilizo 10 de las 12 columnas -->
+                <div class="col-12 col-lg-10">
+
+                    <!--Utilizo una Card de Bootstrap para agrupar la historia-->
+                    <article class="card historia-card border-0 shadow-sm">
+                        <!--Agrego espacio interno dentro de la Card-->
+                        <div class="card-body p-4">
+
+                            <!--Creo una fila interna para separar el texto y la imagen decorativa-->
+                            <div class="row align-items-center g-4">
+
+                                <!--Creo la columna principal donde irá el contenido -->
+                                <div class="col-12 col-lg-8">
+
+                                    <!--Creo un círculo para mostrar el icono de atención veterinaria-->
+                                    <div class="historia-card__icono mb-3" aria-hidden="true">
+                                        <i class="bi bi-heart-pulse"></i>
+                                    </div>
+
+                                    <!--Presento el título de la sección-->
+                                    <h2 class="historia-card__titulo mb-3">
+                                        Mi historia
+                                    </h2>
+
+                                    <!--Presento el primer párrafo de la historia-->
+                                    <p class="historia-card__texto">
+                                        Desde el inicio de mi formación descubrí
+                                        que mi propósito estaba relacionado con
+                                        el cuidado y el bienestar de los animales.
+                                    </p>
+
+                                    <!--Complemento la información con un segundo párrafo -->
+                                    <p class="historia-card__texto mb-0">
+                                        Mi compromiso es acompañar a cada familia,
+                                        brindar una orientación clara y ofrecer
+                                        una atención basada en el respeto y
+                                        el bienestar de cada mascota.
+                                    </p>
+                                </div>
+
+                                <!--Creo una columna para mostrar una imagen decorativa, con d-none la oculta en pantallas pequeñas y
+                d-lg-block la muestra en pantallas grandes-->
+                                <div class="col-lg-4 d-none d-lg-block text-center">
+                                    <img src="../img/historia-mascotas.png" class="img-fluid historia-card__imagen"
+                                        alt="" />
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- FORMACIÓN / EXPERIENCIA - SNEYDER -->
-    <div class="container text-center">
+    <div class="container text-center py-5 seccion-vet">
         <div class="row justify-content-center gx-4">
             <div class="col-md-6 pe-md-5" style="width:380px;">
                 <h5 class="text-nowrap"><i class="fa-solid fa-graduation-cap"></i>
@@ -125,6 +258,72 @@
     
     <!-- MI FORMA DE CUIDAR - CAMILO -->
 
+    <section class="container mt-4 mb-5">
+        <p class="titulo-miforma">Mi forma de cuidar</p>
+
+        <div class="row row-cols-1 row-cols-lg-3 g-4">
+            <!-- Tarjeta 1 -->
+            <div class="col">
+                <div class="card h-100">
+                    
+                    <div class="row g-0 h-100 align-items-center">
+                        
+                        <div class="col-4 contenedor-icono">
+                            <div class="circulo-icono">
+                                <i class="bi bi-clipboard2-heart"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Atención cercana</h5>
+                                <p class="card-text">Cuidado empático y personalizado para cada mascota y familia.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2 -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="row g-0 h-100 align-items-center">
+                        <div class="col-4 contenedor-icono">
+                            <div class="circulo-icono">
+                                <i class="bi bi-clipboard-pulse"></i>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Bienestar animal</h5>
+                                <p class="card-text">Priorizo la salud integral y el bienestar en cada etapa.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3 -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="row g-0 h-100 align-items-center">
+                        <div class="col-4 contenedor-icono">
+                            <div class="circulo-icono">
+                                <i class="bi bi-chat-right-text"></i>
+                            </div>
+                        </div>
+                        <div class="col-8">
+                            <div class="card-body">
+                                <h5 class="card-title">Comunicación clara</h5>
+                                <p class="card-text">Te explico cada paso con transparencia y confianza.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
 
     <!-- CTA / CARDS DEV TEAM - TATIANA -->
     <div class="container my-5">
@@ -210,7 +409,152 @@
     <!-- FIN Contenido -->
 
     <!-- Footer -->
+<!-- Footer -->
+<footer class="footer-huellavet mt-5">
 
+    <div class="container py-5">
+
+        <div class="row g-4">
+
+            <!-- Marca -->
+            <div class="col-12 col-md-6 col-lg-3">
+
+                <a href="index.html"
+                    class="footer-marca d-flex align-items-center gap-2 text-decoration-none mb-3">
+
+                    <img
+                        src="https://images.icon-icons.com/1949/PNG/512/free-30-instagram-stories-icons53_122600.png"
+                        alt="Logo de HuellaVet"
+                        width="55"
+                        height="55"
+                    >
+
+                    <span>HuellaVet</span>
+                </a>
+
+                <p class="footer-descripcion">
+                    Cuidado veterinario profesional con amor,
+                    confianza y compromiso.
+                </p>
+
+                <!-- Redes sociales -->
+                <div class="d-flex gap-2">
+
+                    <a href="#" class="footer-red" aria-label="Facebook">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+
+                    <a href="#" class="footer-red" aria-label="Instagram">
+                        <i class="bi bi-instagram"></i>
+                    </a>
+
+                    <a href="#" class="footer-red" aria-label="WhatsApp">
+                        <i class="bi bi-whatsapp"></i>
+                    </a>
+
+                </div>
+            </div>
+
+            <!-- Contacto -->
+            <div class="col-12 col-md-6 col-lg-3 footer-columna">
+
+                <h3 class="footer-titulo">Contacto</h3>
+
+                <ul class="footer-lista">
+
+                    <li>
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Bogotá, Colombia</span>
+                    </li>
+
+                    <li>
+                        <i class="bi bi-telephone-fill"></i>
+                        <a href="tel:+573001234567">
+                            +57 300 123 4567
+                        </a>
+                    </li>
+
+                    <li>
+                        <i class="bi bi-envelope-fill"></i>
+                        <a href="mailto:hola@huellavet.com">
+                            hola@huellavet.com
+                        </a>
+                    </li>
+
+                    <li>
+                        <i class="bi bi-clock-fill"></i>
+                        <span>Lun. a Vie. 8:00 a. m. – 6:00 p. m.</span>
+                    </li>
+
+                </ul>
+            </div>
+
+            <!-- Enlaces rápidos -->
+            <div class="col-12 col-md-6 col-lg-3 footer-columna">
+
+                <h3 class="footer-titulo">Enlaces rápidos</h3>
+
+                <ul class="footer-enlaces">
+
+                    <li>
+                        <a href="index.html">Inicio</a>
+                    </li>
+
+                    <li>
+                        <a href="somos.html">Acerca de nosotros</a>
+                    </li>
+
+                    <li>
+                        <a href="agendar.html">Agendar cita</a>
+                    </li>
+
+                    <li>
+                        <a href="contacto.html">Contacto</a>
+                    </li>
+
+                </ul>
+            </div>
+
+            <!-- Servicios -->
+            <div class="col-12 col-md-6 col-lg-3 footer-columna">
+
+                <h3 class="footer-titulo">Servicios</h3>
+
+                <ul class="footer-enlaces">
+
+                    <li>
+                        <a href="servicios.html">Consulta general</a>
+                    </li>
+
+                    <li>
+                        <a href="servicios.html">Vacunación</a>
+                    </li>
+
+                    <li>
+                        <a href="servicios.html">Medicina preventiva</a>
+                    </li>
+
+                    <li>
+                        <a href="servicios.html">Cuidado veterinario</a>
+                    </li>
+
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Barra inferior -->
+    <div class="footer-inferior">
+        <div class="container text-center">
+            <p class="mb-0">
+                © 2026 HuellaVet. Todos los derechos reservados.
+            </p>
+        </div>
+    </div>
+
+</footer>
+<!-- Fin Footer -->
     <!-- Fin Footer -->
 
 
