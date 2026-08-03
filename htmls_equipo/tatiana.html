@@ -72,11 +72,110 @@
 
         .card.h-100 {
             height: 100%;
+
         }
+
+
+
+    .contenedor-formulario .container{
+    max-width: 850px;
+        }
+
+    .contenedor-formulario{
+    max-width:850px;
+    margin:auto;
+    }
     </style>
 </head>
 
 <body>
+
+    <section class="contenedor-fomulario">
+        <div class="container my-5">
+            <h1 class="text-center mb-4"><strong>Información de tu mascota</strong></h1>
+            <!-- Primera fila -->
+            <div class="row">
+                <!-- Primera parte -->
+                <div class="col-md-6">
+                    <label class="form-label">Nombre de la mascota:</label>
+                    <input type="text" class="form-control" id="nombreMascota" placeholder="nombre de tu mascota">
+                </div>
+                <!-- Segunda parte -->
+                <div class="col-md-6">
+                    <label for="especie" class="form-label">Especie:</label>
+                    <select class="form-select" id="especie">
+                        <option value="">Selecciona la especie</option>
+                        <option value="perro">Perro</option>
+                        <option value="gato">Gato</option>
+                        <option value="ave">Ave</option>
+                        <option value="ganado">Ganado</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Segunda fila -->
+            <div class="row">
+                <!-- Primera parte -->
+                <div class="col-md-4">
+                    <label for="raza" class="form-label">Raza:</label>
+                    <input type="text" class="form-control" id="raza" placeholder="raza de tu mascota">
+                </div>
+                <!-- Segunda parte -->
+                <div class="col-md-4">
+                    <label for="edad" class="form-label">Edad:</label>
+                    <input type="number" class="form-control" id="edad" placeholder="edad de tu mascota">
+                </div>
+                <!-- Tercera parte -->
+                <div class="col-md-4">
+                    <label for="peso" class="form-label">Peso:</label>
+                    <input type="number" class="form-control" id="peso" placeholder="peso de tu mascota">
+                </div>
+            </div>
+            <!-- Tercera fila -->
+            <div class="row">
+                <!-- Primera parte -->
+                <div class="col-md-6">
+                    <label for="sexo" class="form-label">Sexo:</label>
+                    <select class="form-select" id="sexo">
+                        <option value="">Selecciona el sexo</option>
+                        <option value="macho">Macho</option>
+                        <option value="hembra">Hembra</option>
+                    </select>
+                </div>
+                <!-- Segunda parte -->
+                <div class="col-md-6">
+                    <label for="servicio" class="form-label">Servicio:</label>
+                    <select class="form-select" id="servicio">
+                        <option value="">Selecciona el servicio</option>
+                        <option value="consulta">Consulta general</option>
+                        <option value="vacuna">Vacunación</option>
+                        <option value="esterilizacion">Esterilización</option>
+                        <option value="toma-muestras">Toma de Muestras</option>
+                        <option value="control">Control</option>
+                        <option value="desparasitacion">Desparasitación</option>
+                        <option value="imagenes-diagnosticas">Imágenes diagnósticas</option>
+
+                    </select>
+                </div>
+            </div>
+            <!-- Cuarta fila -->
+            <div class="row">
+                <!-- Primera parte -->
+                <div class="col-md-12">
+                    <label for="mensaje" class="form-label">Mensaje:</label>
+                    <textarea class="form-control" id="mensaje" rows="3" placeholder="Cuéntanos cómo podemos ayudarte..."></textarea>
+                </div>
+            </div>
+            <!-- Botón de envío -->
+            <div class="row mt-4">
+                <div class="col text-center">
+                    <button type="submit" class="btn btn-success">Enviar</button>
+            </div>
+
+        </div>
+    </section>
+
+<!-- parte de la tarea anterior -->
     <div class="container my-5">
         <h1 class="text-center mb-4"><strong>Nuestros desarrolladores</strong></h1>
 
