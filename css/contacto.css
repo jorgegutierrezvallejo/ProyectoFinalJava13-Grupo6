@@ -1,0 +1,264 @@
+/* Hero de contacto */
+
+.hero-contacto {
+    position: relative;
+    overflow: hidden;
+    padding: 1.5rem 0 3rem;
+    background-color: var(--color-blanco);
+}
+
+
+/* Información principal */
+
+.hero-contacto__contenido {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-contacto__etiqueta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+    color: var(--color-primario);
+    font-weight: 700;
+}
+
+.hero-contacto__titulo {
+    margin-bottom: 1rem;
+    font-family: var(--fuente-marca);
+    font-size: clamp(3rem, 6vw, 5rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-texto-oscuro);
+}
+
+.hero-contacto__descripcion {
+    max-width: 500px;
+    margin-bottom: 1.75rem;
+    color: var(--color-texto-suave);
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+/* Botones */
+
+.hero-contacto__acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.btn-contacto,
+.btn-agendar-contacto {
+    padding: 0.7rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 700;
+}
+
+.btn-contacto {
+    background-color: var(--color-primario-oscuro);
+    border: 2px solid var(--color-primario-oscuro);
+    color: var(--color-blanco);
+}
+
+.btn-contacto:hover {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+    color: var(--color-blanco);
+}
+
+.btn-agendar-contacto {
+    background-color: var(--color-acento);
+    border: 2px solid var(--color-acento);
+    color: var(--color-texto-oscuro);
+}
+
+.btn-agendar-contacto:hover {
+    background-color: var(--color-secundario-claro);
+    border-color: var(--color-secundario-claro);
+    color: var(--color-texto-oscuro);
+}
+
+/* Imagen */
+
+.hero-contacto__imagen-contenedor {
+    position: relative;
+    min-height: 380px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+
+.hero-contacto__imagen {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    max-height: 430px;
+    object-fit: contain;
+    object-position: center bottom;
+}
+
+/* Responsive */
+
+@media (max-width: 991px) {
+    .hero-contacto {
+        padding-bottom: 2rem;
+    }
+
+    .hero-contacto__contenido {
+        text-align: center;
+    }
+
+    .hero-contacto__etiqueta,
+    .hero-contacto__acciones {
+        justify-content: center;
+    }
+
+    .hero-contacto__descripcion {
+        margin-right: auto;
+        margin-left: auto;
+    }
+
+    .hero-contacto__imagen-contenedor {
+        min-height: 300px;
+    }
+
+    .hero-contacto__imagen {
+        max-height: 340px;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-contacto {
+        padding-top: 1rem;
+    }
+
+    .hero-contacto__breadcrumb {
+        margin-bottom: 2rem;
+    }
+
+    .hero-contacto__titulo {
+        font-size: 3rem;
+    }
+
+    .hero-contacto__descripcion {
+        font-size: 1rem;
+    }
+
+    .hero-contacto__acciones {
+        flex-direction: column;
+    }
+
+    .hero-contacto__acciones .btn {
+        width: 100%;
+    }
+
+    .hero-contacto__imagen-contenedor {
+        min-height: 240px;
+    }
+
+    .hero-contacto__imagen {
+        max-height: 280px;
+    }
+}
+
+
+/* Ubicación de HuellaVet */
+
+/* Sección ubicación */
+
+.ubicacion-contacto__card {
+    overflow: hidden;
+    background-color: var(--color-blanco);
+    border: 1px solid rgb(34 62 60 / 12%);
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgb(34 62 60 / 8%);
+}
+
+/* Información */
+
+.ubicacion-contacto__informacion {
+    min-height: 280px;
+    height: 100%;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+.ubicacion-contacto__icono {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-fondo-claro);
+    border-radius: 50%;
+    color: var(--color-primario-oscuro);
+    font-size: 1.5rem;
+}
+
+.ubicacion-contacto__titulo {
+    margin-bottom: 0.8rem;
+    font-family: var(--fuente-marca);
+    font-size: 1.7rem;
+    color: var(--color-texto-oscuro);
+}
+
+.ubicacion-contacto__texto {
+    margin-bottom: 1.2rem;
+    color: var(--color-texto-suave);
+    line-height: 1.6;
+}
+
+.ubicacion-contacto__enlace {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-primario-oscuro);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.ubicacion-contacto__enlace:hover {
+    color: var(--color-primario);
+}
+
+/* Mapa */
+
+.ubicacion-contacto__mapa {
+    height: 100%;
+    min-height: 280px;
+}
+
+.ubicacion-contacto__mapa iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 280px;
+    display: block;
+    border: 0;
+}
+
+/* Responsive */
+
+@media (max-width: 991px) {
+    .ubicacion-contacto__informacion {
+        min-height: auto;
+    }
+
+    .ubicacion-contacto__mapa,
+    .ubicacion-contacto__mapa iframe {
+        min-height: 350px;
+    }
+}
+
+@media (max-width: 576px) {
+    .ubicacion-contacto__informacion {
+        padding: 1.5rem;
+    }
+}
+
