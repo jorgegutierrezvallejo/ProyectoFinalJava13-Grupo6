@@ -249,6 +249,45 @@
                 </div>
             </div>
         </div>
+        <!-- ====================================================================
+                                        REGISTRO
+             ==================================================================== -->
+        <section id="login&register">
+            <div class="register">
+                <img src="" alt="huella de perrito con un corazón en el centro de la almohadilla">
+                <a class="btn-index" href="#index"></a>
+                <div class="register-container">
+                    <a class="login-section" href="#login"></a>
+                    <h6 class="register-subtitle">Registro</h6>
+                    <form class="register-datos">
+                        <input type="text" id="firstname" name="name" placeholder="Nombre(s)" required>
+                        <input type="text" id="last-name" name="lastname" placeholder="Apellido(s)" required>
+                        <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" required>
+                        <select name="city" id="city" required>
+                            <option selected disabled>Selecciona una Ciudad</option>
+                            <option value="1">Bogotá</option>
+                            <option value="2">Manizales</option>
+                            <option value="3">Pereira</option>
+                        </select>
+                        <input type="tel" id="telephone" name="telephone" placeholder="Telefono: 000 0000000">
+                        <label for="date"> Fecha de Nacimiento</label>
+                        <input type="date" id="date" name="date">
+                        <input type="password" id="pass" name="password" placeholder="Contraseña" required>
+                        <input type="password" id="confirmpass" name="confirmpassword"
+                            placeholder="Confirmar Contraseña" required>
+                        <div class="data-processing">
+                            <input type="checkbox" id="privacy" name="privacy" required>
+                            <label for="privacy">He leido y acepto la<a href="politicas.html">Política de
+                                    privacidad</a></label>
+                            <input type="checkbox" id="conditions" name="conditions" required>
+                            <label for="conditions">He leido y acepto los<a href="terminos.html">Terminos y
+                                    condiciones</a></label>
+                        </div>
+                        <button type="submit">Registrarse</button>
+                    </form>
+                </div>
+            </div>
+        </section>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
