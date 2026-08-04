@@ -1,289 +1,291 @@
-<!-- formulario-contacto.html
- reo la etiqueta main para indicar que aquí 
- comienza el contenido principal de mi página -->
-<main class="contacto">
+<!DOCTYPE html>
+<html lang="es">
 
-    <!-- Con section se agrupar todo el contenido del formulario y
-     se uso la clase contacto__contenedor para aplicar mis estilos 
-     propios y también se usa la clase container de Bootstrap para 
-     centrar el contenido y controlar su ancho en diferentes tamaños 
-     de pantalla-->
-    <section class="Contacto_contenedor container">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- Formilario de Contacto
-         Con div que funcionará como la tarjeta principal
-         donde voy a colocar todo el formulario-->
-        <div class="formulario-contacto">
+    <title>Formulario de contacto | HuellaVet</title>
 
-            <!-- Con form el formulario que recogerá la información 
-             del usuario y con id identifico este formulario de manera 
-             única para poder trabajarlo después desde JavaScript
+    <!-- Conecto Bootstrap para utilizar su sistema de columnas y formularios -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+        crossorigin="anonymous"
+    >
 
-             En action voy a colocar el enlace real que me entregue 
-             Formspree y con method="POST" indico que los datos 
-             se enviarán de forma privada dentro de la solicitud-->
-            <form id="formulario-contacto" action="https://formspree.io/f/ID-DEL-FORMULARIO" method="POST">
+    <!-- Conecto Bootstrap Icons para usar los iconos del formulario -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+    >
 
-                <!-- Campos del formulario LIZETH
-                 se crea una sección específica para agrupar los datos personales 
-                 del propietario de la mascota-->
-                <section class="formulario-contacto__propietario">
+    <!-- Conecto las fuentes definidas para la identidad de HuellaVet -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-                    <!-- Se crea un contenedor para organizar el icono y el titulo
-                     principal del formulario-->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        /* Se crean variables para reutilizar los colores y fuentes del proyecto */
+        :root {
+            --color-primario: #17a9a7;
+            --color-primario-oscuro: #007981;
+            --color-secundario-claro: #a5d9cf;
+            --color-acento: #bad641;
+            --color-fondo-claro: #eef5e5;
+            --color-texto-oscuro: #223e3c;
+            --color-borde: #d8e3df;
+
+            --fuente-principal: "Quicksand", sans-serif;
+            --fuente-marca: "Sour Gummy", sans-serif;
+        }
+
+        /* Se aplica la fuente principal a toda mi página de prueba */
+        body {
+            font-family: var(--fuente-principal);
+            color: var(--color-texto-oscuro);
+            background-color: #f7faf8;
+        }
+
+        /* Se crea el espacio general donde voy a mostrar el formulario */
+        .contacto {
+            padding: 3rem 1rem;
+        }
+
+        /* Se limita el ancho del formulario y se centra */
+        .contacto__contenedor {
+            max-width: 950px;
+        }
+
+        /* Se crea la tarjeta blanca que contiene todo el formulario */
+        .formulario-contacto {
+            padding: 2rem;
+            background-color: #ffffff;
+            border: 1px solid var(--color-borde);
+            border-radius: 1.25rem;
+            box-shadow: 0 0.75rem 2rem rgba(34, 62, 60, 0.08);
+        }
+
+        /* Se organiza el icono y el título en una misma fila */
+        .formulario-contacto__encabezado {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Se diseño el fondo que contiene el icono del encabezado */
+        .formulario-contacto__icono-titulo {
+            display: grid;
+            width: 3rem;
+            height: 3rem;
+            place-items: center;
+            flex-shrink: 0;
+            color: var(--color-primario-oscuro);
+            background-color: var(--color-fondo-claro);
+            border-radius: 0.75rem;
+            font-size: 1.4rem;
+        }
+
+        /* Se aplica el diseño del título principal */
+        .formulario-contacto__titulo {
+            margin: 0;
+            font-family: var(--fuente-marca);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Se ubica cada icono dentro de su campo correspondiente */
+        .formulario-contacto__campo {
+            position: relative;
+        }
+
+        .formulario-contacto__campo i {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            z-index: 2;
+            color: var(--color-primario-oscuro);
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        /* Se personaliza los campos de Bootstrap */
+        .formulario-contacto__campo .form-control {
+            min-height: 3rem;
+            padding-left: 2.75rem;
+            border-color: var(--color-borde);
+            border-radius: 0.65rem;
+            box-shadow: none;
+        }
+
+        /* Se resalta el campo que el usuario está utilizando */
+        .formulario-contacto__campo .form-control:focus {
+            border-color: var(--color-primario);
+            box-shadow: 0 0 0 0.2rem rgba(23, 169, 167, 0.12);
+        }
+
+        /* Se diseño las etiquetas de los campos */
+        .form-label {
+            margin-bottom: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        /* Se adapto la tarjeta para pantallas pequeñas */
+        @media (max-width: 767px) {
+            .contacto {
+                padding: 2rem 0.75rem;
+            }
+
+            .formulario-contacto {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Se creo el contenido principal de mi página de prueba -->
+    <main class="contacto">
+
+        <!-- Se centro el formulario y controlo su ancho con Bootstrap -->
+        <div class="contacto__contenedor container">
+
+            <!-- Se creo la tarjeta principal del formulario -->
+            <div class="formulario-contacto">
+
+                <!-- Se creo el formulario que después enviaré mediante Formspree -->
+                <form
+                    id="formulario-contacto"
+                    action="https://formspree.io/f/ID-DEL-FORMULARIO"
+                    method="POST"
+                >
+
+                    <!-- Se creo el encabezado de mi formulario -->
                     <div class="formulario-contacto__encabezado">
 
-                        <!-- Se crea un contenedor para darle fondo, tamaño
-                        y forma al icono del encabezado-->
                         <div class="formulario-contacto__icono-titulo">
-
-                            <!-- Se insserta un icono de sobre usando Bootstrap Icons
-                             para representar el envío de un mensaje-->
                             <i class="bi bi-envelope-fill"></i>
-
-                            <!-- Cierro el contenedor del icono del título -->
                         </div>
 
-                        <!-- Ahora creo el título principal de mi formulario y uso
-                         un h2 porque es uno de los títulos principales dentro 
-                         de esta sección-->
                         <h2 class="formulario-contacto__titulo">
-
-                            <!-- Escribo el texto que verá el usuario-->
                             Envíame un mensaje
-
-                            <!-- Cierro el título principal. -->
                         </h2>
 
-
-                        <!-- Cierro el encabezado del formulario-->
                     </div>
 
-                    <!-- Ahora se crea una fila usando el sistema de 
-                      cuadrícula de Bootstrap y la clase row crea la 
-                      fila.
-                      
-                      La clase g-3 agrega una separación uniforme
-                      entre los campos del formulario-->
+                    <!-- Se organizan cuatro campos con la cuadrícula de Bootstrap -->
                     <div class="row g-3">
 
-                        <!-- Se crea una columna para el campo del 
-                         nombre y con col-12 hago que ocupe todo el 
-                         ancho en celulares.
-
-                         Con col-md-6 hago que ocupe la mitad del 
-                         ancho desde pantallas medianas en adelante-->
+                        <!-- Se creo el campo para recibir el nombre del propietario -->
                         <div class="col-12 col-md-6">
-
-                            <!-- Ahora creo una etiqueta para 
-                             identificar el campo del nombre del 
-                             propietario y el atributo for debe 
-                             coincidir con el id del input al que 
-                             pertenece-->
                             <label for="nombre-propietario" class="form-label">
-
-                                <!-- Escribo el nombre visible del campo. -->
                                 Nombre del propietario
-
-                                <!-- Cierro la etiqueta del nombre-->
                             </label>
 
-                            <!-- Ahora creo un contenedor para 
-                              organizar el icono y el campo de texto-->
                             <div class="formulario-contacto__campo">
-
-                                <!-- Inserto un icono de persona
-                                 para representar al propietario-->
                                 <i class="bi bi-person"></i>
 
-                                <!--Ahora creo un campo de texto
-                                 para que el usuario escriba su nombre-->
-
-                                <!--Indico con type="text" que este campo recibe texto-->
-
-                                <!-- Asigno con id="nombre-propietario" un identificador único al campo y
-                                  este id también permite conectar y el input con su label-->
-
-                                <!-- Despues con class="form-control" Se aplica la clase form-control de Bootstrap
-                                    para darle apariencia de campo de formulario-->
-
-                                <!-- Y con placeholder="Tu nombre" se muestra un ejemplo dentro del campo
-                                     antes de que el usuario escriba-->
-
-                                <!-- Ahora con required Se indica que este campo debe completarse
-                                       antes de enviar el formulario-->
-
-                                <input type="text" id="nombre-propietario" name="nombre_propietario"
-                                    class="form-control" placeholder="Tu nombre" autocomplete="name" required>
-
-                                <!-- Cierro el contenedor del campo del nombre-->
+                                <input
+                                    type="text"
+                                    id="nombre-propietario"
+                                    name="nombre_propietario"
+                                    class="form-control"
+                                    placeholder="Tu nombre"
+                                    autocomplete="name"
+                                    required
+                                >
                             </div>
-
-                            <!-- Cierro la columna del nombre del propietario-->
                         </div>
 
-                        <!-- Se crea una columna para el teléfono y en celular ocupará 
-                         todo el ancho y en pantallas medianas ocupará la mitad-->
+                        <!-- Se creo el campo para recibir el teléfono -->
                         <div class="col-12 col-md-6">
-
-                            <!-- Se crea la etiqueta que identifica y 
-                            el campo del teléfono-->
-
                             <label for="telefono" class="form-label">
-
-                                <!-- Escribo el nombre visible del campo-->
                                 Teléfono
-
-                                <!-- Cierro la etiqueta del teléfono-->
                             </label>
 
-                            <!-- Se crea un contenedor para organizar
-                             el icono y el campo del teléfono-->
-
                             <div class="formulario-contacto__campo">
-
-                                <!-- Se inserta un icono de teléfono
-                                 usando Bootstrap Icons-->
                                 <i class="bi bi-telephone"></i>
 
-                                <!-- Se crea un campo especializado
-                                  para recibir números telefónicos
-                                  
-                                  Uso type="tel" para indicar que este campo recibe un 
-                                  teléfono, Asigno un identificador único con id="telefono",
-                                   y con name="telefono" y con 
-                                   class="form-control" aplico el diseño de Bootstrap con
-                                   placeholder="+57 300 123 4567" doy un ejemplo de cómo se debe ingresar y con
-                                    autocomplete="tel" indico que el navegador puede autocompletar este campo con un teléfono guardado,
-                                    y con pattern="[0-9+\s()-]{7,20}" indico que el campo solo acepta números, espacios, paréntesis, guiones y el signo 
-                                    + y con required indico que este campo es obligatorio para enviar el formulario.
-                                  
-                                  -->
-                                <input type="tel" id="telefono" name="telefono" class="form-control"
-                                    placeholder="+57 300 123 4567" autocomplete="tel" pattern="[0-9+\s()-]{7,20}"
-                                    required>
-
-                                <!-- Cierro el contenedor del teléfono-->
+                                <input
+                                    type="tel"
+                                    id="telefono"
+                                    name="telefono"
+                                    class="form-control"
+                                    placeholder="+57 300 123 4567"
+                                    autocomplete="tel"
+                                    required
+                                >
                             </div>
-
-
-                            <!-- Cierro la columna del teléfono-->
                         </div>
 
-                        <!--Creo una columna para la dirección y 
-                         en celular ocupará todo el ancho y en pantallas medianas ocupará la mitad-->
+                        <!-- Se creo el campo para recibir la dirección -->
                         <div class="col-12 col-md-6">
-
-                            <!--Creo la etiqueta que identifica el campo de la dirección-->
                             <label for="direccion" class="form-label">
-
-                                <!-- Escribo el nombre visible del campo-->
                                 Dirección
-
-
-                                <!-- Cierro la etiqueta de la dirección-->
                             </label>
 
-                            <!-- Ahora creo un contenedor para organizar
-                             el icono y el campo de dirección-->
                             <div class="formulario-contacto__campo">
-
-                                <!-- Ahora inserto un icono de ubicación
-                                 para representar la dirección-->
                                 <i class="bi bi-geo-alt"></i>
 
-                                <!-- Ahora Se crea un campo de texto
-                                  para que el usuario escriba su dirección con
-                                    type="text" indico que es un campo de texto,
-                                    id="direccion" asigno un identificador único al campo y
-                                    name="direccion" asigno un nombre al campo para que se pueda identificar en el envío
-                                    class="form-control" aplico el diseño de Bootstrap con
-                                    placeholder="Calle 123 #45-67, Ciudad, País" doy un ejemplo de cómo se debe ingresar y con 
-                                    autocomplete="street-address" indico que el navegador puede autocompletar este campo con una dirección guardada-->
-                                <input type="text" id="direccion" name="direccion" class="form-control"
-                                    placeholder="Calle 123 #45-67, Ciudad, País" autocomplete="street-address">
-
-
-                                <!-- Cierro el contenedor de la dirección-->
+                                <input
+                                    type="text"
+                                    id="direccion"
+                                    name="direccion"
+                                    class="form-control"
+                                    placeholder="Dirección de residencia"
+                                    autocomplete="street-address"
+                                >
                             </div>
-
-
-
-                            <!-- Cierro la columna de la dirección-->
                         </div>
 
-                        <!-- Se crea una columna para el correo electrónico y en celular 
-                         ocupará todo el ancho y desde pantallas medianas ocupará la mitad-->
+                        <!-- Se creo el campo para recibir el correo electrónico -->
                         <div class="col-12 col-md-6">
-
-                            <!--Se crea la etiqueta que identifica el campo del correo electrónico.-->
                             <label for="correo" class="form-label">
-
-                                <!-- Escribo el nombre visible del campo-->
                                 Correo electrónico
-
-                            <!-- Cierro la etiqueta del correo-->
                             </label>
 
-                            <!--Creo un contenedor para organizar
-                             el icono y el campo del correo-->
-                             <div class="formulario-contacto__campo">
+                            <div class="formulario-contacto__campo">
+                                <i class="bi bi-envelope"></i>
 
-                                <!-- Se inserta un icono de sobre para representar 
-                                 el correo electrónico-->
-                                 <i class="bi bi-envelope"></i>
-
-                                 <!-- Ahora Se crea un campo especializado
-                                  para recibir direcciones de correo
-                                  
-                                  Uso type="email" para que el navegador y 
-                                  valide que el formato tenga estructura de correo y
-                                  Asigno un identificador único con id="correo", y con name="correo" asigno un nombre al campo 
-                                  para que se pueda identificar en el envío y con class="form-control" 
-                                  aplico el diseño de Bootstrap con placeholder="correo@ejemplo.com" 
-                                  doy un ejemplo de cómo se debe ingresar y con autocomplete="email" 
-                                  indico que el navegador puede autocompletar este campo con un correo 
-                                  guardado y con required indico que este campo es obligatorio 
-                                  para enviar el formulario-->
-                                  <input type="email" id="correo" name="correo" class="form-control"
-                                    placeholder="correo@ejemplo.com" autocomplete="email" required>
-
-
-                             <!-- Cierro el contenedor del correo-->
+                                <input
+                                    type="email"
+                                    id="correo"
+                                    name="email"
+                                    class="form-control"
+                                    placeholder="tu@email.com"
+                                    autocomplete="email"
+                                    required
+                                >
                             </div>
-
-                        <!-- Cierro la columna del correo-->
                         </div>
 
-
-
-
-
-                    <!-- Cierro la fila que contiene mis cuatro campos-->
                     </div>
 
+                    <!-- Aquí mi compañera continuara con los datos de la mascota -->
 
-                <!-- Cierro mi sección de datos del propietario-->
-                </section>
+                </form>
 
-                <!-- Aqui termino mi parte del formulario LIZETH-->
-
-                <!-- Aqui Empezaria la seccion de mi compañera tatiana -->
-
-            </form>
-
-
-
-
-
-
+            </div>
 
         </div>
 
+    </main>
 
+    <!-- Se conecta el Js de Bootstrap al final de la página -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous">
+    </script>
 
-    </section>
+</body>
 
-
-
-</main>
+</html>
