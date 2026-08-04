@@ -62,27 +62,30 @@
         /* ====================================================================
                             INFORMACIÓN DE CONTACTO
         ==================================================================== */
-        #card-contacto {
+        .card-contacto,
+        .card-calendar {
+            max-width: 400px;
             border: none;
             border-radius: 20px;
-            background: #fff;
+            background: var(--color-fondo-claro);
             box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
         }
 
-        #contacto-header {
+        .contacto-header,
+        .calendar-header {
             display: flex;
             align-items: center;
             gap: 15px;
             margin-bottom: 25px;
         }
 
-        #contacto-header i{
-            width: 60px;
-            height: 60px;
+        .contacto-header i {
+            font-size: 50px;
             color: var(--color-primario);
         }
 
-        #contacto-header h5 {
+        .contacto-header h5,
+        .calendar-header h5 {
             margin: 0;
             font-weight: 700;
             color: var(--color-texto-oscuro);
@@ -96,11 +99,9 @@
         }
 
         .contacto-item i {
-            width: 38px;
-            height: 38px;
+            font-size: 30px;
             color: var(--color-primario);
             flex-shrink: 0;
-            margin-top: 4px;
         }
 
         .contacto-item h6 {
@@ -109,7 +110,8 @@
             color: var(--color-texto-oscuro);
         }
 
-        .contacto-item p {
+        .contacto-item p,
+        .card-content p {
             margin: 0;
             color: #666;
             font-family: var(--fuente-marca);
@@ -117,16 +119,17 @@
 
         .btn-agendar {
             background: var(--color-acento);
-            color: white;
+            color: var(--color-texto-oscuro);
             font-weight: 700;
             border-radius: 12px;
             padding: 12px;
             transition: .3s;
+            max-width: 150px;
         }
 
         .btn-agendar:hover {
             background: var(--color-primario);
-            color: white;
+            color: var(--color-texto-oscuro);
         }
 
         .card {
@@ -177,53 +180,70 @@
         <!-- ====================================================================
                             INFORMACIÓN DE CONTACTO
              ==================================================================== -->
-        <div class="container-lg contacto">
+        <div class="container-lg contacto mt-5">
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <div class="col">
-                    <div class="card" id="card-contacto">
-                        <div class="card-body" id="contacto-header">
+                    <div class="card card-contacto">
+                        <div class="card-body contacto-header">
                             <i class="bi bi-info-circle"></i>
                             <h5 class="card-title">Información de Contacto</h5>
                         </div>
                         <div class="card-body contacto-item d-flex">
                             <i class="bi bi-geo-alt"></i>
-                            <h6 class="text-body-secondary">Ubicación</h6>
-                            <p>Bogotá, Colombia</p>
+                            <div class="card-content">
+                                <h6 class="text-body-secondary">Ubicación</h6>
+                                <p>Bogotá, Colombia</p>
+                            </div>
                         </div>
                         <div class="card-body contacto-item d-flex">
                             <i class="bi bi-telephone"></i>
-                            <h6 class="text-body-secondary">Teléfono</h6>
-                            <p>(+57) 300 1234567</p>
+                            <div class="card-content">
+                                <h6 class="text-body-secondary">Teléfono</h6>
+                                <p>(+57) 300 1234567</p>
+                            </div>
                         </div>
                         <div class="card-body contacto-item d-flex">
                             <i class="bi bi-envelope"></i>
-                            <h6 class="text-body-secondary">Correo</h6>
-                            <p>huellavet.lamyg@gmail.com</p>
+                            <div class="card-content">
+                                <h6 class="text-body-secondary">Correo</h6>
+                                <p>huellavet.lamyg@gmail.com</p>
+                            </div>
                         </div>
                         <div class="card-body contacto-item d-flex">
                             <i class="bi bi-clock"></i>
-                            <h6 class="text-body-secondary">Horario de atención</h6>
-                            <p>Lun. a Vier. 9:00 am - 5:00pm</p>
-                            <p>Sabados 8:00 am - 4:00pm</p>
+                            <div class="card-content">
+                                <h6 class="text-body-secondary">Horario de atención</h6>
+                                <p>Lun. a Vier. 9:00 am - 5:00pm</p>
+                                <p>Sabados 8:00 am - 4:00pm</p>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col">
-                    <div class="card mb-3" style="max-width: 540px;">
+                    <div class="card mb-3 card-calendar" style="max-width: 400px;">
                         <div class="row g-0">
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <h5 class="card-title">Agenda una cita</h5>
-                                    <p class="card-text">Reserva tu cita de manera rápida y sencilla.
-                                        Estoy disponible para cuidar la salud de tu mascota.
-                                    </p>
+                                    <div class="calendar-header">
+                                        <h5 class="card-title">Agenda una cita</h5>
+                                    </div>
+                                    <div class="card-content">
+                                        <p class="card-text">Reserva tu cita de manera rápida y sencilla.
+                                            Estoy disponible para cuidar la salud de tu mascota.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <img src="img/icon-calendar.png" class="img-fluid rounded-start" alt="...">
                             </div>
-                            <button type="button" class="btn btn-agendar"><i class="bi bi-calendar-event"></i>Agendar
-                                Cita</button>
+                            <div class="col-12 d-flex justify-content-center">
+                                <button type="button"
+                                    class="btn btn-agendar d-flex align-items-center justify-content-center gap-2"><i
+                                        class="bi bi-calendar-event"></i>Agendar
+                                    Cita
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
