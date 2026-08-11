@@ -1,0 +1,249 @@
+/* Hero del veterinario */
+
+.hero-veterinario {
+    background-color: var(--color-fondo-claro);
+}
+
+.hero-veterinario__imagen {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+}
+
+.hero-veterinario__etiqueta {
+    color: var(--color-primario);
+    font-weight: 700;
+}
+
+.hero-veterinario__titulo {
+    font-family: var(--fuente-marca);
+    font-size: 3rem;
+    color: var(--color-texto-oscuro);
+}
+
+.hero-veterinario__profesion {
+    color: var(--color-primario);
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.hero-veterinario__descripcion {
+    line-height: 1.7;
+}
+
+/* Mi historia */
+
+.mi-historia {
+    background-color: var(--color-blanco);
+}
+
+.historia-card {
+    background-color: var(--color-fondo-claro);
+    border-radius: 16px;
+}
+
+.historia-card__icono {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-primario);
+    border-radius: 50%;
+    color: var(--color-blanco);
+    font-size: 1.7rem;
+}
+
+.historia-card__titulo {
+    font-family: var(--fuente-marca);
+    font-size: 2.5rem;
+    color: var(--color-texto-oscuro);
+}
+
+.historia-card__texto {
+    line-height: 1.7;
+}
+
+.historia-card__imagen {
+    max-width: 230px;
+}
+
+/* Formación y experiencia */
+
+.seccion-vet {
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
+}
+
+.seccion-vet .row {
+    align-items: stretch;
+    gap: 1.5rem;
+}
+
+.seccion-vet .col-md-6 {
+    width: 100% !important;
+    max-width: 420px;
+    padding: 2rem !important;
+    background-color: var(--color-fondo-claro);
+    border: 1px solid rgb(34 62 60 / 10%);
+    border-radius: 18px;
+    box-shadow: 0 8px 22px rgb(34 62 60 / 8%);
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.seccion-vet .col-md-6:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 30px rgb(34 62 60 / 14%);
+}
+
+.seccion-vet h5 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    font-family: var(--fuente-marca);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+    text-align: center;
+}
+
+.seccion-vet h5 svg {
+    position: static;
+    padding: 0.7rem;
+    background-color: var(--color-blanco);
+    border-radius: 50%;
+    color: var(--color-primario);
+    font-size: 1.4rem;
+    transform: none;
+}
+
+.seccion-vet .vet-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.seccion-vet .vet-list-item {
+    position: relative;
+    padding: 0.65rem 0 0.65rem 1.4rem;
+    color: var(--color-texto-oscuro);
+    line-height: 1.5;
+    text-align: left;
+}
+
+.seccion-vet .vet-list-item::before {
+    content: "";
+    position: absolute;
+    top: 1.2rem;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-acento);
+    border-radius: 50%;
+}
+
+/* Mi forma de cuidar */
+
+.titulo-miforma {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    color: var(--color-texto-oscuro);
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.card {
+    border: 1px solid var(--color-borde);
+    border-radius: 12px;
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgb(0 0 0 / 10%);
+}
+
+.contenedor-icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.circulo-icono {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e6f2f3;
+    border-radius: 50%;
+}
+
+.circulo-icono i {
+    color: var(--color-primario-oscuro);
+    font-size: 2.5rem;
+}
+
+/* Desarrolladores y banner */
+
+.icono-mascota {
+    width: 20px;
+    height: 20px;
+    opacity: 0.8;
+}
+
+.banner {
+    background-color: var(--color-fondo-claro);
+}
+
+.banner .btn {
+    background-color: var(--color-primario-oscuro);
+    border-radius: 8px;
+    color: var(--color-blanco);
+}
+
+.banner .btn:hover {
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+}
+
+.banner .text-dark {
+    color: var(--color-texto-oscuro) !important;
+}
+
+/* Responsive */
+
+@media (max-width: 991px) {
+    .hero-veterinario__contenido {
+        text-align: center;
+    }
+
+    .hero-veterinario__titulo {
+        font-size: 2.3rem;
+    }
+
+    .hero-veterinario__imagen {
+        height: 280px;
+    }
+}
+
+@media (max-width: 767px) {
+    .seccion-vet {
+        padding-top: 2.5rem !important;
+        padding-bottom: 2.5rem !important;
+    }
+
+    .seccion-vet .col-md-6 {
+        flex: 0 1 420px;
+        width: 100% !important;
+        max-width: 420px;
+    }
+}
