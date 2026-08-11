@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description"
+        content="Contacta con HuellaVet para recibir información y agendar la atención veterinaria de tu mascota.">
+
+    <link rel="icon" href="img/favicon.png" type="image/png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <script src="https://kit.fontawesome.com/9868a66798.js" crossorigin="anonymous"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/contacto.css">
+
+    <script src="js/components.js" defer></script>
+
+    <title>
+        Contacto | HuellaVet - Sistema de Reservas Veterinarias
+    </title>
+</head>
+
+<body data-page="contacto">
+
+    <!-- Navbar HV -->
+    <div id="header-container"></div>
+
+    <main class="contenido-principal">
+
+        <!-- Contenido -->
+        <section id="hero-contacto" class="hero-contacto">
+            <div class="container">
+
+                <div class="row align-items-center g-4">
+
+                    <!-- Información -->
+                    <div class="col-12 col-lg-5 hero-contacto__contenido">
+
+                        <p class="hero-contacto__etiqueta">
+                            <i class="bi bi-paw-fill" aria-hidden="true"></i>
+                            Estamos para ayudarte
+                        </p>
+
+                        <h1 class="hero-contacto__titulo">
+                            Contacto
+                        </h1>
+
+                        <p class="hero-contacto__descripcion">
+                            Estoy aquí para ayudarte. Escríbeme, llámame o agenda
+                            una cita para brindarle a tu mascota la atención que merece.
+                        </p>
+
+                        <div class="hero-contacto__acciones">
+
+                            <a href="#formulario-contacto" class="btn btn-contacto">
+                                <i class="bi bi-envelope me-2" aria-hidden="true"></i>
+                                Enviar mensaje
+                            </a>
+
+                            <a href="agendar.html" class="btn btn-agendar-contacto">
+                                <i class="bi bi-calendar-check me-2" aria-hidden="true"></i>
+                                Agendar cita
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-lg-7">
+
+                        <div class="hero-contacto__imagen-contenedor">
+
+                            <img src="img/hero-contacto..png" class="img-fluid hero-contacto__imagen"
+                                alt="Perro y gato representando la atención veterinaria de HuellaVet">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Inicio Formulario de contacto -->
+
+        <!-- Sección del formulario de contacto -->
+        <section id="contacto" class="contacto-seccion py-5">
+
+            <div class="container-xl">
+
+                <div class="row g-4 align-items-start">
+
+                    <div class="col-12 col-lg-8">
+
+                        <!-- Tarjeta principal del formulario -->
+                        <div class="formulario-contacto">
+
+                            <form id="formulario-contacto" action="https://formspree.io/f/mbgrrbzn" method="POST"
+                                novalidate>
+
+                                <input type="hidden" name="_subject" value="Nueva solicitud de contacto en HuellaVet">
+
+                                <!-- Encabezado del formulario -->
+                                <div class="formulario-contacto__encabezado">
+
+                                    <div class="formulario-contacto__icono-titulo">
+                                        <i class="bi bi-envelope-fill"></i>
+                                    </div>
+
+                                    <h2 class="formulario-contacto__titulo">
+                                        Envíame un mensaje
+                                    </h2>
+
+                                </div>
+
+                                <!-- Campos principales -->
+                                <div class="row g-3">
+
+                                    <!-- Nombre del propietario -->
+                                    <div class="col-12 col-md-6">
+
+                                        <label for="nombre-propietario" class="form-label">
+                                            Nombre del propietario
+                                        </label>
+
+                                        <div class="formulario-contacto__campo" data-campo="nombre">
+
+                                            <i class="bi bi-person"></i>
+
+                                            <input type="text" id="nombre-propietario" name="nombre_propietario"
+                                                class="form-control" placeholder="Tu nombre" autocomplete="name"
+                                                required>
+
+                                            <div class="formulario-contacto__error">
+                                                Escribe un nombre válido, solo letras y
+                                                espacios, con mínimo 3 caracteres.
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Teléfono -->
+                                    <div class="col-12 col-md-6">
+
+                                        <label for="telefono" class="form-label">
+                                            Teléfono
+                                        </label>
+
+                                        <div class="formulario-contacto__campo" data-campo="telefono">
+
+                                            <i class="bi bi-telephone"></i>
+
+                                            <input type="tel" id="telefono" name="telefono" class="form-control"
+                                                placeholder="+57 300 123 4567" autocomplete="tel" required>
+
+                                            <div class="formulario-contacto__error">
+                                                Ingresa un teléfono válido con mínimo
+                                                7 dígitos.
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Dirección -->
+                                    <div class="col-12 col-md-6">
+
+                                        <label for="direccion" class="form-label">
+                                            Dirección
+                                        </label>
+
+                                        <div class="formulario-contacto__campo">
+
+                                            <i class="bi bi-geo-alt"></i>
+
+                                            <input type="text" id="direccion" name="direccion" class="form-control"
+                                                placeholder="Dirección de residencia" autocomplete="street-address">
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Correo electrónico -->
+                                    <div class="col-12 col-md-6">
+
+                                        <label for="correo" class="form-label">
+                                            Correo electrónico
+                                        </label>
+
+                                        <div class="formulario-contacto__campo" data-campo="correo">
+
+                                            <i class="bi bi-envelope"></i>
+
+                                            <input type="email" id="correo" name="email" class="form-control"
+                                                placeholder="tu@email.com" autocomplete="email" required>
+
+                                            <div class="formulario-contacto__error">
+                                                Ingresa un correo electrónico válido.
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Información de la mascota -->
+                                <div class="formulario-contacto__mascota mt-5">
+
+                                    <h3 class="formulario-contacto__subtitulo mb-4">
+                                        Información de tu mascota
+                                    </h3>
+
+                                    <!-- Primera fila -->
+                                    <div class="row g-3 mb-3">
+
+                                        <div class="col-12 col-md-6">
+
+                                            <label for="nombre-mascota" class="form-label">
+                                                Nombre de la mascota
+                                            </label>
+
+                                            <input type="text" class="form-control" id="nombre-mascota"
+                                                name="nombre_mascota" placeholder="Nombre de tu mascota">
+
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+
+                                            <label for="especie" class="form-label">
+                                                Especie
+                                            </label>
+
+                                            <select class="form-select" id="especie" name="especie">
+
+                                                <option value="">
+                                                    Selecciona la especie
+                                                </option>
+
+                                                <option value="Perro">
+                                                    Perro
+                                                </option>
+
+                                                <option value="Gato">
+                                                    Gato
+                                                </option>
+
+                                                <option value="Ave">
+                                                    Ave
+                                                </option>
+
+                                                <option value="Ganado">
+                                                    Ganado
+                                                </option>
+
+                                                <option value="Otro">
+                                                    Otro
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Segunda fila -->
+                                    <div class="row g-3 mb-3">
+
+                                        <div class="col-12 col-md-4">
+
+                                            <label for="raza" class="form-label">
+                                                Raza
+                                            </label>
+
+                                            <input type="text" class="form-control" id="raza" name="raza"
+                                                placeholder="Raza de tu mascota">
+
+                                        </div>
+
+                                        <div class="col-12 col-md-4">
+
+                                            <label for="edad" class="form-label">
+                                                Edad
+                                            </label>
+
+                                            <input type="number" class="form-control" id="edad" name="edad"
+                                                placeholder="Edad" min="0">
+
+                                        </div>
+
+                                        <div class="col-12 col-md-4">
+
+                                            <label for="peso" class="form-label">
+                                                Peso
+                                            </label>
+
+                                            <input type="number" class="form-control" id="peso" name="peso"
+                                                placeholder="Peso en kg" min="0" step="0.1">
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Tercera fila -->
+                                    <div class="row g-3 mb-3">
+
+                                        <div class="col-12 col-md-6">
+
+                                            <label for="sexo" class="form-label">
+                                                Sexo
+                                            </label>
+
+                                            <select class="form-select" id="sexo" name="sexo">
+
+                                                <option value="">
+                                                    Selecciona el sexo
+                                                </option>
+
+                                                <option value="Macho">
+                                                    Macho
+                                                </option>
+
+                                                <option value="Hembra">
+                                                    Hembra
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                        <div class="col-12 col-md-6">
+
+                                            <label for="servicio" class="form-label">
+                                                Servicio
+                                            </label>
+
+                                            <select class="form-select" id="servicio" name="servicio">
+
+                                                <option value="">
+                                                    Selecciona el servicio
+                                                </option>
+
+                                                <option value="Consulta general">
+                                                    Consulta general
+                                                </option>
+
+                                                <option value="Vacunación">
+                                                    Vacunación
+                                                </option>
+
+                                                <option value="Esterilización">
+                                                    Esterilización
+                                                </option>
+
+                                                <option value="Toma de muestras">
+                                                    Toma de muestras
+                                                </option>
+
+                                                <option value="Control">
+                                                    Control
+                                                </option>
+
+                                                <option value="Desparasitación">
+                                                    Desparasitación
+                                                </option>
+
+                                                <option value="Imágenes diagnósticas">
+                                                    Imágenes diagnósticas
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Mensaje -->
+                                    <div class="row g-3 mb-3">
+
+                                        <div class="col-12">
+
+                                            <label for="mensaje" class="form-label">
+                                                Mensaje
+                                            </label>
+
+                                            <div class="formulario-contacto__campo" data-campo="mensaje">
+
+                                                <textarea class="form-control" id="mensaje" name="mensaje" rows="5"
+                                                    placeholder="Cuéntanos cómo podemos ayudarte..."
+                                                    required></textarea>
+
+                                                <div class="formulario-contacto__error">
+                                                    Escribe un mensaje de al menos
+                                                    10 caracteres.
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Botón de envío -->
+                                <div class="d-grid mt-4">
+
+                                    <button type="submit"
+    class="btn btn-contacto px-4 py-2"
+    id="boton-enviar">
+
+    <i class="bi bi-send me-2"></i>
+    Enviar mensaje
+
+</button>
+
+                                </div>
+
+                                <!-- Estado del envío -->
+                                <div id="estado-envio" class="alert mt-3" role="alert" aria-live="polite"
+                                    style="display: none;"></div>
+
+                                <p class="formulario-contacto__privacidad">
+                                    <i class="bi bi-lock-fill"></i>
+                                    Tu información está protegida y no será
+                                    compartida con terceros.
+                                </p>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-12 col-lg-4">
+
+                        <aside class="contacto-lateral">
+
+                            <div class="card card-contacto">
+
+                                <div class="card-body contacto-header">
+
+                                    <i class="bi bi-info-circle"></i>
+
+                                    <h5 class="card-title">
+                                        Información de contacto
+                                    </h5>
+
+                                </div>
+
+                                <div class="card-body contacto-item d-flex">
+
+                                    <i class="bi bi-geo-alt"></i>
+
+                                    <div class="card-content">
+
+                                        <h6 class="text-body-secondary">
+                                            Ubicación
+                                        </h6>
+
+                                        <p>Bogotá, Colombia</p>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="card-body contacto-item d-flex">
+
+                                    <i class="bi bi-telephone"></i>
+
+                                    <div class="card-content">
+
+                                        <h6 class="text-body-secondary">
+                                            Teléfono
+                                        </h6>
+
+                                        <p>
+                                            <a href="tel:+573001234567">
+                                                +57 300 123 4567
+                                            </a>
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="card-body contacto-item d-flex">
+
+                                    <i class="bi bi-envelope"></i>
+
+                                    <div class="card-content">
+
+                                        <h6 class="text-body-secondary">
+                                            Correo electrónico
+                                        </h6>
+
+                                        <p>
+                                            <a href="mailto:huellavet.lamyg@gmail.com">
+                                                huellavet.lamyg@gmail.com
+                                            </a>
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="card-body contacto-item d-flex">
+
+                                    <i class="bi bi-clock"></i>
+
+                                    <div class="card-content">
+
+                                        <h6 class="text-body-secondary">
+                                            Horario de atención
+                                        </h6>
+
+                                        <p>
+                                            Lun. a Vier. 9:00 a. m. - 5:00 p. m.
+                                        </p>
+
+                                        <p>
+                                            Sábados 8:00 a. m. - 4:00 p. m.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="card card-calendar">
+
+                                <div class="row g-0 align-items-center">
+
+                                    <div class="col-8">
+
+                                        <div class="card-body">
+
+                                            <div class="calendar-header">
+
+                                                <h5 class="card-title">
+                                                    ¿Prefieres agendar una visita?
+                                                </h5>
+
+                                            </div>
+
+                                            <div class="card-content">
+
+                                                <p class="card-text">
+                                                    Reserva una cita de manera rápida y sencilla.
+                                                    Estoy lista para cuidar de tu mascota.
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-4">
+
+                                        <img src="img/icon-calendar.png" class="img-fluid rounded-start"
+                                            alt="Calendario veterinario">
+
+                                    </div>
+
+                                    <div class="col-12 d-flex justify-content-center">
+
+                                        <a href="agendar.html"
+                                            class="btn btn-agendar d-flex align-items-center justify-content-center gap-2">
+
+                                            <i class="bi bi-calendar-event"></i>
+                                            Agendar cita
+
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </aside>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Sección Mapa -->
+        <section class="ubicacion-contacto py-5">
+
+            <div class="container">
+
+                <div class="ubicacion-contacto__card">
+
+                    <div class="row g-0">
+
+                        <!-- Información -->
+                        <div class="col-12 col-lg-4">
+
+                            <div class="ubicacion-contacto__informacion">
+
+                                <div class="ubicacion-contacto__icono">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div>
+
+                                <div>
+
+                                    <h2 class="ubicacion-contacto__titulo">
+                                        ¿Dónde estamos?
+                                    </h2>
+
+                                    <p class="ubicacion-contacto__texto">
+                                        Atendemos toda el área metropolitana de Bogotá.
+                                    </p>
+
+                                    <!-- Cómo llegar solo se usará si ubicaión fija 
+                                    <a href="https://maps.google.com/?q=Bogotá,Colombia" target="_blank"
+                                        rel="noopener noreferrer" class="ubicacion-contacto__enlace">
+                                        <i class="bi bi-sign-turn-right"></i>
+                                        Cómo llegar
+                                    </a> -->
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-12 col-lg-8">
+
+                            <div class="ubicacion-contacto__mapa">
+
+                                <iframe src="https://www.google.com/maps?q=Bogotá,Colombia&output=embed"
+                                    title="Ubicación de HuellaVet en Bogotá" loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Preguntas frecuentes -->
+        <section class="container mt-5">
+
+            <div class="border rounded-4 p-4 bg-white shadow-sm">
+
+                <div class="mb-4 d-flex align-items-center gap-3">
+
+                    <img src="https://static.vecteezy.com/system/resources/thumbnails/047/463/667/small_2x/dog-paw-print-transparent-background-free-png.png"
+                        alt="icono-de-huella" width="32">
+
+                    <h2 class="fw-bold mb-0" style="color: #1a4a38;">
+                        Preguntas frecuentes
+                    </h2>
+
+                </div>
+
+                <div class="accordion" id="accordionExample">
+
+                    <div class="accordion-item custom-accordion-item border-0">
+
+                        <h2 class="accordion-header">
+
+                            <button class="accordion-button custom-accordion-btn" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true"
+                                aria-controls="collapseOne">
+
+                                <div class="d-flex align-items-center">
+
+                                    <span class="icon-box">
+                                        <i class="bi bi-calendar4-week"></i>
+                                    </span>
+
+                                    <span class="ms-3 fw-medium">
+                                        ¿Cómo puedo agendar una cita?
+                                    </span>
+
+                                </div>
+
+                            </button>
+
+                        </h2>
+
+                        <div id="collapseOne" class="accordion-collapse collapse show"
+                            data-bs-parent="#accordionExample">
+
+                            <div class="accordion-body">
+                                El proceso de agendamiento se realiza directamente
+                                a través del módulo de usuarios de la plataforma.
+                                La confirmación de la cita estará sujeta a la
+                                disponibilidad de horarios y a la validación de la
+                                agenda configurada previamente por el administrador
+                                del sistema.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="accordion-item custom-accordion-item border-0">
+
+                        <h2 class="accordion-header">
+
+                            <button class="accordion-button custom-accordion-btn collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
+                                aria-controls="collapseTwo">
+
+                                <div class="d-flex align-items-center">
+
+                                    <span class="icon-box">
+                                        <i class="bi bi-house-door"></i>
+                                    </span>
+
+                                    <span class="ms-3 fw-medium">
+                                        ¿Atiendes a domicilio?
+                                    </span>
+
+                                </div>
+
+                            </button>
+
+                        </h2>
+
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+
+                            <div class="accordion-body">
+                                La disponibilidad y cobertura de los servicios a
+                                domicilio dependen estrictamente de las políticas
+                                operativas activas en el sistema. El alcance de este
+                                servicio se determina según la zona de cobertura y
+                                los parámetros logísticos establecidos por la
+                                administración.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="accordion-item custom-accordion-item border-0">
+
+                        <h2 class="accordion-header">
+
+                            <button class="accordion-button custom-accordion-btn collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false"
+                                aria-controls="collapseThree">
+
+                                <div class="d-flex align-items-center">
+
+                                    <span class="icon-box">
+                                        <i class="bi bi-credit-card"></i>
+                                    </span>
+
+                                    <span class="ms-3 fw-medium">
+                                        ¿Qué métodos de pago aceptas?
+                                    </span>
+
+                                </div>
+
+                            </button>
+
+                        </h2>
+
+                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+
+                            <div class="accordion-body">
+                                El sistema está estructurado para soportar múltiples
+                                alternativas de transacción. Las pasarelas de pago y
+                                opciones exactas, efectivo, tarjetas o transferencias,
+                                dependerán netamente de la configuración comercial y
+                                los convenios que el establecimiento decida habilitar
+                                en la plataforma.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- PREGUNTA 4: ¿Qué debo llevar a la consulta? -->
+                    <div class="accordion-item custom-accordion-item border-0">
+
+                        <h2 class="accordion-header">
+
+                            <button class="accordion-button custom-accordion-btn collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false"
+                                aria-controls="collapseFour">
+
+                                <div class="d-flex align-items-center">
+
+                                    <span class="icon-box">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </span>
+
+                                    <span class="ms-3 fw-medium">
+                                        ¿Qué debo llevar a la consulta?
+                                    </span>
+
+                                </div>
+
+                            </button>
+
+                        </h2>
+
+                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+
+                            <div class="accordion-body">
+                                Los requerimientos específicos pueden variar
+                                dinámicamente según el tipo de atención solicitada.
+                                La plataforma está diseñada para emitir recordatorios
+                                y notificaciones previas con las indicaciones exactas
+                                y la documentación necesaria según el caso.
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <div id="footer-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="js/formulario.js"></script>
+
+</body>
+
+</html>

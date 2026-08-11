@@ -1,424 +1,99 @@
 :root {
-    --color-primario: #17A9A7;
+    --color-primario: #17a9a7;
     --color-primario-oscuro: #007981;
-    --color-secundario-claro: #A5D9CF;
-    --color-acento: #BAD641;
-    --color-fondo-claro: #EEF5E5;
-    --color-texto-oscuro: #223E3C;
+    --color-secundario-claro: #a5d9cf;
+    --color-acento: #bad641;
+    --color-fondo-claro: #eef5e5;
+    --color-texto-oscuro: #223e3c;
+    --color-texto-suave: #526765;
+    --color-blanco: #ffffff;
+    --color-borde: #e0e0e0;
 
     --fuente-principal: "Quicksand", sans-serif;
     --fuente-marca: "Sour Gummy", sans-serif;
 }
 
+html,
 body {
+    min-height: 100%;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font-family: var(--fuente-principal);
+    color: var(--color-texto-oscuro);
 }
 
-/* Nav bar HV */
+.contenido-principal {
+    flex: 1;
+}
+
+/* Navbar HuellaVet */
+
 .navbar-huellavet {
-    background-color: var(--color-texto-oscuro);
     padding: 0.7rem 1.5rem;
+    background-color: var(--color-texto-oscuro);
 }
 
-/* Logo y nombre */
-.navbar-huellavet .navbar-brand {
-    color: white;
-}
-
+.navbar-huellavet .navbar-brand,
 .navbar-huellavet .navbar-brand:hover {
-    color: white;
+    color: var(--color-blanco);
 }
 
-/* Nombre HuellaVet */
 #nombreMarca {
     font-family: var(--fuente-marca);
     font-size: 1.8rem;
     font-weight: 700;
-    color: white;
+    color: var(--color-blanco);
 }
 
-/* Enlaces de navegación */
 .navbar-huellavet .nav-link {
-    color: white;
-    font-weight: 600;
     margin: 0 0.5rem;
     padding: 0.5rem 0.7rem;
+    color: var(--color-blanco);
+    font-weight: 600;
 }
 
 .navbar-huellavet .nav-link:hover {
     color: var(--color-acento);
 }
 
-/* Enlace de la página actual */
 .navbar-huellavet .nav-link.active {
     color: var(--color-acento);
     border-bottom: 2px solid var(--color-acento);
 }
 
+/* Botón global para agendar */
+
 .btn-agendar {
-    background-color: var(--color-acento);
-    color: var(--color-texto-oscuro);
-    border: none;
-    font-weight: 700;
     padding: 0.6rem 1.2rem;
+    background-color: var(--color-acento);
+    border: none;
+    color: var(--color-texto-oscuro);
+    font-weight: 700;
 }
 
 .btn-agendar:hover {
-    background-color: var(--color-secundario-claro);
-    color: var(--color-texto-oscuro);
-}
-
-/* Fin Navbar HV */
-
-/* Formación & Experiencia */
-
-.vet-list,
-.vet-list-item {
-    list-style: none;
-    text-align: left;
-    padding: .5rem
-}
-
-
-
-
-h5 {
-    font-family: var(--fuente-marca);
-    color: var(--color-texto-oscuro);
-    position: relative;
-    text-align: center;
-    font-weight: 700;
-}
-
-/*Upgrade CSS Sneyder */
-
-.seccion-vet {
-    padding-top: 4rem !important;
-    padding-bottom: 4rem !important;
-}
-
-.seccion-vet .row {
-    align-items: stretch;
-}
-
-
-.seccion-vet .col-md-6 {
-    width: 100% !important;
-    max-width: 420px;
-
-    padding: 2rem !important;
-
-    background-color: var(--color-fondo-claro);
-    border: 1px solid rgba(34, 62, 60, 0.1);
-    border-radius: 18px;
-
-    box-shadow: 0 8px 22px rgba(34, 62, 60, 0.08);
-
-    transition:
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
-}
-
-.seccion-vet .col-md-6:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 14px 30px rgba(34, 62, 60, 0.14);
-}
-
-.seccion-vet h5 {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-
-    margin-bottom: 1.5rem;
-
-    font-family: var(--fuente-marca);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--color-texto-oscuro);
-}
-
-.seccion-vet h5 svg {
-    position: static;
-    transform: none;
-
-    padding: 0.7rem;
-
-    background-color: white;
-    border-radius: 50%;
-
-    font-size: 1.4rem;
-    color: var(--color-primario);
-}
-
-.seccion-vet .vet-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.seccion-vet .vet-list-item {
-    position: relative;
-
-    padding: 0.65rem 0 0.65rem 1.4rem;
-
-    text-align: left;
-    line-height: 1.5;
-    color: var(--color-texto-oscuro);
-}
-
-
-.seccion-vet .vet-list-item::before {
-    content: "";
-
-    position: absolute;
-    top: 1.2rem;
-    left: 0;
-
-    width: 8px;
-    height: 8px;
-
-    background-color: var(--color-acento);
-    border-radius: 50%;
-}
-
-@media (max-width: 767px) {
-    .seccion-vet {
-        padding-top: 2.5rem !important;
-        padding-bottom: 2.5rem !important;
-    }
-
-    .seccion-vet .col-md-6 {
-        flex: 0 1 420px;
-        width: 100% !important;
-        max-width: 420px;
-    }
-}
-
-.seccion-vet .row {
-    gap: 1.5rem;
-}
-
-/* Fin Formación & Experiencia */
-
-/* CTA / Cards Dev Team - Tatiana */
-.icono-mascota {
-    width: 20px;
-    height: 20px;
-    opacity: 0.8;
-}
-
-.banner {
-    background-color: var(--color-fondo-claro);
-    padding: 1rem;
-    border-radius: 0.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-}
-
-@media (min-width: 768px) {
-    .banner {
-        flex-direction: row;
-    }
-}
-
-.banner .btn {
     background-color: var(--color-primario-oscuro);
-    border-radius: 8px;
-    color: #fff;
+    color: var(--color-blanco);
 }
 
-.banner .text-dark {
-    color: var(--color-texto-oscuro) !important;
+/* Footer HuellaVet */
+
+#footer-container {
+    margin-top: auto;
 }
-
-.card.h-100 {
-    height: 100%;
-}
-
-/* Fin CTA / Cards Dev Team */
-
-/* Inicio mi forma de cuidar */
-.titulo-miforma {
-            display: flex;
-            justify-content: center;
-            color: #223E3C;
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        
-        .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 12px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        
-        .contenedor-icono {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-        }
-
-        
-        .circulo-icono {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background-color: #e6f2f3; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        
-        .circulo-icono i {
-            font-size: 2.5rem;
-            color: #007981;
-        }
-
-        /* Fin mi forma de cuidar */
-
-/* Inicio HERO */
-                .hero-veterinario {
-            background-color: var(--color-fondo-claro);
-        }
-
-        /*Hago que la fotografía ocupe el ancho disponible y evito que se deforme */
-        .hero-veterinario__imagen {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-        }
-
-        /*Destaco el texto introductorio con el color principal  */
-        .hero-veterinario__etiqueta {
-            color: var(--color-primario);
-            font-weight: 700;
-        }
-
-        /* Aplico la fuente especial al nombre del veterinario */
-        .hero-veterinario__titulo {
-            color: var(--color-texto-oscuro);
-            font-family: var(--fuente-marca);
-            font-size: 3rem;
-        }
-
-        /*Destaco la profesión del veterinario  */
-        .hero-veterinario__profesion {
-            color: var(--color-primario);
-            font-size: 1.25rem;
-            font-weight: 600;
-        }
-
-        /*Aumento el espacio entre líneas para facilitar la lectura */
-        .hero-veterinario__descripcion {
-            line-height: 1.7;
-        }
-
-        /*Personalizo el botón de Bootstrap con el color de acento  */
-        .btn-agendar {
-            color: var(--color-texto-oscuro);
-            background-color: var(--color-acento);
-            border-color: var(--color-acento);
-            font-weight: 700;
-        }
-
-        /*Cambio el color del botón cuando paso el cursor sobre él y este es el efecto CSS de mi sección */
-        .btn-agendar:hover {
-            color: #ffffff;
-            background-color: var(--color-primario-oscuro);
-            border-color: var(--color-primario-oscuro);
-        }
-
-        /* ESTILOS DE MI HISTORIA Aplico un fondo blanco a la sección para separarla visualmente del Hero */
-        .mi-historia {
-            background-color: #ffffff;
-        }
-
-        /* Personalizo la tarjeta de Mi historia con el fondo claro del proyecto */
-        .historia-card {
-            background-color: var(--color-fondo-claro);
-            border-radius: 16px;
-            transition: transform 0.3s;
-        }
-
-        /* Elevo ligeramente la tarjeta cuando paso el cursor sobre ella y este es otro efecto sencillo realizado con CSS */
-        .historia-card:hover {
-            transform: translateY(-5px);
-        }
-
-        /*Creo un espacio circular para mostrar el icono de la historia */
-        .historia-card__icono {
-            display: flex;
-            width: 60px;
-            height: 60px;
-            align-items: center;
-            justify-content: center;
-            color: #ffffff;
-            background-color: var(--color-primario);
-            border-radius: 50%;
-            font-size: 1.7rem;
-        }
-
-        /* Aplico la fuente especial al título Mi historia */
-        .historia-card__titulo {
-            color: var(--color-texto-oscuro);
-            font-family: var(--fuente-marca);
-            font-size: 2.5rem;
-        }
-
-        /* Mejoro la lectura de los párrafos aumentando el espacio entre líneas */
-        .historia-card__texto {
-            line-height: 1.7;
-        }
-
-        /*Ajusto la imagen decorativa para que no sea demasiado grande */
-        .historia-card__imagen {
-            max-width: 230px;
-        }
-
-        /*AJUSTE PARA CELULARES Y TABLETAS 
-        Aplico estos cambios cuando la pantalla tiene un ancho menor a 992 píxeles */
-        @media (max-width: 991px) {
-
-            /* Centro el texto del Hero cuando la imagen y la información aparecen una debajo de la otra */
-            .hero-veterinario__contenido {
-                text-align: center;
-            }
-
-            /*Reduzco el tamaño del título para que se vea bien en móvil  */
-            .hero-veterinario__titulo {
-                font-size: 2.3rem;
-            }
-
-            /* Reduzco la altura de la fotografía en dispositivos más pequeños */
-            .hero-veterinario__imagen {
-                height: 280px;
-            }
-        }
-
-/* FIN HERO */
-
-
-    /* Footer HuellaVet */
 
 .footer-huellavet {
     background-color: var(--color-fondo-claro);
     color: var(--color-texto-oscuro);
 }
-
 
 .footer-marca span {
     font-family: var(--fuente-marca);
@@ -433,33 +108,31 @@ h5 {
 
 .footer-descripcion {
     max-width: 280px;
+    color: var(--color-texto-suave);
     line-height: 1.6;
-    color: #526765;
 }
 
 .footer-titulo {
     margin-bottom: 1.25rem;
-
     font-family: var(--fuente-marca);
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--color-texto-oscuro);
 }
 
-
 .footer-columna {
-    border-left: 1px solid rgba(34, 62, 60, 0.15);
     padding-left: 2rem;
+    border-left: 1px solid rgb(34 62 60 / 15%);
 }
 
-/* Lista de contacto */
-.footer-lista {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* Información de contacto */
 
+.footer-lista {
     display: grid;
     gap: 0.9rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
 
 .footer-lista li {
@@ -482,14 +155,14 @@ h5 {
     color: var(--color-primario-oscuro);
 }
 
+/* Enlaces del footer */
 
 .footer-enlaces {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-
     display: grid;
     gap: 0.8rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
 }
 
 .footer-enlaces li::before {
@@ -508,22 +181,19 @@ h5 {
     color: var(--color-primario);
 }
 
+/* Redes sociales */
 
 .footer-red {
     width: 40px;
     height: 40px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     background-color: var(--color-primario-oscuro);
     border-radius: 50%;
-
-    color: white;
+    color: var(--color-blanco);
     font-size: 1.1rem;
     text-decoration: none;
-
     transition:
         transform 0.2s ease,
         background-color 0.2s ease;
@@ -531,22 +201,22 @@ h5 {
 
 .footer-red:hover {
     background-color: var(--color-primario);
-    color: white;
+    color: var(--color-blanco);
     transform: translateY(-3px);
 }
 
-/* Parte inferior */
 .footer-inferior {
     padding: 1rem 0;
     background-color: var(--color-texto-oscuro);
-    color: white;
+    color: var(--color-blanco);
 }
 
-/* Tablet y celular */
+/* Footer responsive */
+
 @media (max-width: 991px) {
     .footer-columna {
-        border-left: none;
         padding-left: calc(var(--bs-gutter-x) * 0.5);
+        border-left: none;
     }
 }
 
@@ -562,8 +232,8 @@ h5 {
     }
 
     .footer-descripcion {
-        margin-left: auto;
         margin-right: auto;
+        margin-left: auto;
     }
 
     .footer-lista li {
@@ -571,4 +241,28 @@ h5 {
     }
 }
 
-/* Fin Footer HuellaVet */
+/* FAQS */
+.custom-accordion-item {
+    border: 1px solid #e5ece9 !important;
+    border-radius: 20px !important;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+
+.custom-accordion-btn {
+    background-color: white !important;
+    color: #1a4a38;
+    box-shadow: none !important;
+    padding: 12px 20px;
+}
+
+.icon-box {
+    background-color: #eaf3ef;
+    color: #2b7a5f;
+    padding: 8px 12px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
