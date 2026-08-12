@@ -15,8 +15,8 @@ function iniciarServicios() {
 
     if (formulario) {
         // 2. Escuchamos el evento 'submit' (cuando el usuario hace clic en Guardar)
-        formulario.addEventListener("submit", function(evento) {
-            
+        formulario.addEventListener("submit", function (evento) {
+
             // Obtenemos los valores que el usuario escribió en cada campo
             // .value nos da el texto, y .trim() quita los espacios en blanco al inicio y al final
             const nombre = document.getElementById("nombre").value.trim();
@@ -60,13 +60,34 @@ function iniciarServicios() {
             if (hayError === true) {
                 // Cancelamos el envío del formulario para que no recargue la página
                 evento.preventDefault();
-                
+
                 // Mostramos una alerta en pantalla con todos los errores acumulados
                 alert(mensajesDeError);
             } else {
-                // Si NO hay errores, mostramos un mensajito de éxito opcional
-                // Y el formulario continuará su camino hacia Spring Boot
-                alert("Todo correcto. ¡Guardando el servicio!");
+                // Cancelamos el envío del formulario
+                evento.preventDefault();
+
+                // Creamos un objeto con los datos del servicio
+                const nuevoServicio = {
+                    id: Date.now(), // ID temporal
+                    nombre: nombre,
+                    descripcion: descripcion,
+                    precio: parseFloat(precio),
+                    duracion: parseInt(duracion)
+                };
+
+                // Obtenemos los servicios ya guardados, si no hay iniciamos con un arreglo vacío
+                let servicios = JSON.parse(localStorage.getItem("servicios")) || [];
+
+                // Añadimos el servicio nuevo al arreglo
+                servicios.push(nuevoServicio);
+
+                // Guardamos todo de nuevo en el LocalStorage del navegador
+                localStorage.setItem("servicios", JSON.stringify(servicios));
+
+                // Avisamos al usuario y limpiamos el formulario
+                alert("¡Servicio guardado exitosamente en Local Storage!");
+                formulario.reset();
             }
         });
     }
