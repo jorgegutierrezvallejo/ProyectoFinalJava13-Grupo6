@@ -1,0 +1,600 @@
+/* ========================================
+   VARIABLES
+======================================== */
+
+:root {
+    --hv-green: #b8d900;
+    --hv-green-hover: #a8c800;
+
+    --hv-dark: #17353c;
+
+    --hv-text: #293c41;
+    --hv-gray: #75858a;
+
+    --hv-white: #ffffff;
+
+    --hv-border: #e8edef;
+
+    --hv-turquoise: #71d7ca;
+
+    --hv-background: #f7f9fa;
+}
+
+
+/* ========================================
+   TOPBAR
+======================================== */
+
+.topbar {
+    width: 100%;
+    height: 86px;
+
+    padding: 0 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background-color: var(--hv-white);
+
+    border-bottom: 1px solid var(--hv-border);
+
+    position: sticky;
+    top: 0;
+
+    z-index: 900;
+}
+
+
+/* ========================================
+   IZQUIERDA
+======================================== */
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+
+    gap: 22px;
+
+    min-width: 0;
+}
+
+
+/* ========================================
+   BOTÓN HAMBURGUESA
+======================================== */
+
+.topbar-menu {
+    width: 44px;
+    height: 44px;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    background-color: transparent;
+
+    color: var(--hv-dark);
+
+    cursor: pointer;
+
+    border-radius: 8px;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.topbar-menu:hover {
+    background-color: #f1f5f5;
+}
+
+
+.topbar-menu i {
+    font-size: 34px;
+
+    line-height: 1;
+}
+
+
+/* ========================================
+   TÍTULO DE LA PÁGINA
+======================================== */
+
+.topbar-title-wrapper {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.topbar-title {
+    margin: 0;
+
+    color: var(--hv-dark);
+
+    font-family: "Quicksand", sans-serif;
+
+    font-size: 30px;
+    font-weight: 700;
+
+    line-height: 1.2;
+
+    white-space: nowrap;
+}
+
+
+.topbar-title-icon {
+    color: var(--hv-turquoise);
+
+    font-size: 29px;
+}
+
+
+/* ========================================
+   DERECHA
+======================================== */
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+
+    gap: 25px;
+}
+
+
+/* ========================================
+   AGREGAR SERVICIO
+======================================== */
+
+.topbar-add-service {
+    min-width: 215px;
+    height: 48px;
+
+    padding: 0 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    background-color: var(--hv-green);
+
+    border-radius: 12px;
+
+    color: var(--hv-dark);
+
+    font-family: "Quicksand", sans-serif;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.topbar-add-service:hover {
+    background-color: var(--hv-green-hover);
+
+    color: var(--hv-dark);
+
+    transform: translateY(-1px);
+
+    box-shadow: 0 5px 15px rgba(184, 217, 0, 0.25);
+}
+
+
+.topbar-add-service i {
+    font-size: 21px;
+}
+
+
+/* ========================================
+   NOTIFICACIONES
+======================================== */
+
+.topbar-notification {
+    width: 47px;
+    height: 47px;
+
+    position: relative;
+
+    padding: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background-color: transparent;
+
+    color: var(--hv-dark);
+
+    cursor: pointer;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.topbar-notification:hover {
+    background-color: #f3f6f6;
+}
+
+
+.topbar-notification i {
+    font-size: 27px;
+}
+
+
+.topbar-notification-badge {
+    min-width: 21px;
+    height: 21px;
+
+    padding: 0 5px;
+
+    position: absolute;
+
+    top: -1px;
+    right: -1px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: var(--hv-green);
+
+    border-radius: 50px;
+
+    color: var(--hv-dark);
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   PERFIL
+======================================== */
+
+.topbar-profile {
+    position: relative;
+}
+
+
+.topbar-profile-button {
+    padding: 4px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+
+    border: none;
+
+    border-radius: 12px;
+
+    background-color: transparent;
+
+    cursor: pointer;
+
+    transition: background-color 0.2s ease;
+}
+
+
+.topbar-profile-button:hover {
+    background-color: #f5f7f7;
+}
+
+
+/* ========================================
+   AVATAR
+======================================== */
+
+.topbar-profile-image {
+    width: 50px;
+    height: 50px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    background-color: #e8eeee;
+}
+
+
+/* ========================================
+   DATOS DEL ADMIN
+======================================== */
+
+.topbar-profile-info {
+    min-width: 155px;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 3px;
+}
+
+
+.topbar-profile-name {
+    color: var(--hv-dark);
+
+    font-family: "Quicksand", sans-serif;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+
+.topbar-profile-email {
+    color: var(--hv-gray);
+
+    font-family: "Quicksand", sans-serif;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* ========================================
+   FLECHA
+======================================== */
+
+.topbar-profile-arrow {
+    margin-left: 3px;
+
+    color: var(--hv-dark);
+
+    font-size: 16px;
+
+    transition: transform 0.25s ease;
+}
+
+
+.topbar-profile-arrow.active {
+    transform: rotate(180deg);
+}
+
+
+/* ========================================
+   DROPDOWN
+======================================== */
+
+.topbar-profile-dropdown {
+    width: 220px;
+
+    padding: 8px;
+
+    position: absolute;
+
+    right: 0;
+    top: calc(100% + 12px);
+
+    display: none;
+
+    flex-direction: column;
+
+    background-color: var(--hv-white);
+
+    border: 1px solid var(--hv-border);
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 12px 35px rgba(20, 40, 45, 0.14);
+
+    z-index: 1000;
+}
+
+
+.topbar-profile-dropdown.active {
+    display: flex;
+}
+
+
+.topbar-profile-dropdown a,
+.topbar-profile-dropdown button {
+    width: 100%;
+
+    padding: 12px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 11px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background-color: transparent;
+
+    color: var(--hv-text);
+
+    font-family: "Quicksand", sans-serif;
+
+    font-size: 14px;
+
+    text-decoration: none;
+    text-align: left;
+
+    cursor: pointer;
+}
+
+
+.topbar-profile-dropdown a:hover,
+.topbar-profile-dropdown button:hover {
+    background-color: #f2f5f5;
+}
+
+
+.topbar-profile-dropdown i {
+    font-size: 17px;
+}
+
+
+.topbar-dropdown-divider {
+    width: 100%;
+    height: 1px;
+
+    margin: 4px 0;
+
+    background-color: var(--hv-border);
+}
+
+
+/* ========================================
+   RESPONSIVE TABLET
+======================================== */
+
+@media (max-width: 1100px) {
+
+    .topbar {
+        padding: 0 20px;
+    }
+
+
+    .topbar-right {
+        gap: 13px;
+    }
+
+
+    .topbar-profile-info {
+        display: none;
+    }
+
+
+    .topbar-add-service {
+        min-width: auto;
+
+        padding: 0 18px;
+    }
+
+}
+
+
+/* ========================================
+   RESPONSIVE MOBILE
+======================================== */
+
+@media (max-width: 768px) {
+
+    .topbar {
+        height: 72px;
+
+        padding: 0 14px;
+    }
+
+
+    .topbar-left {
+        gap: 7px;
+    }
+
+
+    .topbar-right {
+        gap: 5px;
+    }
+
+
+    .topbar-title {
+        font-size: 20px;
+    }
+
+
+    .topbar-title-icon {
+        font-size: 21px;
+    }
+
+
+    .topbar-menu {
+        width: 38px;
+        height: 38px;
+    }
+
+
+    .topbar-menu i {
+        font-size: 29px;
+    }
+
+
+    .topbar-add-service {
+        min-width: 42px;
+        width: 42px;
+        height: 42px;
+
+        padding: 0;
+
+        border-radius: 10px;
+    }
+
+
+    .topbar-add-service span {
+        display: none;
+    }
+
+
+    .topbar-notification {
+        width: 42px;
+        height: 42px;
+    }
+
+
+    .topbar-profile-image {
+        width: 40px;
+        height: 40px;
+    }
+
+
+    .topbar-profile-arrow {
+        display: none;
+    }
+
+}
+
+/* ========================================
+   TOPBAR STICKY MOBILE
+======================================== */
+
+@media (max-width: 768px) {
+
+    #topbar-container {
+        position: sticky;
+
+        top: 0;
+
+        z-index: 1200;
+    }
+
+
+    .topbar {
+        position: relative;
+
+        top: auto;
+
+        width: 100%;
+
+        background-color: #ffffff;
+
+        box-shadow:
+            0 1px 8px
+            rgba(34, 62, 60, 0.08);
+    }
+
+}

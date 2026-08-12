@@ -1,0 +1,41 @@
+/* ========================================
+   VISTA ADMIN - SERVICIOS
+======================================== */
+
+.admin-page {
+    min-height: 100vh;
+
+    margin-left: 270px;
+
+    background-color: #f7faf8;
+
+    transition: margin-left 0.3s ease;
+}
+
+
+.admin-servicios {
+    width: 100%;
+
+    min-height: calc(100vh - 86px);
+
+    padding: 32px;
+}
+
+
+body.sidebar-collapsed .admin-page {
+    margin-left: 0;
+}
+
+
+@media (max-width: 768px) {
+
+    .admin-page {
+        margin-left: 0;
+    }
+
+
+    .admin-servicios {
+        padding: 20px 16px;
+    }
+
+}

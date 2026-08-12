@@ -1,0 +1,1016 @@
+/* ========================================
+   VARIABLES HUELLAVET
+======================================== */
+
+:root {
+    --color-primario: #17a9a7;
+    --color-primario-oscuro: #007981;
+
+    --color-secundario-claro: #a5d9cf;
+
+    --color-acento: #bad641;
+    --color-acento-claro: #eef5d8;
+
+    --color-fondo: #f7f9f9;
+
+    --color-blanco: #ffffff;
+
+    --color-texto: #223e3c;
+    --color-texto-secundario: #718285;
+
+    --color-borde: #e4ebea;
+
+    --sidebar-width: 255px;
+
+    --dashboard-radius: 16px;
+
+    --dashboard-shadow:
+        0 3px 12px rgba(34, 62, 60, 0.04);
+}
+
+
+/* ========================================
+   GENERAL
+======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+
+body {
+    min-height: 100vh;
+
+    background-color: var(--color-fondo);
+
+    font-family: "Quicksand", sans-serif;
+
+    color: var(--color-texto);
+}
+
+
+/* ========================================
+   CONTENEDOR DERECHO
+======================================== */
+
+.admin-page {
+    min-height: 100vh;
+
+    margin-left: var(--sidebar-width);
+
+    background-color: var(--color-fondo);
+
+    transition: margin-left 0.3s ease;
+}
+
+
+.admin-dashboard {
+    width: 100%;
+
+    padding: 30px 34px 45px;
+}
+
+
+/* ========================================
+   BIENVENIDA
+======================================== */
+
+.dashboard-welcome {
+    margin-bottom: 27px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+}
+
+
+.dashboard-welcome h2 {
+    margin: 0 0 6px;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    color: var(--color-texto);
+}
+
+
+.dashboard-welcome p {
+    margin: 0;
+
+    color: var(--color-texto-secundario);
+
+    font-size: 14px;
+}
+
+
+.dashboard-date {
+    min-height: 43px;
+
+    padding: 0 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    border: 1px solid var(--color-borde);
+
+    border-radius: 11px;
+
+    background-color: var(--color-blanco);
+
+    color: var(--color-texto-secundario);
+
+    font-size: 13px;
+}
+
+
+.dashboard-date i {
+    color: var(--color-primario);
+
+    font-size: 17px;
+}
+
+
+/* ========================================
+   ESTADÍSTICAS
+======================================== */
+
+.dashboard-stats {
+    margin-bottom: 24px;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 18px;
+}
+
+
+.dashboard-stat-card {
+    min-height: 130px;
+
+    padding: 21px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 17px;
+
+    border: 1px solid var(--color-borde);
+
+    border-radius: var(--dashboard-radius);
+
+    background-color: var(--color-blanco);
+
+    box-shadow: var(--dashboard-shadow);
+}
+
+
+.dashboard-stat-icon {
+    width: 54px;
+    height: 54px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 13px;
+
+    font-size: 23px;
+}
+
+
+.dashboard-stat-icon--green {
+    background-color: #edf6d7;
+
+    color: #8ea900;
+}
+
+
+.dashboard-stat-icon--blue {
+    background-color: #e2f5f4;
+
+    color: var(--color-primario);
+}
+
+
+.dashboard-stat-icon--purple {
+    background-color: #eee9f8;
+
+    color: #8566ac;
+}
+
+
+.dashboard-stat-icon--orange {
+    background-color: #fff1dc;
+
+    color: #dc9737;
+}
+
+
+.dashboard-stat-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.dashboard-stat-label {
+    margin-bottom: 5px;
+
+    color: var(--color-texto-secundario);
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+.dashboard-stat-info strong {
+    margin-bottom: 3px;
+
+    color: var(--color-texto);
+
+    font-size: 27px;
+    font-weight: 700;
+
+    line-height: 1;
+}
+
+
+.dashboard-stat-change,
+.dashboard-stat-secondary {
+    margin-top: 5px;
+
+    font-size: 11px;
+}
+
+
+.dashboard-stat-change {
+    color: #7d9b00;
+}
+
+
+.dashboard-stat-secondary {
+    color: #97a4a6;
+}
+
+
+/* ========================================
+   CARDS
+======================================== */
+
+.dashboard-card {
+    padding: 23px;
+
+    border: 1px solid var(--color-borde);
+
+    border-radius: var(--dashboard-radius);
+
+    background-color: var(--color-blanco);
+
+    box-shadow: var(--dashboard-shadow);
+}
+
+
+.dashboard-card-header {
+    margin-bottom: 22px;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: 16px;
+}
+
+
+.dashboard-card-header h3 {
+    margin: 0 0 4px;
+
+    color: var(--color-texto);
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+
+.dashboard-card-header p {
+    margin: 0;
+
+    color: var(--color-texto-secundario);
+
+    font-size: 12px;
+}
+
+
+.dashboard-view-all {
+    color: var(--color-primario-oscuro);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    text-decoration: none;
+
+    white-space: nowrap;
+}
+
+
+.dashboard-view-all:hover {
+    color: var(--color-primario);
+}
+
+
+/* ========================================
+   GRID PRINCIPAL
+======================================== */
+
+.dashboard-main-grid {
+    margin-bottom: 24px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.6fr)
+        minmax(340px, 0.9fr);
+
+    gap: 20px;
+}
+
+
+/* ========================================
+   CALENDARIO
+======================================== */
+
+.calendar-controls {
+    display: flex;
+
+    gap: 5px;
+}
+
+
+.calendar-controls button {
+    width: 31px;
+    height: 31px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid var(--color-borde);
+
+    border-radius: 8px;
+
+    background-color: var(--color-blanco);
+
+    color: var(--color-texto);
+
+    cursor: pointer;
+}
+
+
+.calendar-controls button:hover {
+    background-color: var(--color-fondo);
+}
+
+
+.calendar-weekdays,
+.calendar-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    text-align: center;
+}
+
+
+.calendar-weekdays {
+    margin-bottom: 8px;
+
+    color: #95a2a4;
+
+    font-size: 11px;
+    font-weight: 700;
+}
+
+
+.calendar-day {
+    width: 34px;
+    height: 34px;
+
+    margin: 3px auto;
+
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+
+    color: var(--color-texto);
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+.calendar-day--muted {
+    color: #c5cdce;
+}
+
+
+.calendar-day--today {
+    background-color: var(--color-acento);
+
+    color: var(--color-texto);
+
+    font-weight: 700;
+}
+
+
+.calendar-day--appointment:not(.calendar-day--today)::after {
+    content: "";
+
+    width: 5px;
+    height: 5px;
+
+    position: absolute;
+
+    bottom: 1px;
+
+    border-radius: 50%;
+
+    background-color: var(--color-primario);
+}
+
+
+/* ========================================
+   PRÓXIMAS CITAS
+======================================== */
+
+.appointment-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.appointment-item {
+    padding: 13px 0;
+
+    display: grid;
+
+    grid-template-columns:
+        45px 1px 1fr;
+
+    gap: 13px;
+
+    border-bottom: 1px solid #edf1f1;
+}
+
+
+.appointment-item:last-child {
+    border-bottom: none;
+}
+
+
+.appointment-time {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+}
+
+
+.appointment-time strong {
+    color: var(--color-texto);
+
+    font-size: 14px;
+}
+
+
+.appointment-time span {
+    color: var(--color-texto-secundario);
+
+    font-size: 10px;
+}
+
+
+.appointment-divider {
+    width: 1px;
+
+    background-color: var(--color-borde);
+}
+
+
+.appointment-details {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.appointment-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 8px;
+}
+
+
+.appointment-top strong {
+    font-size: 13px;
+}
+
+
+.appointment-details > span {
+    color: var(--color-texto-secundario);
+
+    font-size: 11px;
+}
+
+
+.appointment-details small {
+    color: #9ba6a8;
+
+    font-size: 10px;
+}
+
+
+.appointment-status {
+    padding: 3px 8px;
+
+    border-radius: 20px;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+.appointment-status--confirmed {
+    background-color: #eaf6e2;
+
+    color: #628a41;
+}
+
+
+.appointment-status--pending {
+    background-color: #fff1db;
+
+    color: #ad7624;
+}
+
+
+/* ========================================
+   GRID SECUNDARIO
+
+   IMPORTANTE:
+   CITAS POR SERVICIO TIENE MÁS ESPACIO
+======================================== */
+
+.dashboard-secondary-grid {
+    margin-bottom: 24px;
+
+    display: grid;
+
+    grid-template-columns:
+        minmax(0, 1.45fr)
+        minmax(360px, 0.85fr);
+
+    gap: 20px;
+}
+
+
+/* ========================================
+   CITAS POR SERVICIO
+======================================== */
+
+.service-chart-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 18px;
+}
+
+
+.service-chart-item {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+
+.service-chart-info {
+    display: flex;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    color: var(--color-texto-secundario);
+
+    font-size: 12px;
+}
+
+
+.service-chart-info strong {
+    color: var(--color-texto);
+
+    font-size: 12px;
+}
+
+
+.service-chart-track {
+    width: 100%;
+    height: 8px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background-color: #edf1f1;
+}
+
+
+.service-chart-progress {
+    height: 100%;
+
+    border-radius: inherit;
+
+    background-color: var(--color-primario);
+}
+
+
+/* ========================================
+   MIS SERVICIOS
+======================================== */
+
+.dashboard-service-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.dashboard-service-item {
+    padding: 13px 0;
+
+    display: grid;
+
+    grid-template-columns:
+        40px 1fr auto;
+
+    align-items: center;
+
+    gap: 11px;
+
+    border-bottom: 1px solid #edf1f1;
+}
+
+
+.dashboard-service-item:last-child {
+    border-bottom: none;
+}
+
+
+.dashboard-service-icon {
+    width: 38px;
+    height: 38px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 10px;
+
+    background-color: #e9f5f3;
+
+    color: var(--color-primario);
+
+    font-size: 17px;
+}
+
+
+.dashboard-service-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 2px;
+}
+
+
+.dashboard-service-info strong {
+    color: var(--color-texto);
+
+    font-size: 12px;
+}
+
+
+.dashboard-service-info span {
+    color: var(--color-texto-secundario);
+
+    font-size: 10px;
+}
+
+
+.service-active {
+    padding: 4px 8px;
+
+    border-radius: 20px;
+
+    background-color: #edf6dc;
+
+    color: #789900;
+
+    font-size: 9px;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   ACTIVIDAD RECIENTE
+======================================== */
+
+.dashboard-activity {
+    width: 100%;
+}
+
+
+.activity-list {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.activity-item {
+    min-height: 70px;
+
+    padding: 12px 0;
+
+    display: grid;
+
+    grid-template-columns:
+        43px minmax(0, 1fr) auto;
+
+    align-items: center;
+
+    gap: 14px;
+
+    border-bottom: 1px solid #edf1f1;
+}
+
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+
+.activity-icon {
+    width: 42px;
+    height: 42px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 17px;
+}
+
+
+.activity-icon--green {
+    background-color: #edf6dc;
+
+    color: #8aa600;
+}
+
+
+.activity-icon--blue {
+    background-color: #e3f5f3;
+
+    color: var(--color-primario);
+}
+
+
+.activity-icon--orange {
+    background-color: #fff1dc;
+
+    color: #d48d29;
+}
+
+
+.activity-icon--purple {
+    background-color: #f0eaf8;
+
+    color: #8060aa;
+}
+
+
+.activity-info {
+    min-width: 0;
+}
+
+
+.activity-info p {
+    margin: 0 0 3px;
+
+    color: var(--color-texto);
+
+    font-size: 12px;
+}
+
+
+.activity-info span {
+    color: var(--color-texto-secundario);
+
+    font-size: 10px;
+}
+
+
+.activity-item time {
+    color: #99a5a7;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+
+/* ========================================
+   SIDEBAR CERRADO
+
+   ESTO NO CAMBIA SU DISEÑO.
+   SOLO LO ESCONDE CUANDO SE USA
+   LA HAMBURGUESA.
+======================================== */
+
+body.sidebar-collapsed .admin-page {
+    margin-left: 0;
+}
+
+
+body.sidebar-collapsed .hv-sidebar {
+    transform: translateX(-100%);
+}
+
+
+/* ========================================
+   OVERLAY
+======================================== */
+
+.admin-sidebar-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    background-color: rgba(20, 40, 40, 0.35);
+
+    z-index: 940;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1200px) {
+
+    .dashboard-stats {
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .dashboard-secondary-grid {
+        grid-template-columns:
+            1fr;
+    }
+
+}
+
+
+@media (max-width: 992px) {
+
+    .admin-page {
+        margin-left: 0;
+    }
+
+
+    .hv-sidebar {
+        transform: translateX(-100%);
+
+        transition: transform 0.3s ease;
+    }
+
+
+    body.sidebar-mobile-open .hv-sidebar {
+        transform: translateX(0);
+    }
+
+
+    body.sidebar-mobile-open
+    .admin-sidebar-overlay {
+        display: block;
+    }
+
+
+    .dashboard-main-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 768px) {
+
+    .admin-dashboard {
+        padding:
+            22px 16px 35px;
+    }
+
+
+    .dashboard-welcome {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+
+
+    .dashboard-stat-card {
+        min-height: 110px;
+    }
+
+
+    .dashboard-card {
+        padding: 18px;
+    }
+
+
+    .activity-item {
+        grid-template-columns:
+            40px 1fr;
+    }
+
+
+    .activity-item time {
+        grid-column: 2;
+
+        margin-top: -6px;
+    }
+
+}
+
+
+@media (max-width: 480px) {
+
+    .dashboard-welcome h2 {
+        font-size: 21px;
+    }
+
+
+    .calendar-day {
+        width: 29px;
+        height: 29px;
+
+        font-size: 10px;
+    }
+
+
+    .dashboard-service-item {
+        grid-template-columns:
+            38px 1fr;
+    }
+
+
+    .service-active {
+        grid-column: 2;
+
+        justify-self: start;
+    }
+
+}
