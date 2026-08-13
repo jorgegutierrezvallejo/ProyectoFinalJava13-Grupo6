@@ -266,3 +266,285 @@ body {
     justify-content: center;
 }
 
+/* --- POPUP LOGIN Y REGISTRO--- */
+.cursor-pointer {
+  cursor: pointer;
+}
+.hv-modal-logo img {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+}
+.hv-modal-marca {
+    font-family: var(--fuente-marca);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+.hv-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.hv-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hv-modal-card {
+  background: var(--color-blanco);
+  padding: 28px;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  position: relative;
+  box-shadow:
+    0 15px 40px rgba(34, 62, 60, 0.25);
+  overflow-y: auto;
+  box-sizing: border-box;
+  font-family: var(--fuente-principal);
+}
+
+.hv-btn-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 25px;
+  cursor: pointer;
+  color: var(--color-texto-suave);
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.hv-btn-close:hover {
+  color: var(--color-primario-oscuro);
+}
+
+.hv-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--color-secundario-claro);
+  margin-bottom: 22px;
+}
+
+.hv-tab-label {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  cursor: pointer;
+  font-family: var(--fuente-principal);
+  font-weight: 600;
+  color: var(--color-texto-suave);
+  transition: all 0.2s ease;
+}
+
+#hv-tab-login:checked~.hv-tabs label[for="hv-tab-login"],
+#hv-tab-register:checked~.hv-tabs label[for="hv-tab-register"] {
+  color: var(--color-primario-oscuro);
+  border-bottom: 3px solid var(--color-primario);
+  margin-bottom: -2px;
+}
+
+.hv-form {
+  display: none;
+}
+
+#hv-tab-login:checked~.hv-form-login {
+  display: block;
+}
+
+#hv-tab-register:checked~.hv-form-register {
+  display: block;
+}
+
+.extra-small {
+  font-size: 0.75rem;
+}
+
+.btn-sesion {
+  background-color: var(--color-primario-oscuro);
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.btn-sesion:hover {
+  background-color: var(--color-primario);
+}
+
+/* =================================
+              LOGIN
+================================= */
+.hv-form-login {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.hv-form-login .form-control {
+  min-height: 42px;
+  border-radius: 8px;
+  font-family: var(--fuente-principal);
+  color: var(--color-texto-oscuro);
+  border: 1px solid var(--color-borde);
+}
+
+.hv-form-login .form-control:focus {
+  border-color: var(--color-primario);
+  box-shadow:
+    0 0 0 0.15rem rgba(23, 169, 167, 0.20);
+}
+
+.hv-form-login .form-check-label {
+  font-family: var(--fuente-principal);
+  color: var(--color-texto-suave);
+}
+
+.hv-form-login a {
+  color: var(--color-primario-oscuro) !important;
+  font-family: var(--fuente-principal);
+  font-weight: 600;
+}
+
+.hv-form-login .btn-sesion {
+  width: 100%;
+  background-color: var(--color-primario-oscuro);
+  color: var(--color-blanco);
+  border: none;
+  min-height: 42px;
+  font-family: var(--fuente-principal);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.hv-form-login .btn-sesion:hover {
+  background-color: var(--color-primario);
+  transform: translateY(-1px);
+}
+
+.hv-modal-logo {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  margin-bottom: 8px;
+}
+.boton-login {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.boton-login .btn-sesion {
+    width: 250px;
+}
+/* ================================
+               REGISTRO
+================================ */
+.register-datos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 20px;
+}
+
+.campo-formulario {
+  margin-bottom: 15px !important;
+}
+
+.register-datos .form-label {
+  color: var(--color-texto-oscuro);
+  font-family: var(--fuente-principal);
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.register-datos .form-control,
+.register-datos .form-select {
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  font-family: var(--fuente-principal);
+  color: var(--color-texto-oscuro);
+  min-height: 40px;
+}
+
+.register-datos .form-control:focus,
+.register-datos .form-select:focus {
+  border-color: var(--color-primario);
+  box-shadow:
+    0 0 0 0.15rem rgba(23, 169, 167, 0.20);
+}
+
+.register-datos .form-control::placeholder {
+  color: #9aaaa7;
+}
+
+.condiciones-formulario {
+  grid-column: 1 / -1;
+  margin-bottom: 8px;
+}
+
+.condiciones-formulario a {
+  color: var(--color-primario-oscuro);
+  font-weight: 600;
+}
+
+.boton-registro {
+  display: flex;
+  justify-content: center;
+  grid-column: 1 / -1;
+  margin-top: 10px;
+}
+
+.boton-registro button {
+  width: 250px;
+  background-color: var(--color-primario-oscuro);
+  border-color: var(--color-primario-oscuro);
+  border-radius: 8px;
+  padding: 10px;
+  font-family: var(--fuente-principal);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.boton-registro button:hover {
+  background-color: var(--color-primario);
+  border-color: var(--color-primario);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+  .hv-modal-card {
+    padding: 22px 18px;
+    max-height: 92vh;
+  }
+
+  .register-datos {
+    grid-template-columns: 1fr;
+    column-gap: 0;
+  }
+
+  .condiciones-formulario {
+    grid-column: auto;
+  }
+
+  .boton-registro {
+    grid-column: auto;
+  }
+}
