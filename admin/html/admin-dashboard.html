@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Resumen | HuellaVet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/admin-sidebar.css">
+    <link rel="stylesheet" href="../css/top-bar.css">
+    <link rel="stylesheet" href="../css/admin-dashboard.css">
+
+</head>
+
+
+<body data-page="dashboard" data-page-title="Resumen">
+
+
+    <!-- SIDEBAR -->
+
+    <div id="sidebar-container"></div>
+
+
+    <!-- Overlay mobile -->
+    <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
+
+
+    <!-- CONTENIDO -->
+
+    <div class="admin-page">
+
+
+        <!-- TOPBAR -->
+
+        <div id="topbar-container"></div>
+
+
+
+        <!-- DASHBOARD -->
+
+        <main class="admin-dashboard">
+
+
+            <!-- ENCABEZADO -->
+
+            <section class="dashboard-welcome">
+
+                <div>
+
+                    <h2>
+                        Hola, Administrador 👋
+                    </h2>
+
+                    <p>
+                        Aquí tienes un resumen de la actividad de HuellaVet.
+                    </p>
+
+                </div>
+
+
+                <div class="dashboard-date">
+
+                    <i class="bi bi-calendar3"></i>
+
+                    <span id="currentDate">
+                        12 de agosto de 2026
+                    </span>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- ========================================
+                 ESTADÍSTICAS
+            ========================================= -->
+
+            <section class="dashboard-stats">
+
+
+                <!-- CITAS HOY -->
+
+                <article class="dashboard-stat-card">
+
+                    <div class="dashboard-stat-icon dashboard-stat-icon--green">
+
+                        <i class="bi bi-calendar-check"></i>
+
+                    </div>
+
+
+                    <div class="dashboard-stat-info">
+
+                        <span class="dashboard-stat-label">
+                            Citas hoy
+                        </span>
+
+                        <strong>
+                            8
+                        </strong>
+
+                        <span class="dashboard-stat-change">
+                            <i class="bi bi-arrow-up"></i>
+                            2 más que ayer
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- CITAS ESTA SEMANA -->
+
+                <article class="dashboard-stat-card">
+
+                    <div class="dashboard-stat-icon dashboard-stat-icon--blue">
+
+                        <i class="bi bi-calendar-week"></i>
+
+                    </div>
+
+
+                    <div class="dashboard-stat-info">
+
+                        <span class="dashboard-stat-label">
+                            Citas esta semana
+                        </span>
+
+                        <strong>
+                            32
+                        </strong>
+
+                        <span class="dashboard-stat-secondary">
+                            24 completadas
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- USUARIOS -->
+
+                <article class="dashboard-stat-card">
+
+                    <div class="dashboard-stat-icon dashboard-stat-icon--purple">
+
+                        <i class="bi bi-people"></i>
+
+                    </div>
+
+
+                    <div class="dashboard-stat-info">
+
+                        <span class="dashboard-stat-label">
+                            Usuarios
+                        </span>
+
+                        <strong>
+                            126
+                        </strong>
+
+                        <span class="dashboard-stat-change">
+                            <i class="bi bi-arrow-up"></i>
+                            8 este mes
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- SERVICIOS -->
+
+                <article class="dashboard-stat-card">
+
+                    <div class="dashboard-stat-icon dashboard-stat-icon--orange">
+
+                        <i class="bi bi-heart-pulse"></i>
+
+                    </div>
+
+
+                    <div class="dashboard-stat-info">
+
+                        <span class="dashboard-stat-label">
+                            Servicios activos
+                        </span>
+
+                        <strong>
+                            6
+                        </strong>
+
+                        <span class="dashboard-stat-secondary">
+                            Disponibles para reserva
+                        </span>
+
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+
+            <!-- ========================================
+                 CALENDARIO + PRÓXIMAS CITAS
+            ========================================= -->
+
+            <section class="dashboard-main-grid">
+
+
+                <!-- CALENDARIO -->
+
+                <article class="dashboard-card dashboard-calendar-card">
+
+                    <div class="dashboard-card-header">
+
+                        <div>
+
+                            <h3>
+                                Calendario
+                            </h3>
+
+                            <p>
+                                Agosto 2026
+                            </p>
+
+                        </div>
+
+
+                        <div class="calendar-controls">
+
+                            <button type="button" aria-label="Mes anterior">
+                                <i class="bi bi-chevron-left"></i>
+                            </button>
+
+                            <button type="button" aria-label="Mes siguiente">
+                                <i class="bi bi-chevron-right"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="calendar-weekdays">
+
+                        <span>Lun</span>
+                        <span>Mar</span>
+                        <span>Mié</span>
+                        <span>Jue</span>
+                        <span>Vie</span>
+                        <span>Sáb</span>
+                        <span>Dom</span>
+
+                    </div>
+
+
+
+                    <div class="calendar-grid">
+
+                        <span class="calendar-day calendar-day--muted">27</span>
+                        <span class="calendar-day calendar-day--muted">28</span>
+                        <span class="calendar-day calendar-day--muted">29</span>
+                        <span class="calendar-day calendar-day--muted">30</span>
+                        <span class="calendar-day calendar-day--muted">31</span>
+
+                        <span class="calendar-day">1</span>
+                        <span class="calendar-day">2</span>
+
+                        <span class="calendar-day">3</span>
+                        <span class="calendar-day">4</span>
+                        <span class="calendar-day calendar-day--appointment">5</span>
+                        <span class="calendar-day">6</span>
+                        <span class="calendar-day calendar-day--appointment">7</span>
+                        <span class="calendar-day">8</span>
+                        <span class="calendar-day">9</span>
+
+                        <span class="calendar-day">10</span>
+                        <span class="calendar-day calendar-day--appointment">11</span>
+
+                        <span class="calendar-day calendar-day--today">
+                            12
+                        </span>
+
+                        <span class="calendar-day calendar-day--appointment">13</span>
+                        <span class="calendar-day">14</span>
+                        <span class="calendar-day calendar-day--appointment">15</span>
+                        <span class="calendar-day">16</span>
+
+                        <span class="calendar-day">17</span>
+                        <span class="calendar-day">18</span>
+                        <span class="calendar-day calendar-day--appointment">19</span>
+                        <span class="calendar-day">20</span>
+                        <span class="calendar-day">21</span>
+                        <span class="calendar-day">22</span>
+                        <span class="calendar-day">23</span>
+
+                        <span class="calendar-day">24</span>
+                        <span class="calendar-day calendar-day--appointment">25</span>
+                        <span class="calendar-day">26</span>
+                        <span class="calendar-day">27</span>
+                        <span class="calendar-day">28</span>
+                        <span class="calendar-day">29</span>
+                        <span class="calendar-day">30</span>
+
+                        <span class="calendar-day">31</span>
+
+                        <span class="calendar-day calendar-day--muted">1</span>
+                        <span class="calendar-day calendar-day--muted">2</span>
+                        <span class="calendar-day calendar-day--muted">3</span>
+                        <span class="calendar-day calendar-day--muted">4</span>
+                        <span class="calendar-day calendar-day--muted">5</span>
+                        <span class="calendar-day calendar-day--muted">6</span>
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- PRÓXIMAS CITAS -->
+
+                <article class="dashboard-card dashboard-appointments">
+
+                    <div class="dashboard-card-header">
+
+                        <div>
+
+                            <h3>
+                                Próximas citas
+                            </h3>
+
+                            <p>
+                                Para hoy
+                            </p>
+
+                        </div>
+
+
+                        <a href="#" class="dashboard-view-all">
+                            Ver todas
+                        </a>
+
+                    </div>
+
+
+
+                    <div class="appointment-list">
+
+
+                        <div class="appointment-item">
+
+                            <div class="appointment-time">
+
+                                <strong>
+                                    9:00
+                                </strong>
+
+                                <span>
+                                    AM
+                                </span>
+
+                            </div>
+
+
+                            <div class="appointment-divider"></div>
+
+
+                            <div class="appointment-details">
+
+                                <div class="appointment-top">
+
+                                    <strong>
+                                        Max
+                                    </strong>
+
+                                    <span class="appointment-status appointment-status--confirmed">
+                                        Confirmada
+                                    </span>
+
+                                </div>
+
+
+                                <span>
+                                    Consulta general
+                                </span>
+
+                                <small>
+                                    Laura Gómez
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="appointment-item">
+
+                            <div class="appointment-time">
+
+                                <strong>
+                                    10:30
+                                </strong>
+
+                                <span>
+                                    AM
+                                </span>
+
+                            </div>
+
+
+                            <div class="appointment-divider"></div>
+
+
+                            <div class="appointment-details">
+
+                                <div class="appointment-top">
+
+                                    <strong>
+                                        Luna
+                                    </strong>
+
+                                    <span class="appointment-status appointment-status--pending">
+                                        Pendiente
+                                    </span>
+
+                                </div>
+
+
+                                <span>
+                                    Vacunación
+                                </span>
+
+                                <small>
+                                    Carlos Rodríguez
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="appointment-item">
+
+                            <div class="appointment-time">
+
+                                <strong>
+                                    1:00
+                                </strong>
+
+                                <span>
+                                    PM
+                                </span>
+
+                            </div>
+
+
+                            <div class="appointment-divider"></div>
+
+
+                            <div class="appointment-details">
+
+                                <div class="appointment-top">
+
+                                    <strong>
+                                        Toby
+                                    </strong>
+
+                                    <span class="appointment-status appointment-status--confirmed">
+                                        Confirmada
+                                    </span>
+
+                                </div>
+
+
+                                <span>
+                                    Desparasitación
+                                </span>
+
+                                <small>
+                                    Andrea Pérez
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="appointment-item">
+
+                            <div class="appointment-time">
+
+                                <strong>
+                                    3:30
+                                </strong>
+
+                                <span>
+                                    PM
+                                </span>
+
+                            </div>
+
+
+                            <div class="appointment-divider"></div>
+
+
+                            <div class="appointment-details">
+
+                                <div class="appointment-top">
+
+                                    <strong>
+                                        Coco
+                                    </strong>
+
+                                    <span class="appointment-status appointment-status--confirmed">
+                                        Confirmada
+                                    </span>
+
+                                </div>
+
+
+                                <span>
+                                    Control veterinario
+                                </span>
+
+                                <small>
+                                    Daniela Torres
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+
+            <!-- ========================================
+                 CITAS POR SERVICIO + SERVICIOS
+            ========================================= -->
+
+            <section class="dashboard-secondary-grid">
+
+
+                <!-- CITAS POR SERVICIO -->
+
+                <article class="dashboard-card dashboard-services-chart">
+
+                    <div class="dashboard-card-header">
+
+                        <div>
+
+                            <h3>
+                                Citas por servicio
+                            </h3>
+
+                            <p>
+                                Distribución durante este mes
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="service-chart-list">
+
+
+                        <div class="service-chart-item">
+
+                            <div class="service-chart-info">
+
+                                <span>
+                                    Consulta general
+                                </span>
+
+                                <strong>
+                                    42
+                                </strong>
+
+                            </div>
+
+
+                            <div class="service-chart-track">
+
+                                <div class="service-chart-progress" style="width: 90%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="service-chart-item">
+
+                            <div class="service-chart-info">
+
+                                <span>
+                                    Vacunación
+                                </span>
+
+                                <strong>
+                                    31
+                                </strong>
+
+                            </div>
+
+
+                            <div class="service-chart-track">
+
+                                <div class="service-chart-progress" style="width: 72%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="service-chart-item">
+
+                            <div class="service-chart-info">
+
+                                <span>
+                                    Desparasitación
+                                </span>
+
+                                <strong>
+                                    24
+                                </strong>
+
+                            </div>
+
+
+                            <div class="service-chart-track">
+
+                                <div class="service-chart-progress" style="width: 58%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="service-chart-item">
+
+                            <div class="service-chart-info">
+
+                                <span>
+                                    Control veterinario
+                                </span>
+
+                                <strong>
+                                    18
+                                </strong>
+
+                            </div>
+
+
+                            <div class="service-chart-track">
+
+                                <div class="service-chart-progress" style="width: 44%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <div class="service-chart-item">
+
+                            <div class="service-chart-info">
+
+                                <span>
+                                    Consulta especializada
+                                </span>
+
+                                <strong>
+                                    12
+                                </strong>
+
+                            </div>
+
+
+                            <div class="service-chart-track">
+
+                                <div class="service-chart-progress" style="width: 32%;"></div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </article>
+
+
+
+                <!-- MIS SERVICIOS -->
+
+                <article class="dashboard-card">
+
+                    <div class="dashboard-card-header">
+
+                        <div>
+
+                            <h3>
+                                Mis servicios
+                            </h3>
+
+                            <p>
+                                Servicios disponibles
+                            </p>
+
+                        </div>
+
+
+                        <a href="#" class="dashboard-view-all">
+                            Ver todos
+                        </a>
+
+                    </div>
+
+
+
+                    <div class="dashboard-service-list">
+
+
+                        <div class="dashboard-service-item">
+
+                            <div class="dashboard-service-icon">
+
+                                <i class="bi bi-heart-pulse"></i>
+
+                            </div>
+
+
+                            <div class="dashboard-service-info">
+
+                                <strong>
+                                    Consulta general
+                                </strong>
+
+                                <span>
+                                    30 min · $60.000
+                                </span>
+
+                            </div>
+
+
+                            <span class="service-active">
+                                Activo
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="dashboard-service-item">
+
+                            <div class="dashboard-service-icon">
+
+                                <i class="bi bi-shield-plus"></i>
+
+                            </div>
+
+
+                            <div class="dashboard-service-info">
+
+                                <strong>
+                                    Vacunación
+                                </strong>
+
+                                <span>
+                                    20 min · $45.000
+                                </span>
+
+                            </div>
+
+
+                            <span class="service-active">
+                                Activo
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="dashboard-service-item">
+
+                            <div class="dashboard-service-icon">
+
+                                <i class="bi bi-capsule"></i>
+
+                            </div>
+
+
+                            <div class="dashboard-service-info">
+
+                                <strong>
+                                    Desparasitación
+                                </strong>
+
+                                <span>
+                                    20 min · $40.000
+                                </span>
+
+                            </div>
+
+
+                            <span class="service-active">
+                                Activo
+                            </span>
+
+                        </div>
+
+
+
+                        <div class="dashboard-service-item">
+
+                            <div class="dashboard-service-icon">
+
+                                <i class="bi bi-clipboard2-pulse"></i>
+
+                            </div>
+
+
+                            <div class="dashboard-service-info">
+
+                                <strong>
+                                    Control veterinario
+                                </strong>
+
+                                <span>
+                                    30 min · $50.000
+                                </span>
+
+                            </div>
+
+
+                            <span class="service-active">
+                                Activo
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </article>
+
+
+            </section>
+
+
+
+            <!-- ========================================
+                 ACTIVIDAD RECIENTE
+            ========================================= -->
+
+            <section class="dashboard-card dashboard-activity">
+
+                <div class="dashboard-card-header">
+
+                    <div>
+
+                        <h3>
+                            Actividad reciente
+                        </h3>
+
+                        <p>
+                            Últimos movimientos relacionados con citas
+                        </p>
+
+                    </div>
+
+
+                    <a href="#" class="dashboard-view-all">
+                        Ver actividad
+                    </a>
+
+                </div>
+
+
+
+                <div class="activity-list">
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon activity-icon--green">
+
+                            <i class="bi bi-calendar-check"></i>
+
+                        </div>
+
+
+                        <div class="activity-info">
+
+                            <p>
+                                <strong>Laura Gómez</strong>
+                                agendó una cita para
+                                <strong>Max</strong>
+                            </p>
+
+                            <span>
+                                Consulta general · Hoy, 9:00 AM
+                            </span>
+
+                        </div>
+
+
+                        <time>
+                            Hace 12 min
+                        </time>
+
+                    </div>
+
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon activity-icon--blue">
+
+                            <i class="bi bi-check2-circle"></i>
+
+                        </div>
+
+
+                        <div class="activity-info">
+
+                            <p>
+                                La cita de
+                                <strong>Luna</strong>
+                                fue confirmada
+                            </p>
+
+                            <span>
+                                Vacunación · Hoy, 10:30 AM
+                            </span>
+
+                        </div>
+
+
+                        <time>
+                            Hace 35 min
+                        </time>
+
+                    </div>
+
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon activity-icon--orange">
+
+                            <i class="bi bi-arrow-repeat"></i>
+
+                        </div>
+
+
+                        <div class="activity-info">
+
+                            <p>
+                                La cita de
+                                <strong>Toby</strong>
+                                fue reprogramada
+                            </p>
+
+                            <span>
+                                Nueva hora: Hoy, 1:00 PM
+                            </span>
+
+                        </div>
+
+
+                        <time>
+                            Hace 1 h
+                        </time>
+
+                    </div>
+
+
+
+                    <div class="activity-item">
+
+                        <div class="activity-icon activity-icon--purple">
+
+                            <i class="bi bi-calendar-plus"></i>
+
+                        </div>
+
+
+                        <div class="activity-info">
+
+                            <p>
+                                <strong>Daniela Torres</strong>
+                                agendó una nueva cita para
+                                <strong>Coco</strong>
+                            </p>
+
+                            <span>
+                                Control veterinario · Hoy, 3:30 PM
+                            </span>
+
+                        </div>
+
+
+                        <time>
+                            Hace 2 h
+                        </time>
+
+                    </div>
+
+
+                </div>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+
+
+    <!-- Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    <!-- Sidebar EXISTENTE -->
+    <script src="../js/admin-sidebar.js"></script>
+
+
+    <!-- Topbar -->
+    <script src="../js/topbar.js"></script>
+
+
+    <!-- Dashboard -->
+    <script src="../js/admin-dashboard.js"></script>
+
+
+</body>
+
+</html>

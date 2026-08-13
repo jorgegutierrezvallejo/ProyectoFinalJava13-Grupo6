@@ -195,25 +195,17 @@
 /* Desarrolladores y banner */
 
 .icono-mascota {
-    width: 20px;
-    height: 20px;
-    opacity: 0.8;
+    width: 45px;
+    height: 45px;
+    opacity: 1;
+    object-fit: contain;
 }
 
 .banner {
     background-color: var(--color-fondo-claro);
 }
 
-.banner .btn {
-    background-color: var(--color-primario-oscuro);
-    border-radius: 8px;
-    color: var(--color-blanco);
-}
 
-.banner .btn:hover {
-    background-color: var(--color-primario);
-    color: var(--color-blanco);
-}
 
 .banner .text-dark {
     color: var(--color-texto-oscuro) !important;
@@ -246,4 +238,16 @@
         width: 100% !important;
         max-width: 420px;
     }
+}
+
+/* LinkedIn Link */
+.linkedin-link {
+    color: var(--color-primario-oscuro);
+    transition: color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+}
+
+.linkedin-link:hover {
+    color: var(--color-primario);
+    transform: scale(1.15);
 }

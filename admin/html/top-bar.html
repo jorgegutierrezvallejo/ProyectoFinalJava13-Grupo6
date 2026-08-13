@@ -1,0 +1,135 @@
+<header class="topbar">
+
+    <!-- =========================
+         LADO IZQUIERDO
+    ========================== -->
+    <div class="topbar-left">
+
+        <button
+            type="button"
+            class="topbar-menu"
+            id="topbarMenuButton"
+            aria-label="Abrir o cerrar menú"
+        >
+            <i class="bi bi-list"></i>
+        </button>
+
+
+        <div class="topbar-title-wrapper">
+
+            <h1
+                class="topbar-title"
+                id="topbarPageTitle"
+            >
+                Resumen
+            </h1>
+
+            <i class="bi bi-heart-pulse topbar-title-icon"></i>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         LADO DERECHO
+    ========================== -->
+    <div class="topbar-right">
+
+        <!-- AGREGAR SERVICIO -->
+        <a
+            href="./agregar-servicio.html"
+            class="topbar-add-service"
+        >
+
+            <i class="bi bi-plus-lg"></i>
+
+            <span>Agregar servicio</span>
+
+        </a>
+
+
+        <!-- NOTIFICACIONES -->
+        <button
+            type="button"
+            class="topbar-notification"
+            id="notificationButton"
+            aria-label="Notificaciones"
+        >
+
+            <i class="bi bi-bell"></i>
+
+            <span class="topbar-notification-badge">
+                2
+            </span>
+
+        </button>
+
+
+        <!-- PERFIL -->
+        <div class="topbar-profile">
+
+            <button
+                type="button"
+                class="topbar-profile-button"
+                id="profileButton"
+            >
+
+                <img
+                    src="../../img/HuellaVet-icon.svg"
+                    alt="Administrador"
+                    class="topbar-profile-image"
+                >
+
+
+                <div class="topbar-profile-info">
+
+                    <span class="topbar-profile-name">
+                        Administrador
+                    </span>
+
+                    <span class="topbar-profile-email">
+                        admin@huellavet.com
+                    </span>
+
+                </div>
+
+
+                <i
+                    class="bi bi-chevron-down topbar-profile-arrow"
+                    id="profileArrow"
+                ></i>
+
+            </button>
+
+
+            <!-- DROPDOWN -->
+            <div
+                class="topbar-profile-dropdown"
+                id="profileDropdown"
+            >
+
+                <a href="#">
+                    <i class="bi bi-person"></i>
+                    Mi perfil
+                </a>
+
+                <a href="#">
+                    <i class="bi bi-gear"></i>
+                    Configuración
+                </a>
+
+                <div class="topbar-dropdown-divider"></div>
+
+                <button type="button">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Cerrar sesión
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>

@@ -1,0 +1,420 @@
+/* ========================================
+   VARIABLES HUELLAVET
+======================================== */
+
+:root {
+    --color-primario: #17a9a7;
+    --color-primario-oscuro: #007981;
+    --color-secundario-claro: #a5d9cf;
+    --color-acento: #bad641;
+    --color-fondo-claro: #eef5e5;
+    --color-texto-oscuro: #223e3c;
+    --color-borde: #d8e3df;
+
+    --fuente-principal: "Quicksand", sans-serif;
+    --fuente-marca: "Sour Gummy", sans-serif;
+
+    --sidebar-width: 270px;
+}
+
+
+/* ========================================
+   SIDEBAR
+======================================== */
+
+.hv-sidebar {
+    width: var(--sidebar-width);
+    min-height: 100vh;
+
+    padding: 2rem 1.5rem;
+
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--color-texto-oscuro);
+
+    color: #ffffff;
+
+    z-index: 1000;
+
+    transition: transform 0.3s ease;
+}
+
+
+/* ========================================
+   MARCA HUELLAVET
+======================================== */
+
+.hv-sidebar__marca {
+    display: flex;
+    align-items: center;
+
+    gap: 0.85rem;
+
+    padding: 0 0.5rem;
+}
+
+
+/* LOGO */
+
+.hv-sidebar__logo {
+    width: 45px;
+    height: 45px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    transform: scale(1.25);
+}
+
+
+/* NOMBRE */
+
+.hv-sidebar__marca span {
+    font-family: var(--fuente-marca);
+
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+
+/* ========================================
+   MENÚ
+======================================== */
+
+.hv-sidebar__menu {
+    display: flex;
+    flex-direction: column;
+
+    gap: 0.6rem;
+
+    margin-top: 3rem;
+}
+
+
+/* ========================================
+   LINKS
+======================================== */
+
+.hv-sidebar__link {
+    padding: 0.95rem 1rem;
+
+    display: flex;
+    align-items: center;
+
+    gap: 1rem;
+
+    border-radius: 0.75rem;
+
+    color: #ffffff;
+
+    font-size: 1rem;
+
+    text-decoration: none;
+
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+
+/* ICONOS */
+
+.hv-sidebar__link i {
+    width: 1.5rem;
+
+    font-size: 1.25rem;
+
+    text-align: center;
+}
+
+
+/* HOVER */
+
+.hv-sidebar__link:hover {
+    color: #ffffff;
+
+    background-color:
+        rgba(255, 255, 255, 0.08);
+}
+
+
+/* ========================================
+   OPCIÓN ACTIVA
+======================================== */
+
+.hv-sidebar__link--activo {
+    color: var(--color-texto-oscuro);
+
+    background-color: var(--color-acento);
+
+    font-weight: 700;
+}
+
+
+/* MANTIENE EL ACTIVO AL HACER HOVER */
+
+.hv-sidebar__link--activo:hover {
+    color: var(--color-texto-oscuro);
+
+    background-color: var(--color-acento);
+}
+
+
+/* ========================================
+   SOPORTE
+======================================== */
+
+.hv-sidebar__soporte {
+    margin-top: auto;
+
+    padding: 1.25rem;
+
+    border-radius: 0.85rem;
+
+    background-color:
+        rgba(255, 255, 255, 0.06);
+}
+
+
+/* TÍTULO SOPORTE */
+
+.hv-sidebar__soporte h3 {
+    margin-bottom: 0.5rem;
+
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+
+/* TEXTO SOPORTE */
+
+.hv-sidebar__soporte p {
+    margin-bottom: 1rem;
+
+    color: var(--color-secundario-claro);
+
+    font-size: 0.9rem;
+
+    line-height: 1.4;
+}
+
+
+/* BOTÓN SOPORTE */
+
+.hv-sidebar__boton-soporte {
+    padding: 0.75rem;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.5rem;
+
+    border-radius: 0.6rem;
+
+    background-color: var(--color-acento);
+
+    color: var(--color-texto-oscuro);
+
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+
+.hv-sidebar__boton-soporte:hover {
+    color: var(--color-texto-oscuro);
+
+    background-color: var(--color-acento);
+}
+
+
+/* ========================================
+   SIDEBAR OCULTO DESKTOP
+   Lo usa la hamburguesa de la Topbar
+======================================== */
+
+body.sidebar-collapsed .hv-sidebar {
+    transform: translateX(-100%);
+}
+
+
+/*
+   El contenido del dashboard recupera
+   el espacio cuando ocultamos el sidebar
+*/
+
+body.sidebar-collapsed .admin-page {
+    margin-left: 0;
+}
+
+
+/* ========================================
+   OVERLAY
+======================================== */
+
+.hv-sidebar__overlay {
+    position: fixed;
+
+    inset: 0;
+
+    display: none;
+
+    background-color:
+        rgba(20, 40, 40, 0.4);
+
+    z-index: 950;
+}
+
+
+/* ========================================
+   TABLET
+======================================== */
+
+@media (max-width: 992px) {
+
+    .hv-sidebar {
+        width: 220px;
+
+        padding: 1.5rem 1rem;
+    }
+
+
+    .hv-sidebar__marca span {
+        font-size: 1.5rem;
+    }
+
+
+    .hv-sidebar__link {
+        font-size: 0.95rem;
+    }
+
+}
+
+/* ========================================
+   MOBILE
+======================================== */
+
+@media (max-width: 768px) {
+
+    .hv-sidebar {
+        width: 270px;
+        height: 100dvh;
+        min-height: 100dvh;
+
+        padding: 1.5rem 1rem;
+
+        position: fixed;
+
+        top: 0;
+        left: 0;
+
+        transform: translateX(-100%);
+
+        transition: transform 0.3s ease;
+
+        z-index: 1300;
+
+        overflow-y: auto;
+    }
+
+
+    body.sidebar-mobile-open
+    .hv-sidebar {
+        transform: translateX(0);
+    }
+
+
+    .hv-sidebar__overlay {
+        position: fixed;
+
+        inset: 0;
+
+        display: block;
+
+        opacity: 0;
+
+        visibility: hidden;
+
+        pointer-events: none;
+
+        background-color:
+            rgba(20, 40, 40, 0.45);
+
+        transition:
+            opacity 0.3s ease,
+            visibility 0.3s ease;
+
+        z-index: 1250;
+    }
+
+
+    body.sidebar-mobile-open
+    .hv-sidebar__overlay {
+        opacity: 1;
+
+        visibility: visible;
+
+        pointer-events: auto;
+    }
+
+
+    .hv-sidebar__marca {
+        justify-content: flex-start;
+    }
+
+
+    .hv-sidebar__marca span {
+        display: inline;
+
+        font-size: 1.5rem;
+    }
+
+
+    .hv-sidebar__menu {
+        margin-top: 2rem;
+    }
+
+
+    .hv-sidebar__link {
+        justify-content: flex-start;
+
+        padding: 0.9rem 1rem;
+    }
+
+
+    .hv-sidebar__link span {
+        display: inline;
+    }
+
+
+    .hv-sidebar__link i {
+        width: 1.5rem;
+
+        font-size: 1.25rem;
+    }
+
+
+    .hv-sidebar__soporte {
+        padding: 1rem;
+
+        text-align: left;
+    }
+
+
+    .hv-sidebar__soporte h3,
+    .hv-sidebar__soporte p,
+    .hv-sidebar__boton-soporte span {
+        display: block;
+    }
+
+}

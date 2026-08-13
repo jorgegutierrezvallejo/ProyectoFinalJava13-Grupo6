@@ -5,21 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Formulario de contacto | HuellaVet</title>
+    <title>Dashboard | HuellaVet</title>
 
     <!-- Conecto Bootstrap para utilizar su sistema de columnas y formularios -->
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-        crossorigin="anonymous"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
     <!-- Conecto Bootstrap Icons para usar los iconos del formulario -->
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-    >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 
     <!-- Conecto las fuentes definidas para la identidad de HuellaVet -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,8 +20,7 @@
 
     <link
         href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
     <style>
         /* Se crean variables para reutilizar los colores y fuentes del proyecto */
@@ -52,119 +44,197 @@
             background-color: #f7faf8;
         }
 
-        /* Se crea el espacio general donde voy a mostrar el formulario */
-        .contacto {
-            padding: 3rem 1rem;
+        /* Se crea la estructura principal del menú lateral*/
+        .hv-sidebar {
+            width: 270px;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            background-color: var(--color-texto-oscuro);
+            color: #ffffff;
+
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Se limita el ancho del formulario y se centra */
-        .contacto__contenedor {
-            max-width: 950px;
+        /* Se organiza el icono y el nombre HuellaVet */
+        .hv-sidebar__marca {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0 0.5rem;
         }
 
-        /* Se crea la tarjeta blanca que contiene todo el formulario */
-        .formulario-contacto {
-            padding: 2rem;
-            background-color: #ffffff;
-            border: 1px solid var(--color-borde);
-            border-radius: 1.25rem;
-            box-shadow: 0 0.75rem 2rem rgba(34, 62, 60, 0.08);
+        /* Se aplica el tamaño necesario al logo de HuellaVet */
+        .hv-sidebar__logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            flex-shrink: 0;
+
+            object-fit: cover;
+            transform: scale(1.25);
         }
 
-        /* Se organiza el icono y el título en una misma fila */
-        .formulario-contacto__encabezado {
+        /* Se aplica la fuente de marca al nombre HuellaVet*/
+        .hv-sidebar__marca span {
+            font-family: var(--fuente-marca);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        /* Se organiza el menú principal del sidebar */
+        .hv-sidebar__menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 3rem;
+        }
+
+        /* Se aplica el estilo general a cada opción del menú */
+        .hv-sidebar__link {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Se diseño el fondo que contiene el icono del encabezado */
-        .formulario-contacto__icono-titulo {
-            display: grid;
-            width: 3rem;
-            height: 3rem;
-            place-items: center;
-            flex-shrink: 0;
-            color: var(--color-primario-oscuro);
-            background-color: var(--color-fondo-claro);
+            padding: 0.95rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
             border-radius: 0.75rem;
-            font-size: 1.4rem;
+            font-size: 1rem;
         }
 
-        /* Se aplica el diseño del título principal */
-        .formulario-contacto__titulo {
-            margin: 0;
-            font-family: var(--fuente-marca);
-            font-size: 1.5rem;
+        /* Se da tamaño uniforme a los iconos del menú */
+        .hv-sidebar__link i {
+            width: 1.5rem;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        /* Se cambia ligeramente el fondo al pasar el mouse */
+        .hv-sidebar__link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Se destaca la opción activa del menú */
+        .hv-sidebar__link--activo {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
             font-weight: 700;
         }
 
-        /* Se ubica cada icono dentro de su campo correspondiente */
-        .formulario-contacto__campo {
-            position: relative;
+        /* Se conserva el color de la opción activa al pasar el mouse */
+        .hv-sidebar__link--activo:hover {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
         }
 
-        .formulario-contacto__campo i {
-            position: absolute;
-            top: 50%;
-            left: 1rem;
-            z-index: 2;
-            color: var(--color-primario-oscuro);
-            transform: translateY(-50%);
-            pointer-events: none;
+
+
+        /* Se ubica el bloque de ayuda cerca de la parte inferior */
+        .hv-sidebar__soporte {
+            margin-top: auto;
+            padding: 1.25rem;
+            background-color: rgba(255, 255, 255, 0.06);
+            border-radius: 0.85rem;
         }
 
-        /* Se personaliza los campos de Bootstrap */
-        .formulario-contacto__campo .form-control {
-            min-height: 3rem;
-            padding-left: 2.75rem;
-            border-color: var(--color-borde);
-            border-radius: 0.65rem;
-            box-shadow: none;
-        }
-
-        /* Se resalta el campo que el usuario está utilizando */
-        .formulario-contacto__campo .form-control:focus {
-            border-color: var(--color-primario);
-            box-shadow: 0 0 0 0.2rem rgba(23, 169, 167, 0.12);
-        }
-
-        /* Se diseño las etiquetas de los campos */
-        .form-label {
-            margin-bottom: 0.4rem;
-            font-size: 0.85rem;
+        /* Se aplica estilo al título del bloque de ayuda */
+        .hv-sidebar__soporte h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
             font-weight: 700;
         }
 
-        .formulario-contacto__error {
-            display: none;
-            margin-top: 0.35rem;
-            font-size: 0.8rem;
-            color: #c0392b;
+        /* Se aplica estilo al mensaje de ayuda */
+        .hv-sidebar__soporte p {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--color-secundario-claro);
         }
 
-        .formulario-contacto__campo.es-invalido .form-control {
-            border-color: #c0392b;
+        /* Se diseña el botón de soporte */
+        .hv-sidebar__boton-soporte {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+            text-decoration: none;
+            border-radius: 0.6rem;
+            font-weight: 700;
         }
 
-        .formulario-contacto__campo.es-invalido .formulario-contacto__error {
-            display: block;
+        /* Se conserva el estilo del botón al pasar el mouse */
+        .hv-sidebar__boton-soporte:hover {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
         }
 
-        #estado-envio {
-            display: none;
-            margin-top: 1.25rem;
-        }
-
-        /* Se adapto la tarjeta para pantallas pequeñas */
-        @media (max-width: 767px) {
-            .contacto {
-                padding: 2rem 0.75rem;
+        /* Adapto el sidebar para pantallas medianas */
+        @media (max-width: 992px) {
+            .hv-sidebar {
+                width: 220px;
+                padding: 1.5rem 1rem;
             }
 
-            .formulario-contacto {
-                padding: 1.25rem;
+            .hv-sidebar__marca span {
+                font-size: 1.5rem;
+            }
+
+            .hv-sidebar__link {
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Adapto el sidebar para pantallas pequeñas */
+        @media (max-width: 768px) {
+            .hv-sidebar {
+                width: 90px;
+                padding: 1.5rem 0.75rem;
+            }
+
+            .hv-sidebar__marca {
+                justify-content: center;
+            }
+
+            .hv-sidebar__marca span {
+                display: none;
+            }
+
+            .hv-sidebar__menu {
+                margin-top: 2rem;
+            }
+
+            .hv-sidebar__link {
+                justify-content: center;
+                padding: 0.9rem;
+            }
+
+            .hv-sidebar__link span {
+                display: none;
+            }
+
+            .hv-sidebar__link i {
+                width: auto;
+                font-size: 1.35rem;
+            }
+
+            .hv-sidebar__soporte {
+                padding: 0.75rem;
+                text-align: center;
+            }
+
+            .hv-sidebar__soporte h3,
+            .hv-sidebar__soporte p,
+            .hv-sidebar__boton-soporte span {
+                display: none;
+            }
+
+            .hv-sidebar__boton-soporte {
+                padding: 0.7rem;
             }
         }
     </style>
@@ -172,242 +242,92 @@
 
 <body>
 
-    <!-- Se creo el contenido principal de mi página de prueba -->
-    <main class="contacto">
+    <!-- Aquí dashboard administrativo parte menu IZQ de HuellaVet -->
+    <aside class="hv-sidebar">
 
-        <!-- Se centro el formulario y controlo su ancho con Bootstrap -->
-        <div class="contacto__contenedor container">
+        <!-- Aqui marca principal de HuellaVet -->
+        <div class="hv-sidebar__marca">
 
-            <!-- Se creo la tarjeta principal del formulario -->
-            <div class="formulario-contacto">
+            <!-- Logo de HuellaVet -->
+            <img src="../img/icon-huella-de-perro.png" alt="Logo de HuellaVet" class="hv-sidebar__logo">
 
-                <!-- Se creo el formulario que después enviaré mediante Formspree -->
-                <form
-                    id="formulario-contacto"
-                    action="https://formspree.io/f/ID-DEL-FORMULARIO"
-                    method="POST"
-                    novalidate
-                >
+            <!-- Nombre de la aplicación -->
+            <span>HuellaVet</span>
 
-                    <!-- Se creo el encabezado de mi formulario -->
-                    <div class="formulario-contacto__encabezado">
 
-                        <div class="formulario-contacto__icono-titulo">
-                            <i class="bi bi-envelope-fill"></i>
-                        </div>
-
-                        <h2 class="formulario-contacto__titulo">
-                            Envíame un mensaje
-                        </h2>
-
-                    </div>
-
-                    <!-- Se organizan cuatro campos con la cuadrícula de Bootstrap -->
-                    <div class="row g-3">
-
-                        <!-- Se creo el campo para recibir el nombre del propietario -->
-                        <div class="col-12 col-md-6">
-                            <label for="nombre-propietario" class="form-label">
-                                Nombre del propietario
-                            </label>
-
-                            <div class="formulario-contacto__campo" data-campo="nombre">
-                                <i class="bi bi-person"></i>
-
-                                <input
-                                    type="text"
-                                    id="nombre-propietario"
-                                    name="nombre_propietario"
-                                    class="form-control"
-                                    placeholder="Tu nombre"
-                                    autocomplete="name"
-                                    required
-                                >
-                                <div class="formulario-contacto__error">
-                                    escribe un nombre válido (solo letras y espacios, mínimo 3 caracteres).
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Se creo el campo para recibir el teléfono -->
-                        <div class="col-12 col-md-6">
-                            <label for="telefono" class="form-label">
-                                Teléfono
-                            </label>
-
-                            <div class="formulario-contacto__campo" data-campo="telefono">
-                                <i class="bi bi-telephone"></i>
-
-                                <input
-                                    type="tel"
-                                    id="telefono"
-                                    name="telefono"
-                                    class="form-control"
-                                    placeholder="+57 300 123 4567"
-                                    autocomplete="tel"
-                                    required
-                                >
-                                <div class="formulario-contacto__error">
-                                    Ingresa un teléfono válido (mínimo 7 dígitos).
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Se creo el campo para recibir la dirección -->
-                        <div class="col-12 col-md-6">
-                            <label for="direccion" class="form-label">
-                                Dirección
-                            </label>
-
-                            <div class="formulario-contacto__campo">
-                                <i class="bi bi-geo-alt"></i>
-
-                                <input
-                                    type="text"
-                                    id="direccion"
-                                    name="direccion"
-                                    class="form-control"
-                                    placeholder="Dirección de residencia"
-                                    autocomplete="street-address"
-                                >
-                            </div>
-                        </div>
-
-                        <!-- Se creo el campo para recibir el correo electrónico -->
-                        <div class="col-12 col-md-6">
-                            <label for="correo" class="form-label">
-                                Correo electrónico
-                            </label>
-
-                            <div class="formulario-contacto__campo" data-campo="correo">
-                                <i class="bi bi-envelope"></i>
-
-                                <input
-                                    type="email"
-                                    id="correo"
-                                    name="email"
-                                    class="form-control"
-                                    placeholder="tu@email.com"
-                                    autocomplete="email"
-                                    required
-                                >
-                                <div class="formulario-contacto__error">
-                                    Ingresa un correo electrónico con un formato válido.
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Aquí mi compañera continuara con los datos de la mascota -->
-                    <div class="container my-5">
-                    <h1 class="text-center mb-4"><strong>Información de tu mascota</strong></h1>
-                    <!-- Primera fila -->
-                    <div class="row">
-                        <!-- Primera parte -->
-                        <div class="col-md-6">
-                            <label class="form-label">Nombre de la mascota:</label>
-                            <input type="text" class="form-control" id="nombreMascota" name="nombre_mascota" placeholder="nombre de tu mascota">
-                        </div>
-                        <!-- Segunda parte -->
-                        <div class="col-md-6">
-                            <label for="especie" class="form-label">Especie:</label>
-                            <select class="form-select" id="especie" name="especie">
-                                <option value="">Selecciona la especie</option>
-                                <option value="perro">Perro</option>
-                                <option value="gato">Gato</option>
-                                <option value="ave">Ave</option>
-                                <option value="ganado">Ganado</option>
-                                <option value="otro">Otro</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- Segunda fila -->
-                    <div class="row">
-                        <!-- Primera parte -->
-                        <div class="col-md-4">
-                            <label for="raza" class="form-label">Raza:</label>
-                            <input type="text" class="form-control" id="raza" name="raza" placeholder="raza de tu mascota">
-                        </div>
-                        <!-- Segunda parte -->
-                        <div class="col-md-4">
-                            <label for="edad" class="form-label">Edad:</label>
-                            <input type="number" class="form-control" id="edad" name="edad" placeholder="edad de tu mascota">
-                        </div>
-                        <!-- Tercera parte -->
-                        <div class="col-md-4">
-                            <label for="peso" class="form-label">Peso:</label>
-                            <input type="number" class="form-control" id="peso" name="peso" placeholder="peso de tu mascota">
-                        </div>
-                    </div>
-                    <!-- Tercera fila -->
-                    <div class="row">
-                        <!-- Primera parte -->
-                        <div class="col-md-6">
-                            <label for="sexo" class="form-label">Sexo:</label>
-                            <select class="form-select" id="sexo" name="sexo">
-                                <option value="">Selecciona el sexo</option>
-                                <option value="macho">Macho</option>
-                                <option value="hembra">Hembra</option>
-                            </select>
-                        </div>
-                        <!-- Segunda parte -->
-                        <div class="col-md-6">
-                            <label for="servicio" class="form-label">Servicio:</label>
-                            <select class="form-select" id="servicio" name="servicio">
-                                <option value="">Selecciona el servicio</option>
-                                <option value="consulta">Consulta general</option>
-                                <option value="vacuna">Vacunación</option>
-                                <option value="esterilizacion">Esterilización</option>
-                                <option value="toma-muestras">Toma de Muestras</option>
-                                <option value="control">Control</option>
-                                <option value="desparasitacion">Desparasitación</option>
-                                <option value="imagenes-diagnosticas">Imágenes diagnósticas</option>
-
-                            </select>
-                        </div>
-                    </div>
-                    <!-- Cuarta fila -->
-                    <div class="row">
-                        <!-- Primera parte -->
-                        <div class="col-md-12">
-                            <label for="mensaje" class="form-label">Mensaje:</label>
-                            <!-- NUEVO: envuelvo el textarea en formulario-contacto__campo para poder validarlo igual que los demás -->
-                            <div class="formulario-contacto__campo" data-campo="mensaje">
-                                <textarea class="form-control" id="mensaje" name="mensaje" rows="3" placeholder="Cuéntanos cómo podemos ayudarte..." required></textarea>
-
-                                <!-- NUEVO -->
-                                <div class="formulario-contacto__error">
-                                    Escribe un mensaje de al menos 10 caracteres.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Botón de envío -->
-                    <div class="row mt-4">
-                        <div class="col text-center">
-                            <button type="submit" class="btn btn-success" id="boton-enviar">Enviar</button>
-                    </div>
-
-                </div>
-                <div id="estado-envio" class="alert" role="alert"></div>
-
-                </form>
-
-            </div>
-
+            <!-- Cierre marca principal de HuellaVet -->
         </div>
 
-    </main>
+        <!-- Menú principal del sidebar -->
+        <nav class="hv-sidebar__menu">
+
+            <!-- Opción Dashboard activa -->
+            <a href="#" class="hv-sidebar__link hv-sidebar__link--activo">
+                <i class="bi bi-grid"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <!-- Opción Citas -->
+            <a href="#" class="hv-sidebar__link">
+                <i class="bi bi-calendar3"></i>
+                <span>Citas</span>
+            </a>
+
+            <!-- Opción Mascotas -->
+            <a href="#" class="hv-sidebar__link">
+                <i class="bi bi-heart"></i>
+                <span>Mascotas</span>
+            </a>
+
+            <!-- Opción Clientes -->
+            <a href="#" class="hv-sidebar__link">
+                <i class="bi bi-people"></i>
+                <span>Clientes</span>
+            </a>
+
+            <!-- Opción Servicios -->
+            <a href="#" class="hv-sidebar__link">
+                <i class="bi bi-briefcase"></i>
+                <span>Servicios</span>
+            </a>
+
+            <!-- Opción Configuración -->
+            <a href="#" class="hv-sidebar__link">
+                <i class="bi bi-gear"></i>
+                <span>Configuración</span>
+            </a>
+
+            <!-- Cierre menú principal del sidebar -->
+        </nav>
+
+        <!-- Bloque de ayuda ubicado en la parte inferior del sidebar -->
+        <div class="hv-sidebar__soporte">
+
+            <!-- Título del bloque de ayuda -->
+            <h3>¿Necesitas ayuda?</h3>
+
+            <!-- Mensaje de apoyo -->
+            <p>Estamos aquí para ayudarte.</p>
+
+            <!-- Botón visual de soporte -->
+            <a href="#" class="hv-sidebar__boton-soporte">
+                <i class="bi bi-headset"></i>
+                <span>Soporte</span>
+            </a>
+            <!-- Cierro el bloque de ayuda ubicado en la parte inferior del sidebar -->
+        </div>
+
+        <!-- Cierre dashboard administrativo parte menu IZQ de HuellaVet -->
+    </aside>
+
+
 
     <!-- Se conecta el Js de Bootstrap al final de la página -->
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous">
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+        </script>
 
-    <script src="../js/app.js"></script>
+
 </body>
 
 </html>
