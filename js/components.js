@@ -70,7 +70,10 @@ async function iniciarComponentes() {
     );
 
     marcarPaginaActiva();
-    configurarModal();
+
+    document.dispatchEvent(
+        new CustomEvent("componentesCargados")
+    );
 }
 
 document.addEventListener(

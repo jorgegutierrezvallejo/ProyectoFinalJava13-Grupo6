@@ -1,95 +1,141 @@
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
+document.addEventListener("DOMContentLoaded", function () {
+    mostrarServicios();
+});
 
-        iniciarServicios();
+function mostrarServicios() {
+    const contenedorServicios = document.getElementById("contenedorServicios");
+    const totalServicios = document.getElementById("totalServicios");
 
+    if (!contenedorServicios) {
+        return;
     }
-);
 
+    const servicios = JSON.parse(localStorage.getItem("servicios")) || [];
 
-function iniciarServicios() {
+    actualizarTotalServicios(servicios, totalServicios);
 
-    // 1. Seleccionamos el formulario usando su ID
-    const formulario = document.getElementById("formServicio");
+    if (servicios.length === 0) {
+        contenedorServicios.innerHTML = `
+            <div class="servicios-vacio">
+                <i class="bi bi-briefcase"></i>
+                <h3>No hay servicios creados</h3>
+                <p>Cuando agregues un servicio desde el formulario, aparecerá en esta sección.</p>
+            </div>
+        `;
 
-    if (formulario) {
-        // 2. Escuchamos el evento 'submit' (cuando el usuario hace clic en Guardar)
-        formulario.addEventListener("submit", function (evento) {
+        return;
+    }
 
-            // Obtenemos los valores que el usuario escribió en cada campo
-            // .value nos da el texto, y .trim() quita los espacios en blanco al inicio y al final
-            const nombre = document.getElementById("nombre").value.trim();
-            const descripcion = document.getElementById("descripcion").value.trim();
-            const precio = document.getElementById("precio").value.trim();
-            const duracion = document.getElementById("duracion").value; // En un select no hace falta trim()
+    contenedorServicios.innerHTML = "";
 
-            // Creamos variables para guardar los mensajes de error
-            let hayError = false;
-            let mensajesDeError = "Por favor corrige lo siguiente:\n\n";
+    servicios.forEach(function (servicio) {
+        const tarjetaServicio = document.createElement("article");
 
-            // --- INICIO DE LAS VALIDACIONES ---
+        tarjetaServicio.classList.add("servicio-card");
 
-            // Validar Nombre: No puede estar vacío
-            if (nombre === "") {
-                mensajesDeError += "- El nombre del servicio es obligatorio.\n";
-                hayError = true;
-            }
+        tarjetaServicio.innerHTML = `
+            <div class="servicio-imagen">
+                ${
+                    servicio.imagen
+                        ? `<img src="${servicio.imagen}" alt="${servicio.nombre}">`
+                        : `<div class="servicio-imagen-placeholder"></div>`
+                }
 
-            // Validar Descripción: Que tenga al menos 10 letras para que sea clara
-            if (descripcion.length < 10) {
-                mensajesDeError += "- La descripción es muy corta (mínimo 10 caracteres).\n";
-                hayError = true;
-            }
+                <div class="servicio-icono">
+                    <i class="${servicio.icono || "bi bi-heart-pulse"}"></i>
+                </div>
+            </div>
 
-            // Validar Precio: No vacío y que sea mayor a 0
-            if (precio === "" || precio <= 0) {
-                mensajesDeError += "- Debes ingresar un precio válido (mayor a 0).\n";
-                hayError = true;
-            }
+            <div class="servicio-info">
+                <h3>${servicio.nombre}</h3>
+                <p>${servicio.descripcion}</p>
+            </div>
 
-            // Validar Duración: Debe haber seleccionado una opción válida (no la vacía por defecto)
-            if (duracion === "") {
-                mensajesDeError += "- Debes seleccionar la duración del servicio.\n";
-                hayError = true;
-            }
+            <div class="servicio-detalles">
+                <div class="servicio-detalle">
+                    <i class="bi bi-currency-dollar"></i>
+                    <div>
+                        <span>Precio</span>
+                        <strong>$ ${formatearPrecio(servicio.precio)}</strong>
+                    </div>
+                </div>
 
-            // --- FIN DE LAS VALIDACIONES ---
+                <div class="servicio-detalle">
+                    <i class="bi bi-clock"></i>
+                    <div>
+                        <span>Duración</span>
+                        <strong>${servicio.duracion} min</strong>
+                    </div>
+                </div>
+            </div>
 
-            // 3. ¿Qué hacemos si hay errores?
-            if (hayError === true) {
-                // Cancelamos el envío del formulario para que no recargue la página
-                evento.preventDefault();
+            <div class="servicio-acciones">
+                <button type="button" class="btn btn-modificar">
+                    <i class="bi bi-pencil"></i>
+                    Modificar
+                </button>
 
-                // Mostramos una alerta en pantalla con todos los errores acumulados
-                alert(mensajesDeError);
-            } else {
-                // Cancelamos el envío del formulario
-                evento.preventDefault();
+                <button
+                    type="button"
+                    class="btn btn-eliminar"
+                    onclick="eliminarServicio(${servicio.id})"
+                >
+                    <i class="bi bi-trash"></i>
+                    Eliminar
+                </button>
+            </div>
+        `;
 
-                // Creamos un objeto con los datos del servicio
-                const nuevoServicio = {
-                    id: Date.now(), // ID temporal
-                    nombre: nombre,
-                    descripcion: descripcion,
-                    precio: parseFloat(precio),
-                    duracion: parseInt(duracion)
-                };
+        contenedorServicios.appendChild(tarjetaServicio);
+    });
+}
 
-                // Obtenemos los servicios ya guardados, si no hay iniciamos con un arreglo vacío
-                let servicios = JSON.parse(localStorage.getItem("servicios")) || [];
+function actualizarTotalServicios(servicios, totalServicios) {
+    if (!totalServicios) {
+        return;
+    }
 
-                // Añadimos el servicio nuevo al arreglo
-                servicios.push(nuevoServicio);
+    totalServicios.textContent =
+        servicios.length === 1
+            ? "1 servicio en total"
+            : `${servicios.length} servicios en total`;
+}
 
-                // Guardamos todo de nuevo en el LocalStorage del navegador
-                localStorage.setItem("servicios", JSON.stringify(servicios));
+function formatearPrecio(precio) {
+    return Number(precio).toLocaleString("es-CO");
+}
 
-                // Avisamos al usuario y limpiamos el formulario
-                alert("¡Servicio guardado exitosamente en Local Storage!");
-                formulario.reset();
-            }
+function eliminarServicio(idServicio) {
+    Swal.fire({
+        icon: "warning",
+        title: "¿Eliminar servicio?",
+        text: "Esta acción eliminará el servicio de la lista.",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#ff4d5f",
+        cancelButtonColor: "#6c757d"
+    }).then(function (resultado) {
+        if (!resultado.isConfirmed) {
+            return;
+        }
+
+        let servicios = JSON.parse(localStorage.getItem("servicios")) || [];
+
+        servicios = servicios.filter(function (servicio) {
+            return servicio.id !== idServicio;
         });
-    }
 
+        localStorage.setItem("servicios", JSON.stringify(servicios));
+
+        mostrarServicios();
+
+        Swal.fire({
+            icon: "success",
+            title: "Servicio eliminado",
+            text: "El servicio fue eliminado correctamente.",
+            confirmButtonText: "Aceptar",
+            confirmButtonColor: "#bad641"
+        });
+    });
 }

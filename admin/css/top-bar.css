@@ -107,8 +107,11 @@
 .topbar-title-wrapper {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
 
-    gap: 12px;
+    gap: 10px;
+
+    min-width: 0;
 }
 
 
@@ -122,16 +125,28 @@
     font-size: 30px;
     font-weight: 700;
 
-    line-height: 1.2;
+    line-height: 1;
 
     white-space: nowrap;
 }
 
 
 .topbar-title-icon {
+    width: 30px;
+    height: 30px;
+
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
     color: var(--hv-turquoise);
 
-    font-size: 29px;
+    font-size: 25px;
+    line-height: 1;
+
+    transform: translateY(3px);
 }
 
 
