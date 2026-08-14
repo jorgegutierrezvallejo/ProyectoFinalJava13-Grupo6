@@ -70,14 +70,10 @@ async function iniciarComponentes() {
     );
 
     marcarPaginaActiva();
-<<<<<<< HEAD
-    configurarModal();
-=======
 
     document.dispatchEvent(
         new CustomEvent("componentesCargados")
     );
->>>>>>> 8fa1f83dc532ce79394179f166666e5f5b35fc66
 }
 
 document.addEventListener(
