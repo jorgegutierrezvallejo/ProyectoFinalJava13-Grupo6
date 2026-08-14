@@ -1,0 +1,114 @@
+<div class="hv-modal-overlay" id="auth-modal" aria-hidden="true">
+    <div class="hv-modal-card">
+
+        <button type="button" id="btn-close-modal" class="hv-btn-close" aria-label="Cerrar modal">
+            &times;
+        </button>
+
+        <div class="hv-modal-logo">
+            <img src="./img/HuellaVet-icon.svg" alt="Logo HuellaVet">
+
+            <span class="hv-modal-marca">
+                HuellaVet
+            </span>
+        </div>
+
+        <input type="radio" name="hv-tab" id="hv-tab-login" class="d-none" checked>
+        <input type="radio" name="hv-tab" id="hv-tab-register" class="d-none">
+
+        <div class="hv-tabs">
+            <label for="hv-tab-login" class="hv-tab-label">Iniciar Sesión</label>
+            <label for="hv-tab-register" class="hv-tab-label">Registro</label>
+        </div>
+
+        <form class="hv-form hv-form-login">
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Nombre de usuario o correo" required>
+            </div>
+
+            <div class="mb-3">
+                <input type="password" class="form-control" placeholder="Contraseña" required>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="rememberMe">
+                    <label class="form-check-label small" for="rememberMe">Recordarme</label>
+                </div>
+
+                <a href="#" class="small text-decoration-none">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <div class="boton-login">
+                <button type="submit" class="btn-sesion">Iniciar sesión</button>
+            </div>
+        </form>
+
+        <form class="hv-form hv-form-register">
+            <div class="register-datos">
+                <div class="mb-3 campo-formulario">
+                    <label for="firstname" class="form-label">Nombre(s)</label>
+                    <input type="text" class="form-control" id="firstname" name="name" placeholder="Nombre(s)" required>
+                </div>
+
+                <div class="mb-3 campo-formulario">
+                    <label for="last-name" class="form-label">Apellido(s)</label>
+                    <input type="text" class="form-control" id="last-name" name="lastname" placeholder="Apellido(s)" required>
+                </div>
+
+                <div class="mb-3 campo-formulario">
+                    <label for="email" class="form-label">Correo electrónico</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="correo@ejemplo.com" required>
+                </div>
+
+                <div class="mb-3 campo-formulario">
+                    <label for="city" class="form-label">Ciudad</label>
+                    <select class="form-select" name="city" id="city" required>
+                        <option selected disabled>Selecciona una ciudad</option>
+                        <option value="bogota">Bogotá</option>
+                        <option value="manizales">Manizales</option>
+                        <option value="pereira">Pereira</option>
+                    </select>
+                </div>
+
+                <div class="mb-3 campo-formulario">
+                    <label for="telephone" class="form-label">Teléfono</label>
+                    <input type="tel" class="form-control" id="telephone" name="telephone" placeholder="Teléfono: 000 0000000">
+                </div>
+
+                <div class="mb-3 campo-formulario">
+                    <label for="date" class="form-label">Fecha de nacimiento</label>
+                    <input type="date" class="form-control" id="date" name="date">
+                </div>
+
+                <div class="mb-3 campo-formulario">
+                    <label for="pass" class="form-label">Digita una contraseña</label>
+                    <input type="password" class="form-control" id="pass" name="password" placeholder="Contraseña" required>
+                </div>
+
+                <div class="mb-3 campo-formulario">
+                    <label for="confirmpass" class="form-label">Confirma la contraseña</label>
+                    <input type="password" class="form-control" id="confirmpass" name="confirmpassword" placeholder="Confirmar contraseña" required>
+                </div>
+
+                <div class="form-check mb-2 condiciones-formulario">
+                    <input class="form-check-input" type="checkbox" id="privacy" name="privacy" required>
+                    <label class="form-check-label" for="privacy">
+                        He leído y acepto la <a href="politicas.html">política de privacidad</a>
+                    </label>
+                </div>
+
+                <div class="form-check mb-4 condiciones-formulario">
+                    <input class="form-check-input" type="checkbox" id="conditions" name="conditions" required>
+                    <label class="form-check-label" for="conditions">
+                        He leído y acepto los <a href="terminos.html">términos y condiciones</a>
+                    </label>
+                </div>
+
+                <div class="boton-registro">
+                    <button type="submit" class="btn btn-primary">Registrarse</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

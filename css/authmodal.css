@@ -1,0 +1,312 @@
+/* ========================================
+   MODAL LOGIN Y REGISTRO
+======================================== */
+
+.hv-modal-overlay {
+    width: 100%;
+    min-height: 100vh;
+
+    padding: 20px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(0, 0, 0, 0.65);
+
+    opacity: 0;
+    pointer-events: none;
+
+    transition: opacity 0.3s ease;
+
+    z-index: 2000;
+}
+
+.hv-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hv-modal-card {
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+
+    padding: 28px;
+
+    position: relative;
+
+    overflow-y: auto;
+
+    border-radius: 18px;
+
+    background-color: var(--color-blanco);
+
+    box-shadow: 0 15px 40px rgba(34, 62, 60, 0.25);
+
+    font-family: var(--fuente-principal);
+}
+
+.hv-btn-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+
+    border: none;
+
+    background-color: transparent;
+
+    color: var(--color-texto-suave);
+
+    font-size: 25px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition: color 0.2s ease;
+}
+
+.hv-btn-close:hover {
+    color: var(--color-primario-oscuro);
+}
+
+.hv-modal-logo {
+    margin-bottom: 8px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.hv-modal-logo img {
+    width: 55px;
+    height: 55px;
+
+    object-fit: contain;
+}
+
+.hv-modal-marca {
+    font-family: var(--fuente-marca);
+    font-size: 1.8rem;
+    font-weight: 700;
+
+    color: var(--color-texto-oscuro);
+}
+
+.hv-tabs {
+    margin-bottom: 22px;
+
+    display: flex;
+
+    border-bottom: 2px solid var(--color-secundario-claro);
+}
+
+.hv-tab-label {
+    flex: 1;
+
+    padding: 10px 0;
+
+    color: var(--color-texto-suave);
+
+    font-family: var(--fuente-principal);
+    font-weight: 600;
+    text-align: center;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+#hv-tab-login:checked ~ .hv-tabs label[for="hv-tab-login"],
+#hv-tab-register:checked ~ .hv-tabs label[for="hv-tab-register"] {
+    margin-bottom: -2px;
+
+    border-bottom: 3px solid var(--color-primario);
+
+    color: var(--color-primario-oscuro);
+}
+
+.hv-form {
+    display: none;
+}
+
+#hv-tab-login:checked ~ .hv-form-login {
+    display: block;
+}
+
+#hv-tab-register:checked ~ .hv-form-register {
+    display: block;
+}
+
+.btn-sesion {
+    padding: 10px;
+
+    border: none;
+    border-radius: 8px;
+
+    background-color: var(--color-primario-oscuro);
+
+    color: var(--color-blanco);
+
+    font-weight: 700;
+
+    cursor: pointer;
+}
+
+.btn-sesion:hover {
+    background-color: var(--color-primario);
+}
+
+.hv-form-login {
+    max-width: 400px;
+
+    margin: 0 auto;
+}
+
+.hv-form-login .form-control {
+    min-height: 42px;
+
+    border: 1px solid var(--color-borde);
+    border-radius: 8px;
+
+    color: var(--color-texto-oscuro);
+
+    font-family: var(--fuente-principal);
+}
+
+.hv-form-login .form-control:focus,
+.register-datos .form-control:focus,
+.register-datos .form-select:focus {
+    border-color: var(--color-primario);
+
+    box-shadow: 0 0 0 0.15rem rgba(23, 169, 167, 0.2);
+}
+
+.hv-form-login .form-check-label {
+    color: var(--color-texto-suave);
+
+    font-family: var(--fuente-principal);
+}
+
+.hv-form-login a {
+    color: var(--color-primario-oscuro);
+
+    font-family: var(--fuente-principal);
+    font-weight: 600;
+}
+
+.boton-login {
+    margin-top: 10px;
+
+    display: flex;
+    justify-content: center;
+}
+
+.boton-login .btn-sesion {
+    width: 250px;
+}
+
+.register-datos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    column-gap: 20px;
+}
+
+.campo-formulario {
+    margin-bottom: 15px !important;
+}
+
+.register-datos .form-label {
+    margin-bottom: 6px;
+
+    color: var(--color-texto-oscuro);
+
+    font-family: var(--fuente-principal);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.register-datos .form-control,
+.register-datos .form-select {
+    min-height: 40px;
+
+    border: 1px solid var(--color-borde);
+    border-radius: 8px;
+
+    color: var(--color-texto-oscuro);
+
+    font-family: var(--fuente-principal);
+}
+
+.register-datos .form-control::placeholder {
+    color: #9aaaa7;
+}
+
+.condiciones-formulario {
+    grid-column: 1 / -1;
+
+    margin-bottom: 8px;
+}
+
+.condiciones-formulario a {
+    color: var(--color-primario-oscuro);
+
+    font-weight: 600;
+}
+
+.boton-registro {
+    grid-column: 1 / -1;
+
+    margin-top: 10px;
+
+    display: flex;
+    justify-content: center;
+}
+
+.boton-registro button {
+    width: 250px;
+
+    padding: 10px;
+
+    border-color: var(--color-primario-oscuro);
+    border-radius: 8px;
+
+    background-color: var(--color-primario-oscuro);
+
+    font-family: var(--fuente-principal);
+    font-weight: 700;
+
+    transition: all 0.2s ease;
+}
+
+.boton-registro button:hover {
+    border-color: var(--color-primario);
+
+    background-color: var(--color-primario);
+
+    transform: translateY(-1px);
+}
+
+@media (max-width: 600px) {
+    .hv-modal-card {
+        max-height: 92vh;
+
+        padding: 22px 18px;
+    }
+
+    .register-datos {
+        grid-template-columns: 1fr;
+
+        column-gap: 0;
+    }
+
+    .condiciones-formulario,
+    .boton-registro {
+        grid-column: auto;
+    }
+}

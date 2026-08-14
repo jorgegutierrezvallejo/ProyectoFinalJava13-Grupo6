@@ -39,11 +39,20 @@ async function iniciarComponentes() {
     );
 
     await cargarComponente(
+        "authmodal-container",
+        "components/authmodal.html"
+    );
+
+    await cargarComponente(
         "footer-container",
         "components/footer.html"
     );
 
     marcarPaginaActiva();
+
+    document.dispatchEvent(
+        new CustomEvent("componentesCargados")
+    );
 }
 
 document.addEventListener(
