@@ -4,6 +4,12 @@ HuellaVet es una aplicación web para gestionar reservas de servicios veterinari
 
 La plataforma permitirá que los clientes registren sus mascotas, consulten los servicios disponibles y agenden citas con un veterinario independiente. El veterinario podrá administrar sus servicios, horarios disponibles y citas desde un panel administrativo.
 
+## Vista Administrador
+
+El avance del Dashboard de Administrador se encuentra desplegado en GitHub Pages:
+
+[Ver Dashboard Administrador](https://jorgegutierrezvallejo.github.io/ProyectoFinalJava13-Grupo6/)
+
 ## Objetivo del proyecto
 
 Facilitar el agendamiento de citas veterinarias, mejorar la organización del profesional y evitar cruces de horarios o pérdida de información.
