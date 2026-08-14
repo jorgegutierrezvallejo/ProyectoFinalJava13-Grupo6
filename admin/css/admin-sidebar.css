@@ -19,6 +19,30 @@
 
 
 /* ========================================
+   ESTILOS GLOBALES ADMIN
+======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+
+    font-family: var(--fuente-principal);
+
+    color: var(--color-texto-oscuro);
+
+    background-color: #f7faf8;
+}
+
+/* ========================================
    SIDEBAR
 ======================================== */
 

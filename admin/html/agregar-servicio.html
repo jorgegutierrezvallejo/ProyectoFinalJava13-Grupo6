@@ -1,145 +1,266 @@
 <!DOCTYPE html>
-
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servicios | HuellaVet</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-
-    <title>
-        Agregar servicio | HuellaVet
-    </title>
-
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    >
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
 
-
-    <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    >
-
-
-    <link
-        rel="stylesheet"
-        href="../css/admin-sidebar.css"
-    >
-
-
-    <link
-        rel="stylesheet"
-        href="../css/top-bar.css"
-    >
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-        }
-
-
-        body {
-            margin: 0;
-
-            background-color: #f7f9fa;
-
-            font-family:
-                "Quicksand",
-                sans-serif;
-        }
-
-
-        .admin-page {
-            min-height: 100vh;
-
-            margin-left: 255px;
-        }
-
-
-        .admin-main {
-            padding: 32px;
-        }
-
-
-        @media (max-width: 992px) {
-
-            .admin-page {
-                margin-left: 0;
-            }
-
-        }
-
-    </style>
-
+    <link rel="stylesheet" href="../css/admin-sidebar.css">
+    <link rel="stylesheet" href="../css/top-bar.css">
+    <link rel="stylesheet" href="../css/agregar-servicio.css">
 </head>
 
-
-
-<body
-    data-page="servicios"
-    data-page-title="Agregar servicio"
->
-
-
-    <!-- SIDEBAR ACTUAL -->
+<body data-page="servicios" data-page-title="Servicios">
 
     <div id="sidebar-container"></div>
 
-
-
-    <!-- CONTENIDO DERECHO -->
-
     <div class="admin-page">
-
-
-        <!-- TOPBAR -->
-
         <div id="topbar-container"></div>
 
+        <main class="admin-servicios">
 
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="#" class="text-success text-decoration-none">Servicios</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Agregar servicio</li>
+                </ol>
+            </nav>
 
-        <!-- CONTENIDO -->
+            <div class="row mt-4">
+                <section class="col-md-8">
+                    <div class="form-container">
+                        <h4 class="text-custom-dark mb-4">Información del servicio</h4>
 
-        <main class="admin-main">
+                        <form id="formServicio" action="#" method="POST">
 
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label text-custom-dark fw-bold">
+                                    Nombre del servicio <span class="asterisk">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="nombre" name="nombre"
+                                    placeholder="Ej. Consulta general" required>
+                            </div>
 
-            <h2>
-                Agregar servicio
-            </h2>
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label text-custom-dark fw-bold">
+                                    Descripción <span class="asterisk">*</span>
+                                </label>
+                                <textarea class="form-control" id="descripcion" name="descripcion" rows="4"
+                                    placeholder="Describe el servicio, qué incluye y sus beneficios..." required></textarea>
+                            </div>
 
+                            <div class="mb-4">
+                                <label class="form-label text-custom-dark fw-bold">
+                                    Icono del servicio <span class="asterisk">*</span>
+                                </label>
 
-            <p>
-                Aquí irá el formulario.
-            </p>
+                                <div class="iconos-grid">
+                                    <label class="icono-opcion" title="Consulta">
+                                        <input type="radio" name="icono" value="bi bi-heart-pulse" required>
+                                        <i class="bi bi-heart-pulse"></i>
+                                    </label>
 
+                                    <label class="icono-opcion" title="Vacunas">
+                                        <input type="radio" name="icono" value="bi bi-capsule">
+                                        <i class="bi bi-capsule"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Curación">
+                                        <input type="radio" name="icono" value="bi bi-bandaid">
+                                        <i class="bi bi-bandaid"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Control médico">
+                                        <input type="radio" name="icono" value="bi bi-clipboard2-pulse">
+                                        <i class="bi bi-clipboard2-pulse"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Clínica">
+                                        <input type="radio" name="icono" value="bi bi-hospital">
+                                        <i class="bi bi-hospital"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Temperatura">
+                                        <input type="radio" name="icono" value="bi bi-thermometer-half">
+                                        <i class="bi bi-thermometer-half"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Baño">
+                                        <input type="radio" name="icono" value="bi bi-droplet">
+                                        <i class="bi bi-droplet"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Peluquería">
+                                        <input type="radio" name="icono" value="bi bi-scissors">
+                                        <i class="bi bi-scissors"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Medicina">
+                                        <input type="radio" name="icono" value="bi bi-prescription2">
+                                        <i class="bi bi-prescription2"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Parásitos">
+                                        <input type="radio" name="icono" value="bi bi-bug">
+                                        <i class="bi bi-bug"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Emergencia">
+                                        <input type="radio" name="icono" value="bi bi-plus-circle">
+                                        <i class="bi bi-plus-circle"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Cuidado">
+                                        <input type="radio" name="icono" value="bi bi-shield-check">
+                                        <i class="bi bi-shield-check"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Mascota">
+                                        <input type="radio" name="icono" value="fa-solid fa-paw">
+                                        <i class="fa-solid fa-paw"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Perro">
+                                        <input type="radio" name="icono" value="fa-solid fa-dog">
+                                        <i class="fa-solid fa-dog"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Gato">
+                                        <input type="radio" name="icono" value="fa-solid fa-cat">
+                                        <i class="fa-solid fa-cat"></i>
+                                    </label>
+
+                                    <label class="icono-opcion" title="Hueso">
+                                        <input type="radio" name="icono" value="fa-solid fa-bone">
+                                        <i class="fa-solid fa-bone"></i>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="imagen" class="form-label text-custom-dark fw-bold">
+                                    Imagen del servicio
+                                </label>
+
+                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
+
+                                <div class="imagen-preview mt-3" id="imagenPreview">
+                                    <i class="bi bi-image"></i>
+                                    <span>Vista previa de la imagen</span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <label for="precio" class="form-label text-custom-dark fw-bold">
+                                        Precio <span class="asterisk">*</span>
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="precio" name="precio"
+                                            placeholder="Ej. 80000" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="duracion" class="form-label text-custom-dark fw-bold">
+                                        Duración <span class="asterisk">*</span>
+                                    </label>
+                                    <select class="form-select" id="duracion" name="duracion" required>
+                                        <option value="" selected disabled>Ej. 45 min</option>
+                                        <option value="15">15 min</option>
+                                        <option value="30">30 min</option>
+                                        <option value="45">45 min</option>
+                                        <option value="60">1 hora</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2 mt-4">
+                                <button type="submit" class="btn btn-primary-custom px-4">
+                                    <i class="bi bi-floppy"></i>
+                                    Guardar servicio
+                                </button>
+
+                                <button type="button" class="btn btn-outline-secondary px-4 text-dark">
+                                    Cancelar
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </section>
+
+                <aside class="col-md-4">
+                    <div class="tips-container">
+                        <div class="text-center mb-4">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2965/2965311.png" alt="Icono" width="80"
+                                style="opacity: 0.7;">
+                        </div>
+
+                        <h5 class="text-custom-dark mb-4 text-center fw-bold">
+                            Consejos para crear un buen servicio
+                        </h5>
+
+                        <article class="d-flex mb-3">
+                            <i class="bi bi-tag tip-icon me-3"></i>
+                            <div>
+                                <strong class="text-custom-dark">Sé claro y específico</strong>
+                                <p class="text-muted small mb-0">
+                                    Usa un nombre y descripción que expliquen bien el servicio.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="d-flex mb-3">
+                            <i class="bi bi-clock tip-icon me-3"></i>
+                            <div>
+                                <strong class="text-custom-dark">Define la duración</strong>
+                                <p class="text-muted small mb-0">
+                                    Indica el tiempo estimado para una mejor planificación.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="d-flex mb-4">
+                            <i class="bi bi-currency-dollar tip-icon me-3"></i>
+                            <div>
+                                <strong class="text-custom-dark">Establece un precio justo</strong>
+                                <p class="text-muted small mb-0">
+                                    Considera costos, valor y mercado para tu servicio.
+                                </p>
+                            </div>
+                        </article>
+
+                        <div class="info-box d-flex align-items-center mt-4">
+                            <i class="bi bi-lightbulb tip-icon me-2"></i>
+                            <small>Los servicios bien definidos generan confianza y mejores reservas.</small>
+                        </div>
+                    </div>
+                </aside>
+            </div>
 
         </main>
-
-
     </div>
 
-
-
-    <!-- SIDEBAR EXISTENTE -->
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../js/admin-sidebar.js"></script>
-
-
-    <!-- TOPBAR -->
-
     <script src="../js/topbar.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/agregar-servicio.js"></script>
 
 </body>
 
