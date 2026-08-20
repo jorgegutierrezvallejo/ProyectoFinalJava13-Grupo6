@@ -47,13 +47,13 @@
                                 <div class="mb-3 mt-2 mt-md-0">
                                     <label for="nombre-mascota" class="form-label">Nombre de la mascota <span
                                             class="asterisco">*</span></label>
-                                    <input type="text" class="form-control" id="nombre-mascota" placeholder="Ej. Luna">
+                                    <input type="text" class="form-control" id="nombre-mascota" placeholder="Ej. Luna" required>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
                                         <label for="especie" class="form-label">Especie <span
                                                 class="asterisco">*</span></label>
-                                        <input type="text" class="form-control" id="especie" placeholder="Ej. perro">
+                                        <input type="text" class="form-control" id="especie" placeholder="Ej. perro" required>
                                     </div>
                                     <div class="col-6">
                                         <label for="raza" class="form-label">Raza</label>
@@ -69,17 +69,17 @@
                             <div class="col-12 col-md-4 mb-3 mb-md-0">
                                 <label class="form-label">Edad <span class="asterisco">*</span></label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" placeholder="Ej. 3">
-                                    <select class="form-select" style="max-width: 95px;">
-                                        <option>Años</option>
-                                        <option>Meses</option>
+                                    <input type="number" class="form-control" id="edad"  placeholder="Ej. 3" required>
+                                    <select class="form-select" id="unidad-edad"  style="max-width: 95px;">
+                                        <option value="anos">Años</option>
+                                        <option value="meses">Meses</option>
                                     </select>
                                 </div>
                             </div>
                             <div class="col-12 col-md-4 mb-3 mb-md-0">
                                 <label for="sexo-mascota" class="form-label">Sexo <span
                                         class="asterisco">*</span></label>
-                                <select class="form-select" id="sexo-mascota">
+                                <select class="form-select" id="sexo-mascota" required>
                                     <option selected disabled>Selecciona el sexo</option>
                                     <option value="macho">Macho</option>
                                     <option value="hembra">Hembra</option>
@@ -88,7 +88,7 @@
                             <div class="col-12 col-md-4">
                                 <label for="peso" class="form-label">Peso <span class="asterisco">*</span></label>
                                 <div class="input-group">
-                                    <input type="number" class="form-control" id="peso" placeholder="Ej. 24">
+                                    <input type="number" class="form-control" id="peso" placeholder="Ej. 24" required>
                                     <span class="input-group-text bg-white">kg</span>
                                 </div>
                             </div>
@@ -232,6 +232,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
+
+        <script src="/js/agregarMacota.js"></script>
 </body>
 
 </html>
