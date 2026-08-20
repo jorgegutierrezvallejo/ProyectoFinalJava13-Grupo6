@@ -4,327 +4,608 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="img/favicon.png" type="image/png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <script src="https://kit.fontawesome.com/9868a66798.js" crossorigin="anonymous"></script>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <script src="https://kit.fontawesome.com/9868a66798.js" crossorigin="anonymous"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
-        rel="stylesheet">
+    <script src="js/components.js" defer></script>
+    <script src="js/authmodal.js" defer></script>
+    <title>HuellaVet | Agendar Cita</title>
     <style>
         :root {
-            --color-primario: #17A9A7;
+            --color-primario: #17a9a7;
             --color-primario-oscuro: #007981;
-            --color-secundario-claro: #A5D9CF;
-            --color-acento: #BAD641;
-            --color-fondo-claro: #EEF5E5;
-            --color-texto-oscuro: #223E3C;
+            --color-secundario-claro: #a5d9cf;
+            --color-acento: #bad641;
+            --color-fondo-claro: #eef5e5;
+            --color-texto-oscuro: #223e3c;
+            --color-texto-suave: #526765;
+            --color-blanco: #ffffff;
+            --color-borde: #e0e0e0;
 
             --fuente-principal: "Quicksand", sans-serif;
             --fuente-marca: "Sour Gummy", sans-serif;
         }
 
-        .vet-list,
-        .vet-list-item {
-            list-style: none;
-            text-align: left;
-            padding: .5rem
-        }
-
-        .col-md-6 {
-            background: var(--color-fondo-claro);
-        }
-
-        .row {
-            gap: 20px;
-        }
-
-        h5 {
-            font-family: var(--fuente-marca);
-            color: var(--color-texto-oscuro);
+        .hero-agendarcita {
             position: relative;
-            text-align: center;
-            font-weight: 700;
+            overflow: hidden;
+            padding: 1.5rem 0 3rem;
+            background-color: var(--color-blanco);
         }
 
-        h5 svg {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 2.5rem;
-            color: var(--color-secundario-claro);
+        /* Información principal */
+
+        .hero-agendarcita__contenido {
+            position: relative;
+            z-index: 2;
         }
 
-        /* ====================================================================
-                            INFORMACIÓN DE CONTACTO
-        ==================================================================== */
-        .card-contacto,
-        .card-calendar {
-            max-width: 400px;
-            border: none;
-            border-radius: 20px;
-            background: var(--color-fondo-claro);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, .08);
-        }
-
-        .contacto-header,
-        .calendar-header {
+        .hero-agendarcita__etiqueta {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .contacto-header i {
-            font-size: 50px;
+            gap: 0.6rem;
+            margin-bottom: 0.75rem;
             color: var(--color-primario);
-        }
-
-        .contacto-header h5,
-        .calendar-header h5 {
-            margin: 0;
             font-weight: 700;
-            color: var(--color-texto-oscuro);
-            font-family: var(--fuente-principal);
         }
 
-        .contacto-item {
-            display: flex;
-            gap: 18px;
-            margin-bottom: 22px;
-        }
-
-        .contacto-item i {
-            font-size: 30px;
-            color: var(--color-primario);
-            flex-shrink: 0;
-        }
-
-        .contacto-item h6 {
-            margin: 0;
-            font-weight: 700;
-            color: var(--color-texto-oscuro);
-        }
-
-        .contacto-item p,
-        .card-content p {
-            margin: 0;
-            color: #666;
+        .hero-agendarcita__titulo {
+            margin-bottom: 1rem;
             font-family: var(--fuente-marca);
-        }
-
-        .btn-agendar {
-            background: var(--color-acento);
-            color: var(--color-texto-oscuro);
+            font-size: clamp(3rem, 6vw, 5rem);
             font-weight: 700;
-            border-radius: 12px;
-            padding: 12px;
-            transition: .3s;
-            max-width: 150px;
-        }
-
-        .btn-agendar:hover {
-            background: var(--color-primario);
+            line-height: 1;
             color: var(--color-texto-oscuro);
         }
 
-        .card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+        .hero-agendarcita__descripcion {
+            max-width: 500px;
+            margin-bottom: 1.75rem;
+            color: var(--color-texto-suave);
+            font-size: 1.05rem;
+            line-height: 1.7;
         }
 
-        .card-body {
-            padding: 1rem;
+        .hero-agendarcita__imagen-contenedor {
+            position: relative;
+            min-height: 380px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .hero-agendarcita__imagen {
+            position: relative;
+            z-index: 1;
+            display: block;
+            width: 100%;
+            max-height: 430px;
+            object-fit: contain;
+            object-position: center bottom;
+        }
+
+        .agendar-pasos {
+            padding: 1rem 0 2rem;
+            background-color: var(--color-blanco);
+        }
+
+        .pasos-contenedor {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .paso {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .paso-numero {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--color-borde);
+            border-radius: 50%;
+            background-color: var(--color-blanco);
+            color: var(--color-texto-suave);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .paso-texto {
+            margin-top: 0.5rem;
+            color: var(--color-texto-suave);
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .paso-activo .paso-numero {
+            border-color: var(--color-acento);
+            background-color: var(--color-acento);
+            color: var(--color-blanco);
+        }
+
+        .paso-activo .paso-texto {
+            color: var(--color-acento);
+        }
+
+        .paso-linea {
+            width: 100%;
+            max-width: 180px;
+            height: 1px;
+            background-color: var(--color-borde);
+            margin: 0 0.5rem;
+        }
+
+        .informacion-mascota {
+            padding: 1rem 0 4rem;
+            background-color: var(--color-blanco);
+        }
+
+        .formulario-mascota {
+            max-width: 950px;
+            margin: 0 auto;
+            padding: 1.75rem;
+            border: 1px solid #e8eeee;
+            border-radius: 14px;
+            background-color: var(--color-blanco);
+            box-shadow: 0 4px 20px rgba(34, 62, 60, 0.05);
+        }
+
+        .formulario-mascota__encabezado {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .formulario-mascota__icono {
+            width: 34px;
+            height: 34px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+
+            background-color: var(--color-fondo-claro);
+            color: var(--color-primario);
+            font-size: 0.9rem;
+        }
+
+        .formulario-mascota__encabezado h2 {
+            margin: 0;
+            color: var(--color-texto-oscuro);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .formulario-mascota__encabezado p {
+            margin: 0.15rem 0 0;
+            color: var(--color-texto-suave);
+            font-size: 0.75rem;
+        }
+
+        .form-label {
+            margin-bottom: 0.4rem;
+            color: var(--color-texto-oscuro);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 42px;
+            border: 1px solid #e2e8e6;
+            border-radius: 7px;
+            color: var(--color-texto-oscuro);
+            font-size: 0.75rem;
+            box-shadow: none;
+        }
+
+        .form-control::placeholder {
+            color: #a5aeac;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--color-primario);
+            box-shadow: 0 0 0 0.15rem rgba(23, 169, 167, 0.12);
+        }
+
+        .servicios-seccion {
+            margin-top: 1.75rem;
+        }
+
+        .servicios-seccion__titulo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .servicios-seccion__titulo>i {
+            color: var(--color-primario);
+            font-size: 0.9rem;
+        }
+
+        .servicios-seccion__titulo h3 {
+            margin: 0;
+            color: var(--color-texto-oscuro);
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .servicios-seccion__titulo p {
+            margin: 0.15rem 0 0;
+            color: var(--color-texto-suave);
+            font-size: 0.7rem;
+        }
+
+        .motivo-seccion {
+            margin-top: 1.5rem;
+        }
+
+        .motivo-seccion textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .formulario-mascota__footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+        }
+
+        .btn-continuar {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.55rem 1.2rem;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--color-texto-oscuro);
+            color: var(--color-blanco);
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-continuar:hover {
+            background-color: var(--color-primario-oscuro);
+            color: var(--color-blanco);
+            transform: translateY(-1px);
+        }
+
+        .paso-indicador {
+            color: var(--color-texto-suave);
+
+            font-size: 0.7rem;
+        }
+
+        .motivo-subtexto {
+            font-size: 0.7rem;
+            color: var(--color-texto-suave);
+            margin-top: -0.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Grilla de Tarjetas de Servicios */
+        .servicios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        /* Tarjeta individual interactiva */
+        .servicio-card-option {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem 0.8rem;
+            background-color: var(--color-blanco);
+            border: 1px solid #e2e8e6;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.25s ease;
+            user-select: none;
+        }
+
+        .servicio-card-option:hover {
+            border-color: var(--color-primario);
+            transform: translateY(-2px);
+        }
+
+        /* Estado Seleccionado */
+        .servicio-card-option.selected {
+            border: 2px solid var(--color-primario-oscuro);
+            background-color: #f3f9f8;
+        }
+
+        /* Check de confirmación cuando está activo */
+        .servicio-card-option .card-check {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--color-primario-oscuro);
+            color: #fff;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+        }
+
+        .servicio-card-option.selected .card-check {
+            display: flex;
+        }
+
+        /* Icono dentro de la tarjeta */
+        .servicio-card-option__icono {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: var(--color-fondo-claro);
+            color: var(--color-primario-oscuro);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .servicio-card-option__titulo {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--color-texto-oscuro);
+            margin-bottom: 0.25rem;
+        }
+
+        .servicio-card-option__desc {
+            font-size: 0.65rem;
+            color: var(--color-texto-suave);
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     </style>
-    <title>Document</title>
 </head>
 
 <body>
-    <main>
-        <div class="container text-center">
-            <div class="row justify-content-center gx-4">
-                <div class="col-md-6 pe-md-5" style="width:380px;">
-                    <h5 class="text-nowrap"><i class="fa-solid fa-graduation-cap"></i>
-                        Formación
-                    </h5>
-                    <ul class="vet-list">
-                        <li class="vet-list-item">Médico Veterinario - Universidad Pedagógica y Tecnológica de
-                            Colombia (UPTC) - 2018</li>
-                        <li class="vet-list-item">Diplomado en medicina interna de pequeños animales</li>
-                        <li class="vet-list-item">Técnico laboral en auxiliar de veterinaria</li>
-                        <li class="vet-list-item">Curso de Primeros Auxilios Veterinarios.</li>
-                        <li class="vet-list-item">Capacitación en Nutrición y Bienestar Animal.</li>
-                    </ul>
-                </div>
-                <div class="col-md-6 ps-md-5" style="width:380px;">
-                    <h5 class="text-nowrap"><i class="fa-solid fa-briefcase"></i>
-                        Experiencia</h5>
-                    <ul class="vet-list">
-                        <li class="vet-list-item">Más de 5 años en atención de pequeños animales</li>
-                        <li class="vet-list-item">Consultas a domicilio y en consultorio</li>
-                        <li class="vet-list-item">Vacunación y planes preventivos</li>
-                        <li class="vet-list-item">Control de enfermedades y seguimiento de tratamientos.</li>
-                        <li class="vet-list-item">Educación a propietarios sobre el cuidado responsable de sus mascotas
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- ====================================================================
-                            INFORMACIÓN DE CONTACTO
-             ==================================================================== -->
-        <div class="container-lg contacto mt-5">
-            <div class="row row-cols-1 row-cols-md-2 g-4">
-                <div class="col">
-                    <div class="card card-contacto">
-                        <div class="card-body contacto-header">
-                            <i class="bi bi-info-circle"></i>
-                            <h5 class="card-title">Información de Contacto</h5>
-                        </div>
-                        <div class="card-body contacto-item d-flex">
-                            <i class="bi bi-geo-alt"></i>
-                            <div class="card-content">
-                                <h6 class="text-body-secondary">Ubicación</h6>
-                                <p>Bogotá, Colombia</p>
-                            </div>
-                        </div>
-                        <div class="card-body contacto-item d-flex">
-                            <i class="bi bi-telephone"></i>
-                            <div class="card-content">
-                                <h6 class="text-body-secondary">Teléfono</h6>
-                                <p>(+57) 300 1234567</p>
-                            </div>
-                        </div>
-                        <div class="card-body contacto-item d-flex">
-                            <i class="bi bi-envelope"></i>
-                            <div class="card-content">
-                                <h6 class="text-body-secondary">Correo</h6>
-                                <p>huellavet.lamyg@gmail.com</p>
-                            </div>
-                        </div>
-                        <div class="card-body contacto-item d-flex">
-                            <i class="bi bi-clock"></i>
-                            <div class="card-content">
-                                <h6 class="text-body-secondary">Horario de atención</h6>
-                                <p>Lun. a Vier. 9:00 am - 5:00pm</p>
-                                <p>Sabados 8:00 am - 4:00pm</p>
-                            </div>
+    <main class="contenido-principal">
+        <section id="hero-agendarcita" class="hero-agendarcita">
+            <div class="container">
+                <div class="row align-items-center g-4">
+                    <!-- Información -->
+                    <div class="col-12 col-lg-5 hero-agendarcita__contenido">
+                        <p class="hero-agendarcita__etiqueta">
+                            <i class="bi bi-paw-fill" aria-hidden="true"></i>
+                            Agendar una cita
+                        </p>
+                        <h1 class="hero-agendarcita__titulo">
+                            Agenda la mejor atención para tu <span>mejor amigo</span>
+                        </h1>
+                        <p class="hero-agendarcita__descripcion">
+                            Completa el formulario en tres pasos y agenda la mejor atención para tu mascota
+                        </p>
+                    </div>
+                    <div class="col-12 col-lg-7">
+                        <div class="hero-agendarcita__imagen-contenedor">
+                            <img src="../img/hero-agendarcita..png" class="img-fluid hero-agendarcita__imagen"
+                                alt="Perro y gato representando la atención veterinaria de HuellaVet">
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="card mb-3 card-calendar" style="max-width: 400px;">
-                        <div class="row g-0">
-                            <div class="col-md-8">
-                                <div class="card-body">
-                                    <div class="calendar-header">
-                                        <h5 class="card-title">Agenda una cita</h5>
-                                    </div>
-                                    <div class="card-content">
-                                        <p class="card-text">Reserva tu cita de manera rápida y sencilla.
-                                            Estoy disponible para cuidar la salud de tu mascota.
-                                        </p>
-                                    </div>
+            </div>
+        </section>
+
+        <section id="agendarcita" class="agendar-seccion py-5">
+            <div class="container">
+                <div class="paso-mascota__progreso">
+                    <div class="progreso-item progreso-item--activo">
+                        <span class="progreso-numero">1</span>
+                        <span class="progreso-texto">información de la mascota</span>
+                    </div>
+                    <div class="progreso-linea"></div>
+                    <div class="progreso-item">
+                        <span class="progreso-numero">2</span>
+                        <span class="progreso-texto">Fecha y hora</span>
+                    </div>
+                    <div class="progreso-linea"></div>
+                    <div class="progreso-item">
+                        <span class="progreso-numero">3</span>
+                        <span class="progreso-texto">Datos de agendarcita</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="informacion-mascota">
+            <div class="container">
+                <div class="formulario-mascota">
+                    <div class="formulario-mascota__encabezado">
+                        <div class="formulario-mascota__icono">
+                            <i class="bi bi-paw-fill"></i>
+                        </div>
+                        <div>
+                            <h2>Información de la mascota</h2>
+                            <p>Cuéntanos un poco sobre tu mascota</p>
+                        </div>
+                    </div>
+
+                    <form id="formPaso1">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label for="nombreMascota" class="form-label">Nombre de tu mascota</label>
+                                <input type="text" class="form-control" id="nombreMascota" placeholder="Ej. Max"
+                                    required>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="especieMascota" class="form-label">Especie</label>
+                                <select class="form-select" id="especieMascota" required>
+                                    <option value="" disabled selected>Selecciona la especie</option>
+                                    <option value="perro">Perro</option>
+                                    <option value="gato">Gato</option>
+                                    <option value="ave">Ave</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="razaMascota" class="form-label">Raza (opcional)</label>
+                                <input type="text" class="form-control" id="razaMascota"
+                                    placeholder="Ej. Golden Retriever">
+                            </div>
+
+                            <div class="col-6 col-md-3">
+                                <label for="edadMascota" class="form-label">Edad</label>
+                                <input type="text" class="form-control" id="edadMascota" placeholder="Ej. 3 años">
+                            </div>
+
+                            <div class="col-6 col-md-3">
+                                <label for="pesoMascota" class="form-label">Peso (aprox.)</label>
+                                <input type="text" class="form-control" id="pesoMascota" placeholder="Ej. 20 kg">
+                            </div>
+                        </div>
+
+                        <div class="servicios-seccion">
+                            <div class="servicios-seccion__titulo">
+                                <i class="bi bi-grid-3x3-gap-fill"></i>
+                                <div>
+                                    <h3>Tipo de servicio</h3>
+                                    <p>Selecciona el servicio que necesitas</p>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <img src="img/icon-calendar.png" class="img-fluid rounded-start" alt="...">
-                            </div>
-                            <div class="col-12 d-flex justify-content-center">
-                                <button type="button"
-                                    class="btn btn-agendar d-flex align-items-center justify-content-center gap-2"><i
-                                        class="bi bi-calendar-event"></i>Agendar
-                                    Cita
-                                </button>
-                            </div>
+
+                            <div id="servicios-container" class="servicios-grid"></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- ====================================================================
-                                        REGISTRO
-             ==================================================================== -->
-        <section class="card" id="login&register">
-            <div class="register card-body">
-                <img src="" alt="huella de perrito con un corazón en el centro de la almohadilla">
-                <a class="btn-index" href="#index"></a>
-                <div class="register-container">
-                    <a class="login-section" href="#login"></a>
-                    <h6 class="register-subtitle">Registro</h6>
-                    <form class="register-datos">
-                        <div class="mb-3">
-                            <label for="firstname" class="form-label">Nombre(s)</label>
-                            <input type="text" class="form-control" id="firstname" name="name" placeholder="Nombre(s)" required>
+
+                        <div class="motivo-seccion">
+                            <label for="motivoConsulta" class="form-label">Motivo de la consulta</label>
+                            <p class="motivo-subtexto">Cuéntanos brevemente el motivo de tu visita</p>
+                            <textarea class="form-control" id="motivoConsulta" rows="3"
+                                placeholder="Describe el motivo de la consulta o los síntomas que presenta tu mascota..."></textarea>
                         </div>
-                        <div class="mb-3">
-                            <label for="last-name" class="form-label">Apellido(s)</label>
-                            <input type="text" class="form-control" id="last-name" name="lastname" placeholder="Apellido(s)" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Correo Eletronico</label>
-                            <input type="email" class="form-control" id="email" name="email" placeholder="correo@ejemplo.com" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="city" class="form-label"> Ciudad</label>
-                            <select class="form-select" name="city" id="city" required>
-                                <option selected disabled>Selecciona una Ciudad</option>
-                                <option value="1">Bogotá</option>
-                                <option value="2">Manizales</option>
-                                <option value="3">Pereira</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="telephone" class="form-label">Teléfono</label>
-                            <input type="tel" class="form-control" id="telephone" name="telephone"
-                                placeholder="Teléfono: 000 0000000">
-                        </div>
-                        <div class="mb-3">
-                            <label for="date" class="form-label"> Fecha de Nacimiento</label>
-                            <input type="date" class="form-control" id="date" name="date">
-                        </div>
-                        <div class="mb-3">
-                            <label for="pass" class="form-label">Digita una contraseña</label>
-                            <input type="password" class="form-control" id="pass" name="password" placeholder="Contraseña"
-                                required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="confirmpass" class="form-label">Confirma la contraseña</label>
-                            <input type="password" class="form-control" id="confirmpass" name="confirmpassword"
-                                placeholder="Confirmar Contraseña" required>
-                        </div>
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="checkbox" id="privacy"
-                                name="privacy" required>
-                            <label class="form-check-label" for="privacy">He leido y acepto la <a
-                                    href="politicas.html">Política de
-                                    privacidad</a></label>
-                        </div>
-                        <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="conditions"
-                                name="conditions" required>
-                            <label class="form-check-label" for="conditions">He leido y acepto los <a
-                                    href="terminos.html">Terminos y
-                                    condiciones</a></label>
-                        </div>
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-primary">Registrarse</button>
+
+                        <div class="formulario-mascota__footer">
+                            <button type="submit" class="btn btn-continuar" id="btnContinuar">
+                                Continuar <i class="bi bi-arrow-right"></i>
+                            </button>
+                            <span class="paso-indicador">Paso 1 de 3</span>
                         </div>
                     </form>
                 </div>
             </div>
         </section>
     </main>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
+    <!-- Footer -->
+    <div id="footer-container"></div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            cargarServiciosDesdeDashboard();
+            iniciarEnvioPaso1();
+        });
+
+        // 1. Obtener y renderizar los servicios desde LocalStorage (Dashboard)
+        function cargarServiciosDesdeDashboard() {
+            const contenedor = document.getElementById("servicios-container");
+            if (!contenedor) return;
+
+            // Obtener array 'servicios' creado por agregar-servicio.js
+            const servicios = JSON.parse(localStorage.getItem("servicios")) || [];
+
+            // Si aún no se han creado servicios en el admin, mostrar mensaje
+            if (servicios.length === 0) {
+                contenedor.innerHTML = `
+            <div class="col-12 text-center py-4 text-muted">
+                <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
+                <p class="mb-0">No hay servicios registrados en el sistema.</p>
+            </div>
+        `;
+                return;
+            }
+
+            contenedor.innerHTML = ""; // Limpiar contenedor
+
+            // Generar la tarjeta dinámica para cada servicio cargado desde el dashboard
+            servicios.forEach((servicio, index) => {
+                const card = document.createElement("div");
+                card.className = `servicio-card-option ${index === 0 ? 'selected' : ''}`;
+                card.dataset.id = servicio.id;
+
+                card.innerHTML = `
+            <div class="card-check"><i class="bi bi-check-lg"></i></div>
+            <div class="servicio-card-option__icono">
+                <i class="${servicio.icono || 'bi bi-paw-fill'}"></i>
+            </div>
+            <div class="servicio-card-option__titulo">${servicio.nombre}</div>
+            <div class="servicio-card-option__desc">${servicio.descripcion}</div>
+        `;
+
+                // Selección interactiva de tarjeta
+                card.addEventListener("click", function () {
+                    document.querySelectorAll(".servicio-card-option").forEach(c => c.classList.remove("selected"));
+                    card.classList.add("selected");
+                });
+
+                contenedor.appendChild(card);
+            });
+        }
+
+        // 2. Guardar la información del Paso 1 para pasar al Paso 2
+        function iniciarEnvioPaso1() {
+            const btnContinuar = document.getElementById("btnContinuar");
+            if (!btnContinuar) return;
+
+            btnContinuar.addEventListener("click", function (e) {
+                e.preventDefault();
+
+                const tarjetaSeleccionada = document.querySelector(".servicio-card-option.selected");
+
+                if (!tarjetaSeleccionada) {
+                    alert("Por favor selecciona un tipo de servicio.");
+                    return;
+                }
+
+                const datosPaso1 = {
+                    nombreMascota: document.getElementById("nombreMascota")?.value || "",
+                    especie: document.getElementById("especieMascota")?.value || "",
+                    raza: document.getElementById("razaMascota")?.value || "",
+                    edad: document.getElementById("edadMascota")?.value || "",
+                    peso: document.getElementById("pesoMascota")?.value || "",
+                    servicioId: tarjetaSeleccionada.dataset.id,
+                    motivoConsulta: document.getElementById("motivoConsulta")?.value || ""
+                };
+
+                // Guardar selección para el siguiente paso
+                sessionStorage.setItem("datosCita_Paso1", JSON.stringify(datosPaso1));
+
+                console.log("Paso 1 completado exitosamente:", datosPaso1);
+            });
+        }
+    </script>
 </body>
 
 </html>
