@@ -89,28 +89,27 @@
             object-position: center bottom;
         }
 
-        .agendar-pasos {
-            padding: 1rem 0 2rem;
-            background-color: var(--color-blanco);
+        /* Estilos para ocultar/mostrar pasos */
+        .paso-contenido.d-none {
+            display: none !important;
         }
 
-        .pasos-contenedor {
+        /* Indicadores del Stepper superior */
+        .paso-mascota__progreso {
             display: flex;
             align-items: center;
             justify-content: center;
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
         }
 
-        .paso {
+        .progreso-item {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            min-width: 120px;
-            text-align: center;
+            gap: 0.5rem;
         }
 
-        .paso-numero {
+        .progreso-numero {
             width: 32px;
             height: 32px;
             display: flex;
@@ -120,283 +119,373 @@
             border-radius: 50%;
             background-color: var(--color-blanco);
             color: var(--color-texto-suave);
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             font-weight: 700;
         }
 
-        .paso-texto {
-            margin-top: 0.5rem;
-            color: var(--color-texto-suave);
-            font-size: 0.7rem;
+        .progreso-texto {
+            font-size: 0.8rem;
             font-weight: 600;
+            color: var(--color-texto-suave);
         }
 
-        .paso-activo .paso-numero {
+        .progreso-item--activo .progreso-numero {
             border-color: var(--color-acento);
             background-color: var(--color-acento);
             color: var(--color-blanco);
         }
 
-        .paso-activo .paso-texto {
-            color: var(--color-acento);
+        .progreso-item--completado .progreso-numero {
+            border-color: var(--color-acento);
+            background-color: var(--color-acento);
+            color: var(--color-blanco);
         }
 
-        .paso-linea {
-            width: 100%;
-            max-width: 180px;
-            height: 1px;
+        .progreso-item--activo .progreso-texto {
+            color: var(--color-texto-oscuro);
+            font-weight: 700;
+        }
+
+        .progreso-linea {
+            flex: 1;
+            height: 2px;
             background-color: var(--color-borde);
-            margin: 0 0.5rem;
+            margin: 0 1rem;
         }
 
-        .informacion-mascota {
-            padding: 1rem 0 4rem;
-            background-color: var(--color-blanco);
-        }
-
-        .formulario-mascota {
-            max-width: 950px;
-            margin: 0 auto;
-            padding: 1.75rem;
-            border: 1px solid #e8eeee;
-            border-radius: 14px;
-            background-color: var(--color-blanco);
-            box-shadow: 0 4px 20px rgba(34, 62, 60, 0.05);
-        }
-
-        .formulario-mascota__encabezado {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .formulario-mascota__icono {
-            width: 34px;
-            height: 34px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-
-            background-color: var(--color-fondo-claro);
-            color: var(--color-primario);
-            font-size: 0.9rem;
-        }
-
-        .formulario-mascota__encabezado h2 {
-            margin: 0;
-            color: var(--color-texto-oscuro);
-            font-size: 1rem;
-            font-weight: 700;
-        }
-
-        .formulario-mascota__encabezado p {
-            margin: 0.15rem 0 0;
-            color: var(--color-texto-suave);
-            font-size: 0.75rem;
-        }
-
-        .form-label {
-            margin-bottom: 0.4rem;
-            color: var(--color-texto-oscuro);
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .form-control,
-        .form-select {
-            min-height: 42px;
-            border: 1px solid #e2e8e6;
-            border-radius: 7px;
-            color: var(--color-texto-oscuro);
-            font-size: 0.75rem;
-            box-shadow: none;
-        }
-
-        .form-control::placeholder {
-            color: #a5aeac;
-        }
-
-        .form-control:focus,
-        .form-select:focus {
-            border-color: var(--color-primario);
-            box-shadow: 0 0 0 0.15rem rgba(23, 169, 167, 0.12);
-        }
-
-        .servicios-seccion {
-            margin-top: 1.75rem;
-        }
-
-        .servicios-seccion__titulo {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            margin-bottom: 0.9rem;
-        }
-
-        .servicios-seccion__titulo>i {
-            color: var(--color-primario);
-            font-size: 0.9rem;
-        }
-
-        .servicios-seccion__titulo h3 {
-            margin: 0;
-            color: var(--color-texto-oscuro);
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-
-        .servicios-seccion__titulo p {
-            margin: 0.15rem 0 0;
-            color: var(--color-texto-suave);
-            font-size: 0.7rem;
-        }
-
-        .motivo-seccion {
-            margin-top: 1.5rem;
-        }
-
-        .motivo-seccion textarea {
-            resize: vertical;
-            min-height: 90px;
-        }
-
-        .formulario-mascota__footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: 1.5rem;
-        }
-
-        .btn-continuar {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.55rem 1.2rem;
-            border: none;
-            border-radius: 6px;
-            background-color: var(--color-texto-oscuro);
-            color: var(--color-blanco);
-            font-size: 0.75rem;
-            font-weight: 700;
-            transition: all 0.2s ease;
-        }
-
-        .btn-continuar:hover {
-            background-color: var(--color-primario-oscuro);
-            color: var(--color-blanco);
-            transform: translateY(-1px);
-        }
-
-        .paso-indicador {
-            color: var(--color-texto-suave);
-
-            font-size: 0.7rem;
-        }
-
-        .motivo-subtexto {
-            font-size: 0.7rem;
-            color: var(--color-texto-suave);
-            margin-top: -0.2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Grilla de Tarjetas de Servicios */
+        /* Grilla de servicios (Paso 1) */
         .servicios-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             gap: 0.8rem;
             margin-top: 1rem;
         }
 
-        /* Tarjeta individual interactiva */
         .servicio-card-option {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 1.2rem 0.8rem;
+            padding: 1rem 0.5rem;
             background-color: var(--color-blanco);
             border: 1px solid #e2e8e6;
             border-radius: 12px;
             cursor: pointer;
             text-align: center;
-            transition: all 0.25s ease;
-            user-select: none;
+            transition: all 0.2s ease;
         }
 
-        .servicio-card-option:hover {
-            border-color: var(--color-primario);
-            transform: translateY(-2px);
-        }
-
-        /* Estado Seleccionado */
         .servicio-card-option.selected {
-            border: 2px solid var(--color-primario-oscuro);
-            background-color: #f3f9f8;
+            border: 2px solid var(--color-acento);
+            background-color: #fafcf6;
         }
 
-        /* Check de confirmación cuando está activo */
         .servicio-card-option .card-check {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 20px;
-            height: 20px;
-            background-color: var(--color-primario-oscuro);
+            top: 6px;
+            right: 6px;
+            width: 18px;
+            height: 18px;
+            background-color: var(--color-acento);
             color: #fff;
             border-radius: 50%;
             display: none;
             align-items: center;
             justify-content: center;
-            font-size: 0.65rem;
+            font-size: 0.6rem;
         }
 
         .servicio-card-option.selected .card-check {
             display: flex;
         }
 
-        /* Icono dentro de la tarjeta */
         .servicio-card-option__icono {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background-color: var(--color-fondo-claro);
-            color: var(--color-primario-oscuro);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            margin-bottom: 0.6rem;
+            font-size: 1.3rem;
+            color: var(--color-primario);
+            margin-bottom: 0.4rem;
         }
 
         .servicio-card-option__titulo {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             color: var(--color-texto-oscuro);
-            margin-bottom: 0.25rem;
         }
 
         .servicio-card-option__desc {
             font-size: 0.65rem;
             color: var(--color-texto-suave);
-            line-height: 1.2;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+            margin-top: 0.2rem;
+        }
+
+        /* Calendario y Horas (Paso 2) */
+        .calendario-box {
+            background-color: #fcfdfe;
+            border: 1px solid #e2e8e6;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+
+        .calendario-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+        }
+
+        .btn-cal-nav {
+            background: none;
+            border: none;
+            color: var(--color-texto-suave);
+            cursor: pointer;
+        }
+
+        .calendario-dias-semana {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--color-texto-suave);
+            margin-bottom: 0.4rem;
+        }
+
+        .calendario-dias-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.25rem;
+            text-align: center;
+        }
+
+        .cal-dia {
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--color-texto-oscuro);
+        }
+
+        .cal-dia.deshabilitado {
+            color: #c5cecc;
+            cursor: not-allowed;
+        }
+
+        .cal-dia.seleccionado {
+            background-color: var(--color-acento) !important;
+            color: var(--color-blanco) !important;
+            font-weight: 700;
+        }
+
+        .calendario-leyenda {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.68rem;
+            color: var(--color-texto-suave);
+            margin-top: 0.8rem;
+        }
+
+        .punto-leyenda {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--color-acento);
+        }
+
+        .horarios-scroll {
+            max-height: 250px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .hora-item {
+            padding: 0.6rem;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--color-texto-oscuro);
+            border: 1px solid #e2e8e6;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: var(--color-blanco);
+        }
+
+        .hora-item.seleccionado {
+            background-color: var(--color-acento) !important;
+            color: var(--color-blanco) !important;
+            border-color: var(--color-acento) !important;
+        }
+
+        .alerta-duracion {
+            background-color: #f7f9f8;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.72rem;
+            color: var(--color-texto-suave);
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-volver {
+            border: 1px solid #c5cecc;
+            background-color: transparent;
+            color: var(--color-texto-oscuro);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.55rem 1.2rem;
+            border-radius: 6px;
+        }
+
+        .opcion-recordatorio {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.85rem 1rem;
+            background-color: var(--color-blanco);
+            border: 1px solid #e2e8e6;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .opcion-recordatorio.selected {
+            border: 1.5px solid var(--color-acento);
+            background-color: #fafcf6;
+        }
+
+        .opcion-recordatorio .card-check {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 16px;
+            height: 16px;
+            background-color: var(--color-acento);
+            color: #fff;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.55rem;
+        }
+
+        .opcion-recordatorio.selected .card-check {
+            display: flex;
+        }
+
+        .icono-canal {
+            font-size: 1.3rem;
+            color: var(--color-texto-suave);
+        }
+
+        .color-whatsapp {
+            color: #25d366;
+        }
+
+        .badge-recomendado {
+            font-size: 0.6rem;
+            color: var(--color-acento);
+            font-weight: 700;
+        }
+
+        .resumen-cita-box {
+            background-color: #f7f9f8;
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .resumen-cita__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px dashed #e0e8e6;
+            margin-bottom: 1rem;
+        }
+
+        .btn-editar-resumen {
+            background: none;
+            border: none;
+            color: var(--color-acento);
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .resumen-cita__cuerpo {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .resumen-cita__avatar img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #ffffff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .resumen-cita__detalles {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            font-size: 0.78rem;
+        }
+
+        .resumen-fila {
+            display: flex;
+            gap: 0.5rem;
+            color: var(--color-texto-oscuro);
+        }
+
+        .resumen-fila .label {
+            color: var(--color-texto-suave);
+            width: 70px;
+        }
+
+        .btn-confirmar {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.65rem 1.8rem;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--color-texto-oscuro);
+            color: var(--color-blanco);
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .btn-confirmar:hover {
+            background-color: var(--color-primario-oscuro);
+            color: #ffffff;
+        }
+
+        .text-accent {
+            color: var(--color-acento);
+        }
+
+        .text-small {
+            font-size: 0.75rem;
         }
     </style>
 </head>
 
 <body>
+    <div id="header-container"></div>
+    <div id="authmodal-container"></div>
+
     <main class="contenido-principal">
         <section id="hero-agendarcita" class="hero-agendarcita">
             <div class="container">
                 <div class="row align-items-center g-4">
-                    <!-- Información -->
                     <div class="col-12 col-lg-5 hero-agendarcita__contenido">
                         <p class="hero-agendarcita__etiqueta">
                             <i class="bi bi-paw-fill" aria-hidden="true"></i>
@@ -419,51 +508,52 @@
             </div>
         </section>
 
+        <!-- Progreso de Pasos -->
         <section id="agendarcita" class="agendar-seccion py-5">
             <div class="container">
                 <div class="paso-mascota__progreso">
-                    <div class="progreso-item progreso-item--activo">
+                    <div class="progreso-item progreso-item--activo" id="progreso-paso-1">
                         <span class="progreso-numero">1</span>
-                        <span class="progreso-texto">información de la mascota</span>
+                        <span class="progreso-texto">Información de la mascota</span>
                     </div>
                     <div class="progreso-linea"></div>
-                    <div class="progreso-item">
+                    <div class="progreso-item" id="progreso-paso-2">
                         <span class="progreso-numero">2</span>
                         <span class="progreso-texto">Fecha y hora</span>
                     </div>
                     <div class="progreso-linea"></div>
-                    <div class="progreso-item">
+                    <div class="progreso-item" id="progreso-paso-3">
                         <span class="progreso-numero">3</span>
-                        <span class="progreso-texto">Datos de agendarcita</span>
+                        <span class="progreso-texto">Datos de contacto</span>
                     </div>
                 </div>
             </div>
         </section>
+
         <section class="informacion-mascota">
             <div class="container">
                 <div class="formulario-mascota">
-                    <div class="formulario-mascota__encabezado">
-                        <div class="formulario-mascota__icono">
-                            <i class="bi bi-paw-fill"></i>
+                    <div class="paso-contenido" id="paso-1">
+                        <div class="formulario-mascota__encabezado">
+                            <div class="formulario-mascota__icono">
+                                <i class="bi bi-paw-fill"></i>
+                            </div>
+                            <div>
+                                <h2>Información de la mascota</h2>
+                                <p>Cuéntanos un poco sobre tu mascota</p>
+                            </div>
                         </div>
-                        <div>
-                            <h2>Información de la mascota</h2>
-                            <p>Cuéntanos un poco sobre tu mascota</p>
-                        </div>
-                    </div>
 
-                    <form id="formPaso1">
                         <div class="row g-3">
                             <div class="col-12 col-md-6">
                                 <label for="nombreMascota" class="form-label">Nombre de tu mascota</label>
-                                <input type="text" class="form-control" id="nombreMascota" placeholder="Ej. Max"
-                                    required>
+                                <input type="text" class="form-control" id="nombreMascota" placeholder="Ej. Max">
                             </div>
 
                             <div class="col-12 col-md-6">
                                 <label for="especieMascota" class="form-label">Especie</label>
-                                <select class="form-select" id="especieMascota" required>
-                                    <option value="" disabled selected>Selecciona la especie</option>
+                                <select class="form-select" id="especieMascota">
+                                    <option selected disabled>Selecciona la especie</option>
                                     <option value="perro">Perro</option>
                                     <option value="gato">Gato</option>
                                     <option value="ave">Ave</option>
@@ -472,23 +562,21 @@
                             </div>
 
                             <div class="col-12 col-md-6">
-                                <label for="razaMascota" class="form-label">Raza (opcional)</label>
+                                <label for="razaMascota" class="form-label">Raza (Opcional)</label>
                                 <input type="text" class="form-control" id="razaMascota"
                                     placeholder="Ej. Golden Retriever">
                             </div>
-
                             <div class="col-6 col-md-3">
                                 <label for="edadMascota" class="form-label">Edad</label>
                                 <input type="text" class="form-control" id="edadMascota" placeholder="Ej. 3 años">
                             </div>
-
                             <div class="col-6 col-md-3">
                                 <label for="pesoMascota" class="form-label">Peso (aprox.)</label>
                                 <input type="text" class="form-control" id="pesoMascota" placeholder="Ej. 20 kg">
                             </div>
                         </div>
 
-                        <div class="servicios-seccion">
+                        <div class="servicios-seccion mt-4">
                             <div class="servicios-seccion__titulo">
                                 <i class="bi bi-grid-3x3-gap-fill"></i>
                                 <div>
@@ -496,11 +584,11 @@
                                     <p>Selecciona el servicio que necesitas</p>
                                 </div>
                             </div>
-
+                            <!-- Contenedor dinámico enlazado al Dashboard -->
                             <div id="servicios-container" class="servicios-grid"></div>
                         </div>
 
-                        <div class="motivo-seccion">
+                        <div class="motivo-seccion mt-3">
                             <label for="motivoConsulta" class="form-label">Motivo de la consulta</label>
                             <p class="motivo-subtexto">Cuéntanos brevemente el motivo de tu visita</p>
                             <textarea class="form-control" id="motivoConsulta" rows="3"
@@ -508,104 +596,198 @@
                         </div>
 
                         <div class="formulario-mascota__footer">
-                            <button type="submit" class="btn btn-continuar" id="btnContinuar">
+                            <button type="button" class="btn btn-continuar" id="btnContinuarPaso1">
                                 Continuar <i class="bi bi-arrow-right"></i>
                             </button>
                             <span class="paso-indicador">Paso 1 de 3</span>
                         </div>
-                    </form>
+                    </div>
+
+                    <div class="paso-contenido d-none" id="paso-2">
+                        <div class="formulario-mascota__encabezado">
+                            <div class="formulario-mascota__icono">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+                            <div>
+                                <h2>Fecha y hora</h2>
+                                <p>Selecciona el día y la hora que mejor se adapten a tu tiempo.</p>
+                            </div>
+                        </div>
+
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label mb-2">Selecciona la fecha</label>
+                                <div class="calendario-box">
+                                    <div class="calendario-header">
+                                        <button type="button" class="btn-cal-nav"><i
+                                                class="bi bi-chevron-left"></i></button>
+                                        <span class="fw-bold text-dark">Mayo 2025</span>
+                                        <button type="button" class="btn-cal-nav"><i
+                                                class="bi bi-chevron-right"></i></button>
+                                    </div>
+                                    <div class="calendario-dias-semana">
+                                        <span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span>
+                                    </div>
+                                    <div class="calendario-dias-grid" id="calDiasGrid"></div>
+                                    <div class="calendario-leyenda">
+                                        <span class="punto-leyenda"></span> Fechas disponibles
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label mb-2">Selecciona la hora</label>
+                                <div class="horarios-scroll" id="horariosContainer"></div>
+                            </div>
+                        </div>
+                        <div class="alerta-duracion mt-4">
+                            <i class="bi bi-clock-history me-2"></i>
+                            <span>La duración aproximada de la cita es de 30 a 45 minutos.</span>
+                        </div>
+
+                        <div class="formulario-mascota__footer mt-4">
+                            <button type="button" class="btn btn-volver" id="btnVolverPaso1">
+                                <i class="bi bi-arrow-left"></i> Volver
+                            </button>
+                            <div class="d-flex align-items-center gap-3">
+                                <button type="button" class="btn btn-continuar" id="btnContinuarPaso2">
+                                    Continuar <i class="bi bi-arrow-right"></i>
+                                </button>
+                                <span class="paso-indicador">Paso 2 de 3</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="paso-contenido d-none" id="paso-3">
+                        <div class="formulario-mascota__encabezado">
+                            <div class="formulario-mascota__icono">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <div>
+                                <h2>Datos de contacto</h2>
+                                <p>Completa tus datos para confirmar la cita y recibir la información.</p>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6">
+                                <label for="nombreCliente" class="form-label">Nombre completo</label>
+                                <input type="text" class="form-control" id="nombreCliente"
+                                    placeholder="Tu nombre completo">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="telefonoCliente" class="form-label">Teléfono</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white border-end-0 pe-1">
+                                        <img src="https://flagcdn.com/w20/co.png" alt="Colombia" width="18">
+                                    </span>
+                                    <input type="tel" class="form-control border-start-0 ps-1" id="telefonoCliente"
+                                        placeholder="+57 300 123 4567">
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="emailCliente" class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" id="emailCliente" placeholder="tu@email.com">
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <label for="emailClienteConfirm" class="form-label">Confirmar correo electrónico</label>
+                                <input type="email" class="form-control" id="emailClienteConfirm"
+                                    placeholder="Confirma tu correo">
+                            </div>
+                        </div>
+
+                        <div class="recordatorio-seccion mt-4">
+                            <label class="form-label mb-1">¿Cómo prefieres recibir recordatorios?</label>
+                            <p class="motivo-subtexto">Te enviaremos recordatorios y confirmación de tu cita.</p>
+
+                            <div class="row g-3 mt-1" id="recordatoriosGrid">
+                                <div class="col-12 col-md-4">
+                                    <div class="opcion-recordatorio selected" data-canal="whatsapp">
+                                        <div class="card-check"><i class="bi bi-check-lg"></i></div>
+                                        <i class="bi bi-whatsapp icono-canal color-whatsapp"></i>
+                                        <div>
+                                            <strong class="d-block">WhatsApp</strong>
+                                            <span class="badge-recomendado">Recomendado</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <div class="opcion-recordatorio" data-canal="email">
+                                        <div class="card-check"><i class="bi bi-check-lg"></i></div>
+                                        <i class="bi bi-envelope icono-canal"></i>
+                                        <div>
+                                            <strong class="d-block">Correo electrónico</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resumen-cita-box mt-4">
+                            <div class="resumen-cita__header">
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-paw-fill color-primario"></i>
+                                    <strong class="text-dark">Resumen de tu cita</strong>
+                                </div>
+                            </div>
+
+                            <div class="resumen-cita__cuerpo">
+                                <div class="resumen-cita__avatar">
+                                    <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80&w=200"
+                                        id="resumenFotoMascota" alt="Mascota">
+                                </div>
+                                <div class="resumen-cita__detalles">
+                                    <div class="resumen-fila">
+                                        <span class="label">Mascota:</span>
+                                        <strong id="resumenNombreMascota">Max (Golden Retriever)</strong>
+                                    </div>
+                                    <div class="resumen-fila">
+                                        <span class="label">Servicio:</span>
+                                        <span id="resumenServicio">Consulta general</span>
+                                    </div>
+                                    <div class="resumen-fila">
+                                        <span class="label">Fecha:</span>
+                                        <span id="resumenFecha">Viernes, 16 de mayo de 2025</span>
+                                    </div>
+                                    <div class="resumen-fila">
+                                        <span class="label">Hora:</span>
+                                        <span id="resumenHora">10:00 a. m.</span>
+                                    </div>
+                                    <div class="resumen-fila">
+                                        <span class="label">Duración:</span>
+                                        <span id="resumenDuracion">30 - 45 minutos aprox.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mt-4">
+                            <input class="form-check-input" type="checkbox" id="aceptaTerminos" required>
+                            <label class="form-check-label text-suave text-small" for="aceptaTerminos">
+                                Acepto los <a href="#" class="text-accent fw-bold text-decoration-none">Términos y
+                                    condiciones</a> y la <a href="#"
+                                    class="text-accent fw-bold text-decoration-none">Política de privacidad</a>.
+                            </label>
+                        </div>
+
+                        <div class="formulario-mascota__footer mt-4">
+                            <button type="button" class="btn btn-volver" id="btnVolverPaso2">
+                                <i class="bi bi-arrow-left"></i> Volver
+                            </button>
+                            <button type="button" class="btn btn-confirmar" id="btnConfirmarCita">
+                                <i class="bi bi-calendar-check me-2"></i> Confirmar cita
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
     </main>
-    <!-- Footer -->
     <div id="footer-container"></div>
-    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            cargarServiciosDesdeDashboard();
-            iniciarEnvioPaso1();
-        });
-
-        // 1. Obtener y renderizar los servicios desde LocalStorage (Dashboard)
-        function cargarServiciosDesdeDashboard() {
-            const contenedor = document.getElementById("servicios-container");
-            if (!contenedor) return;
-
-            // Obtener array 'servicios' creado por agregar-servicio.js
-            const servicios = JSON.parse(localStorage.getItem("servicios")) || [];
-
-            // Si aún no se han creado servicios en el admin, mostrar mensaje
-            if (servicios.length === 0) {
-                contenedor.innerHTML = `
-            <div class="col-12 text-center py-4 text-muted">
-                <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
-                <p class="mb-0">No hay servicios registrados en el sistema.</p>
-            </div>
-        `;
-                return;
-            }
-
-            contenedor.innerHTML = ""; // Limpiar contenedor
-
-            // Generar la tarjeta dinámica para cada servicio cargado desde el dashboard
-            servicios.forEach((servicio, index) => {
-                const card = document.createElement("div");
-                card.className = `servicio-card-option ${index === 0 ? 'selected' : ''}`;
-                card.dataset.id = servicio.id;
-
-                card.innerHTML = `
-            <div class="card-check"><i class="bi bi-check-lg"></i></div>
-            <div class="servicio-card-option__icono">
-                <i class="${servicio.icono || 'bi bi-paw-fill'}"></i>
-            </div>
-            <div class="servicio-card-option__titulo">${servicio.nombre}</div>
-            <div class="servicio-card-option__desc">${servicio.descripcion}</div>
-        `;
-
-                // Selección interactiva de tarjeta
-                card.addEventListener("click", function () {
-                    document.querySelectorAll(".servicio-card-option").forEach(c => c.classList.remove("selected"));
-                    card.classList.add("selected");
-                });
-
-                contenedor.appendChild(card);
-            });
-        }
-
-        // 2. Guardar la información del Paso 1 para pasar al Paso 2
-        function iniciarEnvioPaso1() {
-            const btnContinuar = document.getElementById("btnContinuar");
-            if (!btnContinuar) return;
-
-            btnContinuar.addEventListener("click", function (e) {
-                e.preventDefault();
-
-                const tarjetaSeleccionada = document.querySelector(".servicio-card-option.selected");
-
-                if (!tarjetaSeleccionada) {
-                    alert("Por favor selecciona un tipo de servicio.");
-                    return;
-                }
-
-                const datosPaso1 = {
-                    nombreMascota: document.getElementById("nombreMascota")?.value || "",
-                    especie: document.getElementById("especieMascota")?.value || "",
-                    raza: document.getElementById("razaMascota")?.value || "",
-                    edad: document.getElementById("edadMascota")?.value || "",
-                    peso: document.getElementById("pesoMascota")?.value || "",
-                    servicioId: tarjetaSeleccionada.dataset.id,
-                    motivoConsulta: document.getElementById("motivoConsulta")?.value || ""
-                };
-
-                // Guardar selección para el siguiente paso
-                sessionStorage.setItem("datosCita_Paso1", JSON.stringify(datosPaso1));
-
-                console.log("Paso 1 completado exitosamente:", datosPaso1);
-            });
-        }
-    </script>
+    <script src="js/agendarcita.js"></script>
 </body>
 
 </html>
