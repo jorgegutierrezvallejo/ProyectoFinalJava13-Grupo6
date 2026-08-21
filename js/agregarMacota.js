@@ -13,6 +13,7 @@ const inputColor = document.querySelector('#color');
 const inputVacunas = document.querySelector('#vacunas');
 const inputAlergias = document.querySelector('#alergias');
 const inputObservaciones = document.querySelector('#observaciones');
+const inputFoto = document.querySelector('#subir-foto');
 
 
 
