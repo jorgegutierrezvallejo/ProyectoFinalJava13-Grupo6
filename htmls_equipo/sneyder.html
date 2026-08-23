@@ -136,9 +136,11 @@
                         </div>
 
                         <div class="formulario-mascota__footer">
-                            <button type="button" class="btn btn-continuar" id="btnContinuarPaso1">
-                                Continuar <i class="bi bi-arrow-right"></i>
-                            </button>
+                            <div class="formulario-mascota__footer-accion formulario-mascota__footer-accion--inicio">
+                                <button type="button" class="btn btn-continuar" id="btnContinuarPaso1">
+                                    Continuar <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
                             <span class="paso-indicador">Paso 1 de 3</span>
                         </div>
                     </div>
@@ -159,10 +161,10 @@
                                 <label class="form-label mb-2">Selecciona la fecha</label>
                                 <div class="calendario-box">
                                     <div class="calendario-header">
-                                        <button type="button" class="btn-cal-nav"><i
+                                        <button type="button" class="btn-cal-nav" id="btnMesAnterior" aria-label="Mes anterior"><i
                                                 class="bi bi-chevron-left"></i></button>
-                                        <span class="fw-bold text-dark">Mayo 2025</span>
-                                        <button type="button" class="btn-cal-nav"><i
+                                        <span class="fw-bold text-dark" id="mesCalendarioTitulo">Mayo 2025</span>
+                                        <button type="button" class="btn-cal-nav" id="btnMesSiguiente" aria-label="Mes siguiente"><i
                                                 class="bi bi-chevron-right"></i></button>
                                     </div>
                                     <div class="calendario-dias-semana">
@@ -188,7 +190,7 @@
                             <button type="button" class="btn btn-volver" id="btnVolverPaso1">
                                 <i class="bi bi-arrow-left"></i> Volver
                             </button>
-                            <div class="d-flex align-items-center gap-3">
+                            <div class="formulario-mascota__footer-accion">
                                 <button type="button" class="btn btn-continuar" id="btnContinuarPaso2">
                                     Continuar <i class="bi bi-arrow-right"></i>
                                 </button>
@@ -244,7 +246,7 @@
 
                             <div class="row g-3 mt-1" id="recordatoriosGrid">
                                 <div class="col-12 col-md-4">
-                                    <div class="opcion-recordatorio selected" data-canal="whatsapp">
+                                    <div class="opcion-recordatorio selected" data-canal="whatsapp" role="button" tabindex="0" aria-pressed="true">
                                         <div class="card-check"><i class="bi bi-check-lg"></i></div>
                                         <i class="bi bi-whatsapp icono-canal color-whatsapp"></i>
                                         <div>
@@ -254,7 +256,7 @@
                                     </div>
                                 </div>
                                 <div class="col-12 col-md-4">
-                                    <div class="opcion-recordatorio" data-canal="email">
+                                    <div class="opcion-recordatorio" data-canal="email" role="button" tabindex="0" aria-pressed="false">
                                         <div class="card-check"><i class="bi bi-check-lg"></i></div>
                                         <i class="bi bi-envelope icono-canal"></i>
                                         <div>
@@ -271,6 +273,9 @@
                                     <i class="bi bi-paw-fill color-primario"></i>
                                     <strong class="text-dark">Resumen de tu cita</strong>
                                 </div>
+                                <button type="button" class="btn-editar-resumen" id="btnEditarCita">
+                                    <i class="bi bi-pencil me-1"></i>Editar
+                                </button>
                             </div>
 
                             <div class="resumen-cita__cuerpo">
