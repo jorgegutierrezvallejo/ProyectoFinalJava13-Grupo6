@@ -330,6 +330,45 @@ body.sidebar-collapsed .admin-page {
     cursor: pointer;
 }
 
+.hv-pendiente__boton--ver {
+    color: var(--hv-primario-oscuro);
+    border: 1.5px solid var(--hv-primario);
+    background-color: #f1f8f7;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.85rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.hv-pendiente__boton--ver:hover {
+    background-color: var(--hv-primario-oscuro);
+    border-color: var(--hv-primario-oscuro);
+    color: #ffffff;
+}
+
+.hv-pendientes-vacio {
+    padding: 2.2rem 1rem;
+    text-align: center;
+    color: #7b8785;
+}
+
+.hv-pendientes-vacio i {
+    font-size: 2.2rem;
+    color: #17a9a7;
+    margin-bottom: 0.4rem;
+    display: block;
+}
+
+.hv-pendientes-vacio p {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
 .hv-pendiente__boton--aprobar {
     color: #2a934b;
     border: 1px solid #54b872;

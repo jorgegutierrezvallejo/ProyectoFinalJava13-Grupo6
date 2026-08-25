@@ -1,0 +1,1179 @@
+/* ==========================================================================
+   HuellaVet - Estilos para Agendar Cita (Formulario Multipaso)
+   ========================================================================== */
+
+:root {
+    --color-primario: #17a9a7;
+    --color-primario-oscuro: #007981;
+    --color-secundario-claro: #a5d9cf;
+    --color-acento: #bad641;
+    --color-fondo-claro: #eef5e5;
+    --color-texto-oscuro: #223e3c;
+    --color-texto-suave: #526765;
+    --color-blanco: #ffffff;
+    --color-borde: #e0e0e0;
+
+    --fuente-principal: "Quicksand", sans-serif;
+    --fuente-marca: "Sour Gummy", sans-serif;
+}
+
+/* =========================================================
+   Contenedor Principal y Sección del Formulario
+   ========================================================= */
+
+.agendar-seccion {
+    padding: 2.5rem 0 1.5rem;
+    background-color: var(--color-blanco);
+}
+
+.informacion-mascota {
+    padding: 0.5rem 0 4rem;
+    background-color: var(--color-blanco);
+}
+
+.formulario-mascota {
+    max-width: 850px;
+    margin: 0 auto;
+    padding: 2.5rem;
+    background-color: var(--color-blanco);
+    border: 1px solid var(--color-borde);
+    border-radius: 1.25rem;
+    box-shadow: 0 0.75rem 2rem rgba(34, 62, 60, 0.08);
+}
+
+/* Control de visibilidad de pasos */
+.paso-contenido.d-none {
+    display: none !important;
+}
+
+/* =========================================================
+   Indicador Superior de Pasos (Stepper)
+   ========================================================= */
+
+.paso-mascota__progreso {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+.progreso-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    transition: all 0.3s ease;
+}
+
+.progreso-numero {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #dde5e3;
+    border-radius: 50%;
+    background-color: var(--color-blanco);
+    color: var(--color-texto-suave);
+    font-size: 0.9rem;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.progreso-texto {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-texto-suave);
+    transition: color 0.3s ease;
+}
+
+.progreso-item--activo .progreso-numero {
+    border-color: var(--color-acento);
+    background-color: var(--color-acento);
+    color: var(--color-texto-oscuro);
+    box-shadow: 0 3px 10px rgba(186, 214, 65, 0.35);
+}
+
+.progreso-item--activo .progreso-texto {
+    color: var(--color-texto-oscuro);
+    font-weight: 700;
+}
+
+.progreso-item--completado .progreso-numero {
+    border-color: var(--color-acento);
+    background-color: var(--color-acento);
+    color: var(--color-texto-oscuro);
+}
+
+.progreso-item--completado .progreso-texto {
+    color: var(--color-primario-oscuro);
+    font-weight: 600;
+}
+
+.progreso-linea {
+    flex: 1;
+    height: 2px;
+    background-color: #e2e8e6;
+    margin: 0 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+/* =========================================================
+   Encabezados de cada Paso del Formulario
+   ========================================================= */
+
+.formulario-mascota__encabezado {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #edf2f0;
+}
+
+.formulario-mascota__icono {
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    flex-shrink: 0;
+    color: var(--color-primario-oscuro);
+    background-color: var(--color-fondo-claro);
+    border-radius: 0.75rem;
+    font-size: 1.4rem;
+}
+
+.formulario-mascota__encabezado h2 {
+    margin: 0;
+    font-family: var(--fuente-marca);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.formulario-mascota__encabezado p {
+    margin: 0.2rem 0 0;
+    font-size: 0.88rem;
+    color: var(--color-texto-suave);
+}
+
+/* =========================================================
+   Controles y Entradas de Formulario (Inputs, Selects)
+   ========================================================= */
+
+.form-label {
+    margin-bottom: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.form-control,
+.form-select {
+    min-height: 2.85rem;
+    padding: 0.6rem 0.95rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 0.65rem;
+    font-size: 0.9rem;
+    color: var(--color-texto-oscuro);
+    background-color: #fcfdfe;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 0.2rem rgba(23, 169, 167, 0.15);
+    background-color: var(--color-blanco);
+}
+
+.form-control::placeholder {
+    color: #9db2af;
+    font-size: 0.88rem;
+}
+
+.input-group-text {
+    border-color: var(--color-borde);
+    border-top-left-radius: 0.65rem;
+    border-bottom-left-radius: 0.65rem;
+}
+
+/* =========================================================
+   Paso 1: Grilla de Servicios y Motivo de Consulta
+   ========================================================= */
+
+.servicios-seccion {
+    margin-top: 1.5rem;
+}
+
+.servicios-seccion__titulo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.servicios-seccion__titulo i {
+    font-size: 1.3rem;
+    color: var(--color-primario);
+}
+
+.servicios-seccion__titulo h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.servicios-seccion__titulo p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-texto-suave);
+}
+
+.servicios-carrusel-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 2.2rem;
+}
+
+.servicios-carrusel-track {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 0.75rem 0.25rem 1rem;
+    width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #bad641 #eef5f2;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0.5rem;
+}
+
+.servicios-carrusel-track::-webkit-scrollbar {
+    height: 6px;
+}
+
+.servicios-carrusel-track::-webkit-scrollbar-track {
+    background: #eef5f2;
+    border-radius: 10px;
+}
+
+.servicios-carrusel-track::-webkit-scrollbar-thumb {
+    background: #a5d9cf;
+    border-radius: 10px;
+}
+
+.btn-carrusel-servicio {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #ffffff;
+    border: 1.5px solid #d5e4e0;
+    color: var(--color-texto-oscuro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(34, 62, 60, 0.12);
+    z-index: 10;
+    transition: all 0.2s ease;
+}
+
+.btn-carrusel-servicio:hover {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+    color: #ffffff;
+}
+
+.btn-carrusel-servicio--prev {
+    left: -2px;
+}
+
+.btn-carrusel-servicio--next {
+    right: -2px;
+}
+
+.btn-carrusel-servicio.disabled,
+.btn-carrusel-servicio:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* TARJETAS DE SERVICIO UNIFORMES (3 visibles en desktop) */
+.servicio-card-option {
+    position: relative;
+    flex: 0 0 calc((100% - 2rem) / 3);
+    min-width: 170px;
+    max-width: 220px;
+    min-height: 225px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.25rem 0.85rem 1rem;
+    background-color: #fafcfc;
+    border: 1.5px solid #e2e8e6;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    scroll-snap-align: start;
+}
+
+.servicio-card-option:hover {
+    border-color: var(--color-primario);
+    background-color: #f4faf9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(23, 169, 167, 0.08);
+}
+
+.servicio-card-option.selected {
+    border-color: var(--color-acento);
+    background-color: #f7faee;
+    box-shadow: 0 4px 14px rgba(186, 214, 65, 0.25);
+}
+
+.servicio-card-option .card-check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    background-color: var(--color-acento);
+    color: var(--color-texto-oscuro);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.servicio-card-option.selected .card-check {
+    display: flex;
+}
+
+.servicio-card-option__icono {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background-color: #eaf6f4;
+    color: var(--color-primario);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 0.65rem;
+    flex-shrink: 0;
+}
+
+.servicio-card-option__titulo {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+    line-height: 1.25;
+    min-height: 2.2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.25rem;
+}
+
+.servicio-card-option__desc {
+    font-size: 0.72rem;
+    color: var(--color-texto-suave);
+    line-height: 1.35;
+    min-height: 2rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.65rem;
+}
+
+.servicio-card-option__badges {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    width: 100%;
+    align-items: center;
+}
+
+/* SELECTOR ALTERNATIVO (PARA MAS DE 8 SERVICIOS) */
+.servicios-selector-wrapper .form-select {
+    border-radius: 12px;
+    border: 1.5px solid #d5e4e0;
+    padding: 0.85rem 1.15rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--color-texto-oscuro);
+    font-weight: 600;
+    background-color: #fbfdfc;
+}
+
+.servicios-selector-wrapper .form-select:focus {
+    border-color: var(--color-primario);
+    box-shadow: 0 0 0 0.25rem rgba(23, 169, 167, 0.15);
+}
+
+.servicio-preview-card {
+    background: #f7faf8;
+    border: 1.5px solid #bad641;
+    border-radius: 14px;
+    padding: 1.15rem 1.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.servicio-preview-card__info {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+}
+
+.servicio-preview-card__icono {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background-color: #eaf6f4;
+    color: var(--color-primario);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.servicio-preview-card__texto h4 {
+    margin: 0 0 0.2rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.servicio-preview-card__texto p {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--color-texto-suave);
+}
+
+.servicios-vacio {
+    padding: 1.75rem;
+    border: 1.5px dashed #d7e2df;
+    border-radius: 12px;
+    text-align: center;
+    color: var(--color-texto-suave);
+    background-color: #fbfdfc;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .servicio-card-option {
+        flex: 0 0 calc((100% - 1rem) / 2);
+        min-width: 145px;
+    }
+    .btn-carrusel-servicio--prev { left: -10px; }
+    .btn-carrusel-servicio--next { right: -10px; }
+}
+
+@media (max-width: 480px) {
+    .servicio-card-option {
+        flex: 0 0 85%;
+    }
+}
+
+.motivo-seccion {
+    margin-top: 1.5rem;
+}
+
+.motivo-subtexto {
+    font-size: 0.8rem;
+    color: var(--color-texto-suave);
+    margin-bottom: 0.4rem;
+}
+
+#motivoConsulta {
+    resize: vertical;
+    min-height: 90px;
+}
+
+/* =========================================================
+   Paso 2: Calendario y Selección de Horarios
+   ========================================================= */
+
+.calendario-box {
+    background-color: #fbfdfc;
+    border: 1px solid #e2e8e6;
+    border-radius: 14px;
+    padding: 1.15rem;
+}
+
+.calendario-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+}
+
+.btn-cal-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: 1px solid #e0e8e6;
+    border-radius: 50%;
+    color: var(--color-texto-oscuro);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-cal-nav:hover {
+    background-color: var(--color-fondo-claro);
+    color: var(--color-primario-oscuro);
+    border-color: var(--color-primario);
+}
+
+#mesCalendarioTitulo {
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+    font-size: 0.95rem;
+}
+
+.calendario-dias-semana {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--color-texto-suave);
+    margin-bottom: 0.5rem;
+}
+
+.calendario-dias-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.3rem;
+    text-align: center;
+}
+
+.cal-dia {
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--color-texto-oscuro);
+    transition: all 0.15s ease;
+}
+
+.cal-dia:hover:not(.deshabilitado):not(.seleccionado) {
+    background-color: var(--color-fondo-claro);
+    color: var(--color-primario-oscuro);
+}
+
+.cal-dia.deshabilitado {
+    color: #c5cecc;
+    cursor: not-allowed;
+}
+
+.cal-dia.seleccionado {
+    background-color: var(--color-acento) !important;
+    color: var(--color-texto-oscuro) !important;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(186, 214, 65, 0.35);
+}
+
+.calendario-leyenda {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.72rem;
+    color: var(--color-texto-suave);
+    margin-top: 0.85rem;
+}
+
+.punto-leyenda {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--color-acento);
+}
+
+.horarios-scroll {
+    max-height: 255px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding-right: 0.3rem;
+}
+
+.horarios-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+
+.horarios-scroll::-webkit-scrollbar-thumb {
+    background-color: #d1dedb;
+    border-radius: 4px;
+}
+
+.hora-item {
+    padding: 0.6rem 0.85rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-texto-oscuro);
+    border: 1px solid #e2e8e6;
+    border-radius: 9px;
+    cursor: pointer;
+    background-color: var(--color-blanco);
+    transition: all 0.2s ease;
+}
+
+.hora-item:hover:not(.seleccionado) {
+    border-color: var(--color-primario);
+    background-color: #f4faf9;
+    color: var(--color-primario-oscuro);
+}
+
+.hora-item.seleccionado {
+    background-color: var(--color-acento) !important;
+    color: var(--color-texto-oscuro) !important;
+    border-color: var(--color-acento) !important;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(186, 214, 65, 0.35);
+}
+
+.alerta-duracion {
+    background-color: var(--color-fondo-claro);
+    border: 1px solid #d9ebd1;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.78rem;
+    color: var(--color-texto-oscuro);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.alerta-duracion i {
+    color: var(--color-primario-oscuro);
+    font-size: 0.95rem;
+}
+
+/* =========================================================
+   Paso 3: Recordatorios y Resumen de Cita
+   ========================================================= */
+
+.recordatorio-seccion {
+    margin-top: 1.5rem;
+}
+
+.opcion-recordatorio {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.15rem 1.25rem;
+    height: 100%;
+    min-height: 66px;
+    background-color: var(--color-blanco);
+    border: 1.5px solid #e2e8e6;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.opcion-recordatorio:hover {
+    border-color: var(--color-primario);
+    background-color: #f4faf9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 121, 129, 0.08);
+}
+
+.opcion-recordatorio.selected {
+    border-color: var(--color-acento);
+    background-color: #f7faee;
+    box-shadow: 0 4px 14px rgba(186, 214, 65, 0.2);
+}
+
+.opcion-recordatorio__contenido {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.opcion-recordatorio__titulo {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+    line-height: 1;
+    margin: 0;
+}
+
+.icono-canal {
+    font-size: 1.45rem;
+    color: var(--color-texto-suave);
+    line-height: 1;
+}
+
+.color-whatsapp {
+    color: #25d366;
+}
+
+/* Badge flotante para 'Recomendado' */
+.badge-tag-flotante {
+    position: absolute;
+    top: -9px;
+    right: 14px;
+    background-color: var(--color-acento);
+    color: var(--color-texto-oscuro);
+    font-size: 0.64rem;
+    font-weight: 700;
+    padding: 0.15rem 0.55rem;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.opcion-recordatorio .card-check {
+    position: absolute;
+    top: 7px;
+    left: 8px;
+    width: 18px;
+    height: 18px;
+    background-color: var(--color-acento);
+    color: var(--color-texto-oscuro);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+}
+
+.opcion-recordatorio.selected .card-check {
+    display: flex;
+}
+
+/* =========================================================
+   Resumen de Cita (Diseño Enriquecido con Alto Detalle)
+   ========================================================= */
+
+.resumen-cita-box {
+    background-color: #ffffff;
+    border: 1.5px solid #e1ebe8;
+    border-radius: 16px;
+    padding: 1.4rem;
+    box-shadow: 0 4px 18px rgba(34, 62, 60, 0.05);
+}
+
+.resumen-cita__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid #edf4f2;
+    margin-bottom: 1.15rem;
+}
+
+.resumen-cita__header-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    background-color: rgba(23, 169, 167, 0.12);
+    color: var(--color-primario-oscuro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.resumen-cita__header-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+    line-height: 1.2;
+}
+
+.resumen-cita__header-sub {
+    font-size: 0.72rem;
+    margin-top: 0.1rem;
+}
+
+.btn-editar-resumen {
+    background-color: #f3f8f7;
+    border: 1px solid #d5e5e2;
+    border-radius: 8px;
+    color: var(--color-primario-oscuro);
+    font-weight: 700;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.btn-editar-resumen:hover {
+    background-color: var(--color-primario-oscuro);
+    color: #ffffff;
+    border-color: var(--color-primario-oscuro);
+}
+
+.resumen-cita__cuerpo {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: 180px;
+}
+
+.resumen-cita__detalles {
+    flex: 0 0 52%;
+    max-width: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.65rem;
+    text-align: left;
+}
+
+.resumen-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.resumen-item__icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background-color: #f1f7f5;
+    color: var(--color-primario-oscuro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+.resumen-item__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: 1.25;
+}
+
+.resumen-item__label {
+    font-size: 0.72rem;
+    color: var(--color-texto-suave);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.resumen-item__valor {
+    font-size: 0.88rem;
+    color: var(--color-texto-oscuro);
+    font-weight: 700;
+}
+
+.resumen-item__valor-suave {
+    font-size: 0.84rem;
+    color: var(--color-texto-oscuro);
+    font-weight: 500;
+}
+
+.resumen-item-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.65rem;
+}
+
+.badge-modalidad {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--color-primario-oscuro);
+    background-color: #e5f5f3;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    border: 1px solid rgba(23, 169, 167, 0.2);
+}
+
+.badge-anticipo {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #007981;
+    background-color: #f7faee;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    border: 1px dashed rgba(23, 169, 167, 0.4);
+    letter-spacing: 0.2px;
+}
+
+.resumen-cita__avatar {
+    flex: 1 1 auto;
+    width: 100%;
+    display: flex;
+    overflow: hidden;
+    border-radius: 14px;
+    border: 2px solid #ffffff;
+    box-shadow: 0 4px 14px rgba(34, 62, 60, 0.08);
+    background-color: var(--color-fondo-claro);
+    cursor: pointer;
+}
+
+/* Imagen de la mascota con cover y hover */
+.resumen-cita__avatar img {
+    width: 100%;
+    height: 100%;
+    min-height: 170px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 12px;
+    display: block;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+}
+
+.resumen-cita__avatar:hover img {
+    transform: scale(1.05);
+}
+
+/* =========================================================
+   Alerta Informativa de Aprobación (Diseño Plano y Limpio)
+   ========================================================= */
+
+.alerta-aprobacion-cita {
+    background-color: #f7faf8;
+    border: 1px solid #e2ebe8;
+    border-left: 4px solid var(--color-primario);
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+}
+
+.alerta-aprobacion-cita__icono {
+    font-size: 1.35rem;
+    color: var(--color-primario);
+    flex-shrink: 0;
+    line-height: 1;
+    margin-top: 0.15rem;
+}
+
+.alerta-aprobacion-cita__texto {
+    font-size: 0.83rem;
+    line-height: 1.5;
+    color: #4f6361;
+}
+
+.text-primario {
+    color: var(--color-primario-oscuro) !important;
+}
+
+/* =========================================================
+   Navegación Inferior de los Pasos (Botones)
+   ========================================================= */
+
+.formulario-mascota__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid #edf2f0;
+}
+
+.formulario-mascota__footer-accion {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.formulario-mascota__footer-accion--inicio {
+    margin-left: 0;
+}
+
+.paso-indicador {
+    flex: 0 0 auto;
+    color: var(--color-texto-suave);
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.btn-continuar,
+.btn-confirmar,
+.btn-volver {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.btn-continuar {
+    min-width: 160px;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--color-primario-oscuro);
+    background-color: var(--color-primario-oscuro);
+    color: var(--color-blanco);
+}
+
+.btn-continuar:hover,
+.btn-continuar:focus-visible {
+    border-color: var(--color-primario);
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 121, 129, 0.18);
+}
+
+.btn-volver {
+    min-width: 120px;
+    padding: 0.75rem 1.25rem;
+    border: 1px solid #c5cecc;
+    background-color: transparent;
+    color: var(--color-texto-oscuro);
+}
+
+.btn-volver:hover,
+.btn-volver:focus-visible {
+    border-color: var(--color-primario);
+    background-color: #f7fbfa;
+    color: var(--color-primario-oscuro);
+}
+
+.btn-confirmar {
+    min-width: 210px;
+    padding: 0.75rem 1.6rem;
+    border: 2px solid var(--color-primario-oscuro);
+    background-color: var(--color-primario-oscuro);
+    color: var(--color-blanco);
+}
+
+.btn-confirmar:hover,
+.btn-confirmar:focus-visible {
+    border-color: var(--color-primario);
+    background-color: var(--color-primario);
+    color: var(--color-blanco);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 121, 129, 0.18);
+}
+
+.btn-continuar:focus-visible,
+.btn-volver:focus-visible,
+.btn-confirmar:focus-visible,
+.btn-editar-resumen:focus-visible,
+.btn-cal-nav:focus-visible,
+.opcion-recordatorio:focus-visible,
+.servicio-card-option:focus-visible,
+.hora-item:focus-visible {
+    outline: 3px solid rgba(186, 214, 65, 0.4);
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   Diseño Responsive
+   ========================================================= */
+
+@media (max-width: 767.98px) {
+    .formulario-mascota {
+        padding: 1.5rem;
+        border-radius: 1rem;
+    }
+
+    .paso-mascota__progreso {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .progreso-linea {
+        display: none;
+    }
+
+    .formulario-mascota__footer {
+        flex-wrap: wrap;
+    }
+
+    .formulario-mascota__footer-accion {
+        width: 100%;
+        margin-left: 0;
+        justify-content: space-between;
+    }
+
+    .formulario-mascota__footer-accion--inicio {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .paso-indicador {
+        margin-left: auto;
+    }
+
+    .btn-continuar,
+    .btn-confirmar {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .resumen-cita__cuerpo {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .resumen-cita__detalles {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .resumen-cita__avatar {
+        flex: 1 1 100%;
+        height: 180px;
+        min-height: 180px;
+    }
+}
+
+@media (max-width: 479.98px) {
+    .formulario-mascota__footer-accion {
+        gap: 0.65rem;
+    }
+
+    .btn-volver,
+    .btn-continuar,
+    .btn-confirmar {
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
+        font-size: 0.8rem;
+    }
+}
