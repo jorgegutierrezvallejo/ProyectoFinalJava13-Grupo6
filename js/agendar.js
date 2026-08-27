@@ -349,7 +349,7 @@
                         nombreMascota,
                         especie,
                         raza: document.getElementById("razaMascota")?.value.trim() || "",
-                        edad: document.getElementById("edadMascota")?.value.trim() || "",
+                        fechaNacimiento: document.getElementById("fechaNacimientoMascota")?.value || "No especificada",
                         peso: (() => {
                             const pVal = document.getElementById("pesoMascota")?.value.trim();
                             const pUnit = document.getElementById("unidadPesoMascota")?.value;

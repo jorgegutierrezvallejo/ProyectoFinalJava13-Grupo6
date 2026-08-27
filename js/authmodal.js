@@ -1,38 +1,85 @@
 function iniciarAuthModal() {
-    const botonLogin = document.getElementById("btn-login");
-    const modal = document.getElementById("auth-modal");
-    const botonCerrar = document.getElementById("btn-close-modal");
 
-    if (!botonLogin || !modal || !botonCerrar) {
-        return;
+
+
+
+
+    let botonLogin = document.getElementById("btn-login");
+    let modal = document.getElementById("auth-modal");
+    let botonCerrar = document.getElementById("btn-close-modal");
+
+    // Modal Admin
+    let botonAdminLogin = document.getElementById("btn-login-admin");
+    let modalAdmin = document.getElementById("modal-auth-admin");
+    let botonCerrarAdmin = document.getElementById("btn-cerrar-modal-admin");
+    let formAdmin = document.getElementById("formulario-login-admin");
+
+    if (botonLogin && modal && botonCerrar) {
+        botonLogin.addEventListener("click", function (evento) {
+            evento.preventDefault();
+            modal.classList.add("active");
+            modal.setAttribute("aria-hidden", "false");
+        });
+
+        botonCerrar.addEventListener("click", function () {
+            cerrarAuthModal(modal);
+        });
+
+        modal.addEventListener("click", function (evento) {
+            if (evento.target === modal) {
+                cerrarAuthModal(modal);
+            }
+        });
     }
 
-    botonLogin.addEventListener("click", function (evento) {
-        evento.preventDefault();
+    if (botonAdminLogin && modalAdmin && botonCerrarAdmin) {
+        botonAdminLogin.addEventListener("click", function (evento) {
+            evento.preventDefault();
+            modalAdmin.classList.add("active");
+            modalAdmin.setAttribute("aria-hidden", "false");
+        });
 
-        modal.classList.add("active");
-        modal.setAttribute("aria-hidden", "false");
-    });
+        botonCerrarAdmin.addEventListener("click", function () {
+            cerrarAuthModal(modalAdmin);
+        });
 
-    botonCerrar.addEventListener("click", function () {
-        cerrarAuthModal(modal);
-    });
+        modalAdmin.addEventListener("click", function (evento) {
+            if (evento.target === modalAdmin) {
+                cerrarAuthModal(modalAdmin);
+            }
+        });
+    }
 
-    modal.addEventListener("click", function (evento) {
-        if (evento.target === modal) {
-            cerrarAuthModal(modal);
-        }
-    });
+    if (formAdmin) {
+        formAdmin.addEventListener("submit", function (e) {
+            e.preventDefault();
+            let adminUser = document.getElementById("usuario-admin").value.trim();
+            let adminPass = document.getElementById("contrasena-admin").value;
+            let errorMsg = document.getElementById("mensaje-error-admin");
+            
+            // Logica simple: redirige al dashboard si escribe algo (o poner credenciales por defecto)
+            if (adminUser === "admin" && adminPass === "admin123") {
+                // Redirigir al dashboard admin (asumiendo que se llama admin-dashboard.html)
+                // Dependiendo de dónde estemos, la ruta puede variar, usaremos la ruta absoluta relativa al origen
+                window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
+            } else {
+                errorMsg.textContent = "Usuario o contraseña incorrectos (Usa: admin / admin123)";
+                errorMsg.style.display = "block";
+            }
+        });
+    }
 
     // ========================================
     // VALIDACIONES DEL FORMULARIO DE REGISTRO
     // ========================================
 
     let formularioRegistro = document.querySelector(".hv-form-register");
+    let formularioLoginUsuario = document.getElementById("formulario-login-usuario");
     let campoNombre = document.getElementById("firstname");
     let campoApellido = document.getElementById("last-name");
     let campoCorreo = document.getElementById("email");
     let campoTelefono = document.getElementById("telephone");
+    let indicativoPais = document.getElementById("country-code");
     let campoContrasena = document.getElementById("pass");
     let campoConfirmar = document.getElementById("confirmpass");
     let campoFecha = document.getElementById("date");
@@ -104,8 +151,7 @@ function iniciarAuthModal() {
         );
     }
 
-    // Valido el telefono
-    // Permite numeros, +, espacios, guiones y parentesis
+    // Valido que sea un celular colombiano de 10 digitos e inicie con 3
     function validarTelefono() {
         let valor = campoTelefono.value.trim();
 
@@ -114,33 +160,20 @@ function iniciarAuthModal() {
             return true;
         }
 
-        let cantidadDigitos = 0;
+        if (valor.length !== 10 || valor[0] !== '3') {
+            return false;
+        }
 
         for (let i = 0; i < valor.length; i++) {
             let caracter = valor[i];
+            let esDigito = caracter >= '0' && caracter <= '9';
 
-            let esDigito =
-                caracter >= '0' &&
-                caracter <= '9';
-
-            let esCaracterPermitido =
-                esDigito ||
-                caracter === '+' ||
-                caracter === ' ' ||
-                caracter === '-' ||
-                caracter === '(' ||
-                caracter === ')';
-
-            if (!esCaracterPermitido) {
+            if (!esDigito) {
                 return false;
-            }
-
-            if (esDigito) {
-                cantidadDigitos++;
             }
         }
 
-        return cantidadDigitos >= 7;
+        return true;
     }
 
     // Valido que la contrasena tenga minimo 6 caracteres
@@ -250,22 +283,15 @@ function iniciarAuthModal() {
     }
 
     if (campoTelefono) {
-        // Bloqueo letras: solo dejo numeros y caracteres permitidos
+        // Bloqueo letras y limito el celular a 10 digitos
         campoTelefono.addEventListener('input', function () {
             let valorLimpio = '';
 
             for (let i = 0; i < campoTelefono.value.length; i++) {
                 let caracter = campoTelefono.value[i];
+                let esDigito = caracter >= '0' && caracter <= '9';
 
-                let esPermitido =
-                    (caracter >= '0' && caracter <= '9') ||
-                    caracter === '+' ||
-                    caracter === ' ' ||
-                    caracter === '-' ||
-                    caracter === '(' ||
-                    caracter === ')';
-
-                if (esPermitido) {
+                if (esDigito && valorLimpio.length < 10) {
                     valorLimpio = valorLimpio + caracter;
                 }
             }
@@ -338,6 +364,49 @@ function iniciarAuthModal() {
     // VALIDACION AL ENVIAR EL FORMULARIO
     // ========================================
 
+    if (formularioLoginUsuario) {
+        formularioLoginUsuario.addEventListener('submit', function (evento) {
+            evento.preventDefault();
+            
+            let correoIngresado = document.getElementById('login-correo').value.trim();
+            let contrasenaIngresada = document.getElementById('login-contrasena').value;
+            let mensajeErrorLogin = document.getElementById('mensaje-error-login');
+            
+            if (mensajeErrorLogin) {
+                mensajeErrorLogin.style.display = 'none';
+                mensajeErrorLogin.textContent = '';
+            }
+            
+            let jsonUsuario = localStorage.getItem('usuarioRegistrado');
+            
+            if (!jsonUsuario) {
+                if (mensajeErrorLogin) {
+                    mensajeErrorLogin.textContent = 'No hay ningún usuario registrado. Por favor, regístrate primero.';
+                    mensajeErrorLogin.style.display = 'block';
+                }
+                return;
+            }
+            
+            try {
+                let usuarioRegistrado = JSON.parse(jsonUsuario);
+                
+                if (correoIngresado === usuarioRegistrado.email && contrasenaIngresada === usuarioRegistrado.contrasena) {
+                    window.location.href = './user/html/user-dashboard.html';
+                } else {
+                    if (mensajeErrorLogin) {
+                        mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
+                        mensajeErrorLogin.style.display = 'block';
+                    }
+                }
+            } catch(e) {
+                if (mensajeErrorLogin) {
+                    mensajeErrorLogin.textContent = 'Error al leer los datos de registro.';
+                    mensajeErrorLogin.style.display = 'block';
+                }
+            }
+        });
+    }
+
     formularioRegistro.addEventListener('submit', function (evento) {
         evento.preventDefault();
 
@@ -393,6 +462,7 @@ function iniciarAuthModal() {
         let datosUsuario = {
             nombreCompleto: (campoNombre?.value || "") + " " + (campoApellido?.value || ""),
             telefono: campoTelefono?.value || "",
+            indicativoPais: indicativoPais?.value || "+57",
             email: campoCorreo?.value || "",
             contrasena: campoContrasena?.value || ""
         };

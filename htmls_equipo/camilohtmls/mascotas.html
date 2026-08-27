@@ -65,17 +65,11 @@
                             </div>
                         </div>
 
-                        <!-- Fila 2: Edad, Sexo, Peso -->
+                        <!-- Fila 2: Nacimiento, Sexo, Peso -->
                         <div class="row mb-3">
                             <div class="col-12 col-md-4 mb-3 mb-md-0">
-                                <label class="form-label">Edad <span class="asterisco">*</span></label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control" id="edad"  placeholder="Ej. 3" required>
-                                    <select class="form-select" id="unidad-edad"  style="max-width: 95px;">
-                                        <option value="anos">Años</option>
-                                        <option value="meses">Meses</option>
-                                    </select>
-                                </div>
+                                <label class="form-label">Nacimiento (aprox.) <span class="asterisco">*</span></label>
+                                <input type="date" class="form-control" id="fechaNacimientoMascota" required onclick="this.max=new Date().toISOString().split('T')[0]">
                             </div>
                             <div class="col-12 col-md-4 mb-3 mb-md-0">
                                 <label for="sexo-mascota" class="form-label">Sexo <span
@@ -99,7 +93,7 @@
                         <div class="row mb-3">
                             <div class="col-12 col-md-6 mb-3 mb-md-0">
                                 <label for="fecha-nacimiento" class="form-label">Fecha de nacimiento</label>
-                                <input type="date" class="form-control text-muted" id="fecha-nacimiento">
+                                <input type="date" class="form-control text-muted" id="fecha-nacimiento" onclick="this.max=new Date().toISOString().split('T')[0]">
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="color" class="form-label">Color</label>

@@ -91,14 +91,8 @@
                                     placeholder="Ej. Golden Retriever">
                             </div>
                             <div class="col-6 col-md-3">
-                                <label for="edadMascota" class="form-label">Edad</label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control" id="edadMascota" placeholder="Ej. 3" min="0" max="99" oninput="if(this.value.length > 2) this.value = this.value.slice(0, 2);">
-                                    <select class="form-select" id="unidadEdadMascota" style="max-width: 90px; padding-left: 5px; padding-right: 25px;">
-                                        <option value="años">Años</option>
-                                        <option value="meses">Meses</option>
-                                    </select>
-                                </div>
+                                <label for="fechaNacimientoMascota" class="form-label">Nacimiento (aprox.)</label>
+                                <input type="date" class="form-control" id="fechaNacimientoMascota" onclick="this.max=new Date().toISOString().split('T')[0]">
                             </div>
                             <div class="col-6 col-md-3">
                                 <label for="pesoMascota" class="form-label">Peso (aprox.)</label>

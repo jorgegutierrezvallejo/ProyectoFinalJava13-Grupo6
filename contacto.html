@@ -301,14 +301,10 @@
                                         </div>
 
                                         <div class="col-12 col-md-4">
-
-                                            <label for="edad" class="form-label">
-                                                Edad
+                                            <label for="fechaNacimientoMascota" class="form-label">
+                                                Nacimiento (aprox.)
                                             </label>
-
-                                            <input type="number" class="form-control" id="edad" name="edad"
-                                                placeholder="Edad" min="0">
-
+                                            <input type="date" class="form-control" id="fechaNacimientoMascota" name="fechaNacimientoMascota" onclick="this.max=new Date().toISOString().split('T')[0]">
                                         </div>
 
                                         <div class="col-12 col-md-4">
