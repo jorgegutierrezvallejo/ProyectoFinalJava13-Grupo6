@@ -21,6 +21,21 @@ const zonaUpload = document.querySelector('.zona-upload');
 const botonguardarqs = document.querySelector('.btn-guardar');
 
 
+
+
+
+
+if (inputFecha) {
+    const hoy = new Date();
+    const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0'); 
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    
+    const fechaMaxima = `${anio}-${mes}-${dia}`;
+    inputFecha.max = fechaMaxima; 
+}
+
+
 inputFoto.addEventListener('change', function() {
     
     
