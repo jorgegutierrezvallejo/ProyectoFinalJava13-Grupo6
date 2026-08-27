@@ -389,6 +389,19 @@ function iniciarAuthModal() {
             return;
         }
 
+        // Crear objeto JSON con los datos del usuario
+        let datosUsuario = {
+            nombreCompleto: (campoNombre?.value || "") + " " + (campoApellido?.value || ""),
+            telefono: campoTelefono?.value || "",
+            email: campoCorreo?.value || "",
+            contrasena: campoContrasena?.value || ""
+        };
+
+        // Convertir a string JSON y guardar en LocalStorage
+        let jsonUsuario = JSON.stringify(datosUsuario);
+        localStorage.setItem('usuarioRegistrado', jsonUsuario);
+        console.log("Usuario registrado en localStorage:", jsonUsuario);
+
         // Si todo esta bien, muestro mensaje de exito
         mostrarMensaje(
             '¡Registro exitoso!',
