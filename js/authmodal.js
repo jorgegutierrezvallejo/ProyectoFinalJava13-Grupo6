@@ -35,6 +35,7 @@ function iniciarAuthModal() {
     let campoTelefono = document.getElementById("telephone");
     let campoContrasena = document.getElementById("pass");
     let campoConfirmar = document.getElementById("confirmpass");
+    let campoFecha = document.getElementById("date");
     let mensajeRegistro = document.getElementById("mensaje-registro");
 
     // Si no existe el formulario de registro, no agrego validaciones
@@ -249,15 +250,59 @@ function iniciarAuthModal() {
     }
 
     if (campoTelefono) {
-        campoTelefono.addEventListener('blur', function () {
-            marcarCampo(campoTelefono, validarTelefono());
-        });
-
+        // Bloqueo letras: solo dejo numeros y caracteres permitidos
         campoTelefono.addEventListener('input', function () {
+            let valorLimpio = '';
+
+            for (let i = 0; i < campoTelefono.value.length; i++) {
+                let caracter = campoTelefono.value[i];
+
+                let esPermitido =
+                    (caracter >= '0' && caracter <= '9') ||
+                    caracter === '+' ||
+                    caracter === ' ' ||
+                    caracter === '-' ||
+                    caracter === '(' ||
+                    caracter === ')';
+
+                if (esPermitido) {
+                    valorLimpio = valorLimpio + caracter;
+                }
+            }
+
+            // Solo actualizo si cambio algo (para no mover el cursor)
+            if (campoTelefono.value !== valorLimpio) {
+                campoTelefono.value = valorLimpio;
+            }
+
             if (validarTelefono()) {
                 marcarCampo(campoTelefono, true);
             }
         });
+
+        campoTelefono.addEventListener('blur', function () {
+            marcarCampo(campoTelefono, validarTelefono());
+        });
+    }
+
+    // Limito la fecha de nacimiento para que no se pueda elegir una fecha futura
+    if (campoFecha) {
+        let hoy = new Date();
+        let anio = hoy.getFullYear();
+        let mes = hoy.getMonth() + 1;
+        let dia = hoy.getDate();
+
+        // Agrego un 0 si el mes o dia tienen un solo digito
+        if (mes < 10) {
+            mes = '0' + mes;
+        }
+        if (dia < 10) {
+            dia = '0' + dia;
+        }
+
+        // Formato YYYY-MM-DD que necesita el input date
+        let fechaMaxima = anio + '-' + mes + '-' + dia;
+        campoFecha.setAttribute('max', fechaMaxima);
     }
 
     if (campoContrasena) {
