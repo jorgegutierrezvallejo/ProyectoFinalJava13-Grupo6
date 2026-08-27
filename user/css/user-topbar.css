@@ -1,0 +1,313 @@
+/* ========================================
+   TOPBAR USUARIO (Proporciones Idénticas a Admin)
+======================================== */
+
+.topbar {
+    width: 100%;
+    height: 86px;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e8edef;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+/* ========================================
+   IZQUIERDA
+======================================== */
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    min-width: 0;
+}
+
+.topbar-menu {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    color: var(--color-texto-oscuro, #17353c);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.topbar-menu:hover {
+    background-color: #f1f5f5;
+}
+
+.topbar-menu i {
+    font-size: 34px;
+    line-height: 1;
+}
+
+.topbar-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    min-width: 0;
+}
+
+.topbar-title {
+    margin: 0;
+    color: var(--color-texto-oscuro, #17353c);
+    font-family: "Quicksand", sans-serif;
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.topbar-title-icon {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #71d7ca;
+    font-size: 25px;
+    line-height: 1;
+    transform: translateY(3px);
+}
+
+/* ========================================
+   DERECHA
+======================================== */
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+/* BOTÓN AGENDAR CITA (Mismos Estilos que Agregar Servicio en Admin) */
+.topbar-agendar-btn,
+.topbar-add-service {
+    min-width: 215px;
+    height: 48px;
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: var(--color-acento, #b8d900);
+    border-radius: 12px;
+    color: var(--color-texto-oscuro, #17353c);
+    font-family: "Quicksand", sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.topbar-agendar-btn:hover,
+.topbar-add-service:hover {
+    background-color: #a8c800;
+    color: var(--color-texto-oscuro, #17353c);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(184, 217, 0, 0.25);
+}
+
+.topbar-agendar-btn i,
+.topbar-add-service i {
+    font-size: 21px;
+}
+
+/* NOTIFICACIONES */
+.topbar-notification {
+    width: 47px;
+    height: 47px;
+    position: relative;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    color: var(--color-texto-oscuro, #17353c);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.topbar-notification:hover {
+    background-color: #f3f6f6;
+}
+
+.topbar-notification i {
+    font-size: 27px;
+}
+
+.topbar-notification-badge {
+    min-width: 21px;
+    height: 21px;
+    padding: 0 5px;
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-acento, #b8d900);
+    border-radius: 50px;
+    color: var(--color-texto-oscuro, #17353c);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* ========================================
+   PERFIL DE USUARIO
+======================================== */
+
+.topbar-profile {
+    position: relative;
+}
+
+.topbar-profile-button {
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: none;
+    border-radius: 12px;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.topbar-profile-button:hover {
+    background-color: #f5f7f7;
+}
+
+.topbar-user-avatar {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: var(--color-primario, #17a9a7);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.topbar-profile-info {
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    text-align: left;
+}
+
+.topbar-profile-name {
+    margin: 0;
+    color: var(--color-texto-oscuro, #17353c);
+    font-family: "Quicksand", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.topbar-profile-role {
+    margin: 0;
+    color: #75858a;
+    font-family: "Quicksand", sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.topbar-profile-arrow {
+    color: #75858a;
+    font-size: 16px;
+    line-height: 1;
+}
+
+/* DROPDOWN MENU */
+.topbar-profile-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 220px;
+    background-color: #ffffff;
+    border: 1px solid #e0ece9;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(34, 62, 60, 0.1);
+    padding: 0.6rem;
+    display: none;
+    flex-direction: column;
+    z-index: 200;
+}
+
+.topbar-profile-menu.show {
+    display: flex;
+}
+
+.topbar-profile-header {
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar-profile-header strong {
+    font-size: 0.9rem;
+    color: var(--color-texto-oscuro, #17353c);
+}
+
+.topbar-profile-header small {
+    color: #7b9491;
+    font-size: 0.78rem;
+}
+
+.topbar-profile-item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.55rem 0.75rem;
+    color: var(--color-texto-oscuro, #17353c);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.topbar-profile-item:hover {
+    background-color: #f3f8f6;
+    color: var(--color-primario-oscuro, #007981);
+}
+
+@media (max-width: 991.98px) {
+    .topbar {
+        height: 74px;
+        padding: 0 18px;
+    }
+
+    .topbar-menu {
+        display: flex;
+    }
+
+    .topbar-agendar-btn,
+    .topbar-add-service {
+        min-width: auto;
+        padding: 0 14px;
+        font-size: 14px;
+    }
+}

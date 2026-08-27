@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Servicios | HuellaVet</title>
-
+    <link rel="icon" href="../../img/HuellaVet-icon.svg" type="image/svg+xml">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -33,16 +33,16 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
-                        <a href="#" class="text-success text-decoration-none">Servicios</a>
+                        <a href="./admin-servicios.html" class="text-success text-decoration-none">Servicios</a>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Agregar servicio</li>
+                    <li class="breadcrumb-item active" aria-current="page" id="breadcrumbItemActivo">Agregar servicio</li>
                 </ol>
             </nav>
 
             <div class="row mt-4">
                 <section class="col-md-8">
                     <div class="form-container">
-                        <h4 class="text-custom-dark mb-4">Información del servicio</h4>
+                        <h4 class="text-custom-dark mb-4" id="formTitulo">Información del servicio</h4>
 
                         <form id="formServicio" action="#" method="POST">
 
@@ -171,7 +171,7 @@
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
                                         <input type="number" class="form-control" id="precio" name="precio"
-                                            placeholder="Ej. 80000" required>
+                                            placeholder="Ej. 80000" min="1" required>
                                     </div>
                                 </div>
 
@@ -180,22 +180,90 @@
                                         Duración <span class="asterisk">*</span>
                                     </label>
                                     <select class="form-select" id="duracion" name="duracion" required>
-                                        <option value="" selected disabled>Ej. 45 min</option>
+                                        <option value="" selected disabled>Selecciona la duración</option>
                                         <option value="15">15 min</option>
                                         <option value="30">30 min</option>
                                         <option value="45">45 min</option>
-                                        <option value="60">1 hora</option>
+                                        <option value="60">1 hora (60 min)</option>
+                                        <option value="90">1 hora 30 min (90 min)</option>
+                                        <option value="120">2 horas (120 min)</option>
+                                        <option value="150">2 horas 30 min (150 min)</option>
+                                        <option value="180">3 horas (180 min)</option>
+                                        <option value="210">3 horas 30 min (210 min)</option>
+                                        <option value="240">4 horas (240 min)</option>
+                                        <option value="270">4 horas 30 min (270 min)</option>
+                                        <option value="300">5 horas (300 min)</option>
                                     </select>
                                 </div>
                             </div>
 
+                            <!-- Modalidad de atención -->
+                            <div class="mb-4 p-3 rounded-3" style="background-color: #f8faf9; border: 1px solid #e0eae8;">
+                                <label class="form-label text-custom-dark fw-bold d-block mb-2">
+                                    Modalidad de atención <span class="asterisk">*</span>
+                                </label>
+                                <div class="d-flex flex-wrap gap-4 mb-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="modalidadAtencion" id="modalidadClinica" value="clinica" checked>
+                                        <label class="form-check-label text-custom-dark fw-semibold" for="modalidadClinica">
+                                            <i class="bi bi-hospital me-1 text-primary-custom"></i> Atención en Clínica
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="modalidadAtencion" id="modalidadDomicilio" value="domicilio">
+                                        <label class="form-check-label text-custom-dark fw-semibold" for="modalidadDomicilio">
+                                            <i class="bi bi-house-door me-1 text-primary-custom"></i> Servicio a Domicilio
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="modalidadAtencion" id="modalidadVirtual" value="virtual">
+                                        <label class="form-check-label text-custom-dark fw-semibold" for="modalidadVirtual">
+                                            <i class="bi bi-camera-video me-1 text-primary-custom"></i> Consulta Virtual
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Campo de Dirección / Sede para modalidad en clínica -->
+                                <div id="contenedorDireccionClinica" class="mt-3 pt-2 border-top">
+                                    <label for="direccionClinica" class="form-label text-custom-dark fw-bold small">
+                                        Sede o dirección de la clínica <span class="asterisk">*</span>
+                                    </label>
+                                    <input type="text" class="form-control form-control-sm" id="direccionClinica" name="direccionClinica"
+                                        placeholder="Ej. HuellaVet — Sede Centro (Cra 15 # 85-30)" value="HuellaVet — Sede Centro">
+                                    <small class="text-muted d-block mt-1">Esta sede aparecerá en la reserva y en el dashboard del cliente.</small>
+                                </div>
+
+                                <small class="text-muted d-block mt-2" id="ayudaModalidadTexto">Indica cómo se prestará la atención médica.</small>
+                            </div>
+
+                            <!-- Costo de reserva -->
+                            <div class="mb-4 p-3 rounded-3" style="background-color: #f8faf9; border: 1px solid #e0eae8;">
+                                <div class="form-check form-switch mb-0">
+                                    <input class="form-check-input" type="checkbox" role="switch" id="tieneCostoReserva" name="tieneCostoReserva">
+                                    <label class="form-check-label text-custom-dark fw-bold" for="tieneCostoReserva">
+                                        ¿Este servicio requiere costo de reserva (anticipo)?
+                                    </label>
+                                </div>
+                                <div id="contenedorCostoReserva" class="d-none mt-3">
+                                    <label for="costoReserva" class="form-label text-custom-dark fw-bold">
+                                        Valor de la reserva <span class="asterisk">*</span>
+                                    </label>
+                                    <div class="input-group" style="max-width: 320px;">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" class="form-control" id="costoReserva" name="costoReserva"
+                                            placeholder="Ej. 20000" min="1">
+                                    </div>
+                                    <small class="text-muted d-block mt-1">Monto que el cliente debe consignar para apartar su cita.</small>
+                                </div>
+                            </div>
+
                             <div class="d-flex gap-2 mt-4">
-                                <button type="submit" class="btn btn-primary-custom px-4">
+                                <button type="submit" class="btn btn-primary-custom px-4" id="btnSubmitServicio">
                                     <i class="bi bi-floppy"></i>
-                                    Guardar servicio
+                                    <span id="btnSubmitTexto">Guardar servicio</span>
                                 </button>
 
-                                <button type="button" class="btn btn-outline-secondary px-4 text-dark">
+                                <button type="button" class="btn btn-outline-secondary px-4 text-dark" id="btnCancelarServicio" onclick="window.location.href='./admin-servicios.html'">
                                     Cancelar
                                 </button>
                             </div>

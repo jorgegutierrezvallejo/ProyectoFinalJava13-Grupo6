@@ -1,0 +1,612 @@
+/* ========================================
+   DASHBOARD USUARIO (Réplica Pixel-Perfect)
+======================================== */
+
+.user-page {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    background-color: #f7faf8;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-dashboard-content {
+    padding: 2rem 2.25rem;
+    max-width: 1360px;
+    width: 100%;
+}
+
+/* ========================================
+   SALUDO SUPERIOR
+======================================== */
+
+.user-saludo {
+    font-size: 0.98rem;
+    color: #4b6663;
+    margin-bottom: 1.6rem;
+}
+
+.user-saludo strong {
+    color: var(--color-primario-oscuro);
+    font-weight: 700;
+}
+
+/* ========================================
+   KPIS / METRICAS SUPERIORES (4 CARDS)
+======================================== */
+
+.kpis-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem;
+    margin-bottom: 1.85rem;
+}
+
+.kpi-card {
+    background-color: #ffffff;
+    border: 1px solid #e1ebe8;
+    border-radius: 14px;
+    padding: 1.15rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    box-shadow: 0 2px 8px rgba(34, 62, 60, 0.03);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(34, 62, 60, 0.06);
+}
+
+.kpi-card__icono {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.kpi-card__icono--mascotas {
+    background-color: #f1ecf9;
+    color: #7952b3;
+}
+
+.kpi-card__icono--citas {
+    background-color: #e5f6f5;
+    color: #007981;
+}
+
+.kpi-card__icono--recordatorios {
+    background-color: #fdf3e7;
+    color: #d97706;
+}
+
+.kpi-card__icono--vacunas {
+    background-color: #eef8eb;
+    color: #3b8a30;
+}
+
+.kpi-card__info {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-card__label {
+    font-size: 0.76rem;
+    color: #698380;
+    font-weight: 600;
+    margin-bottom: 0.15rem;
+}
+
+.kpi-card__valor {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+    line-height: 1.1;
+    margin-bottom: 0.2rem;
+}
+
+.kpi-card__subtexto {
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.kpi-card__subtexto--morado { color: #8e68cf; }
+.kpi-card__subtexto--verde { color: #17a9a7; }
+.kpi-card__subtexto--naranja { color: #d97706; }
+.kpi-card__subtexto--exito { color: #3b8a30; }
+
+/* ========================================
+   GRILLA PRINCIPAL (2 COLUMNAS)
+======================================= */
+
+.dashboard-main-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 1.5rem;
+}
+
+.dashboard-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* TARJETAS BASE */
+.dash-card {
+    background-color: #ffffff;
+    border: 1px solid #e1ebe8;
+    border-radius: 16px;
+    padding: 1.45rem 1.6rem;
+    box-shadow: 0 2px 10px rgba(34, 62, 60, 0.03);
+}
+
+.dash-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.35rem;
+}
+
+.dash-card__title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+    line-height: 1.2;
+}
+
+.dash-card__subtitle {
+    margin: 0.2rem 0 0;
+    font-size: 0.78rem;
+    color: #728c89;
+}
+
+.dash-card__link {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--color-primario-oscuro);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.dash-card__link:hover {
+    color: var(--color-primario);
+    text-decoration: underline;
+}
+
+/* ========================================
+   SECCION: PROXIMA CITA
+======================================== */
+
+.cita-mascota-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 1.15rem;
+    border-bottom: 1px dashed #dbe7e4;
+    margin-bottom: 1.25rem;
+}
+
+.cita-mascota-info {
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+}
+
+.cita-mascota-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #e5f6e9;
+    color: #2e7d32;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+}
+
+.cita-mascota-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.cita-mascota-nombre {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.cita-mascota-desc {
+    margin: 0.15rem 0 0;
+    font-size: 0.82rem;
+    color: #728c89;
+}
+
+.badge-estado-cita {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #2e7d32;
+    background-color: #e8f5e9;
+    padding: 0.25rem 0.65rem;
+    border-radius: 20px;
+}
+
+/* DETALLES DE LA CITA (GRID 2x2 + Ubicación) */
+.cita-detalles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+    margin-bottom: 1.4rem;
+}
+
+.cita-detalle-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.cita-detalle-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #eef7f6;
+    color: var(--color-primario-oscuro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.cita-detalle-data {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.cita-detalle-label {
+    font-size: 0.72rem;
+    color: #728c89;
+    font-weight: 600;
+}
+
+.cita-detalle-valor {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.cita-detalle-item--full {
+    grid-column: 1 / -1;
+}
+
+/* BOTONES DE ACCION DE LA CITA */
+.cita-acciones {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr 1fr;
+    gap: 0.75rem;
+}
+
+.btn-accion-cita {
+    padding: 0.55rem 0.85rem;
+    font-size: 0.84rem;
+    font-weight: 700;
+    border-radius: 8px;
+    border: 1px solid #d5e4e0;
+    background-color: #ffffff;
+    color: var(--color-texto-oscuro);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+
+.btn-accion-cita:hover {
+    background-color: #f3f8f6;
+    border-color: var(--color-primario-oscuro);
+    color: var(--color-primario-oscuro);
+}
+
+.btn-accion-cita--cancelar {
+    border-color: #fed7d7;
+    color: #e53e3e;
+}
+
+.btn-accion-cita--cancelar:hover {
+    background-color: #fff5f5;
+    border-color: #e53e3e;
+    color: #c53030;
+}
+
+/* ========================================
+   SECCION: RECORDATORIOS
+======================================== */
+
+.recordatorios-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.recordatorio-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 0.95rem;
+    background-color: #fafcfb;
+    border: 1px solid #e5edea;
+    border-radius: 12px;
+    transition: background-color 0.2s ease;
+}
+
+.recordatorio-item:hover {
+    background-color: #f3f8f6;
+}
+
+.recordatorio-main {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.recordatorio-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+
+.recordatorio-icon--morado { background-color: #f3ecf9; color: #805ad5; }
+.recordatorio-icon--verde { background-color: #e6f7eb; color: #38a169; }
+.recordatorio-icon--naranja { background-color: #fef4e8; color: #dd6b20; }
+
+.recordatorio-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.recordatorio-titulo {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+    line-height: 1.25;
+}
+
+.recordatorio-vence {
+    font-size: 0.74rem;
+    color: #728c89;
+}
+
+.badge-recordatorio {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.2rem 0.55rem;
+    border-radius: 20px;
+}
+
+.badge-recordatorio--lila { background-color: #f3ecf9; color: #805ad5; }
+.badge-recordatorio--verde { background-color: #e6f7eb; color: #38a169; }
+.badge-recordatorio--naranja { background-color: #fef4e8; color: #dd6b20; }
+
+/* ========================================
+   SECCION: MIS MASCOTAS
+======================================== */
+
+.mascotas-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+}
+
+.mascota-item-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.95rem 1.1rem;
+    background-color: #fafcfb;
+    border: 1px solid #e5edea;
+    border-radius: 14px;
+    gap: 1rem;
+}
+
+.mascota-item-main {
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+}
+
+.mascota-item-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.mascota-item-avatar--gato { background-color: #e5f6f5; color: #007981; }
+.mascota-item-avatar--perro { background-color: #fef6e7; color: #d97706; }
+
+.mascota-item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.mascota-item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.15rem;
+}
+
+.mascota-item-nombre {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.badge-mascota-raza {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+}
+
+.badge-mascota-raza--azul { background-color: #e9f4ff; color: #2b6cb0; }
+.badge-mascota-raza--dorado { background-color: #fef6e7; color: #b7791f; }
+
+.mascota-item-detalles {
+    font-size: 0.76rem;
+    color: #728c89;
+    margin-bottom: 0.15rem;
+}
+
+.mascota-item-estado {
+    font-size: 0.74rem;
+    font-weight: 600;
+}
+
+.mascota-item-estado--ok { color: #38a169; }
+.mascota-item-estado--aviso { color: #dd6b20; }
+
+.mascota-item-botones {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-mascota-accion {
+    padding: 0.42rem 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    border-radius: 8px;
+    border: 1px solid #d5e4e0;
+    background-color: #ffffff;
+    color: var(--color-texto-oscuro);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.btn-mascota-accion:hover {
+    background-color: var(--color-primario-oscuro);
+    border-color: var(--color-primario-oscuro);
+    color: #ffffff;
+}
+
+/* ========================================
+   SECCION: ACTIVIDAD RECIENTE
+======================================== */
+
+.actividad-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.95rem;
+}
+
+.actividad-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+}
+
+.actividad-icono {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.actividad-icono--cita { background-color: #e5f6f5; color: #007981; }
+.actividad-icono--vacuna { background-color: #e6f7eb; color: #38a169; }
+.actividad-icono--perfil { background-color: #fef6e7; color: #dd6b20; }
+
+.actividad-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.actividad-titulo {
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.actividad-desc {
+    font-size: 0.76rem;
+    color: #728c89;
+    margin: 0.1rem 0;
+}
+
+.actividad-tiempo {
+    font-size: 0.7rem;
+    color: #9ab3b0;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1200px) {
+    .dashboard-main-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .user-page {
+        margin-left: 0;
+    }
+
+    .kpis-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .kpis-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .user-dashboard-content {
+        padding: 1.25rem;
+    }
+
+    .cita-acciones {
+        grid-template-columns: 1fr;
+    }
+
+    .mascota-item-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .mascota-item-botones {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
