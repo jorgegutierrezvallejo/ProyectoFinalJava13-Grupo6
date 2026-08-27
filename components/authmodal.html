@@ -49,16 +49,19 @@
                 <div class="mb-3 campo-formulario">
                     <label for="firstname" class="form-label">Nombre(s)</label>
                     <input type="text" class="form-control" id="firstname" name="name" placeholder="Nombre(s)" required>
+                    <span class="mensaje-error">El nombre debe tener al menos 3 letras</span>
                 </div>
 
                 <div class="mb-3 campo-formulario">
                     <label for="last-name" class="form-label">Apellido(s)</label>
                     <input type="text" class="form-control" id="last-name" name="lastname" placeholder="Apellido(s)" required>
+                    <span class="mensaje-error">El apellido debe tener al menos 3 letras</span>
                 </div>
 
                 <div class="mb-3 campo-formulario">
                     <label for="email" class="form-label">Correo electrónico</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="correo@ejemplo.com" required>
+                    <span class="mensaje-error">Ingresa un correo válido (ejemplo: correo@ejemplo.com)</span>
                 </div>
 
                 <div class="mb-3 campo-formulario">
@@ -74,6 +77,7 @@
                 <div class="mb-3 campo-formulario">
                     <label for="telephone" class="form-label">Teléfono</label>
                     <input type="tel" class="form-control" id="telephone" name="telephone" placeholder="Teléfono: 000 0000000">
+                    <span class="mensaje-error">El teléfono debe tener al menos 7 dígitos</span>
                 </div>
 
                 <div class="mb-3 campo-formulario">
@@ -84,11 +88,13 @@
                 <div class="mb-3 campo-formulario">
                     <label for="pass" class="form-label">Digita una contraseña</label>
                     <input type="password" class="form-control" id="pass" name="password" placeholder="Contraseña" required>
+                    <span class="mensaje-error">La contraseña debe tener al menos 6 caracteres</span>
                 </div>
 
                 <div class="mb-3 campo-formulario">
                     <label for="confirmpass" class="form-label">Confirma la contraseña</label>
                     <input type="password" class="form-control" id="confirmpass" name="confirmpassword" placeholder="Confirmar contraseña" required>
+                    <span class="mensaje-error">Las contraseñas no coinciden</span>
                 </div>
 
                 <div class="form-check mb-2 condiciones-formulario">
@@ -104,6 +110,8 @@
                         He leído y acepto los <a href="terminos.html">términos y condiciones</a>
                     </label>
                 </div>
+
+                <div id="mensaje-registro" class="mensaje-formulario"></div>
 
                 <div class="boton-registro">
                     <button type="submit" class="btn btn-primary">Registrarse</button>

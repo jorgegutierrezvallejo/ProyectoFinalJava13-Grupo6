@@ -292,6 +292,65 @@
     transform: translateY(-1px);
 }
 
+/* ========================================
+   ESTILOS DE VALIDACION - ERRORES
+======================================== */
+
+/* Borde rojo en campos inválidos */
+.campo-formulario.campo-error .form-control,
+.campo-formulario.campo-error .form-select {
+    border-color: #dc3545;
+}
+
+/* Texto de error debajo del campo */
+.mensaje-error {
+    margin-top: 4px;
+
+    display: none;
+
+    color: #dc3545;
+
+    font-size: 12px;
+}
+
+/* Mostrar el mensaje cuando el campo tiene error */
+.campo-formulario.campo-error .mensaje-error {
+    display: block;
+}
+
+/* Mensaje general de error o éxito del formulario */
+.mensaje-formulario {
+    margin-top: 10px;
+    margin-bottom: 0;
+    padding: 8px 12px;
+
+    display: none;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+
+    grid-column: 1 / -1;
+}
+
+.mensaje-formulario.error {
+    display: block;
+
+    background-color: #f8d7da;
+
+    color: #842029;
+}
+
+.mensaje-formulario.exito {
+    display: block;
+
+    background-color: #d1e7dd;
+
+    color: #0f5132;
+}
+
 @media (max-width: 600px) {
     .hv-modal-card {
         max-height: 92vh;
