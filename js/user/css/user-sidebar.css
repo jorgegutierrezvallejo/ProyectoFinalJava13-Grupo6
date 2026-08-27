@@ -1,0 +1,196 @@
+/* ========================================
+   VARIABLES HUELLAVET (User Dashboard)
+======================================== */
+
+:root {
+    --color-primario: #17a9a7;
+    --color-primario-oscuro: #007981;
+    --color-secundario-claro: #a5d9cf;
+    --color-acento: #bad641;
+    --color-fondo-claro: #f4f8f7;
+    --color-texto-oscuro: #223e3c;
+    --color-borde: #d8e3df;
+
+    --fuente-principal: "Quicksand", sans-serif;
+    --fuente-marca: "Sour Gummy", sans-serif;
+
+    --sidebar-width: 270px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: var(--fuente-principal);
+    color: var(--color-texto-oscuro);
+    background-color: #f7faf8;
+}
+
+/* ========================================
+   SIDEBAR USUARIO
+======================================== */
+
+.hv-sidebar {
+    width: var(--sidebar-width);
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-texto-oscuro);
+    color: #ffffff;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.hv-sidebar__marca {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0 0.5rem;
+}
+
+.hv-sidebar__logo {
+    width: 45px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    object-fit: cover;
+    transform: scale(1.25);
+}
+
+.hv-sidebar__marca span {
+    font-family: var(--fuente-marca);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.hv-sidebar__menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 3rem;
+}
+
+.hv-sidebar__link {
+    padding: 0.95rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 0.75rem;
+    color: #ffffff;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    position: relative;
+}
+
+.hv-sidebar__link i {
+    width: 1.5rem;
+    font-size: 1.25rem;
+    text-align: center;
+}
+
+.hv-sidebar__link:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.hv-sidebar__link.active {
+    color: var(--color-texto-oscuro);
+    background-color: var(--color-acento);
+    font-weight: 700;
+}
+
+.hv-sidebar__badge {
+    position: absolute;
+    right: 1.1rem;
+    background-color: var(--color-acento);
+    color: var(--color-texto-oscuro);
+    font-size: 0.72rem;
+    font-weight: 700;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hv-sidebar__link.active .hv-sidebar__badge {
+    background-color: var(--color-texto-oscuro);
+    color: #ffffff;
+}
+
+.hv-sidebar__soporte {
+    margin-top: auto;
+    padding: 1.5rem 1rem 0;
+    background-color: rgba(255, 255, 255, 0.04);
+    border-radius: 1rem;
+    text-align: left;
+}
+
+.hv-sidebar__soporte h3 {
+    margin: 0 0 0.35rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.hv-sidebar__soporte p {
+    margin: 0 0 1rem;
+    font-size: 0.85rem;
+    color: #a0b8b5;
+}
+
+.hv-sidebar__boton-soporte {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--color-acento);
+    color: var(--color-texto-oscuro);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    border-radius: 0.65rem;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    margin-bottom: 1rem;
+}
+
+.hv-sidebar__boton-soporte:hover {
+    opacity: 0.9;
+    color: var(--color-texto-oscuro);
+}
+
+.hv-sidebar__overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    display: none;
+}
+
+.hv-sidebar__overlay.show {
+    display: block;
+}
+
+@media (max-width: 991.98px) {
+    .hv-sidebar {
+        transform: translateX(-100%);
+    }
+
+    .hv-sidebar.open {
+        transform: translateX(0);
+    }
+}
