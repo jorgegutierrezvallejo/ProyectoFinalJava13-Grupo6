@@ -14,21 +14,69 @@ const inputVacunas = document.querySelector('#vacunas');
 const inputAlergias = document.querySelector('#alergias');
 const inputObservaciones = document.querySelector('#observaciones');
 const inputFoto = document.querySelector('#subir-foto');
+const zonaUpload = document.querySelector('.zona-upload');
 
 
 
 const botonguardarqs = document.querySelector('.btn-guardar');
 
 
+inputFoto.addEventListener('change', function() {
+    
+    
+    const archivo = inputFoto.files[0];
+    
+    if (archivo) {
+        
+        const urlDeLaFoto = URL.createObjectURL(archivo);
+        
+        
+        zonaUpload.style.backgroundImage = `url(${urlDeLaFoto})`;
+        zonaUpload.style.backgroundSize = 'cover'; 
+        zonaUpload.style.backgroundPosition = 'center'; 
+        
+        
+        zonaUpload.querySelector('i').style.display = 'none';
+        zonaUpload.querySelector('p').style.display = 'none';
+        zonaUpload.querySelector('small').style.display = 'none';
+    }
+});
 
-botonguardarqs.addEventListener ('click', function(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+botonguardarqs.addEventListener('click', function () {
 
     const formulario = document.querySelector('form');
 
     if (!formulario.checkValidity()) {
-        formulario.reportValidity(); 
-        return; 
+        formulario.reportValidity();
+        return;
     }
+
+
+    const fotoArchivo = inputFoto.files[0];
+    let urlDeLaFoto = ""; 
+
+    
+    if (fotoArchivo) {
+        urlDeLaFoto = URL.createObjectURL(fotoArchivo);
+    }
+
+
+
 
     const nombreMascotaAV = nombreMascotaqs.value;
     const especieV = inputEspecie.value;
@@ -42,21 +90,23 @@ botonguardarqs.addEventListener ('click', function(){
     const vacunasV = inputVacunas.value;
     const alergiasV = inputAlergias.value;
     const observacionesV = inputObservaciones.value;
-    
+
 
     const nuevaMascota = {
+        foto: urlDeLaFoto,
         nombre: nombreMascotaAV,
         especie: especieV,
         raza: razaV,
         edadNumero: edadNumeroV,
-        edadValor : edadUnidadV,
-        sexo : sexoV,
-        peso : pesoV,
-        fecha : fechaV,
-        color : colorV,
-        vacunas : vacunasV,
-        alergias : alergiasV,
-        observaciones : observacionesV
+        edadValor: edadUnidadV,
+        sexo: sexoV,
+        peso: pesoV,
+        fecha: fechaV,
+        color: colorV,
+        vacunas: vacunasV,
+        alergias: alergiasV,
+        observaciones: observacionesV
+        
 
     };
 
