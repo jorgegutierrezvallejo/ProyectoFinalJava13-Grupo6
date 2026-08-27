@@ -64,13 +64,29 @@ function mostrarServicios() {
                     <i class="bi bi-clock"></i>
                     <div>
                         <span>Duración</span>
-                        <strong>${servicio.duracion} min</strong>
+                        <strong>${formatearDuracion(servicio.duracion)}</strong>
+                    </div>
+                </div>
+
+                <div class="servicio-detalle">
+                    <i class="${servicio.modalidad === "virtual" || servicio.esVirtual ? "bi bi-camera-video" : (servicio.esDomicilio || servicio.modalidad === "domicilio" ? "bi bi-house-door" : "bi bi-hospital")}"></i>
+                    <div>
+                        <span>Modalidad</span>
+                        <strong>${servicio.modalidad === "virtual" || servicio.esVirtual ? "Virtual" : (servicio.esDomicilio || servicio.modalidad === "domicilio" ? "A domicilio" : "En clínica")}</strong>
+                    </div>
+                </div>
+
+                <div class="servicio-detalle">
+                    <i class="bi bi-credit-card-2-front"></i>
+                    <div>
+                        <span>Reserva</span>
+                        <strong>${servicio.tieneCostoReserva && servicio.costoReserva > 0 ? `$ ${formatearPrecio(servicio.costoReserva)}` : "Sin reserva"}</strong>
                     </div>
                 </div>
             </div>
 
             <div class="servicio-acciones">
-                <button type="button" class="btn btn-modificar">
+                <button type="button" class="btn btn-modificar" onclick="modificarServicio(${servicio.id})">
                     <i class="bi bi-pencil"></i>
                     Modificar
                 </button>
@@ -90,6 +106,10 @@ function mostrarServicios() {
     });
 }
 
+function modificarServicio(idServicio) {
+    window.location.href = `./agregar-servicio.html?id=${idServicio}`;
+}
+
 function actualizarTotalServicios(servicios, totalServicios) {
     if (!totalServicios) {
         return;
@@ -103,6 +123,18 @@ function actualizarTotalServicios(servicios, totalServicios) {
 
 function formatearPrecio(precio) {
     return Number(precio).toLocaleString("es-CO");
+}
+
+function formatearDuracion(minutos) {
+    minutos = parseInt(minutos);
+    if (isNaN(minutos) || minutos <= 0) return "30 min";
+    if (minutos < 60) return `${minutos} min`;
+    const horas = Math.floor(minutos / 60);
+    const minsRestantes = minutos % 60;
+    if (minsRestantes === 0) {
+        return horas === 1 ? "1 hora" : `${horas} horas`;
+    }
+    return `${horas} h ${minsRestantes} min`;
 }
 
 function eliminarServicio(idServicio) {
