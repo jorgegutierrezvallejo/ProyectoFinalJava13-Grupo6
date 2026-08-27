@@ -350,7 +350,11 @@
                         especie,
                         raza: document.getElementById("razaMascota")?.value.trim() || "",
                         edad: document.getElementById("edadMascota")?.value.trim() || "",
-                        peso: document.getElementById("pesoMascota")?.value.trim() || "",
+                        peso: (() => {
+                            const pVal = document.getElementById("pesoMascota")?.value.trim();
+                            const pUnit = document.getElementById("unidadPesoMascota")?.value;
+                            return pVal ? `${pVal} ${pUnit}` : "No especificado";
+                        })(),
                         servicioId,
                         servicioNombre,
                         tieneCostoReserva: tieneReserva,
@@ -588,7 +592,9 @@
 
                 btnConfirmarCita.addEventListener("click", function () {
                     const nombreCliente = document.getElementById("nombreCliente")?.value.trim() || "";
-                    const telefonoCliente = document.getElementById("telefonoCliente")?.value.trim() || "";
+                    const codigoPais = document.getElementById("codigoPais")?.value || "+57";
+                    const telefonoInput = document.getElementById("telefonoCliente")?.value.trim() || "";
+                    const telefonoCliente = telefonoInput ? codigoPais + " " + telefonoInput : "";
                     const emailCliente = document.getElementById("emailCliente")?.value.trim() || "";
                     const emailClienteConfirm = document.getElementById("emailClienteConfirm")?.value.trim() || "";
                     const direccionCliente = document.getElementById("direccionCliente")?.value.trim() || "";
