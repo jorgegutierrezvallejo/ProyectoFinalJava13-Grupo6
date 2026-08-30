@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Recordatorios | HuellaVet</title>
+
+    <!-- Aquí se conecta Bootstrap para utilizar su sistema de columnas y componentes -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Aquí se conectan los iconos utilizados por HuellaVet -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Aquí se conectan las fuentes definidas para la identidad de HuellaVet -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Se reutilizan los colores y las fuentes que ya maneja HuellaVet */
+        :root {
+            --color-primario: #17a9a7;
+            --color-primario-oscuro: #007981;
+            --color-secundario-claro: #a5d9cf;
+            --color-acento: #bad641;
+            --color-fondo-claro: #eef5e5;
+            --color-texto-oscuro: #223e3c;
+            --color-borde: #d8e3df;
+            --color-blanco: #ffffff;
+            --color-fondo: #f7faf8;
+
+            --fuente-principal: "Quicksand", sans-serif;
+            --fuente-marca: "Sour Gummy", sans-serif;
+        }
+
+        /* Se quitan los espacios que coloca el navegador por defecto */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Se aplica la identidad tipográfica general de HuellaVet */
+        body {
+            margin: 0;
+            font-family: var(--fuente-principal);
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-fondo);
+        }
+
+        /* Se crea la estructura general de la vista */
+        .hv-app {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ SIDEBAR CLIENTE DE HUELLAVET */
+        /* ====================================================== */
+
+        .hv-sidebar {
+            width: 270px;
+            min-width: 270px;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            background-color: var(--color-texto-oscuro);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hv-sidebar__marca {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0 0.5rem;
+        }
+
+        .hv-sidebar__logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            object-fit: cover;
+            transform: scale(1.25);
+        }
+
+        .hv-sidebar__marca span {
+            font-family: var(--fuente-marca);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .hv-sidebar__menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 3rem;
+        }
+
+        .hv-sidebar__link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.95rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .hv-sidebar__link i {
+            width: 1.5rem;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .hv-sidebar__link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .hv-sidebar__link--activo {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+            font-weight: 700;
+        }
+
+        .hv-sidebar__link--activo:hover {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+        }
+
+        .hv-sidebar__soporte {
+            margin-top: auto;
+            padding: 1.25rem;
+            background-color: rgba(255, 255, 255, 0.06);
+            border-radius: 0.85rem;
+            text-align: center;
+        }
+
+        .hv-sidebar__soporte-icono {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--color-primario-oscuro);
+            color: #ffffff;
+            font-size: 1.4rem;
+        }
+
+        .hv-sidebar__soporte h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .hv-sidebar__soporte p {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--color-secundario-claro);
+        }
+
+        .hv-sidebar__boton-soporte {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+            text-decoration: none;
+            border-radius: 0.6rem;
+            font-weight: 700;
+        }
+
+        .hv-sidebar__boton-soporte:hover {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+        }
+
+        /* ====================================================== */
+        /* AQUÍ PANTALLA PRINCIPAL DE RECORDATORIOS */
+        /* ====================================================== */
+
+        .hv-recordatorios {
+            width: calc(100% - 270px);
+            min-width: 0;
+            background-color: #f8faf9;
+        }
+
+        .hv-recordatorios__header {
+            min-height: 86px;
+            padding: 1rem 2rem;
+            background-color: #ffffff;
+            border-bottom: 1px solid #edf1ef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        .hv-recordatorios__titulo {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .hv-recordatorios__titulo > i {
+            font-size: 1.4rem;
+            color: var(--color-texto-oscuro);
+        }
+
+        .hv-recordatorios__titulo-texto h1 {
+            margin: 0;
+            font-size: 1.7rem;
+            font-weight: 700;
+        }
+
+        .hv-recordatorios__titulo-texto p {
+            margin: 0.2rem 0 0;
+            color: #72817f;
+            font-size: 0.82rem;
+        }
+
+        .hv-recordatorios__acciones {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hv-boton-agendar {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.7rem 1.15rem;
+            border: none;
+            border-radius: 0.6rem;
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+            font-family: var(--fuente-principal);
+            font-weight: 700;
+        }
+
+        .hv-notificacion {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        .hv-notificacion i {
+            font-size: 1.3rem;
+        }
+
+        .hv-notificacion__numero {
+            position: absolute;
+            top: -1px;
+            right: -1px;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background-color: #ff4d4f;
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .hv-cliente {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .hv-cliente__avatar {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #f1ddd4;
+            color: #8b5f4d;
+            font-size: 1.2rem;
+            overflow: hidden;
+        }
+
+        .hv-cliente__avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hv-cliente__texto {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hv-cliente__texto strong {
+            font-size: 0.9rem;
+        }
+
+        .hv-recordatorios__cuerpo {
+            padding: 1.4rem 1.6rem 2rem;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ TARJETAS DE RESUMEN */
+        /* ====================================================== */
+
+        .hv-recordatorios__resumen {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(190px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .hv-resumen-card {
+            min-height: 112px;
+            padding: 1rem 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            background-color: #ffffff;
+            border: 1px solid #edf1ef;
+            border-radius: 0.9rem;
+            box-shadow: 0 4px 14px rgba(34, 62, 60, 0.05);
+        }
+
+        .hv-resumen-card__icono {
+            width: 52px;
+            height: 52px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.45rem;
+        }
+
+        .hv-resumen-card__icono--vacuna {
+            color: #1976d2;
+            background-color: #e8f3ff;
+        }
+
+        .hv-resumen-card__icono--desparasitacion {
+            color: #e28c0d;
+            background-color: #fff3dc;
+        }
+
+        .hv-resumen-card__icono--cita {
+            color: #268f43;
+            background-color: #edf8ed;
+        }
+
+        .hv-resumen-card__info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hv-resumen-card__titulo {
+            margin-bottom: 0.1rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .hv-resumen-card__numero {
+            margin-bottom: 0.15rem;
+            font-size: 1.65rem;
+            line-height: 1;
+            font-weight: 700;
+        }
+
+        .hv-resumen-card__enlace {
+            margin-top: 0.35rem;
+            color: var(--color-primario-oscuro);
+            text-decoration: none;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ ALERTA PRINCIPAL */
+        /* ====================================================== */
+
+        .hv-alerta {
+            margin-bottom: 1rem;
+            padding: 1rem 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            background-color: #f7fbf5;
+            border: 1px solid #dfeade;
+            border-radius: 0.85rem;
+        }
+
+        .hv-alerta__icono {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: #ffffff;
+            background-color: #19883f;
+            font-size: 1.1rem;
+        }
+
+        .hv-alerta__contenido {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .hv-alerta__contenido strong {
+            display: block;
+            margin-bottom: 0.15rem;
+            font-size: 0.95rem;
+        }
+
+        .hv-alerta__contenido p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #526461;
+        }
+
+        .hv-alerta__acciones {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .hv-alerta__ver-todas {
+            padding: 0.55rem 0.8rem;
+            color: var(--color-primario-oscuro);
+            background-color: #ffffff;
+            border: 1px solid #d8e3df;
+            border-radius: 0.55rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .hv-alerta__cerrar {
+            border: none;
+            background: transparent;
+            color: var(--color-texto-oscuro);
+            font-size: 1rem;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ FILTROS SIMPLES */
+        /* ====================================================== */
+
+        .hv-filtros {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+        }
+
+        .hv-filtros__tipos {
+            display: flex;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+        }
+
+        .hv-filtro-boton {
+            padding: 0.55rem 0.85rem;
+            border: 1px solid #dce6e2;
+            border-radius: 0.55rem;
+            background-color: #ffffff;
+            color: var(--color-texto-oscuro);
+            font-family: var(--fuente-principal);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .hv-filtro-boton--activo {
+            color: #ffffff;
+            background-color: var(--color-primario-oscuro);
+            border-color: var(--color-primario-oscuro);
+        }
+
+        .hv-filtros__controles {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .hv-selector,
+        .hv-buscador {
+            height: 42px;
+            border: 1px solid #dce6e2;
+            border-radius: 0.55rem;
+            background-color: #ffffff;
+        }
+
+        .hv-selector {
+            min-width: 190px;
+            padding: 0 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .hv-selector select {
+            width: 100%;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            color: var(--color-texto-oscuro);
+            font-family: var(--fuente-principal);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .hv-buscador {
+            min-width: 260px;
+            padding: 0 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .hv-buscador input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            font-family: var(--fuente-principal);
+            font-size: 0.75rem;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ LISTADO DE RECORDATORIOS */
+        /* ====================================================== */
+
+        .hv-recordatorios__lista {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .hv-recordatorio-card {
+            padding: 1rem 1.15rem;
+            display: grid;
+            grid-template-columns: minmax(180px, 0.95fr) minmax(240px, 1.45fr) minmax(150px, 0.7fr) auto;
+            gap: 1rem;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #edf1ef;
+            border-radius: 0.85rem;
+            box-shadow: 0 3px 12px rgba(34, 62, 60, 0.04);
+        }
+
+        .hv-recordatorio-card__mascota {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .hv-recordatorio-card__avatar {
+            width: 62px;
+            height: 62px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 50%;
+            background-color: #eef4f1;
+        }
+
+        .hv-recordatorio-card__avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hv-recordatorio-card__avatar i {
+            color: var(--color-primario-oscuro);
+            font-size: 1.8rem;
+        }
+
+        .hv-recordatorio-card__mascota strong {
+            display: block;
+            margin-bottom: 0.2rem;
+            font-size: 1rem;
+        }
+
+        .hv-recordatorio-card__mascota span {
+            display: inline-block;
+            padding: 0.2rem 0.45rem;
+            border-radius: 0.4rem;
+            color: var(--color-primario-oscuro);
+            background-color: #e9f7f7;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .hv-recordatorio-card__detalle {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .hv-recordatorio-card__tipo-icono {
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1rem;
+        }
+
+        .hv-recordatorio-card__tipo-icono--vacuna {
+            color: #1976d2;
+            background-color: #e8f3ff;
+        }
+
+        .hv-recordatorio-card__tipo-icono--desparasitacion {
+            color: #e28c0d;
+            background-color: #fff3dc;
+        }
+
+        .hv-recordatorio-card__detalle h2 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .hv-recordatorio-card__detalle p {
+            margin: 0.18rem 0 0.4rem;
+            font-size: 0.72rem;
+            color: #526461;
+        }
+
+        .hv-recordatorio-card__fecha {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #536562;
+            font-size: 0.72rem;
+            font-weight: 600;
+        }
+
+        .hv-recordatorio-card__estado {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .hv-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        .hv-badge--proximo {
+            color: #1769aa;
+            background-color: #e8f3ff;
+        }
+
+        .hv-badge--pendiente {
+            color: #d27d00;
+            background-color: #fff1d7;
+        }
+
+        .hv-recordatorio-card__accion {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .hv-boton-detalle {
+            padding: 0.55rem 0.8rem;
+            border: 1px solid var(--color-primario);
+            border-radius: 0.5rem;
+            color: var(--color-primario-oscuro);
+            background-color: #ffffff;
+            font-family: var(--fuente-principal);
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .hv-ver-mas {
+            width: 100%;
+            margin-top: 0.85rem;
+            padding: 0.75rem;
+            border: 1px dashed #a8d9d6;
+            border-radius: 0.65rem;
+            color: var(--color-primario-oscuro);
+            background-color: #ffffff;
+            font-family: var(--fuente-principal);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ BLOQUE PREVENTIVO */
+        /* ====================================================== */
+
+        .hv-preventivo {
+            margin-top: 1rem;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            border: 1px solid #d8e7f8;
+            border-radius: 0.85rem;
+            background-color: #f5f9ff;
+        }
+
+        .hv-preventivo__contenido {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .hv-preventivo__icono {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #2c62bc;
+            border-radius: 50%;
+            color: #2c62bc;
+            font-size: 1rem;
+        }
+
+        .hv-preventivo h2 {
+            margin: 0 0 0.25rem;
+            color: #244d92;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .hv-preventivo p {
+            margin: 0;
+            color: #526461;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .hv-preventivo__ilustracion {
+            width: 115px;
+            min-width: 115px;
+            text-align: center;
+            color: var(--color-primario);
+            font-size: 3rem;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ SE ADAPTA LA PÁGINA A DIFERENTES PANTALLAS */
+        /* ====================================================== */
+
+        @media (max-width: 1100px) {
+            .hv-recordatorio-card {
+                grid-template-columns: minmax(180px, 1fr) minmax(220px, 1.3fr) auto;
+            }
+
+            .hv-recordatorio-card__estado {
+                justify-content: flex-start;
+            }
+
+            .hv-recordatorio-card__accion {
+                grid-column: 1 / -1;
+            }
+
+            .hv-boton-detalle {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hv-sidebar {
+                width: 220px;
+                min-width: 220px;
+                padding: 1.5rem 1rem;
+            }
+
+            .hv-sidebar__marca span {
+                font-size: 1.5rem;
+            }
+
+            .hv-sidebar__link {
+                font-size: 0.95rem;
+            }
+
+            .hv-recordatorios {
+                width: calc(100% - 220px);
+            }
+
+            .hv-recordatorios__resumen {
+                grid-template-columns: 1fr;
+            }
+
+            .hv-filtros__controles {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .hv-selector,
+            .hv-buscador {
+                flex: 1;
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .hv-recordatorios__header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .hv-recordatorios__acciones {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .hv-cliente__texto {
+                display: none;
+            }
+
+            .hv-alerta {
+                align-items: flex-start;
+            }
+
+            .hv-alerta__acciones {
+                flex-direction: column;
+                align-items: flex-end;
+            }
+
+            .hv-recordatorio-card {
+                grid-template-columns: 1fr;
+            }
+
+            .hv-recordatorio-card__estado,
+            .hv-recordatorio-card__accion {
+                justify-content: flex-start;
+            }
+
+            .hv-recordatorio-card__accion {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hv-sidebar {
+                width: 90px;
+                min-width: 90px;
+                padding: 1.5rem 0.75rem;
+            }
+
+            .hv-sidebar__marca {
+                justify-content: center;
+            }
+
+            .hv-sidebar__marca span {
+                display: none;
+            }
+
+            .hv-sidebar__menu {
+                margin-top: 2rem;
+            }
+
+            .hv-sidebar__link {
+                justify-content: center;
+                padding: 0.9rem;
+            }
+
+            .hv-sidebar__link span {
+                display: none;
+            }
+
+            .hv-sidebar__link i {
+                width: auto;
+                font-size: 1.35rem;
+            }
+
+            .hv-sidebar__soporte {
+                padding: 0.75rem;
+            }
+
+            .hv-sidebar__soporte h3,
+            .hv-sidebar__soporte p,
+            .hv-sidebar__boton-soporte span {
+                display: none;
+            }
+
+            .hv-sidebar__boton-soporte {
+                padding: 0.7rem;
+            }
+
+            .hv-recordatorios {
+                width: calc(100% - 90px);
+            }
+
+            .hv-recordatorios__cuerpo {
+                padding: 1rem;
+            }
+
+            .hv-filtros__controles {
+                flex-direction: column;
+            }
+
+            .hv-selector,
+            .hv-buscador {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hv-recordatorios__titulo-texto h1 {
+                font-size: 1.35rem;
+            }
+
+            .hv-recordatorios__titulo-texto p {
+                display: none;
+            }
+
+            .hv-boton-agendar span {
+                display: none;
+            }
+
+            .hv-recordatorios__resumen {
+                display: flex;
+                overflow-x: auto;
+                gap: 0.75rem;
+                padding-bottom: 0.25rem;
+            }
+
+            .hv-resumen-card {
+                min-width: 180px;
+            }
+
+            .hv-alerta {
+                flex-wrap: wrap;
+            }
+
+            .hv-alerta__acciones {
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .hv-filtros {
+                display: block;
+            }
+
+            .hv-filtros__tipos {
+                margin-bottom: 0.75rem;
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+
+            .hv-filtro-boton {
+                white-space: nowrap;
+            }
+
+            .hv-recordatorio-card__mascota {
+                align-items: flex-start;
+            }
+
+            .hv-preventivo {
+                align-items: flex-start;
+            }
+
+            .hv-preventivo__ilustracion {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!--
+        Alcance actual de esta vista:
+        Aquí se presenta únicamente la estructura visual de Recordatorios del cliente.
+        Las acciones, filtros, búsquedas, alertas y botones quedan pendientes de funcionalidad
+        hasta recibir una nueva instrucción del equipo.
+    -->
+
+    <!-- Aquí se crea la estructura general de HuellaVet -->
+    <div class="hv-app">
+
+        <!-- Aquí se crea el menú lateral del cliente -->
+        <aside class="hv-sidebar">
+
+            <!-- Aquí se muestra la marca principal de HuellaVet -->
+            <div class="hv-sidebar__marca">
+                <img src="../img/icon-huella-de-perro.png" alt="Logo de HuellaVet" class="hv-sidebar__logo">
+                <span>HuellaVet</span>
+            </div>
+
+            <!-- Aquí se crea el menú principal del cliente -->
+            <nav class="hv-sidebar__menu">
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-house-door"></i>
+                    <span>Resumen</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-heart"></i>
+                    <span>Mis mascotas</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-calendar3"></i>
+                    <span>Mis citas</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link hv-sidebar__link--activo">
+                    <i class="bi bi-bell"></i>
+                    <span>Recordatorios</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-person"></i>
+                    <span>Perfil</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+
+                <!-- Cierre del menú principal del cliente -->
+            </nav>
+
+            <!-- Aquí se crea el bloque de ayuda -->
+            <div class="hv-sidebar__soporte">
+
+                <div class="hv-sidebar__soporte-icono">
+                    <i class="bi bi-headset"></i>
+                </div>
+
+                <h3>¿Necesitas ayuda?</h3>
+                <p>Nuestro equipo está para apoyarte.</p>
+
+                <a href="#" class="hv-sidebar__boton-soporte">
+                    <i class="bi bi-headset"></i>
+                    <span>Contactar soporte</span>
+                </a>
+
+                <!-- Cierre del bloque de ayuda -->
+            </div>
+
+            <!-- Cierre del menú lateral del cliente -->
+        </aside>
+
+        <!-- Aquí se crea la pantalla principal de Recordatorios -->
+        <main class="hv-recordatorios">
+
+            <!-- Aquí se crea el encabezado principal -->
+            <header class="hv-recordatorios__header">
+
+                <div class="hv-recordatorios__titulo">
+                    <i class="bi bi-list"></i>
+
+                    <div class="hv-recordatorios__titulo-texto">
+                        <h1>Recordatorios</h1>
+                        <p>Mantén al día el cuidado y seguimiento de tus mascotas.</p>
+                    </div>
+                </div>
+
+                <div class="hv-recordatorios__acciones">
+
+                    <!-- Aquí se muestran las notificaciones -->
+                    <div class="hv-notificacion">
+                        <i class="bi bi-bell"></i>
+                        <span class="hv-notificacion__numero">3</span>
+                    </div>
+
+                    <!-- Aquí se muestra la información del cliente -->
+                    <div class="hv-cliente">
+
+                        <div class="hv-cliente__avatar">
+                            <i class="bi bi-person"></i>
+                        </div>
+
+                        <div class="hv-cliente__texto">
+                            <strong>María Gómez</strong>
+                        </div>
+
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+
+                    <!-- Aquí se representa visualmente el acceso al módulo de citas -->
+                    <button class="hv-boton-agendar" type="button" aria-label="Agendar cita - vista pendiente de funcionalidad">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>Agendar cita</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Aquí se organiza el contenido de Recordatorios -->
+            <div class="hv-recordatorios__cuerpo">
+
+                <!-- Aquí se crean únicamente las tres categorías definidas -->
+                <section class="hv-recordatorios__resumen">
+
+                    <article class="hv-resumen-card">
+
+                        <div class="hv-resumen-card__icono hv-resumen-card__icono--vacuna">
+                            <i class="bi bi-eyedropper"></i>
+                        </div>
+
+                        <div class="hv-resumen-card__info">
+                            <span class="hv-resumen-card__titulo">Vacunas</span>
+                            <strong class="hv-resumen-card__numero">1</strong>
+                            <a href="#" class="hv-resumen-card__enlace">Ver vacunas <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="hv-resumen-card">
+
+                        <div class="hv-resumen-card__icono hv-resumen-card__icono--desparasitacion">
+                            <i class="bi bi-capsule"></i>
+                        </div>
+
+                        <div class="hv-resumen-card__info">
+                            <span class="hv-resumen-card__titulo">Desparasitación</span>
+                            <strong class="hv-resumen-card__numero">1</strong>
+                            <a href="#" class="hv-resumen-card__enlace">Ver desparasitación <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="hv-resumen-card">
+
+                        <div class="hv-resumen-card__icono hv-resumen-card__icono--cita">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+
+                        <div class="hv-resumen-card__info">
+                            <span class="hv-resumen-card__titulo">Próximas citas</span>
+                            <strong class="hv-resumen-card__numero">1</strong>
+                            <a href="#" class="hv-resumen-card__enlace">Ver citas <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </article>
+                    <!-- Cierre del resumen de recordatorios -->
+                </section>
+
+                <!-- Aquí se muestra únicamente la alerta más importante -->
+                <section class="hv-alerta">
+
+                    <div class="hv-alerta__icono">
+                        <i class="bi bi-bell"></i>
+                    </div>
+
+                    <div class="hv-alerta__contenido">
+                        <strong>¡Importante!</strong>
+                        <p>Ya corresponde programar la próxima consulta general de Nina.</p>
+                    </div>
+
+                    <div class="hv-alerta__acciones">
+                        <button type="button" class="hv-alerta__ver-todas">Ver todas las alertas</button>
+
+                        <button type="button" class="hv-alerta__cerrar" aria-label="Cerrar alerta">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Aquí se representa visualmente el bloque de filtros -->
+                <section class="hv-filtros">
+
+                    <div class="hv-filtros__tipos">
+                        <button type="button" class="hv-filtro-boton hv-filtro-boton--activo">Todos</button>
+                        <button type="button" class="hv-filtro-boton">Vacunas</button>
+                        <button type="button" class="hv-filtro-boton">Desparasitación</button>
+                        <button type="button" class="hv-filtro-boton">Próximas citas</button>
+                    </div>
+
+                    <div class="hv-filtros__controles">
+
+                        <div class="hv-selector">
+                            <i class="bi bi-heart"></i>
+
+                            <select aria-label="Seleccionar mascota">
+                                <option>Todas mis mascotas</option>
+                                <option>Luna</option>
+                                <option>Max</option>
+                                <option>Nina</option>
+                            </select>
+                        </div>
+
+                        <div class="hv-buscador">
+                            <i class="bi bi-search"></i>
+                            <input type="search" placeholder="Buscar recordatorio...">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Aquí se muestran visualmente dos recordatorios de ejemplo -->
+                <section class="hv-recordatorios__lista">
+
+                    <!-- Aquí se crea el recordatorio de vacuna de Luna -->
+                    <article class="hv-recordatorio-card">
+
+                        <div class="hv-recordatorio-card__mascota">
+
+                            <div class="hv-recordatorio-card__avatar">
+                                <i class="bi bi-heart-fill"></i>
+                            </div>
+
+                            <div>
+                                <strong>Luna</strong>
+                                <span>Gato · Siamés</span>
+                            </div>
+                        </div>
+
+                        <div class="hv-recordatorio-card__detalle">
+
+                            <div class="hv-recordatorio-card__tipo-icono hv-recordatorio-card__tipo-icono--vacuna">
+                                <i class="bi bi-eyedropper"></i>
+                            </div>
+
+                            <div>
+                                <h2>Refuerzo de vacuna</h2>
+                                <p>Vacuna recomendada este mes.</p>
+
+                                <div class="hv-recordatorio-card__fecha">
+                                    <i class="bi bi-calendar3"></i>
+                                    <span>29 ago 2026</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hv-recordatorio-card__estado">
+                            <span class="hv-badge hv-badge--proximo">
+                                <i class="bi bi-circle-fill"></i>
+                                Próxima
+                            </span>
+                        </div>
+
+                        <div class="hv-recordatorio-card__accion">
+                            <button type="button" class="hv-boton-detalle">
+                                Ver detalle
+                            </button>
+                        </div>
+                    </article>
+
+                    <!-- Aquí se crea el recordatorio de desparasitación de Max -->
+                    <article class="hv-recordatorio-card">
+
+                        <div class="hv-recordatorio-card__mascota">
+
+                            <div class="hv-recordatorio-card__avatar">
+                                <i class="bi bi-heart-fill"></i>
+                            </div>
+
+                            <div>
+                                <strong>Max</strong>
+                                <span>Perro · Golden Retriever</span>
+                            </div>
+                        </div>
+
+                        <div class="hv-recordatorio-card__detalle">
+
+                            <div class="hv-recordatorio-card__tipo-icono hv-recordatorio-card__tipo-icono--desparasitacion">
+                                <i class="bi bi-capsule"></i>
+                            </div>
+
+                            <div>
+                                <h2>Próxima desparasitación</h2>
+                                <p>Desparasitación interna y externa.</p>
+
+                                <div class="hv-recordatorio-card__fecha">
+                                    <i class="bi bi-calendar3"></i>
+                                    <span>30 ago 2026</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="hv-recordatorio-card__estado">
+                            <span class="hv-badge hv-badge--pendiente">
+                                <i class="bi bi-circle-fill"></i>
+                                Pendiente
+                            </span>
+                        </div>
+
+                        <div class="hv-recordatorio-card__accion">
+                            <button type="button" class="hv-boton-detalle">
+                                Ver detalle
+                            </button>
+                        </div>
+                    </article>
+                </section>
+
+                <!-- Aquí se representa visualmente la opción para consultar más recordatorios -->
+                <button type="button" class="hv-ver-mas">
+                    <i class="bi bi-chevron-down"></i>
+                    Ver 1 recordatorio más
+                </button>
+
+                <!-- Aquí se crea el bloque preventivo de orientación -->
+                <section class="hv-preventivo">
+
+                    <div class="hv-preventivo__contenido">
+
+                        <div class="hv-preventivo__icono">
+                            <i class="bi bi-info-lg"></i>
+                        </div>
+
+                        <div>
+                            <h2>Agendar a tiempo es cuidar mejor</h2>
+
+                            <p>
+                                Estar al día con vacunas, desparasitación y controles veterinarios
+                                ayuda a mantener el bienestar de tu mascota.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="hv-preventivo__ilustracion" aria-hidden="true">
+                        <i class="bi bi-heart-pulse"></i>
+                    </div>
+                    <!-- Cierre del bloque preventivo -->
+                </section>
+
+                <!-- Cierre del contenido de Recordatorios -->
+            </div>
+
+            <!-- Cierre de la pantalla principal de Recordatorios -->
+        </main>
+
+        <!-- Cierre de la estructura general de HuellaVet -->
+    </div>
+
+    <!-- Aquí se conecta únicamente el JavaScript de Bootstrap.
+         No se agrega lógica propia a esta vista en el alcance actual. -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+        </script>
+
+</body>
+
+</html>
