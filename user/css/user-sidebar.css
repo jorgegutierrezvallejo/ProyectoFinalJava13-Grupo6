@@ -170,6 +170,24 @@ body {
     color: var(--color-texto-oscuro);
 }
 
+/* ========================================
+   SIDEBAR OCULTO DESKTOP
+   Lo usa la hamburguesa de la Topbar
+======================================== */
+
+body.sidebar-collapsed .hv-sidebar {
+    transform: translateX(-100%);
+}
+
+/*
+   El contenido del dashboard recupera
+   el espacio cuando ocultamos el sidebar
+*/
+
+body.sidebar-collapsed .user-page {
+    margin-left: 0;
+}
+
 .hv-sidebar__overlay {
     position: fixed;
     top: 0;

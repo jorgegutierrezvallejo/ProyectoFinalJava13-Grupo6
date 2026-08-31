@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mis citas | HuellaVet</title>
+
+    <!-- Aquí se conecta Bootstrap para utilizar su sistema de columnas y componentes -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+    <!-- Aquí se conectan los iconos utilizados por HuellaVet -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- Aquí se conectan las fuentes definidas para la identidad de HuellaVet -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* Se reutilizan los colores y fuentes que ya maneja HuellaVet */
+        :root {
+            --color-primario: #17a9a7;
+            --color-primario-oscuro: #007981;
+            --color-secundario-claro: #a5d9cf;
+            --color-acento: #bad641;
+            --color-fondo-claro: #eef5e5;
+            --color-texto-oscuro: #223e3c;
+            --color-borde: #d8e3df;
+            --color-fondo: #f7faf8;
+
+            --fuente-principal: "Quicksand", sans-serif;
+            --fuente-marca: "Sour Gummy", sans-serif;
+        }
+
+        /* Se quitan los espacios que coloca el navegador por defecto */
+        * {
+            box-sizing: border-box;
+        }
+
+        /* Se aplica la fuente principal a toda la página */
+        body {
+            margin: 0;
+            font-family: var(--fuente-principal);
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-fondo);
+        }
+
+        /* Se crea la estructura general de la vista */
+        .hv-app {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ SIDEBAR CLIENTE DE HUELLAVET */
+        /* ====================================================== */
+
+        .hv-sidebar {
+            width: 270px;
+            min-width: 270px;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            background-color: var(--color-texto-oscuro);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hv-sidebar__marca {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0 0.5rem;
+        }
+
+        .hv-sidebar__logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            object-fit: cover;
+            transform: scale(1.25);
+        }
+
+        .hv-sidebar__marca-texto {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .hv-sidebar__marca-texto strong {
+            font-family: var(--fuente-marca);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .hv-sidebar__marca-texto small {
+            margin-top: 0.3rem;
+            font-size: 0.58rem;
+            color: var(--color-secundario-claro);
+        }
+
+        .hv-sidebar__menu {
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+            margin-top: 3rem;
+        }
+
+        .hv-sidebar__link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.95rem 1rem;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 0.75rem;
+            font-size: 1rem;
+        }
+
+        .hv-sidebar__link i {
+            width: 1.5rem;
+            font-size: 1.25rem;
+            text-align: center;
+        }
+
+        .hv-sidebar__link:hover {
+            color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .hv-sidebar__link--activo {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+            font-weight: 700;
+        }
+
+        .hv-sidebar__link--activo:hover {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+        }
+
+        .hv-sidebar__soporte {
+            margin-top: auto;
+            padding: 1.25rem;
+            background-color: rgba(255, 255, 255, 0.06);
+            border-radius: 0.85rem;
+            text-align: center;
+        }
+
+        .hv-sidebar__soporte-icono {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: var(--color-primario-oscuro);
+            color: #ffffff;
+            font-size: 1.4rem;
+        }
+
+        .hv-sidebar__soporte h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .hv-sidebar__soporte p {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            color: var(--color-secundario-claro);
+        }
+
+        .hv-sidebar__boton-soporte {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+            text-decoration: none;
+            border-radius: 0.6rem;
+            font-weight: 700;
+        }
+
+        .hv-sidebar__boton-soporte:hover {
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+        }
+
+        /* ====================================================== */
+        /* AQUÍ PANTALLA PRINCIPAL DE MIS CITAS */
+        /* ====================================================== */
+
+        .hv-citas {
+            width: calc(100% - 270px);
+            min-width: 0;
+            background-color: #f8faf9;
+        }
+
+        .hv-citas__header {
+            min-height: 86px;
+            padding: 1rem 2rem;
+            background-color: #ffffff;
+            border-bottom: 1px solid #edf1ef;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+        }
+
+        .hv-citas__titulo {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .hv-citas__titulo > i {
+            font-size: 1.4rem;
+            color: var(--color-texto-oscuro);
+        }
+
+        .hv-citas__titulo-texto h1 {
+            margin: 0;
+            font-size: 1.7rem;
+            font-weight: 700;
+        }
+
+        .hv-citas__titulo-texto p {
+            margin: 0.2rem 0 0;
+            color: #72817f;
+            font-size: 0.82rem;
+        }
+
+        .hv-citas__acciones {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .hv-boton-agendar {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.7rem 1.15rem;
+            border: none;
+            border-radius: 0.6rem;
+            color: var(--color-texto-oscuro);
+            background-color: var(--color-acento);
+            font-family: var(--fuente-principal);
+            font-weight: 700;
+        }
+
+        .hv-notificacion {
+            position: relative;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        .hv-notificacion i {
+            font-size: 1.3rem;
+        }
+
+        .hv-notificacion__numero {
+            position: absolute;
+            top: -1px;
+            right: -1px;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            background-color: #ff4d4f;
+            color: #ffffff;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .hv-cliente {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .hv-cliente__avatar {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #f1ddd4;
+            color: #8b5f4d;
+            font-size: 1.2rem;
+        }
+
+        .hv-cliente__texto {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hv-cliente__texto strong {
+            font-size: 0.9rem;
+        }
+
+        .hv-citas__cuerpo {
+            padding: 1.4rem 1.6rem 2rem;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ RESUMEN DE ESTADOS */
+        /* ====================================================== */
+
+        .hv-citas__resumen {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(130px, 1fr));
+            gap: 0.85rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .hv-resumen-card {
+            min-height: 115px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background-color: #ffffff;
+            border: 1px solid #edf1ef;
+            border-radius: 0.9rem;
+            box-shadow: 0 4px 14px rgba(34, 62, 60, 0.05);
+        }
+
+        .hv-resumen-card__icono {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 1.35rem;
+        }
+
+        .hv-resumen-card__icono--proxima {
+            color: #007981;
+            background-color: #e6f4f3;
+        }
+
+        .hv-resumen-card__icono--confirmada {
+            color: #268f43;
+            background-color: #edf8ed;
+        }
+
+        .hv-resumen-card__icono--pendiente {
+            color: #df8d0c;
+            background-color: #fff3d4;
+        }
+
+        .hv-resumen-card__icono--reprogramada {
+            color: #7f3dc4;
+            background-color: #f1e5fb;
+        }
+
+        .hv-resumen-card__icono--cancelada {
+            color: #ef4c4c;
+            background-color: #ffe4e4;
+        }
+
+        .hv-resumen-card__icono--historial {
+            color: #0e7180;
+            background-color: #e5f3f5;
+        }
+
+        .hv-resumen-card__info {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hv-resumen-card__titulo {
+            margin-bottom: 0.1rem;
+            font-size: 0.74rem;
+            font-weight: 700;
+        }
+
+        .hv-resumen-card__numero {
+            margin-bottom: 0.25rem;
+            font-size: 1.55rem;
+            line-height: 1;
+            font-weight: 700;
+        }
+
+        .hv-resumen-card__enlace {
+            color: var(--color-primario-oscuro);
+            text-decoration: none;
+            font-size: 0.62rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ ALERTA PRINCIPAL */
+        /* ====================================================== */
+
+        .hv-alerta {
+            margin-bottom: 1rem;
+            padding: 1rem 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            background-color: #f7fbf5;
+            border: 1px solid #dfeade;
+            border-radius: 0.85rem;
+        }
+
+        .hv-alerta__icono {
+            width: 42px;
+            height: 42px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: #ffffff;
+            background-color: #19883f;
+            font-size: 1.1rem;
+        }
+
+        .hv-alerta__contenido {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .hv-alerta__contenido strong {
+            display: block;
+            margin-bottom: 0.15rem;
+            font-size: 0.95rem;
+        }
+
+        .hv-alerta__contenido p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: #526461;
+        }
+
+        .hv-alerta__contenido small {
+            display: block;
+            margin-top: 0.2rem;
+            color: #72817f;
+            font-size: 0.68rem;
+        }
+
+        .hv-alerta__acciones {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .hv-alerta__ver-todas {
+            padding: 0.55rem 0.8rem;
+            color: var(--color-primario-oscuro);
+            background-color: #ffffff;
+            border: 1px solid #d8e3df;
+            border-radius: 0.55rem;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .hv-alerta__cerrar {
+            border: none;
+            background: transparent;
+            color: var(--color-texto-oscuro);
+            font-size: 1rem;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ ZONA PRINCIPAL */
+        /* ====================================================== */
+
+        .hv-citas__zona-principal {
+            display: grid;
+            grid-template-columns: minmax(0, 1.8fr) minmax(300px, 0.95fr);
+            gap: 1rem;
+            align-items: start;
+        }
+
+        .hv-citas__columna-central {
+            min-width: 0;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ FILTROS */
+        /* ====================================================== */
+
+        .hv-filtros {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+        }
+
+        .hv-filtros__principales {
+            display: flex;
+            gap: 0.55rem;
+        }
+
+        .hv-filtro-boton {
+            padding: 0.55rem 0.85rem;
+            border: 1px solid #dce6e2;
+            border-radius: 0.55rem;
+            background-color: #ffffff;
+            color: var(--color-texto-oscuro);
+            font-family: var(--fuente-principal);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .hv-filtro-boton--activo {
+            color: #ffffff;
+            background-color: var(--color-primario-oscuro);
+            border-color: var(--color-primario-oscuro);
+        }
+
+        .hv-filtros__controles {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .hv-selector,
+        .hv-buscador {
+            height: 42px;
+            border: 1px solid #dce6e2;
+            border-radius: 0.55rem;
+            background-color: #ffffff;
+        }
+
+        .hv-selector {
+            min-width: 185px;
+            padding: 0 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .hv-selector select {
+            width: 100%;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            color: var(--color-texto-oscuro);
+            font-family: var(--fuente-principal);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .hv-buscador {
+            min-width: 220px;
+            padding: 0 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+        }
+
+        .hv-buscador input {
+            width: 100%;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            font-family: var(--fuente-principal);
+            font-size: 0.75rem;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ LISTADO DE CITAS */
+        /* ====================================================== */
+
+        .hv-citas__lista {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+
+        .hv-cita-card {
+            padding: 1rem 1.15rem;
+            display: grid;
+            grid-template-columns: minmax(170px, 0.9fr) minmax(230px, 1.35fr) minmax(155px, 0.7fr) auto;
+            gap: 1rem;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #edf1ef;
+            border-radius: 0.85rem;
+            box-shadow: 0 3px 12px rgba(34, 62, 60, 0.04);
+        }
+
+        .hv-cita-card__mascota {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .hv-cita-card__avatar {
+            width: 62px;
+            height: 62px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #eef4f1;
+            color: var(--color-primario-oscuro);
+            font-size: 1.7rem;
+        }
+
+        .hv-cita-card__mascota strong {
+            display: block;
+            margin-bottom: 0.2rem;
+            font-size: 1rem;
+        }
+
+        .hv-cita-card__mascota span {
+            display: inline-block;
+            padding: 0.2rem 0.45rem;
+            border-radius: 0.4rem;
+            color: var(--color-primario-oscuro);
+            background-color: #e9f7f7;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .hv-cita-card__detalle h2 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .hv-cita-card__detalle p {
+            margin: 0.18rem 0 0.45rem;
+            font-size: 0.72rem;
+            color: #526461;
+        }
+
+        .hv-cita-card__meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            color: #536562;
+            font-size: 0.68rem;
+            font-weight: 600;
+        }
+
+        .hv-cita-card__meta span {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .hv-cita-card__estado {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.45rem;
+        }
+
+        .hv-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.6rem;
+            border-radius: 999px;
+            font-size: 0.68rem;
+            font-weight: 700;
+        }
+
+        .hv-badge--confirmada {
+            color: #17743a;
+            background-color: #e6f6ea;
+        }
+
+        .hv-badge--pendiente {
+            color: #d27d00;
+            background-color: #fff1d7;
+        }
+
+        .hv-badge--reprogramada {
+            color: #6f32b2;
+            background-color: #f1e5fb;
+        }
+
+        .hv-badge--cancelada {
+            color: #d93b3b;
+            background-color: #ffe8e8;
+        }
+
+        .hv-badge--borrador {
+            color: #6c757d;
+            background-color: #edf0f2;
+        }
+
+        .hv-badge--completada {
+            color: #1f7a3c;
+            background-color: #e6f5e9;
+        }
+
+        .hv-cita-card__estado small {
+            color: #72817f;
+            font-size: 0.64rem;
+            line-height: 1.35;
+        }
+
+        .hv-cita-card__accion {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .hv-boton-detalle {
+            padding: 0.55rem 0.8rem;
+            border: 1px solid var(--color-primario);
+            border-radius: 0.5rem;
+            color: var(--color-primario-oscuro);
+            background-color: #ffffff;
+            font-family: var(--fuente-principal);
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .hv-cita-card__menu {
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            color: var(--color-texto-oscuro);
+        }
+
+        .hv-ver-mas {
+            width: 100%;
+            margin-top: 0.85rem;
+            padding: 0.75rem;
+            border: 1px dashed #a8d9d6;
+            border-radius: 0.65rem;
+            color: var(--color-primario-oscuro);
+            background-color: #ffffff;
+            font-family: var(--fuente-principal);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ BLOQUE DE REPROGRAMACIÓN */
+        /* ====================================================== */
+
+        .hv-reprogramacion {
+            margin-top: 1rem;
+            padding: 1rem 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            border: 1px solid #d8e7f8;
+            border-radius: 0.85rem;
+            background-color: #f5f9ff;
+        }
+
+        .hv-reprogramacion__contenido {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+        }
+
+        .hv-reprogramacion__icono {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #2c62bc;
+            border-radius: 50%;
+            color: #2c62bc;
+            font-size: 1rem;
+        }
+
+        .hv-reprogramacion h2 {
+            margin: 0 0 0.25rem;
+            color: #244d92;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .hv-reprogramacion p {
+            margin: 0;
+            color: #526461;
+            font-size: 0.75rem;
+            line-height: 1.5;
+        }
+
+        .hv-reprogramacion__ilustracion {
+            width: 100px;
+            min-width: 100px;
+            text-align: center;
+            color: var(--color-primario);
+            font-size: 3rem;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ PANEL DE DETALLE DE LA CITA */
+        /* ====================================================== */
+
+        .hv-detalle {
+            padding: 1rem;
+            background-color: #ffffff;
+            border: 1px solid #edf1ef;
+            border-radius: 0.85rem;
+            box-shadow: 0 4px 14px rgba(34, 62, 60, 0.05);
+        }
+
+        .hv-detalle__header {
+            margin-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .hv-detalle__header h2 {
+            margin: 0;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .hv-detalle__cerrar {
+            border: none;
+            background: transparent;
+            color: var(--color-texto-oscuro);
+            font-size: 1rem;
+        }
+
+        .hv-detalle__mascota {
+            padding-bottom: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid #edf1ef;
+        }
+
+        .hv-detalle__avatar {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #eef4f1;
+            color: var(--color-primario-oscuro);
+            font-size: 1.6rem;
+        }
+
+        .hv-detalle__mascota strong {
+            display: block;
+            font-size: 1.05rem;
+        }
+
+        .hv-detalle__mascota span {
+            display: inline-block;
+            margin-top: 0.2rem;
+            padding: 0.2rem 0.45rem;
+            border-radius: 0.4rem;
+            color: var(--color-primario-oscuro);
+            background-color: #e9f7f7;
+            font-size: 0.63rem;
+            font-weight: 600;
+        }
+
+        .hv-detalle__estado {
+            margin: 0.85rem 0;
+            padding: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            border-radius: 0.65rem;
+            background-color: #f3faf5;
+            border: 1px solid #d9ebdd;
+        }
+
+        .hv-detalle__estado i {
+            color: #19883f;
+            font-size: 1.15rem;
+        }
+
+        .hv-detalle__estado strong {
+            display: block;
+            font-size: 0.75rem;
+        }
+
+        .hv-detalle__estado span {
+            display: block;
+            margin-top: 0.12rem;
+            color: #657573;
+            font-size: 0.65rem;
+        }
+
+        .hv-detalle__datos {
+            display: grid;
+            gap: 0.55rem;
+        }
+
+        .hv-detalle__fila {
+            display: grid;
+            grid-template-columns: 105px 1fr;
+            gap: 0.65rem;
+            font-size: 0.7rem;
+        }
+
+        .hv-detalle__fila dt {
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #526461;
+            font-weight: 600;
+        }
+
+        .hv-detalle__fila dd {
+            margin: 0;
+            color: var(--color-texto-oscuro);
+            font-weight: 600;
+        }
+
+        .hv-detalle__historial {
+            margin-top: 1rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid #edf1ef;
+        }
+
+        .hv-detalle__historial h3 {
+            margin: 0 0 0.75rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .hv-historial-item {
+            position: relative;
+            padding: 0 0 0.8rem 1.25rem;
+            font-size: 0.66rem;
+        }
+
+        .hv-historial-item::before {
+            content: "";
+            position: absolute;
+            left: 0.24rem;
+            top: 0.35rem;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--color-primario-oscuro);
+        }
+
+        .hv-historial-item::after {
+            content: "";
+            position: absolute;
+            left: 0.43rem;
+            top: 0.78rem;
+            width: 1px;
+            height: calc(100% - 0.35rem);
+            background-color: #dce6e2;
+        }
+
+        .hv-historial-item:last-child::after {
+            display: none;
+        }
+
+        .hv-historial-item strong {
+            display: block;
+            font-size: 0.67rem;
+        }
+
+        .hv-historial-item span {
+            display: block;
+            margin-top: 0.12rem;
+            color: #657573;
+        }
+
+        .hv-detalle__acciones {
+            margin-top: 0.9rem;
+            display: grid;
+            gap: 0.55rem;
+        }
+
+        .hv-detalle__boton {
+            padding: 0.65rem;
+            border-radius: 0.5rem;
+            background-color: #ffffff;
+            font-family: var(--fuente-principal);
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .hv-detalle__boton--reprogramar {
+            color: var(--color-primario-oscuro);
+            border: 1px solid var(--color-primario);
+        }
+
+        .hv-detalle__boton--cancelar {
+            color: #ef4c4c;
+            border: 1px solid #ef6868;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ MENÚ MÓVIL "MÁS" */
+        /* ====================================================== */
+
+        .hv-mobile-mas {
+            display: none;
+            position: relative;
+        }
+
+        .hv-mobile-mas__menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 0.45rem);
+            right: 0;
+            min-width: 170px;
+            padding: 0.55rem;
+            z-index: 20;
+            background-color: #ffffff;
+            border: 1px solid #dce6e2;
+            border-radius: 0.6rem;
+            box-shadow: 0 8px 24px rgba(34, 62, 60, 0.12);
+        }
+
+        .hv-mobile-mas__menu--abierto {
+            display: block;
+        }
+
+        .hv-mobile-mas__item {
+            width: 100%;
+            padding: 0.55rem 0.65rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: none;
+            background-color: transparent;
+            color: var(--color-texto-oscuro);
+            font-family: var(--fuente-principal);
+            font-size: 0.72rem;
+            text-align: left;
+        }
+
+        .hv-mobile-mas__item:hover {
+            background-color: #f4f8f6;
+        }
+
+        /* ====================================================== */
+        /* AQUÍ SE ADAPTA LA PÁGINA A DIFERENTES PANTALLAS */
+        /* ====================================================== */
+
+        @media (max-width: 1320px) {
+            .hv-citas__resumen {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 1100px) {
+            .hv-cita-card {
+                grid-template-columns: minmax(170px, 1fr) minmax(220px, 1.3fr) auto;
+            }
+
+            .hv-cita-card__estado {
+                align-items: flex-start;
+            }
+
+            .hv-cita-card__accion {
+                grid-column: 1 / -1;
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hv-sidebar {
+                width: 220px;
+                min-width: 220px;
+                padding: 1.5rem 1rem;
+            }
+
+            .hv-sidebar__marca-texto strong {
+                font-size: 1.5rem;
+            }
+
+            .hv-sidebar__link {
+                font-size: 0.95rem;
+            }
+
+            .hv-citas {
+                width: calc(100% - 220px);
+            }
+
+            .hv-citas__zona-principal {
+                grid-template-columns: 1fr;
+            }
+
+            .hv-detalle {
+                display: none;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .hv-citas__header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .hv-citas__acciones {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .hv-cliente__texto {
+                display: none;
+            }
+
+            .hv-filtros__controles {
+                width: 100%;
+                margin-left: 0;
+            }
+
+            .hv-selector,
+            .hv-buscador {
+                flex: 1;
+                min-width: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hv-sidebar {
+                width: 90px;
+                min-width: 90px;
+                padding: 1.5rem 0.75rem;
+            }
+
+            .hv-sidebar__marca {
+                justify-content: center;
+            }
+
+            .hv-sidebar__marca-texto {
+                display: none;
+            }
+
+            .hv-sidebar__menu {
+                margin-top: 2rem;
+            }
+
+            .hv-sidebar__link {
+                justify-content: center;
+                padding: 0.9rem;
+            }
+
+            .hv-sidebar__link span {
+                display: none;
+            }
+
+            .hv-sidebar__link i {
+                width: auto;
+                font-size: 1.35rem;
+            }
+
+            .hv-sidebar__soporte {
+                padding: 0.75rem;
+            }
+
+            .hv-sidebar__soporte h3,
+            .hv-sidebar__soporte p,
+            .hv-sidebar__boton-soporte span {
+                display: none;
+            }
+
+            .hv-sidebar__boton-soporte {
+                padding: 0.7rem;
+            }
+
+            .hv-citas {
+                width: calc(100% - 90px);
+            }
+
+            .hv-citas__cuerpo {
+                padding: 1rem;
+            }
+
+            .hv-citas__resumen {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .hv-filtros__controles {
+                flex-direction: column;
+            }
+
+            .hv-selector,
+            .hv-buscador {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hv-citas__titulo-texto h1 {
+                font-size: 1.35rem;
+            }
+
+            .hv-citas__titulo-texto p {
+                display: none;
+            }
+
+            .hv-boton-agendar span {
+                display: none;
+            }
+
+            .hv-citas__resumen {
+                grid-template-columns: repeat(4, minmax(74px, 1fr));
+                gap: 0.45rem;
+            }
+
+            .hv-resumen-card {
+                min-height: 82px;
+                padding: 0.65rem 0.45rem;
+                justify-content: center;
+                text-align: center;
+            }
+
+            .hv-resumen-card:nth-child(4),
+            .hv-resumen-card:nth-child(5),
+            .hv-resumen-card:nth-child(6) {
+                display: none;
+            }
+
+            .hv-resumen-card__icono {
+                display: none;
+            }
+
+            .hv-resumen-card__titulo {
+                font-size: 0.58rem;
+            }
+
+            .hv-resumen-card__numero {
+                font-size: 1.25rem;
+            }
+
+            .hv-resumen-card__enlace {
+                display: none;
+            }
+
+            .hv-mobile-mas {
+                display: block;
+            }
+
+            .hv-mobile-mas > button {
+                width: 100%;
+                height: 82px;
+                border: 1px solid #edf1ef;
+                border-radius: 0.9rem;
+                background-color: #ffffff;
+                color: var(--color-texto-oscuro);
+                font-family: var(--fuente-principal);
+                font-size: 0.6rem;
+                font-weight: 700;
+                box-shadow: 0 4px 14px rgba(34, 62, 60, 0.05);
+            }
+
+            .hv-alerta {
+                flex-wrap: wrap;
+            }
+
+            .hv-alerta__acciones {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .hv-filtros {
+                display: block;
+            }
+
+            .hv-filtros__principales {
+                margin-bottom: 0.75rem;
+                overflow-x: auto;
+            }
+
+            .hv-filtro-boton {
+                white-space: nowrap;
+            }
+
+            .hv-cita-card {
+                grid-template-columns: 1fr;
+            }
+
+            .hv-cita-card__accion {
+                grid-column: auto;
+                justify-content: flex-start;
+            }
+
+            .hv-cita-card__estado {
+                align-items: flex-start;
+            }
+
+            .hv-reprogramacion__ilustracion {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Aquí se presenta únicamente la estructura visual de Mis citas. Las funcionalidades quedan pendientes hasta una nueva instrucción del equipo. -->
+
+    <!-- Aquí se crea la estructura general de HuellaVet -->
+    <div class="hv-app">
+
+        <!-- Aquí se crea el menú lateral del cliente -->
+        <aside class="hv-sidebar">
+
+            <!-- Aquí se muestra la marca principal de HuellaVet -->
+            <div class="hv-sidebar__marca">
+
+                <img src="../img/icon-huella-de-perro.png" alt="Logo de HuellaVet" class="hv-sidebar__logo">
+
+                <div class="hv-sidebar__marca-texto">
+                    <strong>HuellaVet</strong>
+                    <small>Cuidamos a quienes amas</small>
+                </div>
+            </div>
+
+            <!-- Aquí se crea el menú principal del cliente -->
+            <nav class="hv-sidebar__menu">
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-house-door"></i>
+                    <span>Resumen</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-heart"></i>
+                    <span>Mis mascotas</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link hv-sidebar__link--activo">
+                    <i class="bi bi-calendar3"></i>
+                    <span>Mis citas</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-bell"></i>
+                    <span>Recordatorios</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-person"></i>
+                    <span>Perfil</span>
+                </a>
+
+                <a href="#" class="hv-sidebar__link">
+                    <i class="bi bi-gear"></i>
+                    <span>Configuración</span>
+                </a>
+
+                <!-- Cierre del menú principal del cliente -->
+            </nav>
+
+            <!-- Aquí se crea el bloque de ayuda -->
+            <div class="hv-sidebar__soporte">
+
+                <div class="hv-sidebar__soporte-icono">
+                    <i class="bi bi-headset"></i>
+                </div>
+
+                <h3>¿Necesitas ayuda?</h3>
+                <p>Nuestro equipo está para apoyarte.</p>
+
+                <a href="#" class="hv-sidebar__boton-soporte">
+                    <i class="bi bi-headset"></i>
+                    <span>Contactar soporte</span>
+                </a>
+
+                <!-- Cierre del bloque de ayuda -->
+            </div>
+
+            <!-- Cierre del menú lateral del cliente -->
+        </aside>
+
+        <!-- Aquí se crea la pantalla principal de Mis citas -->
+        <main class="hv-citas">
+
+            <!-- Aquí se crea el encabezado principal -->
+            <header class="hv-citas__header">
+
+                <div class="hv-citas__titulo">
+                    <i class="bi bi-list"></i>
+
+                    <div class="hv-citas__titulo-texto">
+                        <h1>Mis citas</h1>
+                        <p>Consulta, da seguimiento y revisa el estado de las citas de tus mascotas.</p>
+                    </div>
+                </div>
+
+                <div class="hv-citas__acciones">
+
+                    <!-- Aquí se muestran las notificaciones -->
+                    <div class="hv-notificacion">
+                        <i class="bi bi-bell"></i>
+                        <span class="hv-notificacion__numero">3</span>
+                    </div>
+
+                    <!-- Aquí se muestra la información del cliente -->
+                    <div class="hv-cliente">
+
+                        <div class="hv-cliente__avatar">
+                            <i class="bi bi-person"></i>
+                        </div>
+
+                        <div class="hv-cliente__texto">
+                            <strong>María Gómez</strong>
+                        </div>
+
+                        <i class="bi bi-chevron-down"></i>
+                    </div>
+
+                    <!-- Aquí se crea el botón principal para agendar -->
+                    <button class="hv-boton-agendar" type="button">
+                        <i class="bi bi-plus-lg"></i>
+                        <span>Agendar cita</span>
+                    </button>
+                </div>
+
+                <!-- Cierre de las acciones del encabezado -->
+            </header>
+
+            <!-- Aquí se organiza todo el contenido de Mis citas -->
+            <div class="hv-citas__cuerpo">
+
+                <!-- Aquí se muestran los seis estados obligatorios en desktop -->
+                <section class="hv-citas__resumen">
+
+                    <article class="hv-resumen-card">
+                        <div class="hv-resumen-card__icono hv-resumen-card__icono--proxima">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+                        <div class="hv-resumen-card__info">
+                            <span class="hv-resumen-card__titulo">Próximas</span>
+                            <strong class="hv-resumen-card__numero">2</strong>
+                            <a href="#" class="hv-resumen-card__enlace">Ver próximas <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="hv-resumen-card">
+                        <div class="hv-resumen-card__icono hv-resumen-card__icono--confirmada">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div class="hv-resumen-card__info">
+                            <span class="hv-resumen-card__titulo">Confirmadas</span>
+                            <strong class="hv-resumen-card__numero">3</strong>
+                            <a href="#" class="hv-resumen-card__enlace">Ver confirmadas <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="hv-resumen-card">
+                        <div class="hv-resumen-card__icono hv-resumen-card__icono--pendiente">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                        <div class="hv-resumen-card__info">
+                            <span class="hv-resumen-card__titulo">Pendientes</span>
+                            <strong class="hv-resumen-card__numero">1</strong>
+                            <a href="#" class="hv-resumen-card__enlace">Ver pendientes <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="hv-resumen-card">
+                        <div class="hv-resumen-card__icono hv-resumen-card__icono--reprogramada">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div class="hv-resumen-card__info">
+                            <span class="hv-resumen-card__titulo">Reprogramadas</span>
+                            <strong class="hv-resumen-card__numero">1</strong>
+                            <a href="#" class="hv-resumen-card__enlace">Ver reprogramadas <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="hv-resumen-card">
+                        <div class="hv-resumen-card__icono hv-resumen-card__icono--cancelada">
+                            <i class="bi bi-x-circle"></i>
+                        </div>
+                        <div class="hv-resumen-card__info">
+                            <span class="hv-resumen-card__titulo">Canceladas</span>
+                            <strong class="hv-resumen-card__numero">1</strong>
+                            <a href="#" class="hv-resumen-card__enlace">Ver canceladas <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </article>
+
+                    <article class="hv-resumen-card">
+                        <div class="hv-resumen-card__icono hv-resumen-card__icono--historial">
+                            <i class="bi bi-folder2-open"></i>
+                        </div>
+                        <div class="hv-resumen-card__info">
+                            <span class="hv-resumen-card__titulo">Historial</span>
+                            <strong class="hv-resumen-card__numero">8</strong>
+                            <a href="#" class="hv-resumen-card__enlace">Ver historial <i class="bi bi-chevron-right"></i></a>
+                        </div>
+                    </article>
+
+                    <!-- Aquí se crea el botón Más que aparece únicamente en móvil -->
+                    <div class="hv-mobile-mas">
+
+                        <button id="botonMas" type="button">
+                            Más<br>
+                            <i class="bi bi-three-dots"></i>
+                        </button>
+
+                        <div id="menuMas" class="hv-mobile-mas__menu">
+
+                            <button type="button" class="hv-mobile-mas__item">
+                                <span>Reprogramadas</span>
+                                <strong>1</strong>
+                            </button>
+
+                            <button type="button" class="hv-mobile-mas__item">
+                                <span>Canceladas</span>
+                                <strong style="color:#ef4c4c;">1</strong>
+                            </button>
+
+                            <button type="button" class="hv-mobile-mas__item">
+                                <span>Historial</span>
+                                <strong>8</strong>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Cierre del resumen de estados -->
+                </section>
+
+                <!-- Aquí se muestra la alerta más importante -->
+                <section class="hv-alerta">
+
+                    <div class="hv-alerta__icono">
+                        <i class="bi bi-check-lg"></i>
+                    </div>
+
+                    <div class="hv-alerta__contenido">
+                        <strong>¡Cita confirmada!</strong>
+                        <p>Tu cita para Luna fue confirmada por la clínica.</p>
+                        <small>Hoy, 10:30 a. m.</small>
+                    </div>
+
+                    <div class="hv-alerta__acciones">
+
+                        <button type="button" class="hv-alerta__ver-todas">
+                            Ver todas las alertas
+                        </button>
+
+                        <button type="button" class="hv-alerta__cerrar" aria-label="Cerrar alerta">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+
+                    <!-- Cierre de la alerta principal -->
+                </section>
+
+                <!-- Aquí se crea la zona donde están el listado y el detalle -->
+                <section class="hv-citas__zona-principal">
+
+                    <!-- Aquí se organiza el listado principal de citas -->
+                    <div class="hv-citas__columna-central">
+
+                        <!-- Aquí se crean filtros sencillos para no saturar la pantalla -->
+                        <section class="hv-filtros">
+
+                            <div class="hv-filtros__principales">
+                                <button type="button" class="hv-filtro-boton hv-filtro-boton--activo">Próximas</button>
+                                <button type="button" class="hv-filtro-boton">Pendientes</button>
+                                <button type="button" class="hv-filtro-boton">Historial</button>
+                            </div>
+
+                            <div class="hv-filtros__controles">
+
+                                <div class="hv-selector">
+                                    <i class="bi bi-heart"></i>
+
+                                    <select aria-label="Seleccionar mascota">
+                                        <option>Todas mis mascotas</option>
+                                        <option>Luna</option>
+                                        <option>Max</option>
+                                    </select>
+                                </div>
+
+                                <div class="hv-buscador">
+                                    <i class="bi bi-search"></i>
+                                    <input type="search" placeholder="Buscar por mascota, fecha o tipo...">
+                                </div>
+                            </div>
+
+                            <!-- Cierre de los filtros de citas -->
+                        </section>
+
+                        <!-- Aquí se muestran inicialmente máximo dos citas -->
+                        <section class="hv-citas__lista">
+
+                            <!-- Aquí se crea la cita confirmada de Luna -->
+                            <article class="hv-cita-card">
+
+                                <div class="hv-cita-card__mascota">
+
+                                    <div class="hv-cita-card__avatar">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Luna</strong>
+                                        <span>Gato · Siamés</span>
+                                    </div>
+                                </div>
+
+                                <div class="hv-cita-card__detalle">
+
+                                    <h2>Refuerzo de vacuna</h2>
+                                    <p>Polivalente felina + Rabia</p>
+
+                                    <div class="hv-cita-card__meta">
+                                        <span><i class="bi bi-calendar3"></i> 15 mayo 2025</span>
+                                        <span><i class="bi bi-clock"></i> 09:00 a. m.</span>
+                                        <span><i class="bi bi-geo-alt"></i> Sede Norte</span>
+                                    </div>
+                                </div>
+
+                                <div class="hv-cita-card__estado">
+
+                                    <span class="hv-badge hv-badge--confirmada">
+                                        <i class="bi bi-circle-fill"></i>
+                                        Confirmada
+                                    </span>
+
+                                    <small>
+                                        Confirmada por la clínica<br>
+                                        Hoy, 10:30 a. m.
+                                    </small>
+                                </div>
+
+                                <div class="hv-cita-card__accion">
+
+                                    <button type="button" class="hv-boton-detalle">
+                                        Ver detalle
+                                    </button>
+
+                                    <button type="button" class="hv-cita-card__menu" aria-label="Más opciones">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                </div>
+                            </article>
+
+                            <!-- Aquí se crea la cita pendiente de Max -->
+                            <article class="hv-cita-card">
+
+                                <div class="hv-cita-card__mascota">
+
+                                    <div class="hv-cita-card__avatar">
+                                        <i class="bi bi-heart-fill"></i>
+                                    </div>
+
+                                    <div>
+                                        <strong>Max</strong>
+                                        <span>Perro · Golden Retriever</span>
+                                    </div>
+                                </div>
+
+                                <div class="hv-cita-card__detalle">
+
+                                    <h2>Consulta general</h2>
+                                    <p>Revisión de rutina</p>
+
+                                    <div class="hv-cita-card__meta">
+                                        <span><i class="bi bi-calendar3"></i> 20 mayo 2025</span>
+                                        <span><i class="bi bi-clock"></i> 03:00 p. m.</span>
+                                        <span><i class="bi bi-geo-alt"></i> Sede Norte</span>
+                                    </div>
+                                </div>
+
+                                <div class="hv-cita-card__estado">
+
+                                    <span class="hv-badge hv-badge--pendiente">
+                                        <i class="bi bi-circle-fill"></i>
+                                        Pendiente
+                                    </span>
+
+                                    <small>
+                                        En revisión por la clínica<br>
+                                        Ayer, 2:15 p. m.
+                                    </small>
+                                </div>
+
+                                <div class="hv-cita-card__accion">
+
+                                    <button type="button" class="hv-boton-detalle">
+                                        Ver detalle
+                                    </button>
+
+                                    <button type="button" class="hv-cita-card__menu" aria-label="Más opciones">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                </div>
+                            </article>
+
+                            <!-- Cierre del listado inicial de citas -->
+                        </section>
+
+                        <!-- Aquí aparece Ver más porque existen más de dos citas -->
+                        <button type="button" class="hv-ver-mas">
+                            <i class="bi bi-arrow-down"></i>
+                            Ver 2 citas más
+                        </button>
+
+                        <!-- Aquí se informa la regla de reprogramación sin saturar las tarjetas -->
+                        <section class="hv-reprogramacion">
+
+                            <div class="hv-reprogramacion__contenido">
+
+                                <div class="hv-reprogramacion__icono">
+                                    <i class="bi bi-info-lg"></i>
+                                </div>
+
+                                <div>
+                                    <h2>Reprograma con tiempo</h2>
+                                    <p>
+                                        Las reprogramaciones deben realizarse con suficiente anticipación para
+                                        no afectar la agenda de atención y así brindarle el mejor cuidado a tu mascota.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="hv-reprogramacion__ilustracion" aria-hidden="true">
+                                <i class="bi bi-heart-pulse"></i>
+                            </div>
+
+                            <!-- Cierre del bloque informativo de reprogramación -->
+                        </section>
+
+                        <!-- Cierre de la columna principal de citas -->
+                    </div>
+
+                    <!-- Aquí se crea el panel con el detalle completo de la cita -->
+                    <aside class="hv-detalle">
+
+                        <div class="hv-detalle__header">
+                            <h2>Detalle de la cita</h2>
+
+                            <button type="button" class="hv-detalle__cerrar" aria-label="Cerrar detalle">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+
+                        <div class="hv-detalle__mascota">
+
+                            <div class="hv-detalle__avatar">
+                                <i class="bi bi-heart-fill"></i>
+                            </div>
+
+                            <div>
+                                <strong>Luna</strong>
+                                <span>Gato · Siamés</span>
+                            </div>
+                        </div>
+
+                        <div class="hv-detalle__estado">
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            <div>
+                                <strong>Confirmada</strong>
+                                <span>Confirmada por administración · Hoy, 10:30 a. m.</span>
+                            </div>
+                        </div>
+
+                        <dl class="hv-detalle__datos">
+
+                            <div class="hv-detalle__fila">
+                                <dt><i class="bi bi-card-text"></i> ID de cita</dt>
+                                <dd>2025-0515-0012</dd>
+                            </div>
+
+                            <div class="hv-detalle__fila">
+                                <dt><i class="bi bi-pencil"></i> Tipo de cita</dt>
+                                <dd>Refuerzo de vacuna</dd>
+                            </div>
+
+                            <div class="hv-detalle__fila">
+                                <dt><i class="bi bi-calendar3"></i> Fecha</dt>
+                                <dd>15 mayo 2025</dd>
+                            </div>
+
+                            <div class="hv-detalle__fila">
+                                <dt><i class="bi bi-clock"></i> Hora</dt>
+                                <dd>09:00 a. m.</dd>
+                            </div>
+
+                            <div class="hv-detalle__fila">
+                                <dt><i class="bi bi-geo-alt"></i> Sede</dt>
+                                <dd>Sede Norte</dd>
+                            </div>
+
+                            <div class="hv-detalle__fila">
+                                <dt><i class="bi bi-person"></i> Veterinario</dt>
+                                <dd>Dra. Laura Méndez</dd>
+                            </div>
+
+                            <div class="hv-detalle__fila">
+                                <dt><i class="bi bi-heart-pulse"></i> Servicio</dt>
+                                <dd>Polivalente felina + Rabia</dd>
+                            </div>
+
+                            <div class="hv-detalle__fila">
+                                <dt><i class="bi bi-chat-left-text"></i> Observaciones</dt>
+                                <dd>Traer carnet de vacunación. Luna debe asistir en ayunas mínimo 4 horas.</dd>
+                            </div>
+                        </dl>
+
+                        <!-- Aquí se conserva la trazabilidad de cambios de la cita -->
+                        <div class="hv-detalle__historial">
+
+                            <h3>Historial de cambios</h3>
+
+                            <div class="hv-historial-item">
+                                <strong>15 mayo 2025 · 10:30 a. m.</strong>
+                                <span>Cita confirmada por la clínica.</span>
+                            </div>
+
+                            <div class="hv-historial-item">
+                                <strong>14 mayo 2025 · 04:20 p. m.</strong>
+                                <span>
+                                    Solicitud de reprogramación enviada por cliente.
+                                    Nueva fecha propuesta: 16 mayo 2025 · 09:00 a. m.
+                                </span>
+                            </div>
+
+                            <div class="hv-historial-item">
+                                <strong>12 mayo 2025 · 11:15 a. m.</strong>
+                                <span>Cita creada por cliente.</span>
+                            </div>
+                        </div>
+
+                        <!-- Aquí se dejan únicamente acciones propias del cliente -->
+                        <div class="hv-detalle__acciones">
+
+                            <button type="button" class="hv-detalle__boton hv-detalle__boton--reprogramar">
+                                <i class="bi bi-pencil"></i>
+                                Solicitar reprogramación
+                            </button>
+
+                            <button type="button" class="hv-detalle__boton hv-detalle__boton--cancelar">
+                                <i class="bi bi-trash"></i>
+                                Cancelar cita
+                            </button>
+                        </div>
+
+                        <!-- Cierre de las acciones del detalle -->
+                    </aside>
+
+                    <!-- Cierre de la zona principal de citas -->
+                </section>
+
+                <!-- Cierre del contenido de Mis citas -->
+            </div>
+
+            <!-- Cierre de la pantalla principal de Mis citas -->
+        </main>
+
+        <!-- Cierre de la estructura general de HuellaVet -->
+    </div>
+
+    <!-- Aquí se conecta Bootstrap al final de la página -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+    <!-- Las interacciones y funcionalidades de esta vista quedan pendientes para una siguiente fase. -->
+
+</body>
+
+</html>

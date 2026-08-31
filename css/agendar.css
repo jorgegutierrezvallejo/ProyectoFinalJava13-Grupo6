@@ -209,8 +209,18 @@
 .servicios-seccion__titulo {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 0.75rem;
     margin-bottom: 1rem;
+}
+
+.servicios-seccion__filtro {
+    margin-left: auto;
+}
+
+.servicios-seccion__filtro .form-select {
+    min-width: 170px;
+    border-color: var(--color-borde);
 }
 
 .servicios-seccion__titulo i {
@@ -1110,6 +1120,15 @@
    ========================================================= */
 
 @media (max-width: 767.98px) {
+    .servicios-seccion__filtro {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .servicios-seccion__filtro .form-select {
+        width: 100%;
+    }
+
     .formulario-mascota {
         padding: 1.5rem;
         border-radius: 1rem;

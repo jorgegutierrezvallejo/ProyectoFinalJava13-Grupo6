@@ -240,7 +240,7 @@
                                 Calendario
                             </h3>
 
-                            <p>
+                            <p id="calendarioMesTexto">
                                 Agosto 2026
                             </p>
 
@@ -249,11 +249,11 @@
 
                         <div class="calendar-controls">
 
-                            <button type="button" aria-label="Mes anterior">
+                            <button type="button" id="calBtnMesAnterior" aria-label="Mes anterior">
                                 <i class="bi bi-chevron-left"></i>
                             </button>
 
-                            <button type="button" aria-label="Mes siguiente">
+                            <button type="button" id="calBtnMesSiguiente" aria-label="Mes siguiente">
                                 <i class="bi bi-chevron-right"></i>
                             </button>
 
@@ -277,61 +277,7 @@
 
 
 
-                    <div class="calendar-grid">
-
-                        <span class="calendar-day calendar-day--muted">27</span>
-                        <span class="calendar-day calendar-day--muted">28</span>
-                        <span class="calendar-day calendar-day--muted">29</span>
-                        <span class="calendar-day calendar-day--muted">30</span>
-                        <span class="calendar-day calendar-day--muted">31</span>
-
-                        <span class="calendar-day">1</span>
-                        <span class="calendar-day">2</span>
-
-                        <span class="calendar-day">3</span>
-                        <span class="calendar-day">4</span>
-                        <span class="calendar-day calendar-day--appointment">5</span>
-                        <span class="calendar-day">6</span>
-                        <span class="calendar-day calendar-day--appointment">7</span>
-                        <span class="calendar-day">8</span>
-                        <span class="calendar-day">9</span>
-
-                        <span class="calendar-day">10</span>
-                        <span class="calendar-day calendar-day--appointment">11</span>
-
-                        <span class="calendar-day calendar-day--today">
-                            12
-                        </span>
-
-                        <span class="calendar-day calendar-day--appointment">13</span>
-                        <span class="calendar-day">14</span>
-                        <span class="calendar-day calendar-day--appointment">15</span>
-                        <span class="calendar-day">16</span>
-
-                        <span class="calendar-day">17</span>
-                        <span class="calendar-day">18</span>
-                        <span class="calendar-day calendar-day--appointment">19</span>
-                        <span class="calendar-day">20</span>
-                        <span class="calendar-day">21</span>
-                        <span class="calendar-day">22</span>
-                        <span class="calendar-day">23</span>
-
-                        <span class="calendar-day">24</span>
-                        <span class="calendar-day calendar-day--appointment">25</span>
-                        <span class="calendar-day">26</span>
-                        <span class="calendar-day">27</span>
-                        <span class="calendar-day">28</span>
-                        <span class="calendar-day">29</span>
-                        <span class="calendar-day">30</span>
-
-                        <span class="calendar-day">31</span>
-
-                        <span class="calendar-day calendar-day--muted">1</span>
-                        <span class="calendar-day calendar-day--muted">2</span>
-                        <span class="calendar-day calendar-day--muted">3</span>
-                        <span class="calendar-day calendar-day--muted">4</span>
-                        <span class="calendar-day calendar-day--muted">5</span>
-                        <span class="calendar-day calendar-day--muted">6</span>
+                    <div class="calendar-grid" id="calendarioGrid">
 
                     </div>
 
@@ -1068,6 +1014,7 @@
 
 
     <!-- Dashboard -->
+    <script src="../js/citas-datos.js"></script>
     <script src="../js/admin-dashboard.js"></script>
 
 

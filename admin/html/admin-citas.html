@@ -266,30 +266,30 @@
 
                             <div class="hv-agenda-nav">
 
-                                <span class="hv-agenda-nav__fecha">
+                                <span class="hv-agenda-nav__fecha" id="agendaFechaTexto">
                                     Viernes, 16 de mayo de 2025
                                 </span>
 
                                 <div class="hv-agenda-nav__controles">
 
-                                    <button class="hv-agenda-nav__btn" type="button"
-                                        aria-label="Semana anterior">
+                                    <button class="hv-agenda-nav__btn" type="button" id="agendaBtnAnterior"
+                                        aria-label="Dia anterior">
                                         <i class="bi bi-chevron-left"></i>
                                     </button>
 
-                                    <button class="hv-agenda-nav__btn" type="button"
+                                    <button class="hv-agenda-nav__btn" type="button" id="agendaBtnCalendario"
                                         aria-label="Calendario">
                                         <i class="bi bi-calendar3"></i>
                                     </button>
 
-                                    <button class="hv-agenda-nav__btn" type="button"
-                                        aria-label="Semana siguiente">
+                                    <button class="hv-agenda-nav__btn" type="button" id="agendaBtnSiguiente"
+                                        aria-label="Dia siguiente">
                                         <i class="bi bi-chevron-right"></i>
                                     </button>
 
                                 </div>
 
-                                <button class="hv-agenda-nav__hoy" type="button">
+                                <button class="hv-agenda-nav__hoy" type="button" id="agendaBtnHoy">
                                     Hoy
                                 </button>
 
@@ -300,223 +300,12 @@
 
 
                         <!-- lista de citas del dia -->
-                        <div>
-
-
-
-                            <!-- 08:00 - milo (completada) -->
-                            <div class="hv-agenda-fila">
-
-                                <div class="hv-agenda-hora">08:00</div>
-
-                                <div class="hv-agenda-cita hv-agenda-cita--completada">
-
-                                    <!-- imagen de mascota desde unsplash -->
-                                    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=150&q=80" alt="Foto de Milo" class="hv-agenda-cita__avatar">
-
-                                    <div class="hv-agenda-cita__info">
-                                        <div class="hv-agenda-cita__nombre">Milo</div>
-                                        <div class="hv-agenda-cita__dueno">María Fernanda López</div>
-                                    </div>
-
-                                    <div class="hv-agenda-cita__servicio">
-                                        <i class="bi bi-heart-pulse"></i>
-                                        <div>
-                                            <div class="hv-agenda-cita__tipo">Consulta general</div>
-                                            <div class="hv-agenda-cita__detalle">Revisión de rutina</div>
-                                        </div>
-                                    </div>
-
-                                    <span class="hv-badge hv-badge--completada">Completada</span>
-
-                                    <i class="bi bi-check-circle-fill hv-agenda-cita__estado-icono hv-agenda-cita__estado-icono--check"></i>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <!-- 09:00 - kira (confirmada) -->
-                            <div class="hv-agenda-fila">
-
-                                <div class="hv-agenda-hora">09:00</div>
-
-                                <div class="hv-agenda-cita hv-agenda-cita--confirmada">
-
-                                    <!-- imagen de mascota desde unsplash -->
-                                    <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=150&q=80" alt="Foto de Kira" class="hv-agenda-cita__avatar">
-
-                                    <div class="hv-agenda-cita__info">
-                                        <div class="hv-agenda-cita__nombre">Kira</div>
-                                        <div class="hv-agenda-cita__dueno">Carlos Ramírez</div>
-                                    </div>
-
-                                    <div class="hv-agenda-cita__servicio">
-                                        <i class="bi bi-shield-plus"></i>
-                                        <div>
-                                            <div class="hv-agenda-cita__tipo">Vacunación</div>
-                                            <div class="hv-agenda-cita__detalle">Polivalente + Rabia</div>
-                                        </div>
-                                    </div>
-
-                                    <span class="hv-badge hv-badge--confirmada">Confirmada</span>
-
-                                    <i class="bi bi-chevron-right hv-agenda-cita__flecha"></i>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <!-- 10:00 - mishi (en curso) -->
-                            <div class="hv-agenda-fila">
-
-                                <div class="hv-agenda-hora">10:00</div>
-
-                                <div class="hv-agenda-cita hv-agenda-cita--en-curso">
-
-                                    <!-- imagen de mascota desde unsplash -->
-                                    <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=150&q=80" alt="Foto de Mishi" class="hv-agenda-cita__avatar">
-
-                                    <div class="hv-agenda-cita__info">
-                                        <div class="hv-agenda-cita__nombre">Mishi</div>
-                                        <div class="hv-agenda-cita__dueno">Andrea Torres</div>
-                                    </div>
-
-                                    <div class="hv-agenda-cita__servicio">
-                                        <i class="bi bi-bandaid"></i>
-                                        <div>
-                                            <div class="hv-agenda-cita__tipo">Limpieza dental</div>
-                                            <div class="hv-agenda-cita__detalle">Profilaxis</div>
-                                        </div>
-                                    </div>
-
-                                    <span class="hv-badge hv-badge--en-curso">En curso</span>
-
-                                    <i class="bi bi-chevron-right hv-agenda-cita__flecha"></i>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <!-- 11:00 - espacio disponible -->
-                            <div class="hv-agenda-fila">
-
-                                <div class="hv-agenda-hora">11:00</div>
-
-                                <div class="hv-agenda-espacio">
-
-                                    <div class="hv-agenda-espacio__icono">
-                                        <i class="bi bi-plus"></i>
-                                    </div>
-
-                                    <div class="hv-agenda-espacio__texto">
-                                        <strong>Espacio disponible</strong>
-                                        <span>Haz clic para crear una reserva</span>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <!-- 12:00 - rocky (confirmada) -->
-                            <div class="hv-agenda-fila">
-
-                                <div class="hv-agenda-hora">12:00</div>
-
-                                <div class="hv-agenda-cita hv-agenda-cita--confirmada">
-
-                                    <!-- imagen de mascota desde unsplash -->
-                                    <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=150&q=80" alt="Foto de Rocky" class="hv-agenda-cita__avatar">
-
-                                    <div class="hv-agenda-cita__info">
-                                        <div class="hv-agenda-cita__nombre">Rocky</div>
-                                        <div class="hv-agenda-cita__dueno">Javier Martínez</div>
-                                    </div>
-
-                                    <div class="hv-agenda-cita__servicio">
-                                        <i class="bi bi-bandaid"></i>
-                                        <div>
-                                            <div class="hv-agenda-cita__tipo">Consulta dermatológica</div>
-                                            <div class="hv-agenda-cita__detalle">Alergias en piel</div>
-                                        </div>
-                                    </div>
-
-                                    <span class="hv-badge hv-badge--confirmada">Confirmada</span>
-
-                                    <i class="bi bi-chevron-right hv-agenda-cita__flecha"></i>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <!-- 13:00 - coco (reprogramada) -->
-                            <div class="hv-agenda-fila">
-
-                                <div class="hv-agenda-hora">13:00</div>
-
-                                <div class="hv-agenda-cita hv-agenda-cita--reprogramada">
-
-                                    <!-- imagen de mascota desde unsplash -->
-                                    <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=150&q=80" alt="Foto de Coco" class="hv-agenda-cita__avatar">
-
-                                    <div class="hv-agenda-cita__info">
-                                        <div class="hv-agenda-cita__nombre">Coco</div>
-                                        <div class="hv-agenda-cita__dueno">Paula Gómez</div>
-                                    </div>
-
-                                    <div class="hv-agenda-cita__servicio">
-                                        <i class="bi bi-clipboard2-pulse"></i>
-                                        <div>
-                                            <div class="hv-agenda-cita__tipo">Examen general</div>
-                                            <div class="hv-agenda-cita__detalle">Chequeo anual</div>
-                                        </div>
-                                    </div>
-
-                                    <span class="hv-badge hv-badge--reprogramada">Reprogramada</span>
-
-                                    <i class="bi bi-chevron-right hv-agenda-cita__flecha"></i>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <!-- 14:00 - espacio disponible -->
-                            <div class="hv-agenda-fila">
-
-                                <div class="hv-agenda-hora">14:00</div>
-
-                                <div class="hv-agenda-espacio">
-
-                                    <div class="hv-agenda-espacio__icono">
-                                        <i class="bi bi-plus"></i>
-                                    </div>
-
-                                    <div class="hv-agenda-espacio__texto">
-                                        <strong>Espacio disponible</strong>
-                                        <span>Haz clic para crear una reserva</span>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
+                        <div id="agendaListaContenedor">
 
                         </div>
 
 
-                    <!-- cierro seccion agenda de hoy -->
+<!-- cierro seccion agenda de hoy -->
                     </section>
 
 
@@ -534,21 +323,30 @@
                 <aside class="hv-card">
 
 
-                    <!-- titulo del panel -->
+                    <!-- titulo del panel: "Proxima Cita" por defecto,
+                         cambia a "Ver cita" cuando se hace clic en una
+                         fila de la agenda -->
                     <div class="hv-card__header">
-                        <h3>Próxima Cita</h3>
+                        <h3 id="panelCitaTitulo">Próxima Cita</h3>
                     </div>
 
 
-                    <!-- cabecera con foto y nombre -->
+                    <!-- contenido dinamico: se llena con JS
+                         (renderizarPanelCita en admin-citas.js).
+                         Si no hay ninguna cita que mostrar, se
+                         reemplaza por un estado vacio. -->
+                    <div id="panelCitaContenido">
+
+                    <!-- cabecera con icono y nombre -->
                     <div class="hv-detalle__header">
 
-                        <!-- imagen de mascota desde unsplash -->
-                        <img src="https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=150&q=80" alt="Foto de Kira" class="hv-detalle__avatar mx-auto d-block">
+                        <div class="hv-detalle__avatar hv-detalle__avatar--icono mx-auto d-block" id="panelCitaAvatar">
+                            <i class="fa-solid fa-paw"></i>
+                        </div>
 
-                        <h4 class="hv-detalle__nombre">Kira</h4>
+                        <h4 class="hv-detalle__nombre" id="panelCitaNombre">Kira</h4>
 
-                        <span class="hv-detalle__id">
+                        <span class="hv-detalle__id" id="panelCitaId">
                             ID: 2025-0516-002
                         </span>
 
@@ -564,8 +362,8 @@
                             <i class="bi bi-heart"></i>
                             <span class="hv-detalle__etiqueta">Mascota</span>
                             <span class="hv-detalle__valor">
-                                Kira
-                                <small>Golden Retriever • 3 años</small>
+                                <span id="panelCitaMascotaTexto">Kira</span>
+                                <small id="panelCitaMascotaDetalle">Golden Retriever • 3 años</small>
                             </span>
                         </div>
 
@@ -575,8 +373,8 @@
                             <i class="bi bi-person"></i>
                             <span class="hv-detalle__etiqueta">Propietario</span>
                             <span class="hv-detalle__valor">
-                                Carlos Ramírez
-                                <small>310 555 1234</small>
+                                <span id="panelCitaPropietarioTexto">Carlos Ramírez</span>
+                                <small id="panelCitaPropietarioDetalle">310 555 1234</small>
                             </span>
                         </div>
 
@@ -586,8 +384,8 @@
                             <i class="bi bi-shield-plus"></i>
                             <span class="hv-detalle__etiqueta">Servicio</span>
                             <span class="hv-detalle__valor">
-                                Vacunación
-                                <small>Polivalente + Rabia</small>
+                                <span id="panelCitaServicioTexto">Vacunación</span>
+                                <small id="panelCitaServicioDetalle">Polivalente + Rabia</small>
                             </span>
                         </div>
 
@@ -596,7 +394,7 @@
                         <div class="hv-detalle__fila">
                             <i class="bi bi-calendar3"></i>
                             <span class="hv-detalle__etiqueta">Fecha</span>
-                            <span class="hv-detalle__valor">
+                            <span class="hv-detalle__valor" id="panelCitaFecha">
                                 Viernes, 16 de mayo de 2025
                             </span>
                         </div>
@@ -606,9 +404,8 @@
                         <div class="hv-detalle__fila">
                             <i class="bi bi-clock"></i>
                             <span class="hv-detalle__etiqueta">Hora</span>
-                            <span class="hv-detalle__valor">
+                            <span class="hv-detalle__valor" id="panelCitaHora">
                                 09:00 a. m.
-                                <small>30 min</small>
                             </span>
                         </div>
 
@@ -618,7 +415,7 @@
                             <i class="bi bi-check-circle"></i>
                             <span class="hv-detalle__etiqueta">Estado</span>
                             <span class="hv-detalle__valor">
-                                <span class="hv-detalle__estado hv-detalle__estado--confirmada">
+                                <span class="hv-detalle__estado hv-detalle__estado--confirmada" id="panelCitaEstado">
                                     Confirmada
                                 </span>
                             </span>
@@ -626,12 +423,31 @@
 
 
                         <!-- observaciones -->
-                        <div class="hv-detalle__fila">
+                        <div class="hv-detalle__fila" id="panelCitaObservacionesFila">
                             <i class="bi bi-chat-left-text"></i>
                             <span class="hv-detalle__etiqueta">Observaciones</span>
-                            <span class="hv-detalle__valor">
+                            <span class="hv-detalle__valor" id="panelCitaObservaciones">
                                 Traer carnet de vacunación.
                                 <small>Kira debe asistir en ayunas mínimo 4 horas.</small>
+                            </span>
+                        </div>
+
+                        <!-- motivo del cambio de estado: solo si la cita
+                             esta Cancelada, Rechazada o Reprogramada -->
+                        <div class="hv-detalle__fila" id="panelCitaMotivoEstadoFila" hidden>
+                            <i class="bi bi-info-circle"></i>
+                            <span class="hv-detalle__etiqueta" id="panelCitaMotivoEstadoEtiqueta">Motivo</span>
+                            <span class="hv-detalle__valor" id="panelCitaMotivoEstado"></span>
+                        </div>
+
+                        <!-- recomendacion/recordatorio enviado al finalizar
+                             la cita: solo si la cita esta Completada -->
+                        <div class="hv-detalle__fila" id="panelCitaRecordatorioFila" hidden>
+                            <i class="bi bi-bell"></i>
+                            <span class="hv-detalle__etiqueta">Recomendación</span>
+                            <span class="hv-detalle__valor">
+                                <span id="panelCitaRecordatorioTexto"></span>
+                                <small id="panelCitaRecordatorioFecha"></small>
                             </span>
                         </div>
 
@@ -639,26 +455,64 @@
                     </div>
 
 
-                    <!-- botones de accion -->
-                    <div class="hv-detalle__acciones">
+                    <!-- botones de accion: Editar/Reprogramar/Cancelar
+                         (se ocultan cuando la cita esta Completada) -->
+                    <div class="hv-detalle__acciones" id="panelAccionesNormales">
 
-                        <button class="hv-detalle__btn hv-detalle__btn--editar" type="button">
+                        <button class="hv-detalle__btn hv-detalle__btn--editar" type="button" id="panelBtnEditar">
                             <i class="bi bi-pencil"></i>
                             Editar
                         </button>
 
-                        <button class="hv-detalle__btn hv-detalle__btn--reprogramar" type="button">
+                        <button class="hv-detalle__btn hv-detalle__btn--reprogramar" type="button" id="panelBtnReprogramar">
                             <i class="bi bi-calendar-event"></i>
                             Reprogramar
                         </button>
 
-                        <button class="hv-detalle__btn hv-detalle__btn--cancelar" type="button">
+                        <button class="hv-detalle__btn hv-detalle__btn--cancelar" type="button" id="panelBtnCancelar">
                             <i class="bi bi-x-circle"></i>
                             Cancelar
                         </button>
 
                     </div>
 
+                    <!-- alterno: solo se ve cuando la cita ya esta
+                         Completada. El servicio ya termino, lo unico que
+                         se puede hacer es ajustar la recomendacion. -->
+                    <div class="hv-detalle__acciones" id="panelAccionesRecomendacion" hidden>
+
+                        <button class="hv-detalle__btn hv-detalle__btn--recomendacion" type="button" id="panelBtnEditarRecomendacion">
+                            <i class="bi bi-pencil"></i>
+                            Editar recomendación
+                        </button>
+
+                    </div>
+
+
+                    <!-- boton iniciar/finalizar cita: cambia el estado
+                         a "En curso" y luego a "Completada" -->
+                    <div class="hv-detalle__acciones hv-detalle__acciones--curso">
+
+                        <button class="hv-detalle__btn hv-detalle__btn--iniciar" type="button" id="panelBtnIniciarFinalizar">
+                            <i class="bi bi-play-circle"></i>
+                            <span id="panelBtnIniciarFinalizarTexto">Iniciar cita</span>
+                        </button>
+
+                    </div>
+
+                    <!-- cierro panelCitaContenido -->
+                    </div>
+
+                    <!-- estado vacio: no hay ninguna cita que mostrar -->
+                    <div id="panelCitaVacio" class="hv-pendientes--vacio" hidden>
+                        <div class="hv-pendientes__compacto-icono">
+                            <i class="bi bi-calendar-x"></i>
+                        </div>
+                        <div class="hv-pendientes__compacto-contenido">
+                            <strong>No hay ninguna cita</strong>
+                            <p>No se encontró una próxima cita para mostrar.</p>
+                        </div>
+                    </div>
 
                 <!-- cierro panel de proxima cita -->
                 </aside>
@@ -695,6 +549,7 @@
 
 
     <!-- js propio -->
+    <script src="../js/citas-datos.js"></script>
     <script src="../js/admin-citas.js"></script>
 
 

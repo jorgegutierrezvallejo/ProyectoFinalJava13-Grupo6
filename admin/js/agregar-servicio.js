@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     iniciarServicios();
     iniciarVistaPreviaImagen();
+    iniciarTipoServicio();
 });
 
 function iniciarServicios() {
@@ -42,6 +43,7 @@ function iniciarServicios() {
             if (inputDescripcion) inputDescripcion.value = servicioExistente.descripcion || "";
             if (inputPrecio) inputPrecio.value = servicioExistente.precio || "";
             if (selectDuracion) selectDuracion.value = servicioExistente.duracion || "";
+            if (servicioExistente.tipoServicioId) window.tipoServicioIdPrecargado = servicioExistente.tipoServicioId;
 
             // Modalidad
             const modalidadGuardada = servicioExistente.modalidad || (servicioExistente.esDomicilio ? "domicilio" : (servicioExistente.esVirtual ? "virtual" : "clinica"));
@@ -147,6 +149,12 @@ function iniciarServicios() {
             errores.push("Debes seleccionar un icono para el servicio.");
         }
 
+        const selectTipoServicio = document.getElementById("tipoServicio");
+        const tipoServicioId = selectTipoServicio ? selectTipoServicio.value : "";
+        if (tipoServicioId === "") {
+            errores.push("Debes seleccionar (o crear) un tipo de servicio.");
+        }
+
         if (tieneReserva) {
             const reservaNum = parseFloat(costoReservaVal);
             if (costoReservaVal === "" || isNaN(reservaNum) || reservaNum <= 0) {
@@ -179,6 +187,7 @@ function iniciarServicios() {
             const servicioActualizado = {
                 id: servicioExistente.id,
                 nombre: nombre,
+                tipoServicioId: tipoServicioId,
                 descripcion: descripcion,
                 precio: parseFloat(precio),
                 duracion: parseInt(duracion),
@@ -216,6 +225,7 @@ function iniciarServicios() {
             const nuevoServicio = {
                 id: Date.now(),
                 nombre: nombre,
+                tipoServicioId: tipoServicioId,
                 descripcion: descripcion,
                 precio: parseFloat(precio),
                 duracion: parseInt(duracion),
@@ -287,4 +297,70 @@ function convertirImagenABase64(archivo) {
 
         lector.readAsDataURL(archivo);
     });
+}
+// Select "creatable" de Tipo de servicio: se llena con los tipos ya
+// creados (localStorage.tiposServicio, ver tipos-servicio.js) y permite
+// crear uno nuevo desde el boton "+ Nuevo" cuando la lista esta vacia
+// o cuando se necesita agregar otro.
+function iniciarTipoServicio() {
+    const selectTipo = document.getElementById("tipoServicio");
+    const btnCrear = document.getElementById("btnCrearTipoServicio");
+    const ayudaTexto = document.getElementById("ayudaTipoServicio");
+
+    if (!selectTipo || typeof obtenerTiposServicio !== "function") {
+        return;
+    }
+
+    function renderizarOpciones(idSeleccionado) {
+        const tipos = obtenerTiposServicio();
+
+        if (tipos.length === 0) {
+            selectTipo.innerHTML = `<option value="" disabled selected>Aún no hay tipos — crea el primero con "+ Nuevo"</option>`;
+            if (ayudaTexto) {
+                ayudaTexto.textContent = "Todavía no has creado ningún tipo de servicio. Usa el botón \"+ Nuevo\" para crear el primero.";
+            }
+            return;
+        }
+
+        if (ayudaTexto) {
+            ayudaTexto.textContent = "Sirve para agrupar y filtrar tus servicios (ej. Laboratorio, Prevención, Estética).";
+        }
+
+        selectTipo.innerHTML = `<option value="" disabled ${idSeleccionado ? "" : "selected"}>Selecciona un tipo</option>` +
+            tipos.map(tipo => `<option value="${tipo.id}" ${String(tipo.id) === String(idSeleccionado) ? "selected" : ""}>${escaparHtmlTipoServicio(tipo.nombre)}</option>`).join("");
+    }
+
+    renderizarOpciones(window.tipoServicioIdPrecargado || "");
+
+    if (btnCrear) {
+        btnCrear.addEventListener("click", function () {
+            Swal.fire({
+                title: "Nuevo tipo de servicio",
+                input: "text",
+                inputPlaceholder: "Ej. Laboratorio, Prevención, Estética...",
+                showCancelButton: true,
+                confirmButtonText: "Crear",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#17a9a7",
+                inputValidator: function (valor) {
+                    if (!valor || !valor.trim()) {
+                        return "Escribe un nombre para el tipo de servicio.";
+                    }
+                }
+            }).then(function (resultado) {
+                if (!resultado.isConfirmed) return;
+
+                const tipoCreado = crearTipoServicio(resultado.value);
+                if (!tipoCreado) return;
+
+                renderizarOpciones(tipoCreado.id);
+            });
+        });
+    }
+}
+
+function escaparHtmlTipoServicio(valor) {
+    const div = document.createElement("div");
+    div.textContent = valor == null ? "" : String(valor);
+    return div.innerHTML;
 }

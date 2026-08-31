@@ -18,6 +18,7 @@
             const datosPaso2StorageKey = "datosCita_Paso2";
 
             cargarServiciosDesdeDashboard();
+            iniciarFiltroTipoServicioAgendar();
             iniciarEnvioPaso1();
             iniciarCalendario();
             cargarHorarios();
@@ -25,7 +26,7 @@
             iniciarRecordatorios();
             iniciarConfirmacion();
 
-            function cargarServiciosDesdeDashboard() {
+            function cargarServiciosDesdeDashboard(filtroTipoId) {
                 const contenedor = document.getElementById("servicios-container");
                 if (!contenedor) return;
 
@@ -37,8 +38,28 @@
                     console.error("No fue posible leer los servicios del Dashboard:", error);
                 }
 
-                if (!Array.isArray(servicios) || servicios.length === 0) {
-                    contenedor.innerHTML = `
+                if (!Array.isArray(servicios)) servicios = [];
+
+                const huboServiciosSinFiltrar = servicios.length > 0;
+
+                if (filtroTipoId) {
+                    servicios = servicios.filter(s => String(s.tipoServicioId || "") === String(filtroTipoId));
+                }
+
+                if (servicios.length === 0) {
+                    const selectorWrapperVacio = document.getElementById("serviciosSelectorWrapper");
+                    if (selectorWrapperVacio) selectorWrapperVacio.classList.add("d-none");
+                    const carruselWrapperVacio = document.getElementById("serviciosCarruselContenedor");
+                    if (carruselWrapperVacio) carruselWrapperVacio.classList.remove("d-none");
+
+                    contenedor.innerHTML = filtroTipoId && huboServiciosSinFiltrar
+                        ? `
+                <div class="servicios-vacio">
+                    <i class="bi bi-funnel fs-4 d-block mb-2"></i>
+                    <p class="mb-0">No hay servicios de este tipo por ahora.</p>
+                </div>
+            `
+                        : `
                 <div class="servicios-vacio">
                     <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
                     <p class="mb-0">No hay servicios registrados en el sistema.</p>
@@ -907,6 +928,31 @@
                 const div = document.createElement("div");
                 div.textContent = String(valor);
                 return div.innerHTML;
+            }
+
+            // Llena el filtro "Todos los tipos" (junto al titulo "Tipo de
+            // servicio") con los tipos que el admin ha creado, y vuelve a
+            // pintar el carrusel/selector filtrado cada vez que cambia.
+            function iniciarFiltroTipoServicioAgendar() {
+                const filtroSelect = document.getElementById("filtroTipoServicioAgendar");
+                if (!filtroSelect || typeof obtenerTiposServicio !== "function") {
+                    return;
+                }
+
+                const tipos = obtenerTiposServicio();
+
+                if (tipos.length === 0) {
+                    const contenedorFiltro = filtroSelect.closest(".servicios-seccion__filtro");
+                    if (contenedorFiltro) contenedorFiltro.classList.add("d-none");
+                    return;
+                }
+
+                filtroSelect.innerHTML = `<option value="" selected>Todos los tipos</option>` +
+                    tipos.map(tipo => `<option value="${tipo.id}">${escaparHtml(tipo.nombre)}</option>`).join("");
+
+                filtroSelect.addEventListener("change", function () {
+                    cargarServiciosDesdeDashboard(this.value);
+                });
             }
         });
 

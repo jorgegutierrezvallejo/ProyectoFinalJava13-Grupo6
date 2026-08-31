@@ -55,6 +55,23 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="tipoServicio" class="form-label text-custom-dark fw-bold">
+                                    Tipo de servicio <span class="asterisk">*</span>
+                                </label>
+                                <div class="d-flex gap-2">
+                                    <select class="form-select" id="tipoServicio" name="tipoServicio" required>
+                                        <option value="" disabled selected>Selecciona un tipo</option>
+                                    </select>
+                                    <button type="button" class="btn btn-outline-secondary text-nowrap text-dark" id="btnCrearTipoServicio">
+                                        <i class="bi bi-plus-lg"></i> Nuevo
+                                    </button>
+                                </div>
+                                <small class="text-muted d-block mt-1" id="ayudaTipoServicio">
+                                    Sirve para agrupar y filtrar tus servicios (ej. Laboratorio, Prevención, Estética).
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="descripcion" class="form-label text-custom-dark fw-bold">
                                     Descripción <span class="asterisk">*</span>
                                 </label>
@@ -328,6 +345,7 @@
     <script src="../js/admin-sidebar.js"></script>
     <script src="../js/topbar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/tipos-servicio.js"></script>
     <script src="../js/agregar-servicio.js"></script>
 
 </body>

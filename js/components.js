@@ -24,7 +24,7 @@ function marcarPaginaActiva() {
     const paginaActual = document.body.dataset.page;
 
     const enlaceActual = document.querySelector(
-        `[data-nav="${paginaActual}"]`
+        `[data-page="${paginaActual}"]`
     );
 
     if (enlaceActual) {

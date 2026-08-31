@@ -192,6 +192,66 @@ body.sidebar-collapsed .admin-page {
     box-shadow: 0 3px 12px rgba(34, 62, 60, 0.03);
 }
 
+/* ========================================
+   PENDIENTES POR CONFIRMAR - ESTADO VACIO
+   Panel compacto de una sola linea
+   (mismo formato que la alerta de "cita confirmada")
+======================================== */
+
+.hv-pendientes--vacio {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.1rem;
+}
+
+.hv-pendientes__compacto-icono {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f4e4af;
+    color: #b9860f;
+    font-size: 1.1rem;
+}
+
+.hv-pendientes__compacto-contenido {
+    min-width: 0;
+    flex: 1;
+}
+
+.hv-pendientes__compacto-contenido strong {
+    display: block;
+    margin-bottom: 0.1rem;
+    font-size: 0.9rem;
+    color: var(--hv-texto);
+}
+
+.hv-pendientes__compacto-contenido p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #7f8987;
+}
+
+.hv-pendientes__compacto-acciones {
+    flex-shrink: 0;
+}
+
+.hv-pendientes__compacto-acciones a {
+    color: #2b8f54;
+    text-decoration: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.hv-pendientes__compacto-acciones a:hover {
+    color: var(--hv-primario-oscuro);
+}
+
 .hv-pendientes__header {
     margin-bottom: 0.7rem;
     display: flex;
@@ -487,6 +547,11 @@ body.sidebar-collapsed .admin-page {
 .hv-agenda-cita--confirmada  { border-left-color: var(--hv-primario); background-color: #f4fbfb; }
 .hv-agenda-cita--en-curso    { border-left-color: #ff9800; background-color: #fffbf5; }
 .hv-agenda-cita--reprogramada{ border-left-color: #e84c4c; background-color: #fef7f7; }
+.hv-agenda-cita--pendiente   { border-left-color: #d9a441; background-color: #fffcf5; }
+.hv-agenda-cita--cancelada   { border-left-color: #9aa5a3; background-color: #f7f8f7; }
+.hv-agenda-cita--rechazada   { border-left-color: #9aa5a3; background-color: #f7f8f7; }
+
+.hv-agenda-cita { cursor: pointer; }
 
 .hv-agenda-cita__avatar {
     width: 40px;
@@ -495,6 +560,15 @@ body.sidebar-collapsed .admin-page {
     border-radius: 50%;
     object-fit: cover;
     background-color: #f0ece8;
+}
+
+.hv-agenda-cita__avatar--icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hv-primario-oscuro);
+    background-color: #e6f4f3;
+    font-size: 1.05rem;
 }
 
 .hv-agenda-cita__info   { flex: 1; min-width: 0; }
@@ -520,6 +594,9 @@ body.sidebar-collapsed .admin-page {
 .hv-badge--confirmada  { background-color: #e0f2f1; color: #00796b; }
 .hv-badge--en-curso    { background-color: #fff3e0; color: #e65100; }
 .hv-badge--reprogramada{ background-color: #fce4ec; color: #c62828; }
+.hv-badge--pendiente   { background-color: #fbf1da; color: #a1710f; }
+.hv-badge--cancelada   { background-color: #eceeed; color: #5f6b69; }
+.hv-badge--rechazada   { background-color: #eceeed; color: #5f6b69; }
 
 .hv-agenda-cita__estado-icono       { flex-shrink: 0; font-size: 1.1rem; }
 .hv-agenda-cita__estado-icono--check{ color: #8bc34a; }
@@ -577,6 +654,15 @@ body.sidebar-collapsed .admin-page {
     background-color: #f0ece8;
 }
 
+.hv-detalle__avatar--icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--hv-primario-oscuro);
+    background-color: #e6f4f3;
+    font-size: 1.7rem;
+}
+
 .hv-detalle__nombre { font-size: 1.25rem; font-weight: 700; color: var(--hv-texto); margin: 0; }
 .hv-detalle__id     { font-size: 0.75rem; color: var(--hv-texto-secundario); }
 
@@ -605,6 +691,12 @@ body.sidebar-collapsed .admin-page {
 }
 
 .hv-detalle__estado--confirmada { background-color: #e0f2f1; color: #00796b; }
+.hv-detalle__estado--pendiente  { background-color: #fbf1da; color: #a1710f; }
+.hv-detalle__estado--en-curso   { background-color: #fff3e0; color: #e65100; }
+.hv-detalle__estado--completada { background-color: #eef7dc; color: #558b2f; }
+.hv-detalle__estado--reprogramada { background-color: #fce4ec; color: #c62828; }
+.hv-detalle__estado--cancelada  { background-color: #eceeed; color: #5f6b69; }
+.hv-detalle__estado--rechazada  { background-color: #eceeed; color: #5f6b69; }
 
 .hv-detalle__estado::before {
     content: "";
@@ -614,30 +706,80 @@ body.sidebar-collapsed .admin-page {
     background-color: currentColor;
 }
 
-.hv-detalle__acciones { display: flex; flex-direction: column; gap: 0.6rem; }
+.hv-detalle__acciones {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
 
 .hv-detalle__btn {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 0.7rem;
-    border-radius: 0.55rem;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 0;
+    padding: 0.55rem 0.4rem;
+    border-radius: 0.5rem;
     font-family: "Quicksand", sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     font-weight: 700;
+    white-space: nowrap;
     cursor: pointer;
 }
 
-.hv-detalle__btn--editar       { border: 1.5px solid var(--hv-borde); background-color: var(--hv-blanco); color: var(--hv-texto); }
+.hv-detalle__btn i { font-size: 0.82rem; }
+
+.hv-detalle__btn--editar       { border: 1px solid var(--hv-borde); background-color: var(--hv-blanco); color: var(--hv-texto-secundario); }
 .hv-detalle__btn--editar:hover { background-color: var(--hv-fondo); }
 
-.hv-detalle__btn--reprogramar       { border: 1.5px solid #ffc107; background-color: var(--hv-blanco); color: #f57f17; }
-.hv-detalle__btn--reprogramar:hover { background-color: #fffde7; }
+.hv-detalle__btn--reprogramar       { border: 1px solid #ffe1a8; background-color: #fffaf0; color: #f57f17; }
+.hv-detalle__btn--reprogramar:hover { background-color: #fff3d9; }
 
-.hv-detalle__btn--cancelar       { border: 1.5px solid #ef9a9a; background-color: var(--hv-blanco); color: #e53935; }
-.hv-detalle__btn--cancelar:hover { background-color: #ffebee; }
+.hv-detalle__btn--cancelar       { border: 1px solid #f3c6c6; background-color: #fff7f7; color: #e53935; }
+.hv-detalle__btn--cancelar:hover { background-color: #ffebeb; }
+
+.hv-detalle__acciones--curso {
+    margin-top: 0.5rem;
+}
+
+.hv-detalle__btn--iniciar {
+    border: none;
+    background-color: var(--hv-primario);
+    color: #ffffff;
+}
+.hv-detalle__btn--iniciar:hover { background-color: var(--hv-primario-oscuro); }
+
+.hv-detalle__btn--finalizar {
+    border: none;
+    background-color: #ff9800;
+    color: #ffffff;
+}
+.hv-detalle__btn--finalizar:hover { background-color: #e68900; }
+
+.hv-detalle__btn--aprobar {
+    border: none;
+    background-color: #2a934b;
+    color: #ffffff;
+}
+.hv-detalle__btn--aprobar:hover { background-color: #23803f; }
+
+.hv-detalle__btn--recomendacion {
+    border: 1px solid var(--hv-secundario-claro, #a5d9cf);
+    background-color: #eaf6f5;
+    color: var(--hv-primario-oscuro);
+}
+.hv-detalle__btn--recomendacion:hover { background-color: #dcf0ee; }
+
+@media (max-width: 380px) {
+    .hv-detalle__acciones {
+        flex-wrap: wrap;
+    }
+
+    .hv-detalle__btn {
+        flex: 1 1 100%;
+    }
+}
 
 
 

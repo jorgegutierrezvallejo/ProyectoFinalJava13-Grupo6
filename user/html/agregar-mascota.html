@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Mascota | HuellaVet</title>
+    <link rel="icon" href="../../img/HuellaVet-icon.svg" type="image/svg+xml">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Estilos de componentes modulares -->
+    <link rel="stylesheet" href="../css/user-sidebar.css">
+    <link rel="stylesheet" href="../css/user-topbar.css">
+    <link rel="stylesheet" href="../css/user-dashboard.css">
+    <link rel="stylesheet" href="../css/agregar-mascota.css">
+
+</head>
+
+<body data-page="mascotas" data-page-title="Agregar Mascota">
+
+    <!-- CONTENEDOR SIDEBAR (Componente Dinámico) -->
+    <div id="sidebar-container"></div>
+
+    <div class="user-page">
+
+        <!-- CONTENEDOR TOPBAR (Componente Dinámico) -->
+        <div id="topbar-container"></div>
+
+        <main class="user-dashboard-content">
+
+    <!--ESTE HTML ES GUARDAR MASCOTA-->
+
+<div class="container-fluid py-4 px-lg-5 contenido-principal">
+        <section class="row g-4 justify-content-center">
+
+            <!-- CAJA 1: FORMULARIO (IZQUIERDA) -->
+            <section class="col-12 col-lg-8">
+                <div class="tarjeta-formulario">
+
+                    <h2 class="titulo-seccion">
+                        <i class="bi bi-paw-fill me-2"></i>Información de la mascota
+                    </h2>
+
+                    <form>
+                        <!-- Fila 1: Foto y (Nombre, Especie, Raza) -->
+                        <div class="row mb-5">
+                            <!-- Columna Foto -->
+                            <div class="col-12 col-md-4 mb-4 mb-md-0">
+                                <label class="form-label">Foto de la mascota</label>
+
+                                <label for="subir-foto" class="zona-upload w-100">
+                                    <i class="bi bi-cloud-arrow-up"></i>
+                                    <p class="mt-2">Haz clic para subir una foto<br>o arrastrar y soltar aquí</p>
+                                    <small class="mt-1">JPG, PNG o WEBP. Máx. 5 MB</small>
+                                    <input type="file" id="subir-foto" accept="image/png, image/jpeg, image/webp"
+                                        style="display: none;">
+                                </label>
+                            </div>
+
+                            <!-- Columna Datos -->
+                            <div class="col-12 col-md-8 d-flex flex-column justify-content-between">
+                                <div class="mb-3 mt-2 mt-md-0">
+                                    <label for="nombre-mascota" class="form-label">Nombre de la mascota <span
+                                            class="asterisco">*</span></label>
+                                    <input type="text" class="form-control" id="nombre-mascota" placeholder="Ej. Luna" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label for="especie" class="form-label">Especie <span
+                                                class="asterisco">*</span></label>
+                                        <input type="text" class="form-control" id="especie" placeholder="Ej. perro" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label for="raza" class="form-label">Raza</label>
+                                        <input type="text" class="form-control" id="raza"
+                                            placeholder="Ej. Golden Retriever">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fila 2: Nacimiento, Sexo, Peso -->
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-4 mb-3 mb-md-0">
+                                <label class="form-label">Nacimiento (aprox.) <span class="asterisco">*</span></label>
+                                <input type="date" class="form-control" id="fechaNacimientoMascota" required onclick="this.max=new Date().toISOString().split('T')[0]">
+                            </div>
+                            <div class="col-12 col-md-4 mb-3 mb-md-0">
+                                <label for="sexo-mascota" class="form-label">Sexo <span
+                                        class="asterisco">*</span></label>
+                                <select class="form-select" id="sexo-mascota" required>
+                                    <option selected disabled value="">Selecciona el sexo</option>
+                                    <option value="macho">Macho</option>
+                                    <option value="hembra">Hembra</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="peso" class="form-label">Peso <span class="asterisco">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="peso" placeholder="Ej. 24" required>
+                                    <span class="input-group-text bg-white">kg</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fila 3: Fecha y Color -->
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                <label for="fecha-nacimiento" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control text-muted" id="fecha-nacimiento" onclick="this.max=new Date().toISOString().split('T')[0]">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="color" class="form-label">Color</label>
+                                <input type="text" class="form-control" id="color" placeholder="Ej. Dorado">
+                            </div>
+                        </div>
+
+                        <!-- Fila 4: Vacunas y Alergias -->
+                        <div class="row mb-3">
+                            <div class="col-12 col-md-6 mb-3 mb-md-0">
+                                <label for="vacunas" class="form-label">Vacunas</label>
+                                <input type="text" class="form-control" id="vacunas"
+                                    placeholder="Ej. Rabia, Parvovirus, Moquillo (separadas por coma)">
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label for="alergias" class="form-label">Alergias</label>
+                                <input type="text" class="form-control" id="alergias"
+                                    placeholder="Ej. Pollo, Ganado, Polen (separadas por coma)">
+                            </div>
+                        </div>
+
+                        <!-- Fila 5: Observaciones -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <label for="observaciones" class="form-label">Observaciones</label>
+                                <textarea class="form-control" id="observaciones" rows="3"
+                                    placeholder="Información adicional relevante sobre tu mascota..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Botones-->
+                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+                            <div class="d-flex gap-2">
+                                <button type="button"
+                                    class="btn btn-guardar d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-floppy text-white fs-5 me-2"></i> Guardar mascota
+                                </button>
+                                <button type="button" class="btn btn-cancelar">
+                                    <i class="bi bi-x-circle me-1"></i> Cancelar
+                                </button>
+                            </div>
+
+                            <button type="reset" class="btn-limpiar d-flex align-items-center"
+                                style="background: none; border: none; padding: 0;">
+                                <i class="bi bi-eraser-fill me-2"></i> Limpiar formulario
+                            </button>
+                        </div>
+
+                        <div class="mt-4">
+                            <span class="text-obligatorio"><span class="asterisco">*</span> Campos obligatorios</span>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+
+            <!-- CAJA 2: TARJETA INFORMATIVA (DERECHA) -->
+            <section class="col-12 col-lg-4">
+                <div class="tarjeta-derecha">
+
+                    <!-- Imagen del perro y el gato -->
+                    <div class="img-mascotas-fondo">
+                        <!-- Icono de escudo flotante -->
+                        <i class="bi bi-shield-plus escudo-flotante"></i>
+
+                        <img src="https://png.pngtree.com/element_our/20240618/40b785cbe1e94a8f20d7494f4333bf55.png"
+                            alt="Mascotas" style="width: 190px; margin-bottom: -5px; border-radius: 100px;">
+                    </div>
+
+                    <!-- Títulos -->
+                    <h3 class="tarjeta-derecha-titulo">Mantén su información<br>siempre actualizada</h3>
+                    <p class="tarjeta-derecha-subtitulo">Un perfil completo nos ayuda a brindarle la mejor atención y
+                        seguimiento.</p>
+
+                    <!-- Lista de beneficios con íconos -->
+                    <div class="lista-beneficios">
+                        <!-- Beneficio 1 -->
+                        <div class="beneficio-item">
+                            <div class="beneficio-icono">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <div class="beneficio-textos">
+                                <h6>Información completa = mejor atención</h6>
+                                <p>Nos permite conocer mejor a tu mascota.</p>
+                            </div>
+                        </div>
+
+                        <!-- Beneficio 2 -->
+                        <div class="beneficio-item">
+                            <div class="beneficio-icono">
+                                <i class="bi bi-calendar4-week"></i>
+                            </div>
+                            <div class="beneficio-textos">
+                                <h6>Vacunas y alergias al día</h6>
+                                <p>Ayudan a prevenir riesgos y reacciones.</p>
+                            </div>
+                        </div>
+
+                        <!-- Beneficio 3 -->
+                        <div class="beneficio-item">
+                            <div class="beneficio-icono">
+                                <i class="bi bi-heart"></i>
+                            </div>
+                            <div class="beneficio-textos">
+                                <h6>Cada detalle cuenta</h6>
+                                <p>Incluye observaciones importantes sobre su salud y comportamiento.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recuadro inferior -->
+                    <div class="recuadro-verde mt-auto">
+                        <i class="bi bi-paw"></i>
+                        <p>Puedes editar esta información en cualquier momento desde el perfil de tu mascota.</p>
+                    </div>
+
+                </div>
+            </section>
+
+        </section>
+    </div>
+
+
+
+        </main>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/user-sidebar.js"></script>
+    <script src="../js/user-topbar.js"></script>
+    <script src="../js/user-mascotas.js"></script>
+    <script src="../js/agregar-mascota.js"></script>
+
+</body>
+
+</html>

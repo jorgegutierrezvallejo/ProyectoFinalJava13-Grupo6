@@ -1,0 +1,731 @@
+/* ========================================
+   ALERTA PRINCIPAL: refleja el estado de la cita
+   mas reciente (confirmada/pendiente/reprogramada/
+   cancelada/rechazada/completada). Se oculta por
+   completo si no hay ninguna cita (ver user-citas.js).
+======================================== */
+
+.hv-alerta {
+    margin-bottom: 1.5rem;
+    padding: 1rem 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    background-color: #f7fbf5;
+    border: 1px solid #dfeade;
+    border-radius: 0.85rem;
+}
+
+.hv-alerta__icono {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #ffffff;
+    background-color: #19883f;
+    font-size: 1.1rem;
+}
+
+/* Variantes de color segun el estado de la cita mostrada (la variante
+   "confirmada" usa el verde por defecto de arriba, no necesita clase). */
+.hv-alerta--pendiente { background-color: #fffcf5; border-color: #f6e2b8; }
+.hv-alerta--pendiente .hv-alerta__icono { background-color: #d9a441; }
+
+.hv-alerta--en-curso { background-color: #fffbf5; border-color: #ffe0b2; }
+.hv-alerta--en-curso .hv-alerta__icono { background-color: #ff9800; }
+
+.hv-alerta--reprogramada { background-color: #f8f4fd; border-color: #e4d5f7; }
+.hv-alerta--reprogramada .hv-alerta__icono { background-color: #6f32b2; }
+
+.hv-alerta--cancelada { background-color: #fdf3f3; border-color: #f3d9d9; }
+.hv-alerta--cancelada .hv-alerta__icono { background-color: #d93b3b; }
+
+.hv-alerta--rechazada { background-color: #f5f6f6; border-color: #e2e5e4; }
+.hv-alerta--rechazada .hv-alerta__icono { background-color: #5f6b69; }
+
+.hv-alerta--completada { background-color: #f6faf1; border-color: #dceac9; }
+.hv-alerta--completada .hv-alerta__icono { background-color: #558b2f; }
+
+.hv-alerta__contenido {
+    min-width: 0;
+    flex: 1;
+}
+
+.hv-alerta__contenido strong {
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.95rem;
+    color: var(--color-texto-oscuro);
+}
+
+.hv-alerta__contenido p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: #526461;
+}
+
+.hv-alerta__contenido small {
+    display: block;
+    margin-top: 0.2rem;
+    color: #72817f;
+    font-size: 0.68rem;
+}
+
+.hv-alerta__acciones {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.hv-alerta__ver-todas {
+    padding: 0.55rem 0.8rem;
+    color: var(--color-primario-oscuro);
+    background-color: #ffffff;
+    border: 1px solid #d8e3df;
+    border-radius: 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.hv-alerta__cerrar {
+    border: none;
+    background: transparent;
+    color: var(--color-texto-oscuro);
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* ========================================
+   RESPONSIVE
+   (Breakpoints alineados con user-dashboard.css)
+======================================== */
+
+@media (max-width: 575.98px) {
+    .hv-alerta {
+        flex-wrap: wrap;
+    }
+
+    .hv-alerta__acciones {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+/* ========================================
+   LISTADO DE CITAS, FILTROS Y REPROGRAMACION
+   (Portado de htmls_equipo/lizethMisCitasCliente.html)
+======================================== */
+
+.hv-citas__columna-central {
+    min-width: 0;
+}
+
+/* --- Filtros --- */
+
+.hv-filtros {
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+}
+
+.hv-filtros__principales {
+    display: flex;
+    gap: 0.55rem;
+}
+
+.hv-filtro-boton {
+    padding: 0.55rem 0.85rem;
+    border: 1px solid #dce6e2;
+    border-radius: 0.55rem;
+    background-color: #ffffff;
+    color: var(--color-texto-oscuro);
+    font-family: var(--fuente-principal);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.hv-filtro-boton--activo {
+    color: #ffffff;
+    background-color: var(--color-primario-oscuro);
+    border-color: var(--color-primario-oscuro);
+}
+
+.hv-filtros__controles {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.hv-selector,
+.hv-buscador {
+    height: 42px;
+    border: 1px solid #dce6e2;
+    border-radius: 0.55rem;
+    background-color: #ffffff;
+}
+
+.hv-selector {
+    min-width: 185px;
+    padding: 0 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.hv-selector select {
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--color-texto-oscuro);
+    font-family: var(--fuente-principal);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.hv-buscador {
+    min-width: 220px;
+    padding: 0 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.hv-buscador input {
+    width: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-family: var(--fuente-principal);
+    font-size: 0.75rem;
+}
+
+/* --- Listado de citas --- */
+
+.hv-citas__lista {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+/* Filas de cita: mismo lenguaje visual que la Agenda de hoy de
+   admin-citas.html (franja de color a la izquierda + tinte de fondo
+   segun el estado, avatar circular, badge de estado) para que ambas
+   pantallas se vean consistentes. */
+.hv-agenda-cita {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    padding: 0.85rem 1rem;
+    border-radius: 0.75rem;
+    border-left: 4px solid transparent;
+    background-color: #fafcfa;
+    border-top: 1px solid #edf1ef;
+    border-right: 1px solid #edf1ef;
+    border-bottom: 1px solid #edf1ef;
+    cursor: pointer;
+}
+
+.hv-agenda-cita--completada   { border-left-color: #8bc34a; background-color: #f9fcf5; }
+.hv-agenda-cita--confirmada   { border-left-color: var(--color-primario); background-color: #f4fbfb; }
+.hv-agenda-cita--en-curso     { border-left-color: #ff9800; background-color: #fffbf5; }
+.hv-agenda-cita--reprogramada { border-left-color: #e84c4c; background-color: #fef7f7; }
+.hv-agenda-cita--pendiente    { border-left-color: #d9a441; background-color: #fffcf5; }
+.hv-agenda-cita--cancelada    { border-left-color: #9aa5a3; background-color: #f7f8f7; }
+.hv-agenda-cita--rechazada    { border-left-color: #9aa5a3; background-color: #f7f8f7; }
+
+.hv-agenda-cita__avatar {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f0ece8;
+}
+
+.hv-agenda-cita__avatar--icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+/* Icono/color segun la especie cuando no hay foto real de la mascota
+   (mismos tonos que .cita-mascota-avatar-- en user-dashboard.css). */
+.hv-agenda-cita__avatar--perro { background-color: #fef6e7; color: #d97706; }
+.hv-agenda-cita__avatar--gato  { background-color: #e5f6f5; color: #007981; }
+.hv-agenda-cita__avatar--ave   { background-color: #eaf6ec; color: #2f855a; }
+.hv-agenda-cita__avatar--otro  { background-color: #eef1f0; color: #4b6663; }
+
+.hv-agenda-cita__info   { flex: 1; min-width: 0; }
+.hv-agenda-cita__nombre { font-size: 0.92rem; font-weight: 700; color: var(--color-texto-oscuro); }
+.hv-agenda-cita__dueno  { font-size: 0.74rem; color: #72817f; }
+
+.hv-agenda-cita__servicio   { display: flex; align-items: center; gap: 0.4rem; }
+.hv-agenda-cita__servicio i { color: var(--color-primario); font-size: 0.9rem; }
+.hv-agenda-cita__tipo       { font-size: 0.8rem; font-weight: 600; color: var(--color-texto-oscuro); }
+.hv-agenda-cita__detalle    { font-size: 0.7rem; color: #72817f; }
+
+.hv-agenda-cita__flecha { color: #b5c0be; font-size: 0.95rem; flex-shrink: 0; }
+
+/* Badge de estado (mismos textos/colores que .hv-detalle__estado--* del
+   panel "Proxima Cita" y que el badge de la Agenda de hoy en admin). */
+.hv-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.hv-badge--confirmada   { color: #17743a; background-color: #e6f6ea; }
+.hv-badge--pendiente    { color: #d27d00; background-color: #fff1d7; }
+.hv-badge--en-curso     { color: #e65100; background-color: #fff3e0; }
+.hv-badge--reprogramada { color: #6f32b2; background-color: #f1e5fb; }
+.hv-badge--cancelada    { color: #d93b3b; background-color: #ffe8e8; }
+.hv-badge--rechazada    { color: #5f6b69; background-color: #eceeed; }
+.hv-badge--completada   { color: #1f7a3c; background-color: #e6f5e9; }
+
+/* --- Aviso de reprogramación --- */
+
+.hv-reprogramacion {
+    margin-top: 1rem;
+    padding: 1rem 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid #d8e7f8;
+    border-radius: 0.85rem;
+    background-color: #f5f9ff;
+}
+
+.hv-reprogramacion__contenido {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+}
+
+.hv-reprogramacion__icono {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #2c62bc;
+    border-radius: 50%;
+    color: #2c62bc;
+    font-size: 1rem;
+}
+
+.hv-reprogramacion h2 {
+    margin: 0 0 0.25rem;
+    color: #244d92;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.hv-reprogramacion p {
+    margin: 0;
+    color: #526461;
+    font-size: 0.75rem;
+    line-height: 1.5;
+}
+
+.hv-reprogramacion__ilustracion {
+    width: 100px;
+    min-width: 100px;
+    text-align: center;
+    color: var(--color-primario);
+    font-size: 3rem;
+}
+
+/* --- Responsive (breakpoints alineados con el resto del proyecto) --- */
+
+@media (max-width: 767.98px) {
+    .hv-filtros__controles {
+        width: 100%;
+        margin-left: 0;
+        flex-direction: column;
+    }
+
+    .hv-selector,
+    .hv-buscador {
+        width: 100%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .hv-filtros__principales {
+        overflow-x: auto;
+    }
+
+    .hv-filtro-boton {
+        white-space: nowrap;
+    }
+
+    .hv-agenda-cita {
+        flex-wrap: wrap;
+    }
+
+    .hv-agenda-cita__servicio {
+        flex: 1 1 100%;
+    }
+
+    .hv-reprogramacion {
+        flex-wrap: wrap;
+    }
+
+    .hv-reprogramacion__ilustracion {
+        display: none;
+    }
+}
+
+/* ========================================
+   ZONA PRINCIPAL (listado + panel de detalle)
+   (Portado de htmls_equipo/lizethMisCitasCliente.html)
+======================================== */
+
+.hv-citas__zona-principal {
+    display: grid;
+    grid-template-columns: minmax(0, 1.8fr) minmax(300px, 0.95fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+/* ========================================
+   PROXIMA CITA
+   (Idéntico a admin/css/admin-citas.css, colores copiados 1:1)
+======================================== */
+
+.hv-card {
+    padding: 1.25rem;
+    background-color: #ffffff;
+    border: 1px solid #e4ebea;
+    border-radius: 16px;
+    box-shadow: 0 3px 12px rgba(34, 62, 60, 0.04);
+}
+
+.hv-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.hv-card__header h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.hv-detalle__header {
+    text-align: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #edf1f1;
+}
+
+.hv-detalle__avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 0.65rem;
+    border: 3px solid var(--color-primario);
+    background-color: #f0ece8;
+}
+
+.hv-detalle__avatar--icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primario-oscuro);
+    background-color: #e6f4f3;
+    font-size: 1.7rem;
+}
+
+/* Color del icono de respaldo segun la especie (si la cita no trae foto
+   real de la mascota) -- mismos tonos que .hv-agenda-cita__avatar--*. */
+.hv-detalle__avatar--perro { background-color: #fef6e7; color: #d97706; }
+.hv-detalle__avatar--gato  { background-color: #e5f6f5; color: #007981; }
+.hv-detalle__avatar--ave   { background-color: #eaf6ec; color: #2f855a; }
+.hv-detalle__avatar--otro  { background-color: #eef1f0; color: #4b6663; }
+
+.hv-detalle__nombre {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+    margin: 0;
+}
+
+.hv-detalle__id {
+    font-size: 0.75rem;
+    color: #718285;
+}
+
+.hv-detalle__datos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.hv-detalle__fila {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+}
+
+.hv-detalle__fila i {
+    width: 18px;
+    flex-shrink: 0;
+    color: #718285;
+    font-size: 1rem;
+    margin-top: 2px;
+}
+
+.hv-detalle__etiqueta {
+    min-width: 90px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #718285;
+}
+
+.hv-detalle__valor {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-texto-oscuro);
+}
+
+.hv-detalle__valor small {
+    display: block;
+    font-weight: 500;
+    color: #718285;
+    font-size: 0.72rem;
+}
+
+.hv-detalle__estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 1.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.hv-detalle__estado--confirmada {
+    background-color: #e0f2f1;
+    color: #00796b;
+}
+
+.hv-detalle__estado--pendiente    { background-color: #fbf1da; color: #a1710f; }
+.hv-detalle__estado--en-curso     { background-color: #fff3e0; color: #e65100; }
+.hv-detalle__estado--completada   { background-color: #eef7dc; color: #558b2f; }
+.hv-detalle__estado--reprogramada { background-color: #fce4ec; color: #c62828; }
+.hv-detalle__estado--cancelada    { background-color: #eceeed; color: #5f6b69; }
+.hv-detalle__estado--rechazada    { background-color: #eceeed; color: #5f6b69; }
+
+.hv-detalle__estado::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+}
+
+/* Abono / costo de reserva: estado del pago + comprobante */
+
+.hv-abono {
+    margin: 0 0 1.1rem;
+    padding: 0.85rem 0.9rem;
+    border: 1px solid #f9dfa0;
+    background-color: #fff9eb;
+    border-radius: 0.65rem;
+    font-size: 0.82rem;
+    color: #855b08;
+}
+
+.hv-abono__header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.hv-abono__header i {
+    color: #b9860f;
+}
+
+.hv-abono__badge {
+    margin-left: auto;
+    padding: 0.2rem 0.6rem;
+    border-radius: 1rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.hv-abono__badge--pendiente { background-color: #fdeeee; color: #c0392b; }
+.hv-abono__badge--pagado    { background-color: #e3f5e8; color: #1e7a3d; }
+
+.hv-abono__comprobante-img {
+    display: block;
+    max-width: 100%;
+    max-height: 160px;
+    border-radius: 0.5rem;
+    border: 1px solid #f9dfa0;
+    margin-bottom: 0.5rem;
+}
+
+.hv-abono__boton {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid #f9dfa0;
+    background-color: #ffffff;
+    color: #855b08;
+    border-radius: 0.5rem;
+    font-family: "Quicksand", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.hv-abono__boton:hover { background-color: #fff3d9; }
+
+/* Botones en una sola fila y con estilo mas sutil (pedido explicito de Jorge) */
+
+.hv-detalle__acciones {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+}
+
+.hv-detalle__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 0;
+    padding: 0.55rem 0.4rem;
+    border-radius: 0.5rem;
+    font-family: var(--fuente-principal);
+    font-size: 0.7rem;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.hv-detalle__btn i {
+    font-size: 0.82rem;
+}
+
+.hv-detalle__btn--editar {
+    border: 1px solid #e4ebea;
+    background-color: #ffffff;
+    color: #718285;
+}
+
+.hv-detalle__btn--editar:hover {
+    background-color: #f7faf8;
+}
+
+.hv-detalle__btn--reprogramar {
+    border: 1px solid #ffe1a8;
+    background-color: #fffaf0;
+    color: #f57f17;
+}
+
+.hv-detalle__btn--reprogramar:hover {
+    background-color: #fff3d9;
+}
+
+.hv-detalle__btn--cancelar {
+    border: 1px solid #f3c6c6;
+    background-color: #fff7f7;
+    color: #e53935;
+}
+
+.hv-detalle__btn--cancelar:hover {
+    background-color: #ffebeb;
+}
+
+/* Estado vacio del panel "Proxima Cita" (no habia estilos propios --
+   bug: usaba las clases de admin-citas.css, que esta pagina no carga --
+   mismo patron "estado vacio compacto" del resto del proyecto). */
+.hv-pendientes--vacio {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.1rem;
+    background-color: #fffdf8;
+    border: 1px solid #f4d99d;
+    border-radius: 0.85rem;
+}
+
+.hv-pendientes__compacto-icono {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f4e4af;
+    color: #b9860f;
+    font-size: 1.1rem;
+}
+
+.hv-pendientes__compacto-contenido {
+    min-width: 0;
+    flex: 1;
+}
+
+.hv-pendientes__compacto-contenido strong {
+    display: block;
+    margin-bottom: 0.1rem;
+    font-size: 0.9rem;
+    color: var(--color-texto-oscuro);
+}
+
+.hv-pendientes__compacto-contenido p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #7f8987;
+}
+
+/* --- Responsive: el panel se apila debajo del listado (igual que en admin) --- */
+
+@media (max-width: 991.98px) {
+    .hv-citas__zona-principal {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 380px) {
+    .hv-detalle__acciones {
+        flex-wrap: wrap;
+    }
+
+    .hv-detalle__btn {
+        flex: 1 1 100%;
+    }
+}
