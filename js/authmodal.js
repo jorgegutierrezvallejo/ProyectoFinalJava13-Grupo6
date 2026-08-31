@@ -8,11 +8,7 @@ function iniciarAuthModal() {
     let modal = document.getElementById("auth-modal");
     let botonCerrar = document.getElementById("btn-close-modal");
 
-    // Modal Admin
-    let botonAdminLogin = document.getElementById("btn-login-admin");
-    let modalAdmin = document.getElementById("modal-auth-admin");
-    let botonCerrarAdmin = document.getElementById("btn-cerrar-modal-admin");
-    let formAdmin = document.getElementById("formulario-login-admin");
+
 
     if (botonLogin && modal && botonCerrar) {
         botonLogin.addEventListener("click", function (evento) {
@@ -32,42 +28,7 @@ function iniciarAuthModal() {
         });
     }
 
-    if (botonAdminLogin && modalAdmin && botonCerrarAdmin) {
-        botonAdminLogin.addEventListener("click", function (evento) {
-            evento.preventDefault();
-            modalAdmin.classList.add("active");
-            modalAdmin.setAttribute("aria-hidden", "false");
-        });
 
-        botonCerrarAdmin.addEventListener("click", function () {
-            cerrarAuthModal(modalAdmin);
-        });
-
-        modalAdmin.addEventListener("click", function (evento) {
-            if (evento.target === modalAdmin) {
-                cerrarAuthModal(modalAdmin);
-            }
-        });
-    }
-
-    if (formAdmin) {
-        formAdmin.addEventListener("submit", function (e) {
-            e.preventDefault();
-            let adminUser = document.getElementById("usuario-admin").value.trim();
-            let adminPass = document.getElementById("contrasena-admin").value;
-            let errorMsg = document.getElementById("mensaje-error-admin");
-            
-            // Logica simple: redirige al dashboard si escribe algo (o poner credenciales por defecto)
-            if (adminUser === "admin" && adminPass === "admin123") {
-                // Redirigir al dashboard admin (asumiendo que se llama admin-dashboard.html)
-                // Dependiendo de dónde estemos, la ruta puede variar, usaremos la ruta absoluta relativa al origen
-                window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
-            } else {
-                errorMsg.textContent = "Usuario o contraseña incorrectos (Usa: admin / admin123)";
-                errorMsg.style.display = "block";
-            }
-        });
-    }
 
     // ========================================
     // VALIDACIONES DEL FORMULARIO DE REGISTRO
@@ -377,6 +338,13 @@ function iniciarAuthModal() {
                 mensajeErrorLogin.textContent = '';
             }
             
+            // Verificamos si es admin
+            if (correoIngresado.toLowerCase() === "admin" && contrasenaIngresada === "admin123") {
+                alert("¡Inicio de sesión exitoso como Administrador!");
+                window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
+                return;
+            }
+
             const usuarioRegistrado = obtenerUsuarioRegistrado();
             
             if (!usuarioRegistrado) {
@@ -388,6 +356,7 @@ function iniciarAuthModal() {
             }
             
             if (correoIngresado === usuarioRegistrado.email && contrasenaIngresada === usuarioRegistrado.contrasena) {
+                alert("¡Inicio de sesión exitoso!");
                 window.location.href = './user/html/user-dashboard.html';
             } else {
                 if (mensajeErrorLogin) {
