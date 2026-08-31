@@ -17,12 +17,7 @@ function renderizarPendientesConfirmar() {
         pendientesHTMLOriginal = panel.innerHTML;
     }
 
-    let citas = [];
-    try {
-        citas = JSON.parse(localStorage.getItem("citas")) || [];
-    } catch (e) {
-        citas = [];
-    }
+    const citas = obtenerTodasLasCitas();
 
     // Filtrar citas pendientes de aprobación
     // Si la cita no tiene estado o su estado es "Pendiente" o "Confirmada" reciente
@@ -74,7 +69,7 @@ function renderizarPendientesConfirmar() {
         item.innerHTML = `
             <div class="hv-pendiente__mascota">
                 <div class="hv-avatar-mascota">
-                    <i class="fa-solid fa-paw"></i>
+                    <i class="fa-solid ${iconoPorEspecieAdmin(cita.especie)}"></i>
                 </div>
                 <div class="hv-pendiente__mascota-texto">
                     <strong>${escaparHtml(cita.nombreMascota || "Mascota")}</strong>
@@ -100,12 +95,7 @@ function renderizarPendientesConfirmar() {
 }
 
 function verReservaAdmin(idCita) {
-    let citas = [];
-    try {
-        citas = JSON.parse(localStorage.getItem("citas")) || [];
-    } catch (e) {
-        citas = [];
-    }
+    const citas = obtenerTodasLasCitas();
 
     const cita = citas.find(c => String(c.id) === String(idCita));
     if (!cita) {
@@ -194,12 +184,12 @@ function verReservaAdmin(idCita) {
 }
 
 function aprobarCitaAdmin(idCita) {
-    let citas = JSON.parse(localStorage.getItem("citas")) || [];
+    const citas = obtenerTodasLasCitas();
     const index = citas.findIndex(c => String(c.id) === String(idCita));
 
     if (index !== -1) {
         citas[index].estado = "Confirmada";
-        localStorage.setItem("citas", JSON.stringify(citas));
+        guardarTodasLasCitas(citas);
 
         Swal.fire({
             icon: "success",
@@ -272,7 +262,7 @@ function escaparHtml(valor) {
 
 /* ========================================
    AGENDA DEL DIA + PANEL DE CITA
-   (usa las funciones de citas-datos.js)
+   (usa las funciones de js/shared/citas-storage.js)
 
    - fechaAgendaSeleccionada: que dia se esta
      mostrando en "Agenda de hoy". Si la pagina
@@ -301,6 +291,14 @@ let fechaAgendaSeleccionada = obtenerFechaInicialDesdeURL();
 let idCitaEnPanel = null;
 let citaIdMostradaActualmente = null;
 
+// Fase 2: vista de la agenda ("dia" | "semana" | "mes"). Semana y Mes son
+// solo para navegar y elegir un dia -- la lista de abajo (renderizarAgendaDelDia)
+// siempre muestra un unico dia, el de fechaAgendaSeleccionada.
+let vistaAgendaActual = "dia";
+let [_anioMesPickerInicial, _mesPickerInicial] = fechaAgendaSeleccionada.split("-").map(Number);
+let mesAgendaPicker = _mesPickerInicial - 1;
+let anioAgendaPicker = _anioMesPickerInicial;
+
 const ESTADO_A_CLASE = {
     "Pendiente": "pendiente",
     "Confirmada": "confirmada",
@@ -323,26 +321,322 @@ function iconoParaServicio(nombreServicio) {
     return ICONOS_POR_SERVICIO[nombreServicio] || "bi-heart-pulse";
 }
 
+// Icono de respaldo cuando la cita no tiene fotoMascota, segun la especie
+// (mismo criterio que infoPorEspecie() en user-dashboard.js/user-mascotas.js).
+const ICONO_POR_ESPECIE_ADMIN = {
+    perro: "fa-dog",
+    gato: "fa-cat",
+    ave: "fa-dove"
+};
+
+function iconoPorEspecieAdmin(especieCruda) {
+    const clave = String(especieCruda || "").trim().toLowerCase();
+    return ICONO_POR_ESPECIE_ADMIN[clave] || "fa-paw";
+}
+
 function iniciarAgendaDelDia() {
     document.getElementById("agendaBtnAnterior")?.addEventListener("click", function () {
-        fechaAgendaSeleccionada = sumarDiasISO(fechaAgendaSeleccionada, -1);
-        renderizarAgendaDelDia();
+        navegarAgenda(-1);
     });
 
     document.getElementById("agendaBtnSiguiente")?.addEventListener("click", function () {
-        fechaAgendaSeleccionada = sumarDiasISO(fechaAgendaSeleccionada, 1);
-        renderizarAgendaDelDia();
+        navegarAgenda(1);
     });
 
-    document.getElementById("agendaBtnHoy")?.addEventListener("click", function () {
-        fechaAgendaSeleccionada = hoyISO();
-        renderizarAgendaDelDia();
+    // Se retiro el boton "Hoy" (pedido explicito de Jorge: no aportaba
+    // ninguna funcion que los demas controles no cubrieran ya).
+
+    // El icono de calendario alterna la vista "Mes": un clic la muestra
+    // (igual que el boton "Mes" del selector), y un segundo clic la oculta
+    // y vuelve a la vista "Dia".
+    document.getElementById("agendaBtnCalendario")?.addEventListener("click", function () {
+        cambiarVistaAgenda(vistaAgendaActual === "mes" ? "dia" : "mes");
     });
 
+    iniciarVistaSelector();
     iniciarBotonesPanelCita();
 
     renderizarAgendaDelDia();
     renderizarPanelCita();
+}
+
+// Anterior/Siguiente cambian de "paso" segun la vista activa: un dia en
+// vista Dia, una semana completa en vista Semana (mueve fechaAgendaSeleccionada
+// y con ella la semana mostrada), un mes en vista Mes (mueve solo el
+// calendario que se esta viendo, sin tocar el dia ya elegido).
+function navegarAgenda(direccion) {
+    if (vistaAgendaActual === "mes") {
+        mesAgendaPicker += direccion;
+        if (mesAgendaPicker < 0) { mesAgendaPicker = 11; anioAgendaPicker--; }
+        if (mesAgendaPicker > 11) { mesAgendaPicker = 0; anioAgendaPicker++; }
+        renderizarMesPicker();
+        renderizarResumen();
+        actualizarTituloAgenda();
+        return;
+    }
+
+    if (vistaAgendaActual === "semana") {
+        fechaAgendaSeleccionada = sumarDiasISO(fechaAgendaSeleccionada, direccion * 7);
+        renderizarAgendaDelDia();
+        renderizarSemanaPicker();
+        return;
+    }
+
+    fechaAgendaSeleccionada = sumarDiasISO(fechaAgendaSeleccionada, direccion);
+    renderizarAgendaDelDia();
+}
+
+// Cambia la vista activa (dia/semana/mes), actualiza los botones del
+// selector, muestra/oculta el picker correspondiente y lo dibuja.
+function cambiarVistaAgenda(vista) {
+    if (vista === vistaAgendaActual) return;
+    vistaAgendaActual = vista;
+
+    document.querySelectorAll(".hv-vista-selector__btn").forEach(boton => {
+        boton.classList.toggle("hv-vista-selector__btn--activo", boton.dataset.vista === vista);
+    });
+
+    const semanaPicker = document.getElementById("agendaSemanaPicker");
+    const mesPicker = document.getElementById("agendaMesPicker");
+    if (semanaPicker) semanaPicker.hidden = vista !== "semana";
+    if (mesPicker) mesPicker.hidden = vista !== "mes";
+
+    const etiquetas = {
+        dia: ["Día anterior", "Día siguiente"],
+        semana: ["Semana anterior", "Semana siguiente"],
+        mes: ["Mes anterior", "Mes siguiente"]
+    };
+    const [etiquetaAnterior, etiquetaSiguiente] = etiquetas[vista] || etiquetas.dia;
+    document.getElementById("agendaBtnAnterior")?.setAttribute("aria-label", etiquetaAnterior);
+    document.getElementById("agendaBtnSiguiente")?.setAttribute("aria-label", etiquetaSiguiente);
+
+    if (vista === "semana") renderizarSemanaPicker();
+    if (vista === "mes") {
+        const [anio, mes] = fechaAgendaSeleccionada.split("-").map(Number);
+        anioAgendaPicker = anio;
+        mesAgendaPicker = mes - 1;
+        renderizarMesPicker();
+    }
+
+    renderizarResumen();
+    actualizarTituloAgenda();
+}
+
+function iniciarVistaSelector() {
+    document.querySelectorAll(".hv-vista-selector__btn[data-vista]").forEach(boton => {
+        boton.addEventListener("click", function () {
+            cambiarVistaAgenda(this.dataset.vista);
+        });
+    });
+}
+
+// Lunes (formato YYYY-MM-DD) de la semana que contiene fechaISO.
+function obtenerLunesDeLaSemana(fechaISO) {
+    const [anio, mes, dia] = fechaISO.split("-").map(Number);
+    const fecha = new Date(anio, mes - 1, dia);
+    const diaSemana = (fecha.getDay() + 6) % 7; // lunes = 0 ... domingo = 6
+    return sumarDiasISO(fechaISO, -diaSemana);
+}
+
+// Dibuja la tira de 7 dias de la semana que contiene fechaAgendaSeleccionada.
+// Clic en un dia lo selecciona y refresca la agenda de abajo.
+function renderizarSemanaPicker() {
+    const contenedor = document.getElementById("agendaSemanaPicker");
+    if (!contenedor) return;
+
+    const lunes = obtenerLunesDeLaSemana(fechaAgendaSeleccionada);
+    const hoy = hoyISO();
+    const nombresDias = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+    contenedor.innerHTML = "";
+
+    for (let i = 0; i < 7; i++) {
+        const fechaDelDia = sumarDiasISO(lunes, i);
+        const numeroDia = parseInt(fechaDelDia.split("-")[2], 10);
+
+        let clases = "hv-semana-picker__dia";
+        if (fechaDelDia === hoy) clases += " hv-semana-picker__dia--hoy";
+        if (fechaDelDia === fechaAgendaSeleccionada) clases += " hv-semana-picker__dia--seleccionado";
+        if (citasPorFecha(fechaDelDia).length > 0) clases += " hv-semana-picker__dia--con-citas";
+
+        const div = document.createElement("div");
+        div.className = clases;
+        div.innerHTML = `
+            <span class="hv-semana-picker__nombre">${nombresDias[i]}</span>
+            <span class="hv-semana-picker__numero">${numeroDia}</span>
+        `;
+        div.addEventListener("click", function () {
+            fechaAgendaSeleccionada = fechaDelDia;
+            renderizarAgendaDelDia();
+            renderizarSemanaPicker();
+        });
+
+        contenedor.appendChild(div);
+    }
+}
+
+// Dibuja el calendario mensual de mesAgendaPicker/anioAgendaPicker (mismo
+// patron que renderizarCalendarioDashboard() en admin-dashboard.js, pero
+// clic en un dia lo selecciona aqui mismo en vez de navegar a otra pagina).
+function renderizarMesPicker() {
+    const grid = document.getElementById("agendaMesPickerGrid");
+    const titulo = document.getElementById("agendaMesPickerTitulo");
+    if (!grid) return;
+
+    const hoy = hoyISO();
+    const primerDia = new Date(anioAgendaPicker, mesAgendaPicker, 1);
+    const ultimoDia = new Date(anioAgendaPicker, mesAgendaPicker + 1, 0);
+    const diasMes = ultimoDia.getDate();
+    const primerDiaSemana = (primerDia.getDay() + 6) % 7;
+    const diasMesAnterior = new Date(anioAgendaPicker, mesAgendaPicker, 0).getDate();
+
+    if (titulo) {
+        const texto = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric" }).format(primerDia);
+        titulo.textContent = texto.replace(/^./, letra => letra.toUpperCase());
+    }
+
+    grid.innerHTML = "";
+
+    for (let i = primerDiaSemana - 1; i >= 0; i--) {
+        const span = document.createElement("span");
+        span.className = "calendar-day calendar-day--muted";
+        span.textContent = diasMesAnterior - i;
+        grid.appendChild(span);
+    }
+
+    for (let diaNumero = 1; diaNumero <= diasMes; diaNumero++) {
+        const fechaISODelDia = `${anioAgendaPicker}-${String(mesAgendaPicker + 1).padStart(2, "0")}-${String(diaNumero).padStart(2, "0")}`;
+
+        const span = document.createElement("span");
+        let clases = "calendar-day";
+        if (fechaISODelDia === fechaAgendaSeleccionada) {
+            clases += " calendar-day--seleccionado";
+        } else if (fechaISODelDia === hoy) {
+            clases += " calendar-day--today";
+        }
+        if (citasPorFecha(fechaISODelDia).length > 0) clases += " calendar-day--appointment";
+
+        span.className = clases;
+        span.textContent = diaNumero;
+        span.style.cursor = "pointer";
+        span.addEventListener("click", function () {
+            fechaAgendaSeleccionada = fechaISODelDia;
+            renderizarAgendaDelDia();
+            renderizarMesPicker();
+        });
+
+        grid.appendChild(span);
+    }
+
+    const celdasActuales = grid.children.length;
+    const celdasRestantes = (7 - (celdasActuales % 7)) % 7;
+
+    for (let diaNumero = 1; diaNumero <= celdasRestantes; diaNumero++) {
+        const span = document.createElement("span");
+        span.className = "calendar-day calendar-day--muted";
+        span.textContent = diaNumero;
+        grid.appendChild(span);
+    }
+}
+
+// Dias (YYYY-MM-DD) y citas del periodo que muestra el calendario en este
+// momento: un solo dia en vista Dia, los 7 dias de la semana en vista
+// Semana, todos los dias del mes mostrado en vista Mes.
+function citasEnPeriodoActual() {
+    let dias = [];
+
+    if (vistaAgendaActual === "semana") {
+        const lunes = obtenerLunesDeLaSemana(fechaAgendaSeleccionada);
+        for (let i = 0; i < 7; i++) dias.push(sumarDiasISO(lunes, i));
+    } else if (vistaAgendaActual === "mes") {
+        const diasEnMes = new Date(anioAgendaPicker, mesAgendaPicker + 1, 0).getDate();
+        for (let dia = 1; dia <= diasEnMes; dia++) {
+            dias.push(`${anioAgendaPicker}-${String(mesAgendaPicker + 1).padStart(2, "0")}-${String(dia).padStart(2, "0")}`);
+        }
+    } else {
+        dias = [fechaAgendaSeleccionada];
+    }
+
+    return { dias, citas: dias.flatMap(fecha => citasPorFecha(fecha)) };
+}
+
+// Franjas de HORAS_AGENDA sin ninguna cita en una fecha puntual (mismo
+// criterio de "una cita por franja" que usa renderizarAgendaDelDia).
+function franjasLibresEnFecha(fechaISO) {
+    const franjasOcupadas = new Set(citasPorFecha(fechaISO).map(cita => horaAFranja(cita.hora)));
+    return HORAS_AGENDA.length - franjasOcupadas.size;
+}
+
+// Recalcula la tarjeta "Citas de [periodo]" y las 4 tarjetas de resumen
+// segun vistaAgendaActual. Se llama automaticamente cada vez que se
+// repinta la agenda (renderizarAgendaDelDia) y tambien al cambiar de
+// vista o navegar el calendario sin elegir un dia todavia.
+function renderizarResumen() {
+    const labelCitas = document.getElementById("resumenCitasLabel");
+    if (!labelCitas) return;
+
+    const periodo = citasEnPeriodoActual();
+    const citas = periodo.citas;
+
+    let etiquetaCitas = "Citas de hoy";
+    let detalleTexto = fechaISOaTextoLargo(fechaAgendaSeleccionada);
+
+    if (vistaAgendaActual === "dia") {
+        etiquetaCitas = fechaAgendaSeleccionada === hoyISO() ? "Citas de hoy" : "Citas de ese día";
+    } else if (vistaAgendaActual === "semana") {
+        etiquetaCitas = "Citas de la semana";
+        const formatoCorto = fecha => {
+            const [, mes, dia] = fecha.split("-").map(Number);
+            const texto = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short" }).format(new Date(2000, mes - 1, dia));
+            return texto.replace(".", "");
+        };
+        detalleTexto = `Semana del ${formatoCorto(periodo.dias[0])} al ${formatoCorto(periodo.dias[6])}`;
+    } else if (vistaAgendaActual === "mes") {
+        etiquetaCitas = "Citas del mes";
+        const primerDiaMes = new Date(anioAgendaPicker, mesAgendaPicker, 1);
+        detalleTexto = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric" }).format(primerDiaMes);
+        detalleTexto = detalleTexto.replace(/^./, letra => letra.toUpperCase());
+    }
+
+    labelCitas.textContent = etiquetaCitas;
+    document.getElementById("resumenHeroNumero").textContent = citas.length;
+    document.getElementById("resumenHeroDetalle").textContent = detalleTexto;
+
+    const espaciosLibres = periodo.dias.reduce((total, fecha) => total + franjasLibresEnFecha(fecha), 0);
+    document.getElementById("resumenNumeroEspacios").textContent = espaciosLibres;
+    document.getElementById("resumenNumeroPendientes").textContent = citas.filter(c => c.estado === "Pendiente").length;
+    document.getElementById("resumenNumeroReprogramadas").textContent = citas.filter(c => c.estado === "Reprogramada").length;
+    document.getElementById("resumenNumeroCanceladas").textContent = citas.filter(c => c.estado === "Cancelada").length;
+}
+
+// Texto del titulo de la card de agenda, fusionado con la fecha/rango que
+// se esta mostrando segun vistaAgendaActual (antes el titulo era fijo
+// "Agenda de hoy" y la fecha se mostraba aparte, aunque no fuera hoy).
+function textoTituloAgenda() {
+    if (vistaAgendaActual === "semana") {
+        const periodo = citasEnPeriodoActual();
+        const formatoCorto = fecha => {
+            const [, mes, dia] = fecha.split("-").map(Number);
+            const texto = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short" }).format(new Date(2000, mes - 1, dia));
+            return texto.replace(".", "");
+        };
+        return `Agenda de la semana del ${formatoCorto(periodo.dias[0])} al ${formatoCorto(periodo.dias[6])}`;
+    }
+
+    if (vistaAgendaActual === "mes") {
+        const primerDiaMes = new Date(anioAgendaPicker, mesAgendaPicker, 1);
+        let mesTexto = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric" }).format(primerDiaMes);
+        mesTexto = mesTexto.replace(/^./, letra => letra.toUpperCase());
+        return `Agenda de ${mesTexto}`;
+    }
+
+    if (fechaAgendaSeleccionada === hoyISO()) return "Agenda de hoy";
+    return `Agenda del ${fechaISOaTextoLargo(fechaAgendaSeleccionada)}`;
+}
+
+function actualizarTituloAgenda() {
+    const tituloTexto = document.getElementById("agendaTituloTexto");
+    if (tituloTexto) tituloTexto.textContent = textoTituloAgenda();
 }
 
 // Pinta la lista "Agenda de hoy" con las citas reales guardadas en
@@ -350,12 +644,9 @@ function iniciarAgendaDelDia() {
 // que no tenga cita se muestra como "Espacio disponible".
 function renderizarAgendaDelDia() {
     const contenedor = document.getElementById("agendaListaContenedor");
-    const fechaTexto = document.getElementById("agendaFechaTexto");
     if (!contenedor) return;
 
-    if (fechaTexto) {
-        fechaTexto.textContent = fechaISOaTextoLargo(fechaAgendaSeleccionada);
-    }
+    actualizarTituloAgenda();
 
     const citasDelDia = citasPorFecha(fechaAgendaSeleccionada);
 
@@ -380,7 +671,7 @@ function renderizarAgendaDelDia() {
             const icono = iconoParaServicio(cita.servicioNombre);
             const avatarHtml = cita.fotoMascota
                 ? `<img class="hv-agenda-cita__avatar" src="${escaparHtml(cita.fotoMascota)}" alt="${escaparHtml(cita.nombreMascota || "Mascota")}">`
-                : `<div class="hv-agenda-cita__avatar hv-agenda-cita__avatar--icono"><i class="fa-solid fa-paw"></i></div>`;
+                : `<div class="hv-agenda-cita__avatar hv-agenda-cita__avatar--icono"><i class="fa-solid ${iconoPorEspecieAdmin(cita.especie)}"></i></div>`;
 
             fila.innerHTML = `
                 <div class="hv-agenda-hora">${hora}</div>
@@ -421,6 +712,8 @@ function renderizarAgendaDelDia() {
 
         contenedor.appendChild(fila);
     });
+
+    renderizarResumen();
 }
 
 // Muestra una cita puntual en el panel derecho (clic en una fila de la agenda).
@@ -487,7 +780,7 @@ function renderizarPanelCita() {
         } else {
             avatarPanelEl.classList.add("hv-detalle__avatar--icono");
             avatarPanelEl.style.backgroundImage = "";
-            avatarPanelEl.innerHTML = `<i class="fa-solid fa-paw"></i>`;
+            avatarPanelEl.innerHTML = `<i class="fa-solid ${iconoPorEspecieAdmin(cita.especie)}"></i>`;
         }
     }
 

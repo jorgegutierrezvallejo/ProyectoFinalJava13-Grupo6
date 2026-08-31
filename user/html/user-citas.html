@@ -56,7 +56,7 @@
                         </div>
 
                         <div class="hv-alerta__acciones">
-                            <button type="button" class="hv-alerta__ver-todas">
+                            <button type="button" class="hv-alerta__ver-todas" id="btnVerTodasAlertasUsuario">
                                 Ver todas las alertas
                             </button>
                             <button type="button" class="hv-alerta__cerrar" id="cerrarAlertaCita" aria-label="Cerrar alerta">
@@ -251,6 +251,13 @@
 
                     </div>
 
+                    <!-- Se muestra en vez de los botones de arriba cuando la
+                         cita elegida (clic en una fila del listado) ya esta
+                         en un estado terminal -- no tiene sentido ofrecer
+                         Reprogramar/Cancelar sobre una cita ya completada,
+                         cancelada o rechazada. -->
+                    <p class="hv-detalle__mensaje-final" id="userPanelAccionesMensaje" hidden></p>
+
                     <!-- cierro userPanelCitaContenido -->
                     </div>
 
@@ -279,7 +286,8 @@
     <script src="../js/components.js"></script>
     <script src="../js/user-sidebar.js"></script>
     <script src="../js/user-topbar.js"></script>
-    <script src="../js/citas-datos.js"></script>
+    <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/citas-storage.js"></script>
     <script src="../js/user-citas.js"></script>
 
 </body>

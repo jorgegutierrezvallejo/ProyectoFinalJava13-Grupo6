@@ -97,69 +97,17 @@ function iniciarPaginaMascotas() {
 // Si localStorage.mascotas no existe todavia, la crea con la semilla.
 // Si ya existe (el usuario ya interactuo con la pagina antes), no la toca.
 function asegurarSemillaMascotas() {
-    if (localStorage.getItem("mascotas") === null) {
-        localStorage.setItem("mascotas", JSON.stringify(MASCOTAS_SEMILLA));
-    }
+    asegurarMascotasIniciales(MASCOTAS_SEMILLA);
 }
 
 function obtenerMascotasGuardadas() {
-    try {
-        return JSON.parse(localStorage.getItem("mascotas")) || [];
-    } catch (e) {
-        return [];
-    }
+    return obtenerMascotas();
 }
 
-function obtenerCitasGuardadas() {
-    try {
-        return JSON.parse(localStorage.getItem("citas")) || [];
-    } catch (e) {
-        return [];
-    }
-}
-
-// Combina las mascotas guardadas con cualquier mascota nueva que aparezca
-// en citas.localStorage (agendadas desde "Agendar cita") y que todavia no
-// tenga perfil propio. Estas mascotas "derivadas de una cita" solo traen
-// los datos que el formulario de agendar sí captura (especie, raza, peso,
-// fecha de nacimiento) -- el resto queda "No especificado" en vez de
-// inventarse.
+// La pagina consume unicamente el repositorio de Mascotas. La sincronizacion
+// desde otros flujos ocurre al guardar esos flujos, no dentro de esta vista.
 function obtenerMascotasCombinadas() {
-    const guardadas = obtenerMascotasGuardadas();
-    const nombresGuardados = new Set(guardadas.map(m => (m.nombre || "").trim().toLowerCase()));
-
-    const citas = obtenerCitasGuardadas();
-    const nombresVistos = new Set();
-    const derivadas = [];
-
-    citas.forEach(cita => {
-        const nombre = (cita.nombreMascota || "").trim();
-        if (!nombre) return;
-        const clave = nombre.toLowerCase();
-        if (nombresGuardados.has(clave) || nombresVistos.has(clave)) return;
-        nombresVistos.add(clave);
-
-        derivadas.push({
-            id: null,
-            nombre,
-            especie: cita.especie || "otro",
-            raza: cita.raza || "",
-            edad: "",
-            peso: (cita.peso && cita.peso !== "No especificado") ? cita.peso : "",
-            sexo: "",
-            color: "",
-            fechaNacimiento: (cita.fechaNacimiento && cita.fechaNacimiento !== "No especificada") ? cita.fechaNacimiento : "",
-            esterilizada: null,
-            microchip: "",
-            alergias: "",
-            observaciones: "",
-            foto: "",
-            vacunasAlDia: null,
-            derivadaDeCita: true
-        });
-    });
-
-    return guardadas.concat(derivadas);
+    return obtenerMascotasGuardadas();
 }
 
 // ========================================
@@ -423,11 +371,9 @@ function renderizarDetalleMascota() {
 }
 
 function crearSubcardProximaCita(mascota) {
-    const citas = obtenerCitasGuardadas()
-        .filter(c => (c.nombreMascota || "").trim().toLowerCase() === (mascota.nombre || "").trim().toLowerCase())
-        .filter(c => c.estado !== "Cancelada" && c.estado !== "Rechazada" && c.estado !== "Completada");
+    const cita = obtenerProximaCitaPorMascota(mascota.nombre);
 
-    if (citas.length === 0) {
+    if (!cita) {
         return `
             <div class="mascota-detalle-subcard">
                 <div class="mascota-detalle-subcard__header"><i class="bi bi-calendar-event"></i><strong>Próxima cita</strong></div>
@@ -436,7 +382,6 @@ function crearSubcardProximaCita(mascota) {
         `;
     }
 
-    const cita = citas[0];
     return `
         <div class="mascota-detalle-subcard">
             <div class="mascota-detalle-subcard__header"><i class="bi bi-calendar-event"></i><strong>Próxima cita</strong></div>
@@ -454,13 +399,7 @@ function crearSubcardProximaCita(mascota) {
 // para esta mascota. Se combinan con RECORDATORIOS_REFERENCIA y se muestran
 // primero, porque son las que sí vienen de una cita real y no de la semilla.
 function recordatoriosRealesDeMascota(mascota) {
-    const nombreMascota = (mascota.nombre || "").trim().toLowerCase();
-    if (!nombreMascota) return [];
-
-    return obtenerCitasGuardadas()
-        .filter(cita => cita.estado === "Completada" && cita.recordatorio && cita.recordatorio.texto
-            && (cita.nombreMascota || "").trim().toLowerCase() === nombreMascota)
-        .sort((a, b) => new Date(b.recordatorio.fechaCreacion || 0) - new Date(a.recordatorio.fechaCreacion || 0))
+    return obtenerCitasConRecordatorioPorMascota(mascota.nombre)
         .map(cita => ({
             titulo: cita.recordatorio.texto,
             fecha: cita.recordatorio.fecha ? `Sugerida: ${formatearFechaMascota(cita.recordatorio.fecha)}` : `De tu visita del ${formatearFechaMascota(cita.fecha)}`,
@@ -541,8 +480,7 @@ function iniciarBotonesDetalleMascota(mascota) {
                 if (!resultado.isConfirmed) return;
 
                 if (mascota.id) {
-                    const guardadas = obtenerMascotasGuardadas().filter(m => m.id !== mascota.id);
-                    localStorage.setItem("mascotas", JSON.stringify(guardadas));
+                    eliminarMascota(mascota.id);
                 }
 
                 mascotaSeleccionadaId = null;

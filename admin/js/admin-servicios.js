@@ -13,7 +13,7 @@ function mostrarServicios() {
         return;
     }
 
-    const todosLosServicios = JSON.parse(localStorage.getItem("servicios")) || [];
+    const todosLosServicios = obtenerServicios();
     const servicios = filtroTipoId
         ? todosLosServicios.filter(s => String(s.tipoServicioId || "") === String(filtroTipoId))
         : todosLosServicios;
@@ -168,13 +168,7 @@ function eliminarServicio(idServicio) {
             return;
         }
 
-        let servicios = JSON.parse(localStorage.getItem("servicios")) || [];
-
-        servicios = servicios.filter(function (servicio) {
-            return String(servicio.id) !== String(idServicio);
-        });
-
-        localStorage.setItem("servicios", JSON.stringify(servicios));
+        eliminarServicioGuardado(idServicio);
 
         mostrarServicios();
 
@@ -188,7 +182,7 @@ function eliminarServicio(idServicio) {
     });
 }
 // Llena el filtro "Todos los servicios" con los tipos de servicio
-// que el admin ha creado (ver tipos-servicio.js), y vuelve a pintar
+// que el admin ha creado (ver js/shared/tipos-servicio-storage.js), y vuelve a pintar
 // la grilla cada vez que el admin cambia el filtro.
 function iniciarFiltroTipoServicio() {
     const filtroSelect = document.getElementById("filtroTipoServicio");

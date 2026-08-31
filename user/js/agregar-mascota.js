@@ -1,133 +1,125 @@
+document.addEventListener("DOMContentLoaded", iniciarFormularioMascota);
 
-let listaDeMascota = [];
+function iniciarFormularioMascota() {
+    const formulario = document.querySelector("main form");
+    const inputFoto = document.getElementById("subir-foto");
+    const zonaUpload = document.querySelector(".zona-upload");
+    const botonGuardar = document.querySelector(".btn-guardar");
+    const botonCancelar = document.querySelector(".btn-cancelar");
+    const botonLimpiar = document.querySelector(".btn-limpiar");
 
-const nombreMascotaqs = document.querySelector('#nombre-mascota');
-const inputEspecie = document.querySelector('#especie');
-const inputRaza = document.querySelector('#raza');
-const inputEdad = document.querySelector('#edad');
-const selectUnidadEdad = document.querySelector('#unidad-edad');
-const inputSexo = document.querySelector('#sexo-mascota');
-const inputPeso = document.querySelector('#peso');
-const inputFecha = document.querySelector('#fecha-nacimiento');
-const inputColor = document.querySelector('#color');
-const inputVacunas = document.querySelector('#vacunas');
-const inputAlergias = document.querySelector('#alergias');
-const inputObservaciones = document.querySelector('#observaciones');
-const inputFoto = document.querySelector('#subir-foto');
-const zonaUpload = document.querySelector('.zona-upload');
+    if (!formulario || !botonGuardar) return;
 
+    let fotoBase64 = "";
 
+    inputFoto?.addEventListener("change", async function () {
+        const archivo = this.files?.[0];
+        if (!archivo) {
+            fotoBase64 = "";
+            restaurarZonaFoto(zonaUpload);
+            return;
+        }
 
-const botonguardarqs = document.querySelector('.btn-guardar');
+        if (!archivo.type.startsWith("image/")) {
+            mostrarAvisoMascota("Formato no válido", "Selecciona una imagen PNG, JPG o WEBP.", "warning");
+            this.value = "";
+            return;
+        }
 
+        fotoBase64 = await convertirFotoMascotaABase64(archivo);
+        if (zonaUpload && fotoBase64) {
+            zonaUpload.style.backgroundImage = `url(${fotoBase64})`;
+            zonaUpload.style.backgroundSize = "cover";
+            zonaUpload.style.backgroundPosition = "center";
+            zonaUpload.querySelectorAll("i, p, small").forEach(elemento => {
+                elemento.style.display = "none";
+            });
+        }
+    });
 
+    botonGuardar.addEventListener("click", function () {
+        if (!formulario.checkValidity()) {
+            formulario.reportValidity();
+            return;
+        }
 
+        const nombre = document.getElementById("nombre-mascota")?.value.trim() || "";
+        if (obtenerMascotaPorNombre(nombre)) {
+            mostrarAvisoMascota("Mascota ya registrada", `Ya existe un perfil con el nombre ${nombre}.`, "warning");
+            return;
+        }
 
+        const mascota = {
+            id: Date.now(),
+            nombre,
+            especie: document.getElementById("especie")?.value.trim().toLowerCase() || "otro",
+            raza: document.getElementById("raza")?.value.trim() || "",
+            fechaNacimiento: document.getElementById("fechaNacimientoMascota")?.value || "",
+            sexo: document.getElementById("sexo-mascota")?.value || "",
+            peso: document.getElementById("peso")?.value.trim() || "",
+            fechaUltimaConsulta: document.getElementById("fecha-nacimiento")?.value || "",
+            color: document.getElementById("color")?.value.trim() || "",
+            vacunas: separarValoresMascota(document.getElementById("vacunas")?.value),
+            alergias: separarValoresMascota(document.getElementById("alergias")?.value),
+            observaciones: document.getElementById("observaciones")?.value.trim() || "",
+            foto: fotoBase64,
+            creadaEn: new Date().toISOString()
+        };
 
+        guardarMascota(mascota);
 
-if (inputFecha) {
-    const hoy = new Date();
-    const anio = hoy.getFullYear();
-    const mes = String(hoy.getMonth() + 1).padStart(2, '0'); 
-    const dia = String(hoy.getDate()).padStart(2, '0');
-    
-    const fechaMaxima = `${anio}-${mes}-${dia}`;
-    inputFecha.max = fechaMaxima; 
+        if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: "success",
+                title: "Mascota guardada",
+                text: `El perfil de ${mascota.nombre} fue creado correctamente.`,
+                confirmButtonColor: "#17a9a7"
+            }).then(() => {
+                window.location.href = "user-mascotas.html";
+            });
+        } else {
+            window.location.href = "user-mascotas.html";
+        }
+    });
+
+    botonCancelar?.addEventListener("click", function () {
+        window.location.href = "user-mascotas.html";
+    });
+
+    botonLimpiar?.addEventListener("click", function () {
+        fotoBase64 = "";
+        setTimeout(() => restaurarZonaFoto(zonaUpload), 0);
+    });
 }
 
+function separarValoresMascota(valor) {
+    return String(valor || "")
+        .split(",")
+        .map(item => item.trim())
+        .filter(Boolean);
+}
 
-inputFoto.addEventListener('change', function() {
-    
-    
-    const archivo = inputFoto.files[0];
-    
-    if (archivo) {
-        
-        const urlDeLaFoto = URL.createObjectURL(archivo);
-        
-        
-        zonaUpload.style.backgroundImage = `url(${urlDeLaFoto})`;
-        zonaUpload.style.backgroundSize = 'cover'; 
-        zonaUpload.style.backgroundPosition = 'center'; 
-        
-        
-        zonaUpload.querySelector('i').style.display = 'none';
-        zonaUpload.querySelector('p').style.display = 'none';
-        zonaUpload.querySelector('small').style.display = 'none';
+function convertirFotoMascotaABase64(archivo) {
+    return new Promise((resolve, reject) => {
+        const lector = new FileReader();
+        lector.onload = () => resolve(lector.result);
+        lector.onerror = reject;
+        lector.readAsDataURL(archivo);
+    });
+}
+
+function restaurarZonaFoto(zonaUpload) {
+    if (!zonaUpload) return;
+    zonaUpload.style.backgroundImage = "";
+    zonaUpload.querySelectorAll("i, p, small").forEach(elemento => {
+        elemento.style.display = "";
+    });
+}
+
+function mostrarAvisoMascota(titulo, texto, icono) {
+    if (typeof Swal !== "undefined") {
+        Swal.fire({ title: titulo, text: texto, icon: icono, confirmButtonColor: "#17a9a7" });
+    } else {
+        alert(`${titulo}: ${texto}`);
     }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-botonguardarqs.addEventListener('click', function () {
-
-    const formulario = document.querySelector('form');
-
-    if (!formulario.checkValidity()) {
-        formulario.reportValidity();
-        return;
-    }
-
-
-    const fotoArchivo = inputFoto.files[0];
-    let urlDeLaFoto = ""; 
-
-    
-    if (fotoArchivo) {
-        urlDeLaFoto = URL.createObjectURL(fotoArchivo);
-    }
-
-
-
-
-    const nombreMascotaAV = nombreMascotaqs.value;
-    const especieV = inputEspecie.value;
-    const razaV = inputRaza.value;
-    const edadNumeroV = inputEdad.value;
-    const edadUnidadV = selectUnidadEdad.value;
-    const sexoV = inputSexo.value;
-    const pesoV = inputPeso.value;
-    const fechaV = inputFecha.value;
-    const colorV = inputColor.value;
-    const vacunasV = inputVacunas.value;
-    const alergiasV = inputAlergias.value;
-    const observacionesV = inputObservaciones.value;
-
-
-    const nuevaMascota = {
-        foto: urlDeLaFoto,
-        nombre: nombreMascotaAV,
-        especie: especieV,
-        raza: razaV,
-        edadNumero: edadNumeroV,
-        edadValor: edadUnidadV,
-        sexo: sexoV,
-        peso: pesoV,
-        fecha: fechaV,
-        color: colorV,
-        vacunas: vacunasV,
-        alergias: alergiasV,
-        observaciones: observacionesV
-        
-
-    };
-
-    listaDeMascota.push(nuevaMascota);
-
-    console.log("abajo estan el arreglo mascotas")
-    console.log(listaDeMascota)
-
-});
+}

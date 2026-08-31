@@ -1,7 +1,7 @@
 /* ========================================
    MIS CITAS (usuario)
    - Panel "Proxima Cita": usa las funciones de
-     citas-datos.js (copia en /user/js/) para
+     js/shared/citas-storage.js para
      mostrar la cita mas cercana y permitir que
      el propietario reprograme/cancele (con
      motivo obligatorio) y suba el comprobante
@@ -24,6 +24,12 @@
 // Id de la cita mostrada actualmente en el panel (para que los botones
 // sepan sobre cual cita actuar). Se recalcula en cada render.
 let citaIdMostradaActualmenteUsuario = null;
+
+// Si el usuario hizo clic en una fila del listado, aqui se guarda el id
+// de esa cita y el panel "Proxima Cita" pasa a mostrar esa cita puntual
+// (titulo "Ver cita"), igual que mostrarCitaEnPanel() en admin-citas.js.
+// null = el panel muestra automaticamente la proxima cita (proximaCitaGlobal).
+let idCitaEnPanelUsuario = null;
 
 // Pestaña activa del listado de citas ("proximas" | "pendientes" | "historial").
 let filtroCitasActivo = "proximas";
@@ -56,6 +62,11 @@ document.addEventListener("userComponentsLoaded", function () {
             // una novedad nueva.
             alerta.hidden = true;
         });
+    }
+
+    const botonVerTodasAlertas = document.getElementById("btnVerTodasAlertasUsuario");
+    if (botonVerTodasAlertas) {
+        botonVerTodasAlertas.addEventListener("click", mostrarModalTodasLasAlertasUsuario);
     }
 
     iniciarFiltrosCitasUsuario();
@@ -110,12 +121,30 @@ function escaparHtmlCitasUsuario(valor) {
 // ========================================
 
 function renderizarPanelCitaUsuario() {
+    const titulo = document.getElementById("userPanelCitaTitulo");
     const contenido = document.getElementById("userPanelCitaContenido");
     const vacio = document.getElementById("userPanelCitaVacio");
     if (!contenido || !vacio) return;
 
-    const cita = proximaCitaGlobal();
+    let cita = null;
+    let esVistaEspecifica = false;
+
+    if (idCitaEnPanelUsuario !== null) {
+        cita = obtenerCitaPorId(idCitaEnPanelUsuario);
+        if (cita) {
+            esVistaEspecifica = true;
+        } else {
+            idCitaEnPanelUsuario = null;
+        }
+    }
+
+    if (!cita) {
+        cita = proximaCitaGlobal();
+        esVistaEspecifica = false;
+    }
+
     citaIdMostradaActualmenteUsuario = cita ? cita.id : null;
+    if (titulo) titulo.textContent = esVistaEspecifica ? "Ver cita" : "Próxima Cita";
 
     if (!cita) {
         contenido.hidden = true;
@@ -209,6 +238,37 @@ function renderizarPanelCitaUsuario() {
     }
 
     renderizarAbonoUsuario(cita);
+
+    // Reprogramar/Cancelar solo tienen sentido si la cita todavia se
+    // puede accionar. Si el usuario esta viendo (clic en una fila) una
+    // cita ya Completada/Cancelada/Rechazada, se ocultan y se muestra un
+    // mensaje en su lugar.
+    const accionesNormales = document.getElementById("userPanelAccionesNormales");
+    const accionesMensaje = document.getElementById("userPanelAccionesMensaje");
+    const ESTADOS_TERMINALES_PANEL = ["Completada", "Cancelada", "Rechazada"];
+    const MENSAJE_POR_ESTADO_TERMINAL = {
+        "Completada": "Esta cita ya fue completada.",
+        "Cancelada": "Esta cita fue cancelada.",
+        "Rechazada": "Esta solicitud de cita fue rechazada."
+    };
+    if (accionesNormales && accionesMensaje) {
+        if (ESTADOS_TERMINALES_PANEL.includes(cita.estado)) {
+            accionesNormales.hidden = true;
+            accionesMensaje.hidden = false;
+            accionesMensaje.textContent = MENSAJE_POR_ESTADO_TERMINAL[cita.estado] || "";
+        } else {
+            accionesNormales.hidden = false;
+            accionesMensaje.hidden = true;
+        }
+    }
+}
+
+// Muestra una cita puntual en el panel "Proxima Cita" (clic en una fila
+// del listado de abajo) -- mismo patron que mostrarCitaEnPanel() en
+// admin-citas.js.
+function mostrarCitaEnPanelUsuario(idCita) {
+    idCitaEnPanelUsuario = idCita;
+    renderizarPanelCitaUsuario();
 }
 
 // Bloque de abono / costo de reserva: solo aparece si el servicio lo
@@ -453,17 +513,22 @@ const ALERTA_POR_ESTADO_USUARIO = {
     }
 };
 
-// La cita con la novedad mas reciente (ultimo cambio de estado/campos),
-// de CUALQUIER estado -- a diferencia de proximaCitaGlobal(), aqui si
-// cuentan las canceladas/rechazadas/completadas, porque la alerta es
-// una notificacion de "que paso" y no de "que sigue".
+// La ULTIMA CITA CREADA por el usuario (fechaCreacion mas reciente), de
+// CUALQUIER estado -- a diferencia de proximaCitaGlobal(), aqui si cuentan
+// las canceladas/rechazadas/completadas: la alerta sigue esa cita puntual
+// a lo largo de todo su ciclo de vida (pendiente -> lo que haya decidido
+// la clinica: aprobada, reprogramada, cancelada, rechazada...), por eso
+// se ordena por fechaCreacion y no por actualizadoEn -- si se ordenara
+// por actualizadoEn, la alerta "saltaria" a cualquier otra cita mas
+// antigua que la clinica haya tocado despues, en vez de seguir contando
+// que paso con la que el usuario acaba de agendar.
 function citaMasRecienteParaAlerta() {
     const citas = obtenerTodasLasCitas();
     if (citas.length === 0) return null;
 
     return citas.slice().sort((a, b) => {
-        const marcaA = new Date(a.actualizadoEn || a.fechaCreacion || 0).getTime();
-        const marcaB = new Date(b.actualizadoEn || b.fechaCreacion || 0).getTime();
+        const marcaA = new Date(a.fechaCreacion || 0).getTime();
+        const marcaB = new Date(b.fechaCreacion || 0).getTime();
         return marcaB - marcaA;
     })[0];
 }
@@ -491,6 +556,70 @@ function renderizarAlertaCitaUsuario() {
 
     const marcaTiempo = cita.actualizadoEn || cita.fechaCreacion;
     document.getElementById("alertaCitaFecha").textContent = marcaTiempo ? formatearFechaHoraCortaUsuario(marcaTiempo) : "";
+}
+
+// Color solido para el icono de cada fila del modal "Ver todas las
+// alertas" -- mismos tonos que .hv-badge--*/.hv-detalle__estado--* de
+// esta pagina (y de admin-citas.css), solo que en version solida en vez
+// de texto-sobre-fondo-claro, porque aqui el icono va sobre un circulo.
+const COLOR_ICONO_POR_CLASE_USUARIO = {
+    pendiente: "#a1710f",
+    confirmada: "#00796b",
+    "en-curso": "#e65100",
+    completada: "#558b2f",
+    reprogramada: "#c62828",
+    cancelada: "#5f6b69",
+    rechazada: "#5f6b69"
+};
+
+// Modal con el estado actual de TODAS las citas del usuario (no solo la
+// mas reciente que muestra la alerta de arriba), ordenadas por su ultima
+// novedad. Se abre con el boton "Ver todas las alertas" de la alerta.
+function mostrarModalTodasLasAlertasUsuario() {
+    const citas = obtenerTodasLasCitas().slice().sort((a, b) => {
+        const marcaA = new Date(a.actualizadoEn || a.fechaCreacion || 0).getTime();
+        const marcaB = new Date(b.actualizadoEn || b.fechaCreacion || 0).getTime();
+        return marcaB - marcaA;
+    });
+
+    if (citas.length === 0) {
+        Swal.fire({
+            title: "Alertas de tus citas",
+            html: `<p style="color:#718285;font-size:0.85rem;margin:0;">Todavía no tienes citas.</p>`,
+            confirmButtonText: "Cerrar",
+            confirmButtonColor: "#17a9a7"
+        });
+        return;
+    }
+
+    const filasHtml = citas.map(cita => {
+        const config = ALERTA_POR_ESTADO_USUARIO[cita.estado] || ALERTA_POR_ESTADO_USUARIO["Pendiente"];
+        const claseEstado = ESTADO_A_CLASE_USUARIO[cita.estado] || "pendiente";
+        const colorIcono = COLOR_ICONO_POR_CLASE_USUARIO[claseEstado] || "#5f6b69";
+        const marcaTiempo = cita.actualizadoEn || cita.fechaCreacion;
+        const fechaCorta = marcaTiempo ? formatearFechaHoraCortaUsuario(marcaTiempo) : "";
+
+        return `
+            <div style="display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0.1rem;border-bottom:1px solid #eef1f0;text-align:left;">
+                <div style="width:32px;height:32px;flex-shrink:0;border-radius:50%;display:flex;align-items:center;justify-content:center;background-color:${colorIcono};">
+                    <i class="bi ${config.icono}" style="color:#fff;font-size:0.85rem;"></i>
+                </div>
+                <div style="flex:1;min-width:0;">
+                    <strong style="display:block;font-size:0.82rem;color:#223e3c;">${escaparHtmlCitasUsuario(cita.nombreMascota || "Mascota")}</strong>
+                    <span style="font-size:0.72rem;color:#72817f;">${escaparHtmlCitasUsuario(fechaCorta)}</span>
+                </div>
+                <span class="hv-badge hv-badge--${claseEstado}" style="flex-shrink:0;">${escaparHtmlCitasUsuario(cita.estado || "Pendiente")}</span>
+            </div>
+        `;
+    }).join("");
+
+    Swal.fire({
+        title: `<div style="font-size:1.05rem;font-weight:700;color:#223e3c;">Alertas de tus citas</div>`,
+        html: `<div style="max-height:360px;overflow-y:auto;">${filasHtml}</div>`,
+        width: 420,
+        confirmButtonText: "Cerrar",
+        confirmButtonColor: "#17a9a7"
+    });
 }
 
 // ========================================
@@ -567,7 +696,10 @@ function renderizarListaCitasUsuario() {
 
     contenedor.querySelectorAll("[data-cita-id]").forEach(fila => {
         fila.addEventListener("click", function () {
-            verDetalleCitaUsuario(this.dataset.citaId);
+            // Igual que en admin-citas: clic en una fila cambia la cita
+            // que se ve en el panel "Proxima Cita" de la derecha, en vez
+            // de abrir un modal aparte.
+            mostrarCitaEnPanelUsuario(this.dataset.citaId);
         });
     });
 }
@@ -602,47 +734,4 @@ function filaCitaUsuarioHtml(cita) {
             <i class="bi bi-chevron-right hv-agenda-cita__flecha"></i>
         </div>
     `;
-}
-
-// Vista de solo lectura de una cita del listado (clic en cualquier fila).
-function verDetalleCitaUsuario(idCita) {
-    const cita = obtenerCitaPorId(idCita);
-    if (!cita) return;
-
-    const especie = infoPorEspecieCitaUsuario(cita.especie);
-    const especieTexto = [especie.texto, cita.raza].filter(Boolean).join(" · ") || "Sin datos";
-
-    const ETIQUETA_MOTIVO = {
-        "Cancelada": "Motivo de cancelación",
-        "Rechazada": "Motivo de rechazo",
-        "Reprogramada": "Motivo de reprogramación"
-    };
-    const motivoHtml = (cita.motivoEstado && ETIQUETA_MOTIVO[cita.estado])
-        ? `<div class="mt-2 p-2 rounded" style="background:#f7faf9;border:1px solid #e1ece9;"><strong>${ETIQUETA_MOTIVO[cita.estado]}:</strong> ${escaparHtmlCitasUsuario(cita.motivoEstado)}</div>`
-        : "";
-
-    const recomendacionHtml = (cita.estado === "Completada" && cita.recordatorio)
-        ? `<div class="mt-2 p-2 rounded" style="background:#eaf6f5;border:1px solid #cfe8e6;">
-               <strong class="d-block mb-1" style="color:#007981;"><i class="bi bi-clipboard2-pulse me-1"></i>Recomendación del veterinario</strong>
-               <div>${escaparHtmlCitasUsuario(cita.recordatorio.texto)}</div>
-           </div>`
-        : "";
-
-    Swal.fire({
-        title: `<div style="font-size:1.1rem;font-weight:700;color:#223e3c;"><i class="fa-solid fa-paw me-2" style="color:#17a9a7;"></i>${escaparHtmlCitasUsuario(cita.nombreMascota || "Mascota")}</div>`,
-        html: `
-            <div style="text-align:left;font-size:0.85rem;line-height:1.7;color:#334d4a;">
-                <div><strong>Mascota:</strong> ${escaparHtmlCitasUsuario(cita.nombreMascota || "Mascota")} (${escaparHtmlCitasUsuario(especieTexto)})</div>
-                <div><strong>Servicio:</strong> ${escaparHtmlCitasUsuario(cita.servicioNombre || "Consulta general")}</div>
-                <div><strong>Veterinario:</strong> ${escaparHtmlCitasUsuario(cita.veterinario || "Por asignar")}</div>
-                <div><strong>Fecha:</strong> ${escaparHtmlCitasUsuario(fechaISOaTextoLargo(cita.fecha))} a las ${escaparHtmlCitasUsuario(cita.hora || "")}</div>
-                <div><strong>Estado:</strong> ${escaparHtmlCitasUsuario(cita.estado || "Pendiente")}</div>
-                ${cita.motivo ? `<div class="mt-1"><strong>Motivo de consulta:</strong> ${escaparHtmlCitasUsuario(cita.motivo)}</div>` : ""}
-                ${motivoHtml}
-                ${recomendacionHtml}
-            </div>
-        `,
-        confirmButtonText: "Cerrar",
-        confirmButtonColor: "#17a9a7"
-    });
 }

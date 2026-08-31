@@ -137,7 +137,7 @@ function iniciarSidebarDashboard() {
    - El dia de hoy queda resaltado en verde.
    - Los dias que tengan alguna cita guardada
      en localStorage ("citas") muestran un punto,
-     usando citasPorFecha() de citas-datos.js.
+     usando citasPorFecha() de js/shared/citas-storage.js.
    - Al hacer clic en un dia se redirige a
      admin-citas.html?fecha=YYYY-MM-DD para ver
      la agenda de ese dia.

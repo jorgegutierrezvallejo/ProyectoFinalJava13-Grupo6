@@ -32,17 +32,12 @@ function capitalizarPrimera(texto) {
 }
 
 function cargarProximaCita() {
-    let citas = [];
-    try {
-        citas = JSON.parse(localStorage.getItem("citas")) || [];
-    } catch (e) {
-        citas = [];
-    }
+    const citas = obtenerCitasFuturas();
 
     const contenedor = document.getElementById("proximaCitaContenido");
     const kpiProximasCitasEl = document.getElementById("kpiProximasCitasValor");
 
-    const proximaCita = citas.length > 0 ? citas[0] : null;
+    const proximaCita = citas[0] || null;
 
     if (kpiProximasCitasEl) {
         kpiProximasCitasEl.textContent = citas.length;
@@ -104,44 +99,34 @@ const CLASE_BADGE_POR_ESPECIE = {
     otro: "gris"
 };
 
-// Agrega a "Mis mascotas" las mascotas que se hayan registrado a traves del
-// formulario de "Agendar cita" (localStorage.citas), ademas de las que ya
-// esten en la tarjeta (las de la maqueta). No duplica: si el nombre de la
-// mascota ya aparece en la lista (sin importar mayus/minus), no se repite.
+// Muestra exclusivamente datos del repositorio Mascotas. El formulario de
+// agendamiento registra alli la mascota si todavia no tiene perfil.
 function cargarMisMascotas() {
-    let citas = [];
-    try {
-        citas = JSON.parse(localStorage.getItem("citas")) || [];
-    } catch (e) {
-        citas = [];
-    }
+    const mascotas = obtenerMascotas();
 
     const lista = document.getElementById("mascotasLista");
-    if (!lista || citas.length === 0) return;
+    if (!lista || mascotas.length === 0) return;
 
     const nombresExistentes = new Set(
         Array.from(lista.querySelectorAll(".mascota-item-nombre")).map(el => el.textContent.trim().toLowerCase())
     );
 
-    // Una fila por mascota distinta (por nombre). citas[0] es la mas reciente
-    // (agendar.js guarda con unshift), asi que la primera que encontremos
-    // para cada nombre ya es la version mas actual de sus datos.
     const mascotasNuevas = [];
     const nombresVistos = new Set();
 
-    citas.forEach(cita => {
-        const nombre = (cita.nombreMascota || "").trim();
+    mascotas.forEach(mascota => {
+        const nombre = (mascota.nombre || "").trim();
         if (!nombre) return;
         const clave = nombre.toLowerCase();
         if (nombresExistentes.has(clave) || nombresVistos.has(clave)) return;
         nombresVistos.add(clave);
-        mascotasNuevas.push(cita);
+        mascotasNuevas.push(mascota);
     });
 
     if (mascotasNuevas.length === 0) return;
 
-    mascotasNuevas.forEach(cita => {
-        lista.appendChild(crearTarjetaMascota(cita));
+    mascotasNuevas.forEach(mascota => {
+        lista.appendChild(crearTarjetaMascota(mascota));
     });
 
     const contadorEl = document.getElementById("mascotasContadorTexto");
@@ -151,14 +136,14 @@ function cargarMisMascotas() {
     }
 }
 
-function crearTarjetaMascota(cita) {
-    const especieInfo = infoPorEspecie(cita.especie);
+function crearTarjetaMascota(mascota) {
+    const especieInfo = infoPorEspecie(mascota.especie);
     const claseBadge = CLASE_BADGE_POR_ESPECIE[especieInfo.clase] || "gris";
-    const raza = (cita.raza || "").trim();
+    const raza = (mascota.raza || "").trim();
 
-    const pesoValido = cita.peso && cita.peso !== "No especificado" ? cita.peso : "";
-    const nacimientoValido = cita.fechaNacimiento && cita.fechaNacimiento !== "No especificada"
-        ? `Nac. ${formatearFechaCita(cita.fechaNacimiento)}`
+    const pesoValido = mascota.peso && mascota.peso !== "No especificado" ? mascota.peso : "";
+    const nacimientoValido = mascota.fechaNacimiento && mascota.fechaNacimiento !== "No especificada"
+        ? `Nac. ${formatearFechaCita(mascota.fechaNacimiento)}`
         : "";
     const detalles = [pesoValido, nacimientoValido].filter(Boolean).join(" · ") || "Sin datos adicionales registrados";
 
@@ -171,12 +156,12 @@ function crearTarjetaMascota(cita) {
             </div>
             <div class="mascota-item-info">
                 <div class="mascota-item-header">
-                    <span class="mascota-item-nombre">${escaparHtmlUsuario(cita.nombreMascota || "Mascota")}</span>
+                    <span class="mascota-item-nombre">${escaparHtmlUsuario(mascota.nombre || "Mascota")}</span>
                     <span class="badge-mascota-raza badge-mascota-raza--${claseBadge}">${escaparHtmlUsuario(especieInfo.texto)}${raza ? ` · ${escaparHtmlUsuario(raza)}` : ""}</span>
                 </div>
                 <span class="mascota-item-detalles">${escaparHtmlUsuario(detalles)}</span>
                 <span class="mascota-item-estado mascota-item-estado--info">
-                    <i class="bi bi-dot"></i> Registrada mediante una cita
+                    <i class="bi bi-dot"></i> Perfil registrado
                 </span>
             </div>
         </div>
@@ -221,8 +206,7 @@ function iniciarAccionesCita() {
     if (btnVerDetalle) {
         btnVerDetalle.addEventListener("click", function (e) {
             e.preventDefault();
-            const citas = JSON.parse(localStorage.getItem("citas")) || [];
-            const cita = citas.length > 0 ? citas[0] : null;
+            const cita = proximaCitaGlobal();
 
             if (typeof Swal !== "undefined") {
                 const nombre = cita?.nombreMascota || "Luna";
@@ -287,11 +271,8 @@ function iniciarAccionesCita() {
                     cancelButtonColor: "#6c757d"
                 }).then(result => {
                     if (result.isConfirmed) {
-                        let citas = JSON.parse(localStorage.getItem("citas")) || [];
-                        if (citas.length > 0) {
-                            citas.shift(); // Remover la primera cita
-                            localStorage.setItem("citas", JSON.stringify(citas));
-                        }
+                        const cita = proximaCitaGlobal();
+                        if (cita) actualizarEstadoCita(cita.id, "Cancelada");
                         Swal.fire({
                             icon: "success",
                             title: "Cita cancelada",

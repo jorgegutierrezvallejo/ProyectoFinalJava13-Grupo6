@@ -13,7 +13,6 @@
             let mesCalendario = mesActual;
             let anioCalendario = anioActual;
 
-            const serviciosStorageKey = "servicios";
             const datosPaso1StorageKey = "datosCita_Paso1";
             const datosPaso2StorageKey = "datosCita_Paso2";
 
@@ -30,15 +29,7 @@
                 const contenedor = document.getElementById("servicios-container");
                 if (!contenedor) return;
 
-                let servicios = [];
-
-                try {
-                    servicios = JSON.parse(localStorage.getItem(serviciosStorageKey)) || [];
-                } catch (error) {
-                    console.error("No fue posible leer los servicios del Dashboard:", error);
-                }
-
-                if (!Array.isArray(servicios)) servicios = [];
+                let servicios = obtenerServicios();
 
                 const huboServiciosSinFiltrar = servicios.length > 0;
 
@@ -291,7 +282,7 @@
                             return;
                         }
 
-                        const sObj = servicios.find(s => String(s.id) === String(sId));
+                        const sObj = obtenerServicioPorId(sId);
                         if (!sObj) return;
 
                         servicioId = sObj.id;
@@ -740,10 +731,18 @@
                     // Guardar en sessionStorage para la sesión actual
                     sessionStorage.setItem("datosCita", JSON.stringify(nuevaCita));
 
-                    // Guardar en localStorage para que persista en el Dashboard de Usuario
-                    let citas = JSON.parse(localStorage.getItem("citas")) || [];
-                    citas.unshift(nuevaCita);
-                    localStorage.setItem("citas", JSON.stringify(citas));
+                    agregarCita(nuevaCita);
+
+                    // La mascota pertenece al dominio Mascotas. Se registra aqui
+                    // porque el agendamiento tambien permite crear su primer perfil.
+                    registrarMascotaSiNoExiste({
+                        nombre: nuevaCita.nombreMascota,
+                        especie: nuevaCita.especie,
+                        raza: nuevaCita.raza,
+                        fechaNacimiento: datosP1.fechaNacimiento === "No especificada" ? "" : datosP1.fechaNacimiento,
+                        peso: datosP1.peso === "No especificado" ? "" : datosP1.peso,
+                        foto: ""
+                    });
 
                     if (typeof Swal !== "undefined") {
                         const tieneReserva = datosP1.tieneCostoReserva && datosP1.costoReserva > 0;
@@ -955,5 +954,3 @@
                 });
             }
         });
-
-   

@@ -31,19 +31,19 @@
 
 /* Variantes de color segun el estado de la cita mostrada (la variante
    "confirmada" usa el verde por defecto de arriba, no necesita clase). */
-.hv-alerta--pendiente { background-color: #fffcf5; border-color: #f6e2b8; }
-.hv-alerta--pendiente .hv-alerta__icono { background-color: #d9a441; }
+.hv-alerta--pendiente { background-color: #fdf8ea; border-color: #f2e1b0; }
+.hv-alerta--pendiente .hv-alerta__icono { background-color: #a1710f; }
 
-.hv-alerta--en-curso { background-color: #fffbf5; border-color: #ffe0b2; }
-.hv-alerta--en-curso .hv-alerta__icono { background-color: #ff9800; }
+.hv-alerta--en-curso { background-color: #fff8ef; border-color: #ffdcab; }
+.hv-alerta--en-curso .hv-alerta__icono { background-color: #e65100; }
 
-.hv-alerta--reprogramada { background-color: #f8f4fd; border-color: #e4d5f7; }
-.hv-alerta--reprogramada .hv-alerta__icono { background-color: #6f32b2; }
+.hv-alerta--reprogramada { background-color: #fdf1f4; border-color: #f6cfd8; }
+.hv-alerta--reprogramada .hv-alerta__icono { background-color: #c62828; }
 
-.hv-alerta--cancelada { background-color: #fdf3f3; border-color: #f3d9d9; }
-.hv-alerta--cancelada .hv-alerta__icono { background-color: #d93b3b; }
+.hv-alerta--cancelada { background-color: #f6f7f7; border-color: #dde1e0; }
+.hv-alerta--cancelada .hv-alerta__icono { background-color: #5f6b69; }
 
-.hv-alerta--rechazada { background-color: #f5f6f6; border-color: #e2e5e4; }
+.hv-alerta--rechazada { background-color: #f6f7f7; border-color: #dde1e0; }
 .hv-alerta--rechazada .hv-alerta__icono { background-color: #5f6b69; }
 
 .hv-alerta--completada { background-color: #f6faf1; border-color: #dceac9; }
@@ -289,13 +289,13 @@
     white-space: nowrap;
 }
 
-.hv-badge--confirmada   { color: #17743a; background-color: #e6f6ea; }
-.hv-badge--pendiente    { color: #d27d00; background-color: #fff1d7; }
+.hv-badge--confirmada   { color: #00796b; background-color: #e0f2f1; }
+.hv-badge--pendiente    { color: #a1710f; background-color: #fbf1da; }
 .hv-badge--en-curso     { color: #e65100; background-color: #fff3e0; }
-.hv-badge--reprogramada { color: #6f32b2; background-color: #f1e5fb; }
-.hv-badge--cancelada    { color: #d93b3b; background-color: #ffe8e8; }
+.hv-badge--reprogramada { color: #c62828; background-color: #fce4ec; }
+.hv-badge--cancelada    { color: #5f6b69; background-color: #eceeed; }
 .hv-badge--rechazada    { color: #5f6b69; background-color: #eceeed; }
-.hv-badge--completada   { color: #1f7a3c; background-color: #e6f5e9; }
+.hv-badge--completada   { color: #558b2f; background-color: #eef7dc; }
 
 /* --- Aviso de reprogramación --- */
 
@@ -616,6 +616,17 @@
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
+}
+
+.hv-detalle__mensaje-final {
+    margin: 0;
+    padding: 0.7rem 0.9rem;
+    background-color: #f7faf9;
+    border: 1px solid #e1ece9;
+    border-radius: 0.65rem;
+    color: var(--color-texto-secundario, #718285);
+    font-size: 0.8rem;
+    line-height: 1.4;
 }
 
 .hv-detalle__btn {

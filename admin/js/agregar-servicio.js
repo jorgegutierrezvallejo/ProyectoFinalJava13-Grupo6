@@ -18,7 +18,7 @@ function iniciarServicios() {
     const urlParams = new URLSearchParams(window.location.search);
     const servicioId = urlParams.get("id");
     let servicioExistente = null;
-    let servicios = JSON.parse(localStorage.getItem("servicios")) || [];
+    let servicios = obtenerServicios();
 
     if (servicioId) {
         servicioExistente = servicios.find(s => String(s.id) === String(servicioId));
@@ -179,7 +179,7 @@ function iniciarServicios() {
         const direccionClinicaVal = document.getElementById("direccionClinica")?.value.trim() || "HuellaVet — Sede Centro";
         const imagenBase64 = archivoImagen ? await convertirImagenABase64(archivoImagen) : (servicioExistente?.imagen || "");
 
-        servicios = JSON.parse(localStorage.getItem("servicios")) || [];
+        servicios = obtenerServicios();
 
         if (servicioExistente) {
             // Actualizar servicio existente
@@ -208,7 +208,7 @@ function iniciarServicios() {
                 servicios.push(servicioActualizado);
             }
 
-            localStorage.setItem("servicios", JSON.stringify(servicios));
+            guardarServicios(servicios);
 
             Swal.fire({
                 icon: "success",
@@ -241,7 +241,7 @@ function iniciarServicios() {
             };
 
             servicios.push(nuevoServicio);
-            localStorage.setItem("servicios", JSON.stringify(servicios));
+            guardarServicios(servicios);
 
             Swal.fire({
                 icon: "success",
@@ -299,7 +299,7 @@ function convertirImagenABase64(archivo) {
     });
 }
 // Select "creatable" de Tipo de servicio: se llena con los tipos ya
-// creados (localStorage.tiposServicio, ver tipos-servicio.js) y permite
+// creados (ver js/shared/tipos-servicio-storage.js) y permite
 // crear uno nuevo desde el boton "+ Nuevo" cuando la lista esta vacia
 // o cuando se necesita agregar otro.
 function iniciarTipoServicio() {

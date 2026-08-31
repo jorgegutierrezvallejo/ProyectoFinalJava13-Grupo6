@@ -377,9 +377,9 @@ function iniciarAuthModal() {
                 mensajeErrorLogin.textContent = '';
             }
             
-            let jsonUsuario = localStorage.getItem('usuarioRegistrado');
+            const usuarioRegistrado = obtenerUsuarioRegistrado();
             
-            if (!jsonUsuario) {
+            if (!usuarioRegistrado) {
                 if (mensajeErrorLogin) {
                     mensajeErrorLogin.textContent = 'No hay ningún usuario registrado. Por favor, regístrate primero.';
                     mensajeErrorLogin.style.display = 'block';
@@ -387,20 +387,11 @@ function iniciarAuthModal() {
                 return;
             }
             
-            try {
-                let usuarioRegistrado = JSON.parse(jsonUsuario);
-                
-                if (correoIngresado === usuarioRegistrado.email && contrasenaIngresada === usuarioRegistrado.contrasena) {
-                    window.location.href = './user/html/user-dashboard.html';
-                } else {
-                    if (mensajeErrorLogin) {
-                        mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
-                        mensajeErrorLogin.style.display = 'block';
-                    }
-                }
-            } catch(e) {
+            if (correoIngresado === usuarioRegistrado.email && contrasenaIngresada === usuarioRegistrado.contrasena) {
+                window.location.href = './user/html/user-dashboard.html';
+            } else {
                 if (mensajeErrorLogin) {
-                    mensajeErrorLogin.textContent = 'Error al leer los datos de registro.';
+                    mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
                     mensajeErrorLogin.style.display = 'block';
                 }
             }
@@ -467,10 +458,7 @@ function iniciarAuthModal() {
             contrasena: campoContrasena?.value || ""
         };
 
-        // Convertir a string JSON y guardar en LocalStorage
-        let jsonUsuario = JSON.stringify(datosUsuario);
-        localStorage.setItem('usuarioRegistrado', jsonUsuario);
-        console.log("Usuario registrado en localStorage:", jsonUsuario);
+        guardarUsuarioRegistrado(datosUsuario);
 
         // Si todo esta bien, muestro mensaje de exito
         mostrarMensaje(
