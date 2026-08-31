@@ -3,6 +3,8 @@ document.addEventListener("userComponentsLoaded", function () {
 });
 
 function iniciarTopbarUsuario() {
+    cambiarTituloPaginaUsuario();
+
     const profileButton = document.getElementById("profileButton");
     const profileMenu = document.getElementById("profileMenu");
     const notificationButton = document.getElementById("notificationButton");
@@ -43,5 +45,24 @@ function iniciarTopbarUsuario() {
                 });
             }
         });
+    }
+}
+
+
+/* ========================================
+   TÍTULO DINÁMICO (mismo patrón que admin/js/topbar.js)
+======================================== */
+
+function cambiarTituloPaginaUsuario() {
+    const tituloTopbar = document.getElementById("topbarPageTitle");
+
+    if (!tituloTopbar) {
+        return;
+    }
+
+    const tituloPagina = document.body.dataset.pageTitle;
+
+    if (tituloPagina) {
+        tituloTopbar.textContent = tituloPagina;
     }
 }

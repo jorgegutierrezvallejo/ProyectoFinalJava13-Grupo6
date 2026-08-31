@@ -1,22 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Mascota | HuellaVet</title>
     <link rel="icon" href="../../img/HuellaVet-icon.svg" type="image/svg+xml">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/css/mascotasadmin.css">
-    <title>Mascotas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Estilos de componentes modulares -->
+    <link rel="stylesheet" href="../css/user-sidebar.css">
+    <link rel="stylesheet" href="../css/user-topbar.css">
+    <link rel="stylesheet" href="../css/user-dashboard.css">
+    <link rel="stylesheet" href="../css/agregar-mascota.css">
+
 </head>
 
-<body>
+<body data-page="mascotas" data-page-title="Agregar Mascota">
+
+    <!-- CONTENEDOR SIDEBAR (Componente Dinámico) -->
+    <div id="sidebar-container"></div>
+
+    <div class="user-page">
+
+        <!-- CONTENEDOR TOPBAR (Componente Dinámico) -->
+        <div id="topbar-container"></div>
+
+        <main class="user-dashboard-content">
 
     <!--ESTE HTML ES GUARDAR MASCOTA-->
 
-<div class="container-fluid py-4 px-lg-5">
+<div class="container-fluid py-4 px-lg-5 contenido-principal">
         <section class="row g-4 justify-content-center">
 
             <!-- CAJA 1: FORMULARIO (IZQUIERDA) -->
@@ -218,17 +240,20 @@
 
 
 
+        </main>
 
+    </div>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/user-sidebar.js"></script>
+    <script src="../js/user-topbar.js"></script>
+    <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/mascotas-storage.js"></script>
+    <script src="../js/agregar-mascota.js"></script>
 
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-
-        <script src="/js/agregarMacota.js"></script>
 </body>
 
 </html>

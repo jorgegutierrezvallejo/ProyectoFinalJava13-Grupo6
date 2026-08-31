@@ -30,15 +30,7 @@
 
         <main class="admin-servicios">
 
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="#" class="text-success text-decoration-none">Servicios</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Mis servicios</li>
-                </ol>
-            </nav>
-
+        
             <section class="servicios-header">
                 <div>
                     <h2>Mis servicios</h2>
@@ -52,8 +44,8 @@
             </section>
 
             <div class="servicios-filtros">
-                <select class="form-select">
-                    <option selected>Todos los servicios</option>
+                <select class="form-select" id="filtroTipoServicio">
+                    <option value="" selected>Todos los servicios</option>
                 </select>
             </div>
 
@@ -68,6 +60,9 @@
     <script src="../js/admin-sidebar.js"></script>
     <script src="../js/topbar.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/servicios-storage.js"></script>
+    <script src="../../js/shared/tipos-servicio-storage.js"></script>
     <script src="../js/admin-servicios.js"></script>
 
 </body>

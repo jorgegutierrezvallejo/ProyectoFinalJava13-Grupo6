@@ -5,7 +5,9 @@ document.addEventListener("DOMContentLoaded", function () {
 function mostrarServicios() {
 
     const contenedor = document.getElementById("servicios-dinamicos");
-    const servicios = JSON.parse(localStorage.getItem("servicios")) || [];
+
+    const servicios = obtenerServicios();
+
     if (servicios.length === 0) {
         return;
     }

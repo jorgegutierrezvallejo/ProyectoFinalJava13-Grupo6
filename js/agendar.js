@@ -13,11 +13,11 @@
             let mesCalendario = mesActual;
             let anioCalendario = anioActual;
 
-            const serviciosStorageKey = "servicios";
             const datosPaso1StorageKey = "datosCita_Paso1";
             const datosPaso2StorageKey = "datosCita_Paso2";
 
             cargarServiciosDesdeDashboard();
+            iniciarFiltroTipoServicioAgendar();
             iniciarEnvioPaso1();
             iniciarCalendario();
             cargarHorarios();
@@ -25,20 +25,32 @@
             iniciarRecordatorios();
             iniciarConfirmacion();
 
-            function cargarServiciosDesdeDashboard() {
+            function cargarServiciosDesdeDashboard(filtroTipoId) {
                 const contenedor = document.getElementById("servicios-container");
                 if (!contenedor) return;
 
-                let servicios = [];
+                let servicios = obtenerServicios();
 
-                try {
-                    servicios = JSON.parse(localStorage.getItem(serviciosStorageKey)) || [];
-                } catch (error) {
-                    console.error("No fue posible leer los servicios del Dashboard:", error);
+                const huboServiciosSinFiltrar = servicios.length > 0;
+
+                if (filtroTipoId) {
+                    servicios = servicios.filter(s => String(s.tipoServicioId || "") === String(filtroTipoId));
                 }
 
-                if (!Array.isArray(servicios) || servicios.length === 0) {
-                    contenedor.innerHTML = `
+                if (servicios.length === 0) {
+                    const selectorWrapperVacio = document.getElementById("serviciosSelectorWrapper");
+                    if (selectorWrapperVacio) selectorWrapperVacio.classList.add("d-none");
+                    const carruselWrapperVacio = document.getElementById("serviciosCarruselContenedor");
+                    if (carruselWrapperVacio) carruselWrapperVacio.classList.remove("d-none");
+
+                    contenedor.innerHTML = filtroTipoId && huboServiciosSinFiltrar
+                        ? `
+                <div class="servicios-vacio">
+                    <i class="bi bi-funnel fs-4 d-block mb-2"></i>
+                    <p class="mb-0">No hay servicios de este tipo por ahora.</p>
+                </div>
+            `
+                        : `
                 <div class="servicios-vacio">
                     <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
                     <p class="mb-0">No hay servicios registrados en el sistema.</p>
@@ -270,7 +282,7 @@
                             return;
                         }
 
-                        const sObj = servicios.find(s => String(s.id) === String(sId));
+                        const sObj = obtenerServicioPorId(sId);
                         if (!sObj) return;
 
                         servicioId = sObj.id;
@@ -349,8 +361,12 @@
                         nombreMascota,
                         especie,
                         raza: document.getElementById("razaMascota")?.value.trim() || "",
-                        edad: document.getElementById("edadMascota")?.value.trim() || "",
-                        peso: document.getElementById("pesoMascota")?.value.trim() || "",
+                        fechaNacimiento: document.getElementById("fechaNacimientoMascota")?.value || "No especificada",
+                        peso: (() => {
+                            const pVal = document.getElementById("pesoMascota")?.value.trim();
+                            const pUnit = document.getElementById("unidadPesoMascota")?.value;
+                            return pVal ? `${pVal} ${pUnit}` : "No especificado";
+                        })(),
                         servicioId,
                         servicioNombre,
                         tieneCostoReserva: tieneReserva,
@@ -588,7 +604,9 @@
 
                 btnConfirmarCita.addEventListener("click", function () {
                     const nombreCliente = document.getElementById("nombreCliente")?.value.trim() || "";
-                    const telefonoCliente = document.getElementById("telefonoCliente")?.value.trim() || "";
+                    const codigoPais = document.getElementById("codigoPais")?.value || "+57";
+                    const telefonoInput = document.getElementById("telefonoCliente")?.value.trim() || "";
+                    const telefonoCliente = telefonoInput ? codigoPais + " " + telefonoInput : "";
                     const emailCliente = document.getElementById("emailCliente")?.value.trim() || "";
                     const emailClienteConfirm = document.getElementById("emailClienteConfirm")?.value.trim() || "";
                     const direccionCliente = document.getElementById("direccionCliente")?.value.trim() || "";
@@ -713,10 +731,18 @@
                     // Guardar en sessionStorage para la sesión actual
                     sessionStorage.setItem("datosCita", JSON.stringify(nuevaCita));
 
-                    // Guardar en localStorage para que persista en el Dashboard de Usuario
-                    let citas = JSON.parse(localStorage.getItem("citas")) || [];
-                    citas.unshift(nuevaCita);
-                    localStorage.setItem("citas", JSON.stringify(citas));
+                    agregarCita(nuevaCita);
+
+                    // La mascota pertenece al dominio Mascotas. Se registra aqui
+                    // porque el agendamiento tambien permite crear su primer perfil.
+                    registrarMascotaSiNoExiste({
+                        nombre: nuevaCita.nombreMascota,
+                        especie: nuevaCita.especie,
+                        raza: nuevaCita.raza,
+                        fechaNacimiento: datosP1.fechaNacimiento === "No especificada" ? "" : datosP1.fechaNacimiento,
+                        peso: datosP1.peso === "No especificado" ? "" : datosP1.peso,
+                        foto: ""
+                    });
 
                     if (typeof Swal !== "undefined") {
                         const tieneReserva = datosP1.tieneCostoReserva && datosP1.costoReserva > 0;
@@ -902,6 +928,29 @@
                 div.textContent = String(valor);
                 return div.innerHTML;
             }
-        });
 
-   
+            // Llena el filtro "Todos los tipos" (junto al titulo "Tipo de
+            // servicio") con los tipos que el admin ha creado, y vuelve a
+            // pintar el carrusel/selector filtrado cada vez que cambia.
+            function iniciarFiltroTipoServicioAgendar() {
+                const filtroSelect = document.getElementById("filtroTipoServicioAgendar");
+                if (!filtroSelect || typeof obtenerTiposServicio !== "function") {
+                    return;
+                }
+
+                const tipos = obtenerTiposServicio();
+
+                if (tipos.length === 0) {
+                    const contenedorFiltro = filtroSelect.closest(".servicios-seccion__filtro");
+                    if (contenedorFiltro) contenedorFiltro.classList.add("d-none");
+                    return;
+                }
+
+                filtroSelect.innerHTML = `<option value="" selected>Todos los tipos</option>` +
+                    tipos.map(tipo => `<option value="${tipo.id}">${escaparHtml(tipo.nombre)}</option>`).join("");
+
+                filtroSelect.addEventListener("change", function () {
+                    cargarServiciosDesdeDashboard(this.value);
+                });
+            }
+        });

@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/authmodal.css">
     <link rel="stylesheet" href="css/agendar.css">
+    <script src="js/shared/local-storage.js"></script>
+    <script src="js/shared/usuarios-storage.js"></script>
     <script src="js/components.js" defer></script>
     <script src="js/authmodal.js" defer></script>
     <title>Agendar Cita | HuellaVet</title>
@@ -91,12 +93,18 @@
                                     placeholder="Ej. Golden Retriever">
                             </div>
                             <div class="col-6 col-md-3">
-                                <label for="edadMascota" class="form-label">Edad</label>
-                                <input type="text" class="form-control" id="edadMascota" placeholder="Ej. 3 años">
+                                <label for="fechaNacimientoMascota" class="form-label">Nacimiento (aprox.)</label>
+                                <input type="date" class="form-control" id="fechaNacimientoMascota" onclick="this.max=new Date().toISOString().split('T')[0]">
                             </div>
                             <div class="col-6 col-md-3">
                                 <label for="pesoMascota" class="form-label">Peso (aprox.)</label>
-                                <input type="text" class="form-control" id="pesoMascota" placeholder="Ej. 20 kg">
+                                <div class="input-group">
+                                    <input type="number" step="0.1" min="0" class="form-control" id="pesoMascota" placeholder="Ej. 20" oninput="this.value = this.value.replace(/[^0-9.]/g, '')">
+                                    <select class="form-select" id="unidadPesoMascota" style="max-width: 75px; padding-left: 5px; padding-right: 25px;">
+                                        <option value="kg">kg</option>
+                                        <option value="g">g</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
 
@@ -106,6 +114,12 @@
                                 <div>
                                     <h3>Tipo de servicio</h3>
                                     <p>Selecciona el servicio que necesitas</p>
+                                </div>
+                                <div class="servicios-seccion__filtro">
+                                    <label for="filtroTipoServicioAgendar" class="visually-hidden">Filtrar por tipo de servicio</label>
+                                    <select class="form-select form-select-sm" id="filtroTipoServicioAgendar">
+                                        <option value="" selected>Todos los tipos</option>
+                                    </select>
                                 </div>
                             </div>
                             
@@ -223,12 +237,19 @@
                             <div class="col-12 col-md-6">
                                 <label for="telefonoCliente" class="form-label">Teléfono</label>
                                 <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0 pe-1">
-                                        <img src="https://flagcdn.com/w20/co.png" alt="Colombia" width="18">
-                                    </span>
-                                    <input type="tel" class="form-control border-start-0 ps-1" id="telefonoCliente"
-                                        name="tel" autocomplete="tel" placeholder="+57 300 123 4567">
+                                    <select class="form-select bg-light" id="codigoPais" style="max-width: 100px;">
+                                        <option value="+57">🇨🇴 +57</option>
+                                        <option value="+52">🇲🇽 +52</option>
+                                        <option value="+54">🇦🇷 +54</option>
+                                        <option value="+56">🇨🇱 +56</option>
+                                        <option value="+51">🇵🇪 +51</option>
+                                        <option value="+1">🇺🇸 +1</option>
+                                        <option value="+34">🇪🇸 +34</option>
+                                    </select>
+                                    <input type="tel" class="form-control" id="telefonoCliente"
+                                        name="tel" autocomplete="tel" placeholder="300 123 4567" maxlength="12" oninput="this.value = this.value.replace(/[^0-9 ]/g, '')">
                                 </div>
+                                <small class="text-muted">Máximo 12 dígitos.</small>
                             </div>
 
                             <div class="col-12 col-md-6">
@@ -428,6 +449,10 @@
     <!-- SweetAlert2 y Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/shared/citas-storage.js"></script>
+    <script src="js/shared/mascotas-storage.js"></script>
+    <script src="js/shared/servicios-storage.js"></script>
+    <script src="js/shared/tipos-servicio-storage.js"></script>
     <script src="js/agendar.js"></script>
 </body>
 

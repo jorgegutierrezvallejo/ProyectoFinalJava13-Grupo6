@@ -36,7 +36,8 @@
 
             <!-- SALUDO AL USUARIO -->
             <div class="user-saludo">
-                Hola, <strong>Ana</strong>. Aquí tienes el resumen del cuidado de tus mascotas.
+                <h2>Hola, Ana 👋</h2>
+                <p>Aquí tienes el resumen del cuidado de tus mascotas.</p>
             </div>
 
             <!-- FILA DE 4 KPIS / METRICAS -->
@@ -117,10 +118,13 @@
                             <a href="#" class="dash-card__link">Ver calendario</a>
                         </div>
 
+                        <!-- Contenido dinamico: ficha de la cita o estado vacio -->
+                        <div id="proximaCitaContenido">
+
                         <!-- Ficha Mascota y Estado -->
                         <div class="cita-mascota-box">
                             <div class="cita-mascota-info">
-                                <div class="cita-mascota-avatar">
+                                <div class="cita-mascota-avatar" id="proximaCitaAvatar">
                                     <i class="fa-solid fa-paw"></i>
                                 </div>
                                 <div>
@@ -201,6 +205,8 @@
                                 <span>Cancelar</span>
                             </button>
                         </div>
+
+                        </div>
                     </div>
 
                     <!-- SECCIÓN: MIS MASCOTAS -->
@@ -208,12 +214,12 @@
                         <div class="dash-card__header">
                             <div>
                                 <h2 class="dash-card__title">Mis mascotas</h2>
-                                <p class="dash-card__subtitle">2 mascotas registradas</p>
+                                <p class="dash-card__subtitle" id="mascotasContadorTexto">2 mascotas registradas</p>
                             </div>
                             <a href="#" class="dash-card__link">Ver todas</a>
                         </div>
 
-                        <div class="mascotas-lista">
+                        <div class="mascotas-lista" id="mascotasLista">
                             <!-- Mascota 1: Luna -->
                             <div class="mascota-item-card">
                                 <div class="mascota-item-main">
@@ -337,55 +343,6 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: ACTIVIDAD RECIENTE -->
-                    <div class="dash-card">
-                        <div class="dash-card__header">
-                            <div>
-                                <h2 class="dash-card__title">Actividad reciente</h2>
-                                <p class="dash-card__subtitle">Tus últimos movimientos</p>
-                            </div>
-                            <a href="#" class="dash-card__link">Ver todas</a>
-                        </div>
-
-                        <div class="actividad-lista">
-                            <!-- Actividad 1 -->
-                            <div class="actividad-item">
-                                <div class="actividad-icono actividad-icono--cita">
-                                    <i class="bi bi-calendar3"></i>
-                                </div>
-                                <div class="actividad-info">
-                                    <span class="actividad-titulo">Cita agendada</span>
-                                    <span class="actividad-desc">Control de peso para Max</span>
-                                    <span class="actividad-tiempo">Hace 2 días</span>
-                                </div>
-                            </div>
-
-                            <!-- Actividad 2 -->
-                            <div class="actividad-item">
-                                <div class="actividad-icono actividad-icono--vacuna">
-                                    <i class="bi bi-shield-check"></i>
-                                </div>
-                                <div class="actividad-info">
-                                    <span class="actividad-titulo">Vacuna aplicada</span>
-                                    <span class="actividad-desc">Antirrábica a Luna</span>
-                                    <span class="actividad-tiempo">Hace 1 semana</span>
-                                </div>
-                            </div>
-
-                            <!-- Actividad 3 -->
-                            <div class="actividad-item">
-                                <div class="actividad-icono actividad-icono--perfil">
-                                    <i class="bi bi-pencil"></i>
-                                </div>
-                                <div class="actividad-info">
-                                    <span class="actividad-titulo">Perfil actualizado</span>
-                                    <span class="actividad-desc">Datos de Max</span>
-                                    <span class="actividad-tiempo">Hace 2 semanas</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
             </div>
@@ -400,6 +357,10 @@
     <script src="../js/components.js"></script>
     <script src="../js/user-sidebar.js"></script>
     <script src="../js/user-topbar.js"></script>
+    <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/citas-storage.js"></script>
+    <script src="../../js/shared/mascotas-storage.js"></script>
+    <script src="../../js/shared/data-migrations.js"></script>
     <script src="../js/user-dashboard.js"></script>
 
 </body>

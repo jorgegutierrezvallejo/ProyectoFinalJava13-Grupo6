@@ -24,8 +24,12 @@ function iniciarSidebarUsuario() {
     // Control de apertura/cierre en móviles
     if (menuButton) {
         menuButton.addEventListener("click", function () {
-            sidebar.classList.toggle("open");
-            if (overlay) overlay.classList.toggle("show");
+            if (window.innerWidth <= 991.98) {
+                sidebar.classList.toggle("open");
+                if (overlay) overlay.classList.toggle("show");
+            } else {
+                document.body.classList.toggle("sidebar-collapsed");
+            }
         });
     }
 

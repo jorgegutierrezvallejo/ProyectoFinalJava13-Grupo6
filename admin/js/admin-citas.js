@@ -2,39 +2,58 @@ document.addEventListener("DOMContentLoaded", function () {
     iniciarCitas();
 });
 
+let pendientesHTMLOriginal = null;
+
 function iniciarCitas() {
     renderizarPendientesConfirmar();
+    iniciarAgendaDelDia();
 }
 
 function renderizarPendientesConfirmar() {
-    const contenedor = document.getElementById("contenedorPendientesCitas");
-    const contador = document.getElementById("contadorPendientesCantidad");
+    const panel = document.querySelector(".hv-pendientes");
+    if (!panel) return;
 
-    if (!contenedor) return;
-
-    let citas = [];
-    try {
-        citas = JSON.parse(localStorage.getItem("citas")) || [];
-    } catch (e) {
-        citas = [];
+    if (pendientesHTMLOriginal === null) {
+        pendientesHTMLOriginal = panel.innerHTML;
     }
+
+    const citas = obtenerTodasLasCitas();
 
     // Filtrar citas pendientes de aprobación
     // Si la cita no tiene estado o su estado es "Pendiente" o "Confirmada" reciente
     const citasPendientes = citas.filter(c => c.estado === "Pendiente" || (!c.estado && c.estado !== "Rechazada"));
 
-    if (contador) {
-        contador.textContent = citasPendientes.length;
-    }
-
+    // Estado vacío: panel compacto de una sola línea (igual de compacto que la alerta de "cita confirmada")
     if (citasPendientes.length === 0) {
-        contenedor.innerHTML = `
-            <div class="hv-pendientes-vacio">
+        panel.classList.add("hv-pendientes--vacio");
+        panel.innerHTML = `
+            <div class="hv-pendientes__compacto-icono">
                 <i class="bi bi-calendar-check"></i>
+            </div>
+            <div class="hv-pendientes__compacto-contenido">
+                <strong>Pendientes por confirmar</strong>
                 <p>No hay citas pendientes por aprobar.</p>
+            </div>
+            <div class="hv-pendientes__compacto-acciones">
+                <a href="#">Ver todas</a>
             </div>
         `;
         return;
+    }
+
+    // Hay citas pendientes: restaurar el panel completo (comportamiento normal, sin cambios)
+    if (panel.classList.contains("hv-pendientes--vacio")) {
+        panel.classList.remove("hv-pendientes--vacio");
+        panel.innerHTML = pendientesHTMLOriginal;
+    }
+
+    const contenedor = document.getElementById("contenedorPendientesCitas");
+    const contador = document.getElementById("contadorPendientesCantidad");
+
+    if (!contenedor) return;
+
+    if (contador) {
+        contador.textContent = citasPendientes.length;
     }
 
     contenedor.innerHTML = "";
@@ -50,7 +69,7 @@ function renderizarPendientesConfirmar() {
         item.innerHTML = `
             <div class="hv-pendiente__mascota">
                 <div class="hv-avatar-mascota">
-                    <i class="fa-solid fa-paw"></i>
+                    <i class="fa-solid ${iconoPorEspecieAdmin(cita.especie)}"></i>
                 </div>
                 <div class="hv-pendiente__mascota-texto">
                     <strong>${escaparHtml(cita.nombreMascota || "Mascota")}</strong>
@@ -64,7 +83,7 @@ function renderizarPendientesConfirmar() {
             </div>
 
             <div class="hv-pendiente__acciones">
-                <button type="button" class="hv-pendiente__boton hv-pendiente__boton--ver" onclick="verReservaAdmin(${cita.id})">
+                <button type="button" class="hv-pendiente__boton hv-pendiente__boton--ver" onclick="verReservaAdmin('${cita.id}')">
                     <i class="bi bi-eye"></i> Ver reserva
                 </button>
                 <i class="bi bi-chevron-right"></i>
@@ -76,12 +95,7 @@ function renderizarPendientesConfirmar() {
 }
 
 function verReservaAdmin(idCita) {
-    let citas = [];
-    try {
-        citas = JSON.parse(localStorage.getItem("citas")) || [];
-    } catch (e) {
-        citas = [];
-    }
+    const citas = obtenerTodasLasCitas();
 
     const cita = citas.find(c => String(c.id) === String(idCita));
     if (!cita) {
@@ -99,10 +113,22 @@ function verReservaAdmin(idCita) {
     
     let reservaHtml = "";
     if (cita.tieneCostoReserva && cita.costoReserva > 0) {
+        const abonoEstado = cita.abonoEstado || "pendiente";
+        const badgeAbonoHtml = abonoEstado === "pagado"
+            ? `<span class="badge" style="background-color:#e3f5e8;color:#1e7a3d;font-weight:700;">Abono pagado</span>`
+            : `<span class="badge" style="background-color:#fdeeee;color:#c0392b;font-weight:700;">Abono pendiente</span>`;
+
+        const comprobanteHtml = cita.abonoComprobante
+            ? `<div class="mt-2"><a href="${cita.abonoComprobante}" target="_blank" rel="noopener"><img src="${cita.abonoComprobante}" alt="Comprobante de pago" style="max-width:100%;max-height:150px;border-radius:8px;border:1px solid #f9dfa0;display:block;"></a><span class="small text-muted d-block mt-1">Clic en la imagen para verla en grande.</span></div>`
+            : `<div class="mt-1 small text-muted"><i class="bi bi-exclamation-circle me-1"></i>El propietario aún no ha subido el comprobante de pago.</div>`;
+
         reservaHtml = `
             <div class="alert alert-warning py-2 px-3 small mb-0 text-start" style="background-color: #fff9eb; border: 1px solid #f9dfa0; color: #855b08; border-radius: 8px;">
-                <i class="bi bi-credit-card-2-front me-1"></i><strong>Costo de reserva / anticipo:</strong> $${Number(cita.costoReserva).toLocaleString("es-CO")} COP.<br>
-                <span class="small text-muted">Verificar comprobante enviado por el cliente a través de ${canalContacto}.</span>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-1">
+                    <span><i class="bi bi-credit-card-2-front me-1"></i><strong>Costo de reserva / anticipo:</strong> $${Number(cita.costoReserva).toLocaleString("es-CO")} COP.</span>
+                    ${badgeAbonoHtml}
+                </div>
+                ${comprobanteHtml}
             </div>
         `;
     }
@@ -158,12 +184,12 @@ function verReservaAdmin(idCita) {
 }
 
 function aprobarCitaAdmin(idCita) {
-    let citas = JSON.parse(localStorage.getItem("citas")) || [];
+    const citas = obtenerTodasLasCitas();
     const index = citas.findIndex(c => String(c.id) === String(idCita));
 
     if (index !== -1) {
         citas[index].estado = "Confirmada";
-        localStorage.setItem("citas", JSON.stringify(citas));
+        guardarTodasLasCitas(citas);
 
         Swal.fire({
             icon: "success",
@@ -172,6 +198,7 @@ function aprobarCitaAdmin(idCita) {
             confirmButtonColor: "#17a9a7"
         }).then(() => {
             renderizarPendientesConfirmar();
+            refrescarAgendaYPanelSiAplica(idCita);
         });
     }
 }
@@ -180,30 +207,37 @@ function rechazarCitaAdmin(idCita) {
     Swal.fire({
         icon: "warning",
         title: "¿Rechazar esta solicitud?",
-        text: "La cita será rechazada y se notificará al cliente.",
+        html: `
+            <p style="text-align: left; color: #526765; font-size: 0.85rem; margin-bottom: 0.4rem;">La cita será rechazada y se notificará al cliente. Indica el motivo:</p>
+            <textarea id="swalMotivoRechazo" class="swal2-textarea" style="margin: 0; width: 100%;" placeholder="Ej. No hay disponibilidad en ese horario, el servicio solicitado no aplica..."></textarea>
+        `,
         showCancelButton: true,
         confirmButtonText: "Sí, rechazar",
         cancelButtonText: "Cancelar",
         confirmButtonColor: "#ef4c4c",
-        cancelButtonColor: "#6c757d"
+        cancelButtonColor: "#6c757d",
+        focusConfirm: false,
+        preConfirm: () => {
+            const motivo = document.getElementById("swalMotivoRechazo").value.trim();
+            if (!motivo) {
+                Swal.showValidationMessage("Escribe el motivo del rechazo.");
+                return false;
+            }
+            return motivo;
+        }
     }).then((result) => {
         if (result.isConfirmed) {
-            let citas = JSON.parse(localStorage.getItem("citas")) || [];
-            const index = citas.findIndex(c => String(c.id) === String(idCita));
+            actualizarCamposCita(idCita, { estado: "Rechazada", motivoEstado: result.value });
 
-            if (index !== -1) {
-                citas[index].estado = "Rechazada";
-                localStorage.setItem("citas", JSON.stringify(citas));
-
-                Swal.fire({
-                    icon: "info",
-                    title: "Cita rechazada",
-                    text: "La solicitud de cita ha sido rechazada.",
-                    confirmButtonColor: "#17a9a7"
-                }).then(() => {
-                    renderizarPendientesConfirmar();
-                });
-            }
+            Swal.fire({
+                icon: "info",
+                title: "Cita rechazada",
+                text: "La solicitud de cita ha sido rechazada.",
+                confirmButtonColor: "#17a9a7"
+            }).then(() => {
+                renderizarPendientesConfirmar();
+                refrescarAgendaYPanelSiAplica(idCita);
+            });
         }
     });
 }
@@ -224,4 +258,858 @@ function escaparHtml(valor) {
     const div = document.createElement("div");
     div.textContent = String(valor);
     return div.innerHTML;
+}
+
+/* ========================================
+   AGENDA DEL DIA + PANEL DE CITA
+   (usa las funciones de js/shared/citas-storage.js)
+
+   - fechaAgendaSeleccionada: que dia se esta
+     mostrando en "Agenda de hoy". Si la pagina
+     se abrio desde el calendario del dashboard
+     (admin-citas.html?fecha=YYYY-MM-DD) arranca
+     en esa fecha; si no, arranca en hoy.
+
+   - idCitaEnPanel: si es null, el panel derecho
+     muestra la proxima cita automaticamente
+     (titulo "Proxima Cita"). Si el admin hace
+     clic en una fila de la agenda, se guarda el
+     id de esa cita aqui y el panel muestra esa
+     cita puntual (titulo "Ver cita").
+======================================== */
+
+function obtenerFechaInicialDesdeURL() {
+    const params = new URLSearchParams(window.location.search);
+    const fechaParam = params.get("fecha");
+    if (fechaParam && /^\d{4}-\d{2}-\d{2}$/.test(fechaParam)) {
+        return fechaParam;
+    }
+    return hoyISO();
+}
+
+let fechaAgendaSeleccionada = obtenerFechaInicialDesdeURL();
+let idCitaEnPanel = null;
+let citaIdMostradaActualmente = null;
+
+// Fase 2: vista de la agenda ("dia" | "semana" | "mes"). Semana y Mes son
+// solo para navegar y elegir un dia -- la lista de abajo (renderizarAgendaDelDia)
+// siempre muestra un unico dia, el de fechaAgendaSeleccionada.
+let vistaAgendaActual = "dia";
+let [_anioMesPickerInicial, _mesPickerInicial] = fechaAgendaSeleccionada.split("-").map(Number);
+let mesAgendaPicker = _mesPickerInicial - 1;
+let anioAgendaPicker = _anioMesPickerInicial;
+
+const ESTADO_A_CLASE = {
+    "Pendiente": "pendiente",
+    "Confirmada": "confirmada",
+    "En curso": "en-curso",
+    "Completada": "completada",
+    "Reprogramada": "reprogramada",
+    "Cancelada": "cancelada",
+    "Rechazada": "rechazada"
+};
+
+const ICONOS_POR_SERVICIO = {
+    "Consulta general": "bi-heart-pulse",
+    "Vacunación": "bi-shield-plus",
+    "Limpieza dental": "bi-bandaid",
+    "Examen general": "bi-clipboard2-pulse",
+    "Consulta dermatológica": "bi-bandaid"
+};
+
+function iconoParaServicio(nombreServicio) {
+    return ICONOS_POR_SERVICIO[nombreServicio] || "bi-heart-pulse";
+}
+
+// Icono de respaldo cuando la cita no tiene fotoMascota, segun la especie
+// (mismo criterio que infoPorEspecie() en user-dashboard.js/user-mascotas.js).
+const ICONO_POR_ESPECIE_ADMIN = {
+    perro: "fa-dog",
+    gato: "fa-cat",
+    ave: "fa-dove"
+};
+
+function iconoPorEspecieAdmin(especieCruda) {
+    const clave = String(especieCruda || "").trim().toLowerCase();
+    return ICONO_POR_ESPECIE_ADMIN[clave] || "fa-paw";
+}
+
+function iniciarAgendaDelDia() {
+    document.getElementById("agendaBtnAnterior")?.addEventListener("click", function () {
+        navegarAgenda(-1);
+    });
+
+    document.getElementById("agendaBtnSiguiente")?.addEventListener("click", function () {
+        navegarAgenda(1);
+    });
+
+    // Se retiro el boton "Hoy" (pedido explicito de Jorge: no aportaba
+    // ninguna funcion que los demas controles no cubrieran ya).
+
+    // El icono de calendario alterna la vista "Mes": un clic la muestra
+    // (igual que el boton "Mes" del selector), y un segundo clic la oculta
+    // y vuelve a la vista "Dia".
+    document.getElementById("agendaBtnCalendario")?.addEventListener("click", function () {
+        cambiarVistaAgenda(vistaAgendaActual === "mes" ? "dia" : "mes");
+    });
+
+    iniciarVistaSelector();
+    iniciarBotonesPanelCita();
+
+    renderizarAgendaDelDia();
+    renderizarPanelCita();
+}
+
+// Anterior/Siguiente cambian de "paso" segun la vista activa: un dia en
+// vista Dia, una semana completa en vista Semana (mueve fechaAgendaSeleccionada
+// y con ella la semana mostrada), un mes en vista Mes (mueve solo el
+// calendario que se esta viendo, sin tocar el dia ya elegido).
+function navegarAgenda(direccion) {
+    if (vistaAgendaActual === "mes") {
+        mesAgendaPicker += direccion;
+        if (mesAgendaPicker < 0) { mesAgendaPicker = 11; anioAgendaPicker--; }
+        if (mesAgendaPicker > 11) { mesAgendaPicker = 0; anioAgendaPicker++; }
+        renderizarMesPicker();
+        renderizarResumen();
+        actualizarTituloAgenda();
+        return;
+    }
+
+    if (vistaAgendaActual === "semana") {
+        fechaAgendaSeleccionada = sumarDiasISO(fechaAgendaSeleccionada, direccion * 7);
+        renderizarAgendaDelDia();
+        renderizarSemanaPicker();
+        return;
+    }
+
+    fechaAgendaSeleccionada = sumarDiasISO(fechaAgendaSeleccionada, direccion);
+    renderizarAgendaDelDia();
+}
+
+// Cambia la vista activa (dia/semana/mes), actualiza los botones del
+// selector, muestra/oculta el picker correspondiente y lo dibuja.
+function cambiarVistaAgenda(vista) {
+    if (vista === vistaAgendaActual) return;
+    vistaAgendaActual = vista;
+
+    document.querySelectorAll(".hv-vista-selector__btn").forEach(boton => {
+        boton.classList.toggle("hv-vista-selector__btn--activo", boton.dataset.vista === vista);
+    });
+
+    const semanaPicker = document.getElementById("agendaSemanaPicker");
+    const mesPicker = document.getElementById("agendaMesPicker");
+    if (semanaPicker) semanaPicker.hidden = vista !== "semana";
+    if (mesPicker) mesPicker.hidden = vista !== "mes";
+
+    const etiquetas = {
+        dia: ["Día anterior", "Día siguiente"],
+        semana: ["Semana anterior", "Semana siguiente"],
+        mes: ["Mes anterior", "Mes siguiente"]
+    };
+    const [etiquetaAnterior, etiquetaSiguiente] = etiquetas[vista] || etiquetas.dia;
+    document.getElementById("agendaBtnAnterior")?.setAttribute("aria-label", etiquetaAnterior);
+    document.getElementById("agendaBtnSiguiente")?.setAttribute("aria-label", etiquetaSiguiente);
+
+    if (vista === "semana") renderizarSemanaPicker();
+    if (vista === "mes") {
+        const [anio, mes] = fechaAgendaSeleccionada.split("-").map(Number);
+        anioAgendaPicker = anio;
+        mesAgendaPicker = mes - 1;
+        renderizarMesPicker();
+    }
+
+    renderizarResumen();
+    actualizarTituloAgenda();
+}
+
+function iniciarVistaSelector() {
+    document.querySelectorAll(".hv-vista-selector__btn[data-vista]").forEach(boton => {
+        boton.addEventListener("click", function () {
+            cambiarVistaAgenda(this.dataset.vista);
+        });
+    });
+}
+
+// Lunes (formato YYYY-MM-DD) de la semana que contiene fechaISO.
+function obtenerLunesDeLaSemana(fechaISO) {
+    const [anio, mes, dia] = fechaISO.split("-").map(Number);
+    const fecha = new Date(anio, mes - 1, dia);
+    const diaSemana = (fecha.getDay() + 6) % 7; // lunes = 0 ... domingo = 6
+    return sumarDiasISO(fechaISO, -diaSemana);
+}
+
+// Dibuja la tira de 7 dias de la semana que contiene fechaAgendaSeleccionada.
+// Clic en un dia lo selecciona y refresca la agenda de abajo.
+function renderizarSemanaPicker() {
+    const contenedor = document.getElementById("agendaSemanaPicker");
+    if (!contenedor) return;
+
+    const lunes = obtenerLunesDeLaSemana(fechaAgendaSeleccionada);
+    const hoy = hoyISO();
+    const nombresDias = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
+
+    contenedor.innerHTML = "";
+
+    for (let i = 0; i < 7; i++) {
+        const fechaDelDia = sumarDiasISO(lunes, i);
+        const numeroDia = parseInt(fechaDelDia.split("-")[2], 10);
+
+        let clases = "hv-semana-picker__dia";
+        if (fechaDelDia === hoy) clases += " hv-semana-picker__dia--hoy";
+        if (fechaDelDia === fechaAgendaSeleccionada) clases += " hv-semana-picker__dia--seleccionado";
+        if (citasPorFecha(fechaDelDia).length > 0) clases += " hv-semana-picker__dia--con-citas";
+
+        const div = document.createElement("div");
+        div.className = clases;
+        div.innerHTML = `
+            <span class="hv-semana-picker__nombre">${nombresDias[i]}</span>
+            <span class="hv-semana-picker__numero">${numeroDia}</span>
+        `;
+        div.addEventListener("click", function () {
+            fechaAgendaSeleccionada = fechaDelDia;
+            renderizarAgendaDelDia();
+            renderizarSemanaPicker();
+        });
+
+        contenedor.appendChild(div);
+    }
+}
+
+// Dibuja el calendario mensual de mesAgendaPicker/anioAgendaPicker (mismo
+// patron que renderizarCalendarioDashboard() en admin-dashboard.js, pero
+// clic en un dia lo selecciona aqui mismo en vez de navegar a otra pagina).
+function renderizarMesPicker() {
+    const grid = document.getElementById("agendaMesPickerGrid");
+    const titulo = document.getElementById("agendaMesPickerTitulo");
+    if (!grid) return;
+
+    const hoy = hoyISO();
+    const primerDia = new Date(anioAgendaPicker, mesAgendaPicker, 1);
+    const ultimoDia = new Date(anioAgendaPicker, mesAgendaPicker + 1, 0);
+    const diasMes = ultimoDia.getDate();
+    const primerDiaSemana = (primerDia.getDay() + 6) % 7;
+    const diasMesAnterior = new Date(anioAgendaPicker, mesAgendaPicker, 0).getDate();
+
+    if (titulo) {
+        const texto = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric" }).format(primerDia);
+        titulo.textContent = texto.replace(/^./, letra => letra.toUpperCase());
+    }
+
+    grid.innerHTML = "";
+
+    for (let i = primerDiaSemana - 1; i >= 0; i--) {
+        const span = document.createElement("span");
+        span.className = "calendar-day calendar-day--muted";
+        span.textContent = diasMesAnterior - i;
+        grid.appendChild(span);
+    }
+
+    for (let diaNumero = 1; diaNumero <= diasMes; diaNumero++) {
+        const fechaISODelDia = `${anioAgendaPicker}-${String(mesAgendaPicker + 1).padStart(2, "0")}-${String(diaNumero).padStart(2, "0")}`;
+
+        const span = document.createElement("span");
+        let clases = "calendar-day";
+        if (fechaISODelDia === fechaAgendaSeleccionada) {
+            clases += " calendar-day--seleccionado";
+        } else if (fechaISODelDia === hoy) {
+            clases += " calendar-day--today";
+        }
+        if (citasPorFecha(fechaISODelDia).length > 0) clases += " calendar-day--appointment";
+
+        span.className = clases;
+        span.textContent = diaNumero;
+        span.style.cursor = "pointer";
+        span.addEventListener("click", function () {
+            fechaAgendaSeleccionada = fechaISODelDia;
+            renderizarAgendaDelDia();
+            renderizarMesPicker();
+        });
+
+        grid.appendChild(span);
+    }
+
+    const celdasActuales = grid.children.length;
+    const celdasRestantes = (7 - (celdasActuales % 7)) % 7;
+
+    for (let diaNumero = 1; diaNumero <= celdasRestantes; diaNumero++) {
+        const span = document.createElement("span");
+        span.className = "calendar-day calendar-day--muted";
+        span.textContent = diaNumero;
+        grid.appendChild(span);
+    }
+}
+
+// Dias (YYYY-MM-DD) y citas del periodo que muestra el calendario en este
+// momento: un solo dia en vista Dia, los 7 dias de la semana en vista
+// Semana, todos los dias del mes mostrado en vista Mes.
+function citasEnPeriodoActual() {
+    let dias = [];
+
+    if (vistaAgendaActual === "semana") {
+        const lunes = obtenerLunesDeLaSemana(fechaAgendaSeleccionada);
+        for (let i = 0; i < 7; i++) dias.push(sumarDiasISO(lunes, i));
+    } else if (vistaAgendaActual === "mes") {
+        const diasEnMes = new Date(anioAgendaPicker, mesAgendaPicker + 1, 0).getDate();
+        for (let dia = 1; dia <= diasEnMes; dia++) {
+            dias.push(`${anioAgendaPicker}-${String(mesAgendaPicker + 1).padStart(2, "0")}-${String(dia).padStart(2, "0")}`);
+        }
+    } else {
+        dias = [fechaAgendaSeleccionada];
+    }
+
+    return { dias, citas: dias.flatMap(fecha => citasPorFecha(fecha)) };
+}
+
+// Franjas de HORAS_AGENDA sin ninguna cita en una fecha puntual (mismo
+// criterio de "una cita por franja" que usa renderizarAgendaDelDia).
+function franjasLibresEnFecha(fechaISO) {
+    const franjasOcupadas = new Set(citasPorFecha(fechaISO).map(cita => horaAFranja(cita.hora)));
+    return HORAS_AGENDA.length - franjasOcupadas.size;
+}
+
+// Recalcula la tarjeta "Citas de [periodo]" y las 4 tarjetas de resumen
+// segun vistaAgendaActual. Se llama automaticamente cada vez que se
+// repinta la agenda (renderizarAgendaDelDia) y tambien al cambiar de
+// vista o navegar el calendario sin elegir un dia todavia.
+function renderizarResumen() {
+    const labelCitas = document.getElementById("resumenCitasLabel");
+    if (!labelCitas) return;
+
+    const periodo = citasEnPeriodoActual();
+    const citas = periodo.citas;
+
+    let etiquetaCitas = "Citas de hoy";
+    let detalleTexto = fechaISOaTextoLargo(fechaAgendaSeleccionada);
+
+    if (vistaAgendaActual === "dia") {
+        etiquetaCitas = fechaAgendaSeleccionada === hoyISO() ? "Citas de hoy" : "Citas de ese día";
+    } else if (vistaAgendaActual === "semana") {
+        etiquetaCitas = "Citas de la semana";
+        const formatoCorto = fecha => {
+            const [, mes, dia] = fecha.split("-").map(Number);
+            const texto = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short" }).format(new Date(2000, mes - 1, dia));
+            return texto.replace(".", "");
+        };
+        detalleTexto = `Semana del ${formatoCorto(periodo.dias[0])} al ${formatoCorto(periodo.dias[6])}`;
+    } else if (vistaAgendaActual === "mes") {
+        etiquetaCitas = "Citas del mes";
+        const primerDiaMes = new Date(anioAgendaPicker, mesAgendaPicker, 1);
+        detalleTexto = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric" }).format(primerDiaMes);
+        detalleTexto = detalleTexto.replace(/^./, letra => letra.toUpperCase());
+    }
+
+    labelCitas.textContent = etiquetaCitas;
+    document.getElementById("resumenHeroNumero").textContent = citas.length;
+    document.getElementById("resumenHeroDetalle").textContent = detalleTexto;
+
+    const espaciosLibres = periodo.dias.reduce((total, fecha) => total + franjasLibresEnFecha(fecha), 0);
+    document.getElementById("resumenNumeroEspacios").textContent = espaciosLibres;
+    document.getElementById("resumenNumeroPendientes").textContent = citas.filter(c => c.estado === "Pendiente").length;
+    document.getElementById("resumenNumeroReprogramadas").textContent = citas.filter(c => c.estado === "Reprogramada").length;
+    document.getElementById("resumenNumeroCanceladas").textContent = citas.filter(c => c.estado === "Cancelada").length;
+}
+
+// Texto del titulo de la card de agenda, fusionado con la fecha/rango que
+// se esta mostrando segun vistaAgendaActual (antes el titulo era fijo
+// "Agenda de hoy" y la fecha se mostraba aparte, aunque no fuera hoy).
+function textoTituloAgenda() {
+    if (vistaAgendaActual === "semana") {
+        const periodo = citasEnPeriodoActual();
+        const formatoCorto = fecha => {
+            const [, mes, dia] = fecha.split("-").map(Number);
+            const texto = new Intl.DateTimeFormat("es-CO", { day: "numeric", month: "short" }).format(new Date(2000, mes - 1, dia));
+            return texto.replace(".", "");
+        };
+        return `Agenda de la semana del ${formatoCorto(periodo.dias[0])} al ${formatoCorto(periodo.dias[6])}`;
+    }
+
+    if (vistaAgendaActual === "mes") {
+        const primerDiaMes = new Date(anioAgendaPicker, mesAgendaPicker, 1);
+        let mesTexto = new Intl.DateTimeFormat("es-CO", { month: "long", year: "numeric" }).format(primerDiaMes);
+        mesTexto = mesTexto.replace(/^./, letra => letra.toUpperCase());
+        return `Agenda de ${mesTexto}`;
+    }
+
+    if (fechaAgendaSeleccionada === hoyISO()) return "Agenda de hoy";
+    return `Agenda del ${fechaISOaTextoLargo(fechaAgendaSeleccionada)}`;
+}
+
+function actualizarTituloAgenda() {
+    const tituloTexto = document.getElementById("agendaTituloTexto");
+    if (tituloTexto) tituloTexto.textContent = textoTituloAgenda();
+}
+
+// Pinta la lista "Agenda de hoy" con las citas reales guardadas en
+// localStorage para fechaAgendaSeleccionada. Cada franja de HORAS_AGENDA
+// que no tenga cita se muestra como "Espacio disponible".
+function renderizarAgendaDelDia() {
+    const contenedor = document.getElementById("agendaListaContenedor");
+    if (!contenedor) return;
+
+    actualizarTituloAgenda();
+
+    const citasDelDia = citasPorFecha(fechaAgendaSeleccionada);
+
+    // Si dos citas caen en la misma franja horaria, se muestra la primera.
+    const citaPorFranja = {};
+    citasDelDia.forEach(cita => {
+        const franja = horaAFranja(cita.hora);
+        if (!citaPorFranja[franja]) {
+            citaPorFranja[franja] = cita;
+        }
+    });
+
+    contenedor.innerHTML = "";
+
+    HORAS_AGENDA.forEach(hora => {
+        const cita = citaPorFranja[hora];
+        const fila = document.createElement("div");
+        fila.className = "hv-agenda-fila";
+
+        if (cita) {
+            const claseEstado = ESTADO_A_CLASE[cita.estado] || "pendiente";
+            const icono = iconoParaServicio(cita.servicioNombre);
+            const avatarHtml = cita.fotoMascota
+                ? `<img class="hv-agenda-cita__avatar" src="${escaparHtml(cita.fotoMascota)}" alt="${escaparHtml(cita.nombreMascota || "Mascota")}">`
+                : `<div class="hv-agenda-cita__avatar hv-agenda-cita__avatar--icono"><i class="fa-solid ${iconoPorEspecieAdmin(cita.especie)}"></i></div>`;
+
+            fila.innerHTML = `
+                <div class="hv-agenda-hora">${hora}</div>
+                <div class="hv-agenda-cita hv-agenda-cita--${claseEstado}">
+                    ${avatarHtml}
+                    <div class="hv-agenda-cita__info">
+                        <div class="hv-agenda-cita__nombre">${escaparHtml(cita.nombreMascota || "Mascota")}</div>
+                        <div class="hv-agenda-cita__dueno">${escaparHtml(cita.cliente?.nombre || "Cliente")}</div>
+                    </div>
+                    <div class="hv-agenda-cita__servicio">
+                        <i class="bi ${icono}"></i>
+                        <div>
+                            <div class="hv-agenda-cita__tipo">${escaparHtml(cita.servicioNombre || "Consulta general")}</div>
+                        </div>
+                    </div>
+                    <span class="hv-badge hv-badge--${claseEstado}">${escaparHtml(cita.estado || "Pendiente")}</span>
+                    <i class="bi bi-chevron-right hv-agenda-cita__flecha"></i>
+                </div>
+            `;
+
+            fila.querySelector(".hv-agenda-cita").addEventListener("click", function () {
+                mostrarCitaEnPanel(cita.id);
+            });
+        } else {
+            fila.innerHTML = `
+                <div class="hv-agenda-hora">${hora}</div>
+                <div class="hv-agenda-espacio">
+                    <div class="hv-agenda-espacio__icono">
+                        <i class="bi bi-plus"></i>
+                    </div>
+                    <div class="hv-agenda-espacio__texto">
+                        <strong>Espacio disponible</strong>
+                        <span>No hay ninguna cita agendada en esta hora</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        contenedor.appendChild(fila);
+    });
+
+    renderizarResumen();
+}
+
+// Muestra una cita puntual en el panel derecho (clic en una fila de la agenda).
+function mostrarCitaEnPanel(idCita) {
+    idCitaEnPanel = idCita;
+    renderizarPanelCita();
+}
+
+// Pinta el panel derecho: la cita elegida (titulo "Ver cita") o, si no se
+// eligio ninguna, la proxima cita automatica (titulo "Proxima Cita").
+function renderizarPanelCita() {
+    const titulo = document.getElementById("panelCitaTitulo");
+    const contenido = document.getElementById("panelCitaContenido");
+    const vacio = document.getElementById("panelCitaVacio");
+    if (!titulo || !contenido || !vacio) return;
+
+    let cita = null;
+    let esVistaEspecifica = false;
+
+    if (idCitaEnPanel !== null) {
+        cita = obtenerCitaPorId(idCitaEnPanel);
+        if (cita) {
+            esVistaEspecifica = true;
+        } else {
+            idCitaEnPanel = null;
+        }
+    }
+
+    if (!cita) {
+        cita = proximaCitaGlobal();
+        esVistaEspecifica = false;
+    }
+
+    citaIdMostradaActualmente = cita ? cita.id : null;
+    titulo.textContent = esVistaEspecifica ? "Ver cita" : "Próxima Cita";
+
+    if (!cita) {
+        contenido.hidden = true;
+        vacio.hidden = false;
+        return;
+    }
+
+    contenido.hidden = false;
+    vacio.hidden = true;
+
+    const nombreMascota = cita.nombreMascota || "Mascota";
+    const especieCapitalizada = cita.especie ? cita.especie.charAt(0).toUpperCase() + cita.especie.slice(1).toLowerCase() : "";
+    const especieRaza = [especieCapitalizada, cita.raza].filter(Boolean).join(" • ") || "Sin datos registrados";
+    const nombreCliente = cita.cliente?.nombre || "Cliente";
+    const telefonoCliente = cita.cliente?.telefono || "Sin teléfono";
+    const modalidadTexto = cita.ubicacion || (cita.modalidad === "domicilio" ? "Servicio a domicilio" : "En clínica");
+
+    document.getElementById("panelCitaNombre").textContent = nombreMascota;
+    document.getElementById("panelCitaId").textContent = `ID: ${cita.id}`;
+
+    const avatarPanelEl = document.getElementById("panelCitaAvatar");
+    if (avatarPanelEl) {
+        if (cita.fotoMascota) {
+            avatarPanelEl.classList.remove("hv-detalle__avatar--icono");
+            avatarPanelEl.style.backgroundImage = `url('${cita.fotoMascota}')`;
+            avatarPanelEl.style.backgroundSize = "cover";
+            avatarPanelEl.style.backgroundPosition = "center";
+            avatarPanelEl.innerHTML = "";
+        } else {
+            avatarPanelEl.classList.add("hv-detalle__avatar--icono");
+            avatarPanelEl.style.backgroundImage = "";
+            avatarPanelEl.innerHTML = `<i class="fa-solid ${iconoPorEspecieAdmin(cita.especie)}"></i>`;
+        }
+    }
+
+    document.getElementById("panelCitaMascotaTexto").textContent = nombreMascota;
+    document.getElementById("panelCitaMascotaDetalle").textContent = especieRaza;
+
+    document.getElementById("panelCitaPropietarioTexto").textContent = nombreCliente;
+    document.getElementById("panelCitaPropietarioDetalle").textContent = telefonoCliente;
+
+    document.getElementById("panelCitaServicioTexto").textContent = cita.servicioNombre || "Consulta general";
+    document.getElementById("panelCitaServicioDetalle").textContent = modalidadTexto;
+
+    document.getElementById("panelCitaFecha").textContent = fechaISOaTextoLargo(cita.fecha);
+    document.getElementById("panelCitaHora").textContent = cita.hora || "Hora no definida";
+
+    const claseEstado = ESTADO_A_CLASE[cita.estado] || "pendiente";
+    const estadoEl = document.getElementById("panelCitaEstado");
+    estadoEl.className = `hv-detalle__estado hv-detalle__estado--${claseEstado}`;
+    estadoEl.textContent = cita.estado || "Pendiente";
+
+    const observacionesFila = document.getElementById("panelCitaObservacionesFila");
+    const textoObservaciones = cita.motivo || "";
+    if (textoObservaciones) {
+        observacionesFila.hidden = false;
+        document.getElementById("panelCitaObservaciones").textContent = textoObservaciones;
+    } else {
+        observacionesFila.hidden = true;
+    }
+
+    // Motivo del cambio de estado (Cancelada/Rechazada/Reprogramada).
+    const ETIQUETA_MOTIVO_POR_ESTADO = {
+        "Cancelada": "Motivo de cancelación",
+        "Rechazada": "Motivo de rechazo",
+        "Reprogramada": "Motivo de reprogramación"
+    };
+    const motivoEstadoFila = document.getElementById("panelCitaMotivoEstadoFila");
+    if (motivoEstadoFila) {
+        if (cita.motivoEstado && ETIQUETA_MOTIVO_POR_ESTADO[cita.estado]) {
+            motivoEstadoFila.hidden = false;
+            document.getElementById("panelCitaMotivoEstadoEtiqueta").textContent = ETIQUETA_MOTIVO_POR_ESTADO[cita.estado];
+            document.getElementById("panelCitaMotivoEstado").textContent = cita.motivoEstado;
+        } else {
+            motivoEstadoFila.hidden = true;
+        }
+    }
+
+    // Recomendacion/recordatorio enviado al finalizar la cita.
+    const recordatorioFila = document.getElementById("panelCitaRecordatorioFila");
+    if (recordatorioFila) {
+        if (cita.estado === "Completada" && cita.recordatorio) {
+            recordatorioFila.hidden = false;
+            document.getElementById("panelCitaRecordatorioTexto").textContent = cita.recordatorio.texto || "";
+            document.getElementById("panelCitaRecordatorioFecha").textContent = cita.recordatorio.fecha
+                ? `Fecha sugerida: ${formatearFechaAdmin(cita.recordatorio.fecha)}`
+                : "Sin fecha específica";
+        } else {
+            recordatorioFila.hidden = true;
+        }
+    }
+
+    // Botones de accion: los normales (Editar/Reprogramar/Cancelar) se
+    // ocultan cuando la cita ya esta Completada, y en su lugar aparece
+    // "Editar recomendacion".
+    const accionesNormales = document.getElementById("panelAccionesNormales");
+    const accionesRecomendacion = document.getElementById("panelAccionesRecomendacion");
+    if (accionesNormales && accionesRecomendacion) {
+        if (cita.estado === "Completada") {
+            accionesNormales.style.display = "none";
+            accionesRecomendacion.hidden = false;
+        } else {
+            accionesNormales.style.display = "";
+            accionesRecomendacion.hidden = true;
+        }
+    }
+
+    actualizarBotonIniciarFinalizar(cita.estado);
+}
+
+// El boton principal del panel cambia segun el estado actual: "Aprobar
+// cita" (Pendiente), "Iniciar cita" (Confirmada), "Finalizar cita" (En
+// curso), o se oculta del todo en los estados que ya no tienen accion.
+function actualizarBotonIniciarFinalizar(estado) {
+    const boton = document.getElementById("panelBtnIniciarFinalizar");
+    const texto = document.getElementById("panelBtnIniciarFinalizarTexto");
+    const icono = boton?.querySelector("i");
+    if (!boton || !texto) return;
+
+    const estadosSinAccion = ["Completada", "Cancelada", "Rechazada", "Reprogramada"];
+
+    if (estadosSinAccion.includes(estado)) {
+        boton.style.display = "none";
+        boton.dataset.modo = "";
+        return;
+    }
+
+    boton.style.display = "";
+
+    if (estado === "Pendiente") {
+        boton.className = "hv-detalle__btn hv-detalle__btn--aprobar";
+        texto.textContent = "Aprobar cita";
+        if (icono) icono.className = "bi bi-check-circle";
+        boton.dataset.modo = "aprobar";
+    } else if (estado === "En curso") {
+        boton.className = "hv-detalle__btn hv-detalle__btn--finalizar";
+        texto.textContent = "Finalizar cita";
+        if (icono) icono.className = "bi bi-check-circle";
+        boton.dataset.modo = "finalizar";
+    } else {
+        boton.className = "hv-detalle__btn hv-detalle__btn--iniciar";
+        texto.textContent = "Iniciar cita";
+        if (icono) icono.className = "bi bi-play-circle";
+        boton.dataset.modo = "iniciar";
+    }
+}
+
+// Wiring de los botones del panel (una sola vez: los botones no se
+// vuelven a crear, solo se actualiza su texto/estilo en cada render).
+function iniciarBotonesPanelCita() {
+    document.getElementById("panelBtnIniciarFinalizar")?.addEventListener("click", function () {
+        if (citaIdMostradaActualmente === null) return;
+        const cita = obtenerCitaPorId(citaIdMostradaActualmente);
+        if (!cita) return;
+
+        const modo = this.dataset.modo;
+
+        // Pendiente: reutiliza el mismo modal de "Ver reserva" (con el
+        // estado del abono y el comprobante) en vez de un simple confirm,
+        // para que el doctor revise todo antes de aprobar.
+        if (modo === "aprobar") {
+            verReservaAdmin(citaIdMostradaActualmente);
+            return;
+        }
+
+        if (modo === "iniciar") {
+            Swal.fire({
+                icon: "question",
+                title: "¿Iniciar esta cita?",
+                text: `La cita de ${cita.nombreMascota || "la mascota"} pasará a estado "En curso".`,
+                showCancelButton: true,
+                confirmButtonText: "Sí, iniciar",
+                cancelButtonText: "Volver",
+                confirmButtonColor: "#17a9a7",
+                cancelButtonColor: "#6c757d"
+            }).then((resultado) => {
+                if (!resultado.isConfirmed) return;
+                actualizarEstadoCita(citaIdMostradaActualmente, "En curso");
+                renderizarAgendaDelDia();
+                renderizarPanelCita();
+                renderizarPendientesConfirmar();
+            });
+            return;
+        }
+
+        if (modo === "finalizar") {
+            Swal.fire({
+                icon: "question",
+                title: "¿Finalizar esta cita?",
+                text: `La cita de ${cita.nombreMascota || "la mascota"} pasará a estado "Completada".`,
+                showCancelButton: true,
+                confirmButtonText: "Sí, finalizar",
+                cancelButtonText: "Volver",
+                confirmButtonColor: "#17a9a7",
+                cancelButtonColor: "#6c757d"
+            }).then((resultado) => {
+                if (!resultado.isConfirmed) return;
+
+                const idCitaFinalizada = citaIdMostradaActualmente;
+                actualizarEstadoCita(idCitaFinalizada, "Completada");
+                renderizarAgendaDelDia();
+                renderizarPanelCita();
+                renderizarPendientesConfirmar();
+                preguntarEnviarRecordatorio(idCitaFinalizada);
+            });
+        }
+    });
+
+    document.getElementById("panelBtnReprogramar")?.addEventListener("click", function () {
+        if (citaIdMostradaActualmente === null) return;
+        pedirMotivoYCambiarEstado(citaIdMostradaActualmente, "Reprogramada", {
+            titulo: "¿Reprogramar esta cita?",
+            texto: "El cliente será notificado para acordar una nueva fecha y hora. Indica el motivo:",
+            placeholder: "Ej. El propietario solicitó cambiar el horario, el veterinario no está disponible...",
+            confirmButtonText: "Sí, reprogramar",
+            confirmButtonColor: "#17a9a7"
+        });
+    });
+
+    document.getElementById("panelBtnCancelar")?.addEventListener("click", function () {
+        if (citaIdMostradaActualmente === null) return;
+        pedirMotivoYCambiarEstado(citaIdMostradaActualmente, "Cancelada", {
+            titulo: "¿Cancelar esta cita?",
+            texto: "Esta acción no se puede deshacer. Indica el motivo:",
+            placeholder: "Ej. El propietario canceló, la clínica no puede atender en ese horario...",
+            confirmButtonText: "Sí, cancelar",
+            confirmButtonColor: "#e53935"
+        });
+    });
+
+    document.getElementById("panelBtnEditar")?.addEventListener("click", function () {
+        Swal.fire({
+            icon: "info",
+            title: "Próximamente",
+            text: "La edición de los datos de la cita estará disponible pronto.",
+            confirmButtonColor: "#17a9a7"
+        });
+    });
+
+    document.getElementById("panelBtnEditarRecomendacion")?.addEventListener("click", function () {
+        if (citaIdMostradaActualmente === null) return;
+        abrirFormularioRecordatorio(citaIdMostradaActualmente);
+    });
+}
+
+// Diálogo compartido para Reprogramar/Cancelar: pide un motivo obligatorio
+// y, si se confirma, cambia el estado y guarda el motivo en la misma cita.
+function pedirMotivoYCambiarEstado(idCita, nuevoEstado, opciones) {
+    Swal.fire({
+        icon: "warning",
+        title: opciones.titulo,
+        html: `
+            <p style="text-align: left; color: #526765; font-size: 0.85rem; margin-bottom: 0.4rem;">${opciones.texto}</p>
+            <textarea id="swalMotivoEstado" class="swal2-textarea" style="margin: 0; width: 100%;" placeholder="${opciones.placeholder}"></textarea>
+        `,
+        showCancelButton: true,
+        confirmButtonText: opciones.confirmButtonText,
+        cancelButtonText: "Volver",
+        confirmButtonColor: opciones.confirmButtonColor,
+        cancelButtonColor: "#6c757d",
+        focusConfirm: false,
+        preConfirm: () => {
+            const motivo = document.getElementById("swalMotivoEstado").value.trim();
+            if (!motivo) {
+                Swal.showValidationMessage("Escribe el motivo.");
+                return false;
+            }
+            return motivo;
+        }
+    }).then((resultado) => {
+        if (!resultado.isConfirmed) return;
+        actualizarCamposCita(idCita, { estado: nuevoEstado, motivoEstado: resultado.value });
+        renderizarAgendaDelDia();
+        renderizarPanelCita();
+        renderizarPendientesConfirmar();
+    });
+}
+
+// Al finalizar una cita, se le pregunta al doctor si quiere dejarle un
+// recordatorio al propietario (cuidados, proxima cita, proxima vacuna...).
+function preguntarEnviarRecordatorio(idCita) {
+    const cita = obtenerCitaPorId(idCita);
+    if (!cita) return;
+
+    Swal.fire({
+        icon: "question",
+        title: "¿Enviar un recordatorio al propietario?",
+        text: `Puedes sugerir cuidados, la próxima cita o la próxima vacuna para ${cita.nombreMascota || "la mascota"}. Le aparecerá como recordatorio en su cuenta.`,
+        showCancelButton: true,
+        confirmButtonText: "Sí, crear recordatorio",
+        cancelButtonText: "No, gracias",
+        confirmButtonColor: "#17a9a7",
+        cancelButtonColor: "#6c757d"
+    }).then((resultado) => {
+        if (resultado.isConfirmed) {
+            abrirFormularioRecordatorio(idCita);
+        }
+    });
+}
+
+// Formulario para crear o editar el recordatorio de una cita Completada.
+// La fecha es opcional (recordatorio "sin fecha").
+function abrirFormularioRecordatorio(idCita) {
+    const cita = obtenerCitaPorId(idCita);
+    if (!cita) return;
+
+    const recordatorioActual = cita.recordatorio || null;
+
+    Swal.fire({
+        title: recordatorioActual ? "Editar recordatorio" : "Nuevo recordatorio",
+        html: `
+            <div style="text-align: left; display: flex; flex-direction: column; gap: 0.6rem;">
+                <div>
+                    <label for="swalRecordatorioTexto" style="font-size: 0.8rem; font-weight: 700; color: #223e3c; display: block; margin-bottom: 0.25rem;">Recomendación / recordatorio</label>
+                    <textarea id="swalRecordatorioTexto" class="swal2-textarea" style="margin: 0; width: 100%;" placeholder="Ej. Aplicar la próxima vacuna antirrábica, controlar el peso en 15 días...">${recordatorioActual ? escaparHtml(recordatorioActual.texto) : ""}</textarea>
+                </div>
+                <div>
+                    <label for="swalRecordatorioFecha" style="font-size: 0.8rem; font-weight: 700; color: #223e3c; display: block; margin-bottom: 0.25rem;">Fecha sugerida (opcional)</label>
+                    <input type="date" id="swalRecordatorioFecha" class="swal2-input" style="margin: 0; width: 100%;" value="${recordatorioActual?.fecha || ""}">
+                </div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: recordatorioActual ? "Guardar cambios" : "Crear recordatorio",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#17a9a7",
+        cancelButtonColor: "#6c757d",
+        focusConfirm: false,
+        preConfirm: () => {
+            const texto = document.getElementById("swalRecordatorioTexto").value.trim();
+            const fecha = document.getElementById("swalRecordatorioFecha").value || null;
+            if (!texto) {
+                Swal.showValidationMessage("Escribe el contenido del recordatorio.");
+                return false;
+            }
+            return { texto, fecha };
+        }
+    }).then((resultado) => {
+        if (!resultado.isConfirmed) return;
+
+        actualizarCamposCita(idCita, {
+            recordatorio: {
+                texto: resultado.value.texto,
+                fecha: resultado.value.fecha,
+                fechaCreacion: recordatorioActual?.fechaCreacion || new Date().toISOString()
+            }
+        });
+
+        Swal.fire({
+            icon: "success",
+            title: recordatorioActual ? "Recordatorio actualizado" : "Recordatorio creado",
+            confirmButtonColor: "#17a9a7"
+        }).then(() => {
+            renderizarPanelCita();
+        });
+    });
+}
+
+// Se llama despues de aprobar/rechazar una cita desde "Pendientes por
+// confirmar", para que la agenda y el panel derecho queden al dia.
+function refrescarAgendaYPanelSiAplica() {
+    renderizarAgendaDelDia();
+    renderizarPanelCita();
 }
