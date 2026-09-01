@@ -1,5 +1,6 @@
 
-        document.addEventListener("DOMContentLoaded", function () {
+        // funcion global: la llama tambien el componente modal agendar-cita.js
+        function iniciarAgendarCita() {
             const hoy = new Date();
             const anioActual = hoy.getFullYear();
             const mesActual = hoy.getMonth();
@@ -18,6 +19,8 @@
 
             cargarServiciosDesdeDashboard();
             iniciarFiltroTipoServicioAgendar();
+            iniciarSelectorMascotaGuardada();
+            precargarDatosDeContacto();
             iniciarEnvioPaso1();
             iniciarCalendario();
             cargarHorarios();
@@ -250,6 +253,115 @@
                         contenedor.addEventListener("scroll", actualizarEstadoBotones);
                         setTimeout(actualizarEstadoBotones, 150);
                     }
+                }
+            }
+
+            // autocompleta y bloquea los campos si elige una mascota ya guardada
+            function iniciarSelectorMascotaGuardada() {
+                const wrapper = document.getElementById("selectorMascotaGuardadaWrapper");
+                const select = document.getElementById("selectMascotaGuardada");
+
+                if (!wrapper || !select || typeof obtenerMascotas !== "function") {
+                    return;
+                }
+
+                const mascotasGuardadas = obtenerMascotas();
+
+                if (mascotasGuardadas.length === 0) {
+                    wrapper.classList.add("d-none");
+                    return;
+                }
+
+                wrapper.classList.remove("d-none");
+
+                select.innerHTML = `<option value="" selected>Nueva mascota (completar datos manualmente)</option>` +
+                    mascotasGuardadas.map(mascota => {
+                        const especieTexto = mascota.especie
+                            ? ` · ${mascota.especie.charAt(0).toUpperCase()}${mascota.especie.slice(1)}`
+                            : "";
+                        return `<option value="${mascota.id}">${escaparHtml(mascota.nombre || "Mascota")}${especieTexto}</option>`;
+                    }).join("");
+
+                const campoNombreMascota = document.getElementById("nombreMascota");
+                const campoEspecieMascota = document.getElementById("especieMascota");
+                const campoRazaMascota = document.getElementById("razaMascota");
+                const campoFechaNacimientoMascota = document.getElementById("fechaNacimientoMascota");
+                const campoPesoMascota = document.getElementById("pesoMascota");
+                const campoUnidadPesoMascota = document.getElementById("unidadPesoMascota");
+
+                const camposAutocompletados = [
+                    campoNombreMascota,
+                    campoEspecieMascota,
+                    campoRazaMascota,
+                    campoFechaNacimientoMascota,
+                    campoPesoMascota,
+                    campoUnidadPesoMascota
+                ];
+
+                select.addEventListener("change", function () {
+                    const idSeleccionado = this.value;
+
+                    if (!idSeleccionado) {
+                        camposAutocompletados.forEach(campo => { if (campo) campo.disabled = false; });
+                        if (campoNombreMascota) campoNombreMascota.value = "";
+                        if (campoEspecieMascota) campoEspecieMascota.selectedIndex = 0;
+                        if (campoRazaMascota) campoRazaMascota.value = "";
+                        if (campoFechaNacimientoMascota) campoFechaNacimientoMascota.value = "";
+                        if (campoPesoMascota) campoPesoMascota.value = "";
+                        return;
+                    }
+
+                    const mascota = mascotasGuardadas.find(m => String(m.id) === idSeleccionado);
+                    if (!mascota) return;
+
+                    if (campoNombreMascota) campoNombreMascota.value = mascota.nombre || "";
+                    if (campoEspecieMascota) campoEspecieMascota.value = mascota.especie || "";
+                    if (campoRazaMascota) campoRazaMascota.value = mascota.raza || "";
+                    if (campoFechaNacimientoMascota) campoFechaNacimientoMascota.value = mascota.fechaNacimiento || "";
+
+                    // El peso se guarda como texto, ej. "20 kg" o "500 g"
+                    const [valorPeso, unidadPeso] = String(mascota.peso || "").trim().split(" ");
+                    if (campoPesoMascota) campoPesoMascota.value = valorPeso || "";
+                    if (campoUnidadPesoMascota && unidadPeso) campoUnidadPesoMascota.value = unidadPeso;
+
+                    camposAutocompletados.forEach(campo => { if (campo) campo.disabled = true; });
+                });
+            }
+
+            // precarga datos de contacto del usuario logueado (editables)
+            function precargarDatosDeContacto() {
+                if (typeof obtenerUsuarioRegistrado !== "function") {
+                    return;
+                }
+
+                const usuario = obtenerUsuarioRegistrado();
+                if (!usuario) {
+                    return;
+                }
+
+                const campoNombreCliente = document.getElementById("nombreCliente");
+                const campoCodigoPais = document.getElementById("codigoPais");
+                const campoTelefonoCliente = document.getElementById("telefonoCliente");
+                const campoEmailCliente = document.getElementById("emailCliente");
+                const campoEmailClienteConfirm = document.getElementById("emailClienteConfirm");
+
+                if (campoNombreCliente && !campoNombreCliente.value) {
+                    campoNombreCliente.value = (usuario.nombreCompleto || "").trim();
+                }
+
+                if (campoTelefonoCliente && !campoTelefonoCliente.value && usuario.telefono) {
+                    campoTelefonoCliente.value = usuario.telefono;
+                    if (campoCodigoPais && usuario.indicativoPais) {
+                        campoCodigoPais.value = usuario.indicativoPais;
+                    }
+                }
+
+                if (campoEmailCliente && !campoEmailCliente.value && usuario.email) {
+                    campoEmailCliente.value = usuario.email;
+                }
+
+                if (campoEmailClienteConfirm && !campoEmailClienteConfirm.value && usuario.email) {
+                    campoEmailClienteConfirm.value = usuario.email;
                 }
             }
 
@@ -761,7 +873,14 @@
                             cancelButtonText: "Aceptar"
                         }).then(result => {
                             if (result.isConfirmed) {
-                                window.location.href = "./user/html/user-dashboard.html";
+                                if (typeof cerrarAgendarCitaModal === "function" && window.location.pathname.includes("/user/html/")) {
+                                    cerrarAgendarCitaModal();
+                                    window.location.reload();
+                                } else {
+                                    window.location.href = window.location.pathname.includes("/user/html/")
+                                        ? "user-dashboard.html"
+                                        : "./user/html/user-dashboard.html";
+                                }
                             }
                         });
                     } else {
@@ -952,5 +1071,12 @@
                 filtroSelect.addEventListener("change", function () {
                     cargarServiciosDesdeDashboard(this.value);
                 });
+            }
+        }
+
+        // auto-inicia solo si el formulario ya esta en el dom (pagina standalone)
+        document.addEventListener("DOMContentLoaded", function () {
+            if (document.getElementById("agendarcita")) {
+                iniciarAgendarCita();
             }
         });

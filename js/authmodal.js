@@ -446,7 +446,8 @@ function iniciarAuthModal() {
             nombreCompleto: (campoNombre?.value || "") + " " + (campoApellido?.value || ""),
             telefono: campoTelefono?.value || "",
             indicativoPais: indicativoPais?.value || "+57",
-            ciudad: campoCiudad?.value || "",
+            ciudad: campoCiudad?.selectedOptions?.[0]?.text || "",
+            fechaNacimiento: campoFecha?.value || "",
             email: campoCorreo?.value || "",
             contrasena: campoContrasena?.value || ""
         };
