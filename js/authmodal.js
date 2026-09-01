@@ -360,33 +360,27 @@ function iniciarAuthModal() {
                 return;
             }
 
-            const usuarioRegistrado = obtenerUsuarioRegistrado();
+            const usuarioRegistrado = obtenerUsuarioPorCredenciales(correoIngresado, contrasenaIngresada);
 
             if (!usuarioRegistrado) {
                 if (mensajeErrorLogin) {
-                    mensajeErrorLogin.textContent = 'No hay ningún usuario registrado. Por favor, regístrate primero.';
+                    mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
                     mensajeErrorLogin.style.display = 'block';
                 }
                 return;
             }
 
-            if (correoIngresado === usuarioRegistrado.email && contrasenaIngresada === usuarioRegistrado.contrasena) {
-                cerrarAuthModal(document.getElementById("auth-modal"));
-                Swal.fire({
-                    title: "¡Inicio de sesión exitoso!",
-                    text: "Bienvenido a HuellaVet",
-                    icon: "success",
-                    confirmButtonText: "Continuar",
-                    confirmButtonColor: "#007b83"
-                }).then(() => {
-                    window.location.href = './user/html/user-dashboard.html';
-                });
-            } else {
-                if (mensajeErrorLogin) {
-                    mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
-                    mensajeErrorLogin.style.display = 'block';
-                }
-            }
+            guardarSesionUsuario(usuarioRegistrado.id);
+            cerrarAuthModal(document.getElementById("auth-modal"));
+            Swal.fire({
+                title: "¡Inicio de sesión exitoso!",
+                text: "Bienvenido a HuellaVet",
+                icon: "success",
+                confirmButtonText: "Continuar",
+                confirmButtonColor: "#007b83"
+            }).then(() => {
+                window.location.href = './user/html/user-dashboard.html';
+            });
         });
     }
 
@@ -452,7 +446,14 @@ function iniciarAuthModal() {
             contrasena: campoContrasena?.value || ""
         };
 
-        guardarUsuarioRegistrado(datosUsuario);
+        const nuevoUsuario = registrarUsuario(datosUsuario);
+
+        if (!nuevoUsuario) {
+            mostrarMensaje("Ya existe una cuenta con este correo.", "error");
+            return;
+        }
+
+        guardarSesionUsuario(nuevoUsuario.id);
 
         // Si todo esta bien, muestro mensaje de exito
         mostrarMensaje(

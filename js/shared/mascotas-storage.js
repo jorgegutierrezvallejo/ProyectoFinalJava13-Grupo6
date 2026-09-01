@@ -21,9 +21,16 @@ function obtenerMascotaPorId(idMascota) {
     return obtenerMascotas().find(mascota => String(mascota.id) === String(idMascota)) || null;
 }
 
-function obtenerMascotaPorNombre(nombreMascota) {
+function obtenerMascotasPorUsuarioId(idUsuario) {
+    return obtenerMascotas().filter(mascota => String(mascota.usuarioId) === String(idUsuario));
+}
+
+function obtenerMascotaPorNombre(nombreMascota, idUsuario = null) {
     const nombre = String(nombreMascota || "").trim().toLowerCase();
-    return obtenerMascotas().find(mascota => String(mascota.nombre || "").trim().toLowerCase() === nombre) || null;
+    return obtenerMascotas().find(mascota =>
+        String(mascota.nombre || "").trim().toLowerCase() === nombre &&
+        (idUsuario === null || String(mascota.usuarioId) === String(idUsuario))
+    ) || null;
 }
 
 function guardarMascota(mascota) {
@@ -36,11 +43,11 @@ function guardarMascota(mascota) {
 }
 
 function registrarMascotaSiNoExiste(datosMascota) {
-    const existente = obtenerMascotaPorNombre(datosMascota.nombre);
+    const existente = obtenerMascotaPorNombre(datosMascota.nombre, datosMascota.usuarioId);
     if (existente) return existente;
 
     const mascota = {
-        id: datosMascota.id || Date.now(),
+        id: datosMascota.id || crypto.randomUUID(),
         ...datosMascota,
         creadaEn: datosMascota.creadaEn || new Date().toISOString()
     };

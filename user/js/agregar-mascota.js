@@ -43,14 +43,21 @@ function iniciarFormularioMascota() {
             return;
         }
 
+        const usuarioActivo = obtenerUsuarioRegistrado();
+        if (!usuarioActivo) {
+            mostrarAvisoMascota("Sesión requerida", "Debes iniciar sesión para registrar una mascota.", "warning");
+            return;
+        }
+
         const nombre = document.getElementById("nombre-mascota")?.value.trim() || "";
-        if (obtenerMascotaPorNombre(nombre)) {
+        if (obtenerMascotaPorNombre(nombre, usuarioActivo.id)) {
             mostrarAvisoMascota("Mascota ya registrada", `Ya existe un perfil con el nombre ${nombre}.`, "warning");
             return;
         }
 
         const mascota = {
-            id: Date.now(),
+            id: crypto.randomUUID(),
+            usuarioId: usuarioActivo.id,
             nombre,
             especie: document.getElementById("especie")?.value.trim().toLowerCase() || "otro",
             raza: document.getElementById("raza")?.value.trim() || "",

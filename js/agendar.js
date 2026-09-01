@@ -265,7 +265,12 @@
                     return;
                 }
 
-                const mascotasGuardadas = obtenerMascotas();
+                const usuarioActivo = typeof obtenerUsuarioRegistrado === "function"
+                    ? obtenerUsuarioRegistrado()
+                    : null;
+                const mascotasGuardadas = usuarioActivo
+                    ? obtenerMascotasPorUsuarioId(usuarioActivo.id)
+                    : [];
 
                 if (mascotasGuardadas.length === 0) {
                     wrapper.classList.add("d-none");
@@ -470,6 +475,7 @@
                     }
 
                     const datosPaso1 = {
+                        mascotaId: document.getElementById("selectMascotaGuardada")?.value || "",
                         nombreMascota,
                         especie,
                         raza: document.getElementById("razaMascota")?.value.trim() || "",
@@ -812,8 +818,29 @@
                         ubicacionCita = datosP1.direccionClinica || "HuellaVet — Sede Centro";
                     }
 
+                    const usuarioActivo = obtenerUsuarioRegistrado();
+                    if (!usuarioActivo) {
+                        alert("Debes iniciar sesión para agendar una cita.");
+                        return;
+                    }
+
+                    const mascotaExistente = datosP1.mascotaId
+                        ? obtenerMascotaPorId(datosP1.mascotaId)
+                        : null;
+                    const mascota = mascotaExistente || registrarMascotaSiNoExiste({
+                        nombre: datosP1.nombreMascota,
+                        especie: datosP1.especie,
+                        raza: datosP1.raza,
+                        fechaNacimiento: datosP1.fechaNacimiento === "No especificada" ? "" : datosP1.fechaNacimiento,
+                        peso: datosP1.peso === "No especificado" ? "" : datosP1.peso,
+                        foto: "",
+                        usuarioId: usuarioActivo.id
+                    });
+
                     const nuevaCita = {
                         id: Date.now(),
+                        usuarioId: usuarioActivo.id,
+                        mascotaId: mascota.id,
                         fecha: datosP2.fecha || "2026-08-28",
                         hora: datosP2.hora || "10:30 AM",
                         nombreMascota: datosP1.nombreMascota || "Luna",
@@ -844,17 +871,6 @@
                     sessionStorage.setItem("datosCita", JSON.stringify(nuevaCita));
 
                     agregarCita(nuevaCita);
-
-                    // La mascota pertenece al dominio Mascotas. Se registra aqui
-                    // porque el agendamiento tambien permite crear su primer perfil.
-                    registrarMascotaSiNoExiste({
-                        nombre: nuevaCita.nombreMascota,
-                        especie: nuevaCita.especie,
-                        raza: nuevaCita.raza,
-                        fechaNacimiento: datosP1.fechaNacimiento === "No especificada" ? "" : datosP1.fechaNacimiento,
-                        peso: datosP1.peso === "No especificado" ? "" : datosP1.peso,
-                        foto: ""
-                    });
 
                     if (typeof Swal !== "undefined") {
                         const tieneReserva = datosP1.tieneCostoReserva && datosP1.costoReserva > 0;

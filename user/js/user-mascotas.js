@@ -97,11 +97,21 @@ function iniciarPaginaMascotas() {
 // Si localStorage.mascotas no existe todavia, la crea con la semilla.
 // Si ya existe (el usuario ya interactuo con la pagina antes), no la toca.
 function asegurarSemillaMascotas() {
-    asegurarMascotasIniciales(MASCOTAS_SEMILLA);
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    if (!usuarioActivo || obtenerMascotasPorUsuarioId(usuarioActivo.id).length > 0) return;
+
+    MASCOTAS_SEMILLA.forEach(mascota => {
+        guardarMascota({
+            ...mascota,
+            id: crypto.randomUUID(),
+            usuarioId: usuarioActivo.id
+        });
+    });
 }
 
 function obtenerMascotasGuardadas() {
-    return obtenerMascotas();
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    return usuarioActivo ? obtenerMascotasPorUsuarioId(usuarioActivo.id) : [];
 }
 
 // La pagina consume unicamente el repositorio de Mascotas. La sincronizacion
@@ -371,7 +381,7 @@ function renderizarDetalleMascota() {
 }
 
 function crearSubcardProximaCita(mascota) {
-    const cita = obtenerProximaCitaPorMascota(mascota.nombre);
+    const cita = obtenerProximaCitaPorMascotaId(mascota.id);
 
     if (!cita) {
         return `
@@ -399,7 +409,7 @@ function crearSubcardProximaCita(mascota) {
 // para esta mascota. Se combinan con RECORDATORIOS_REFERENCIA y se muestran
 // primero, porque son las que sí vienen de una cita real y no de la semilla.
 function recordatoriosRealesDeMascota(mascota) {
-    return obtenerCitasConRecordatorioPorMascota(mascota.nombre)
+    return obtenerCitasConRecordatorioPorMascotaId(mascota.id)
         .map(cita => ({
             titulo: cita.recordatorio.texto,
             fecha: cita.recordatorio.fecha ? `Sugerida: ${formatearFechaMascota(cita.recordatorio.fecha)}` : `De tu visita del ${formatearFechaMascota(cita.fecha)}`,

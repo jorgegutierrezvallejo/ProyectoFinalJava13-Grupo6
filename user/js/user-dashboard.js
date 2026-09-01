@@ -33,7 +33,8 @@ function capitalizarPrimera(texto) {
 }
 
 function cargarProximaCita() {
-    const citas = obtenerCitasFuturas();
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    const citas = usuarioActivo ? obtenerCitasFuturas(usuarioActivo.id) : [];
 
     const contenedor = document.getElementById("proximaCitaContenido");
     const kpiProximasCitasEl = document.getElementById("kpiProximasCitasValor");
@@ -103,7 +104,8 @@ const CLASE_BADGE_POR_ESPECIE = {
 // Muestra exclusivamente datos del repositorio Mascotas. El formulario de
 // agendamiento registra alli la mascota si todavia no tiene perfil.
 function cargarMisMascotas() {
-    const mascotas = obtenerMascotas();
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    const mascotas = usuarioActivo ? obtenerMascotasPorUsuarioId(usuarioActivo.id) : [];
 
     const lista = document.getElementById("mascotasLista");
     if (!lista || mascotas.length === 0) return;
@@ -207,7 +209,7 @@ function iniciarAccionesCita() {
     if (btnVerDetalle) {
         btnVerDetalle.addEventListener("click", function (e) {
             e.preventDefault();
-            const cita = proximaCitaGlobal();
+            const cita = proximaCitaGlobal(obtenerUsuarioRegistrado()?.id || "");
 
             if (typeof Swal !== "undefined") {
                 const nombre = cita?.nombreMascota || "Luna";
@@ -272,7 +274,7 @@ function iniciarAccionesCita() {
                     cancelButtonColor: "#6c757d"
                 }).then(result => {
                     if (result.isConfirmed) {
-                        const cita = proximaCitaGlobal();
+                        const cita = proximaCitaGlobal(obtenerUsuarioRegistrado()?.id || "");
                         if (cita) actualizarEstadoCita(cita.id, "Cancelada");
                         Swal.fire({
                             icon: "success",

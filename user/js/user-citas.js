@@ -34,6 +34,11 @@ let idCitaEnPanelUsuario = null;
 // Pestaña activa del listado de citas ("proximas" | "pendientes" | "historial").
 let filtroCitasActivo = "proximas";
 
+function obtenerCitasDelUsuarioActivo() {
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    return usuarioActivo ? obtenerCitasPorUsuarioId(usuarioActivo.id) : [];
+}
+
 const ESTADO_A_CLASE_USUARIO = {
     "Pendiente": "pendiente",
     "Confirmada": "confirmada",
@@ -131,7 +136,7 @@ function renderizarPanelCitaUsuario() {
 
     if (idCitaEnPanelUsuario !== null) {
         cita = obtenerCitaPorId(idCitaEnPanelUsuario);
-        if (cita) {
+        if (cita && String(cita.usuarioId) === String(obtenerUsuarioRegistrado()?.id)) {
             esVistaEspecifica = true;
         } else {
             idCitaEnPanelUsuario = null;
@@ -139,7 +144,8 @@ function renderizarPanelCitaUsuario() {
     }
 
     if (!cita) {
-        cita = proximaCitaGlobal();
+        const usuarioActivo = obtenerUsuarioRegistrado();
+        cita = usuarioActivo ? proximaCitaGlobal(usuarioActivo.id) : null;
         esVistaEspecifica = false;
     }
 
@@ -523,7 +529,7 @@ const ALERTA_POR_ESTADO_USUARIO = {
 // antigua que la clinica haya tocado despues, en vez de seguir contando
 // que paso con la que el usuario acaba de agendar.
 function citaMasRecienteParaAlerta() {
-    const citas = obtenerTodasLasCitas();
+    const citas = obtenerCitasDelUsuarioActivo();
     if (citas.length === 0) return null;
 
     return citas.slice().sort((a, b) => {
@@ -576,7 +582,7 @@ const COLOR_ICONO_POR_CLASE_USUARIO = {
 // mas reciente que muestra la alerta de arriba), ordenadas por su ultima
 // novedad. Se abre con el boton "Ver todas las alertas" de la alerta.
 function mostrarModalTodasLasAlertasUsuario() {
-    const citas = obtenerTodasLasCitas().slice().sort((a, b) => {
+    const citas = obtenerCitasDelUsuarioActivo().slice().sort((a, b) => {
         const marcaA = new Date(a.actualizadoEn || a.fechaCreacion || 0).getTime();
         const marcaB = new Date(b.actualizadoEn || b.fechaCreacion || 0).getTime();
         return marcaB - marcaA;
@@ -645,7 +651,7 @@ function momentoDeCitaUsuario(cita) {
 
 function citasFiltradasUsuario() {
     const ahora = new Date();
-    const citas = obtenerTodasLasCitas();
+    const citas = obtenerCitasDelUsuarioActivo();
     const ESTADOS_TERMINALES = ["Completada", "Cancelada", "Rechazada"];
 
     if (filtroCitasActivo === "pendientes") {
