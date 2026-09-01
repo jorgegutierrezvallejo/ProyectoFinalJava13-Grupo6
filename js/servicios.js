@@ -72,9 +72,10 @@ function mostrarServicios() {
                     </div>
                     <div class="card-footer d-flex gap-5">
                         <button class="btn btn-agendar">
+                            <i class="bi bi-calendar3"></i>
                             Agendar cita
                         </button>
-                        <button class="btn btn-contactanos">
+                        <button class="btn btn-detalles">
                             Ver detalles
                         </button>
                     </div>
