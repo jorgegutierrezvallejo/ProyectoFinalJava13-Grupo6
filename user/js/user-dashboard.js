@@ -7,6 +7,7 @@ document.addEventListener("userComponentsLoaded", function () {
 });
 
 function iniciarDashboardUsuario() {
+    cargarSaludoUsuario();
     cargarProximaCita();
     cargarMisMascotas();
     iniciarAccionesCita();
@@ -285,5 +286,18 @@ function iniciarAccionesCita() {
                 });
             }
         });
+    }
+}
+
+function cargarSaludoUsuario() {
+    if (typeof obtenerUsuarioRegistrado === "function") {
+        const usuario = obtenerUsuarioRegistrado();
+        if (usuario && usuario.nombreCompleto) {
+            const saludoEl = document.querySelector(".user-saludo h2");
+            if (saludoEl) {
+                const primerNombre = usuario.nombreCompleto.split(" ")[0];
+                saludoEl.textContent = `Hola, ${primerNombre} 👋`;
+            }
+        }
     }
 }

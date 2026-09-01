@@ -4,6 +4,7 @@ document.addEventListener("userComponentsLoaded", function () {
 
 function iniciarTopbarUsuario() {
     cambiarTituloPaginaUsuario();
+    cargarDatosUsuarioTopbar();
 
     const profileButton = document.getElementById("profileButton");
     const profileMenu = document.getElementById("profileMenu");
@@ -64,5 +65,22 @@ function cambiarTituloPaginaUsuario() {
 
     if (tituloPagina) {
         tituloTopbar.textContent = tituloPagina;
+    }
+}
+
+function cargarDatosUsuarioTopbar() {
+    if (typeof obtenerUsuarioRegistrado === "function") {
+        const usuario = obtenerUsuarioRegistrado();
+        if (usuario) {
+            const nombreEl = document.querySelector(".topbar-profile-name");
+            const emailEl = document.querySelector(".topbar-profile-role");
+            const headerNombreEl = document.querySelector(".topbar-profile-header strong");
+            const headerEmailEl = document.querySelector(".topbar-profile-header small");
+
+            if (nombreEl) nombreEl.textContent = usuario.nombreCompleto || "Usuario";
+            if (emailEl) emailEl.textContent = usuario.email || "correo@ejemplo.com";
+            if (headerNombreEl) headerNombreEl.textContent = usuario.nombreCompleto || "Usuario";
+            if (headerEmailEl) headerEmailEl.textContent = usuario.email || "correo@ejemplo.com";
+        }
     }
 }

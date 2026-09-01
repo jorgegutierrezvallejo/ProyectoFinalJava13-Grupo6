@@ -1,3 +1,9 @@
+if (!document.querySelector('script[src*="sweetalert2"]')) {
+    let script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
+    document.head.appendChild(script);
+}
+
 function iniciarAuthModal() {
 
 
@@ -40,6 +46,7 @@ function iniciarAuthModal() {
     let campoApellido = document.getElementById("last-name");
     let campoCorreo = document.getElementById("email");
     let campoTelefono = document.getElementById("telephone");
+    let campoCiudad = document.getElementById("city");
     let indicativoPais = document.getElementById("country-code");
     let campoContrasena = document.getElementById("pass");
     let campoConfirmar = document.getElementById("confirmpass");
@@ -328,25 +335,33 @@ function iniciarAuthModal() {
     if (formularioLoginUsuario) {
         formularioLoginUsuario.addEventListener('submit', function (evento) {
             evento.preventDefault();
-            
+
             let correoIngresado = document.getElementById('login-correo').value.trim();
             let contrasenaIngresada = document.getElementById('login-contrasena').value;
             let mensajeErrorLogin = document.getElementById('mensaje-error-login');
-            
+
             if (mensajeErrorLogin) {
                 mensajeErrorLogin.style.display = 'none';
                 mensajeErrorLogin.textContent = '';
             }
-            
+
             // Verificamos si es admin
             if (correoIngresado.toLowerCase() === "admin" && contrasenaIngresada === "admin123") {
-                alert("¡Inicio de sesión exitoso como Administrador!");
-                window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
+                cerrarAuthModal(document.getElementById("auth-modal"));
+                Swal.fire({
+                    title: "¡Inicio de sesión exitoso!",
+                    text: "Has ingresado como Administrador",
+                    icon: "success",
+                    confirmButtonText: "Continuar",
+                    confirmButtonColor: "#007b83"
+                }).then(() => {
+                    window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
+                });
                 return;
             }
 
             const usuarioRegistrado = obtenerUsuarioRegistrado();
-            
+
             if (!usuarioRegistrado) {
                 if (mensajeErrorLogin) {
                     mensajeErrorLogin.textContent = 'No hay ningún usuario registrado. Por favor, regístrate primero.';
@@ -354,10 +369,18 @@ function iniciarAuthModal() {
                 }
                 return;
             }
-            
+
             if (correoIngresado === usuarioRegistrado.email && contrasenaIngresada === usuarioRegistrado.contrasena) {
-                alert("¡Inicio de sesión exitoso!");
-                window.location.href = './user/html/user-dashboard.html';
+                cerrarAuthModal(document.getElementById("auth-modal"));
+                Swal.fire({
+                    title: "¡Inicio de sesión exitoso!",
+                    text: "Bienvenido a HuellaVet",
+                    icon: "success",
+                    confirmButtonText: "Continuar",
+                    confirmButtonColor: "#007b83"
+                }).then(() => {
+                    window.location.href = './user/html/user-dashboard.html';
+                });
             } else {
                 if (mensajeErrorLogin) {
                     mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
@@ -423,6 +446,7 @@ function iniciarAuthModal() {
             nombreCompleto: (campoNombre?.value || "") + " " + (campoApellido?.value || ""),
             telefono: campoTelefono?.value || "",
             indicativoPais: indicativoPais?.value || "+57",
+            ciudad: campoCiudad?.value || "",
             email: campoCorreo?.value || "",
             contrasena: campoContrasena?.value || ""
         };
