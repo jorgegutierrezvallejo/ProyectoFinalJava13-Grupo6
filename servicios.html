@@ -99,17 +99,17 @@
     </section>
     <section class="container py-5">
         <h2 class="text-center mb-4 section-title">Nuestros servicios</h2>
-        <div class="d-flex justify-content-center gap-2 mb-4 flex-wrap">
-            <button type="button" class="btn btn-success">Todos</button>
-            <button type="button" class="btn btn-outline-secondary">Prevención</button>
-            <button type="button" class="btn btn-outline-secondary">Salud y diagnósticos</button>
-            <button type="button" class="btn btn-outline-secondary">Especializados</button>
-            <button type="button" class="btn btn-outline-secondary">A domicilio</button>
-            <button type="button" class="btn btn-outline-secondary">Bienestar</button>
+        <div class="d-flex justify-content-center gap-2 mb-4 flex-wrap" id="filtro-botones">
+            <button type="button" class="btn btn-success" data-filter="todos">Todos</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="prevencion">Prevención</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="salud">Salud y diagnósticos</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="especializados">Especializados</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="domicilio">A domicilio</button>
+            <button type="button" class="btn btn-outline-secondary" data-filter="bienestar">Bienestar</button>
         </div>
         <div class="row g-4 servicios-fijos">
             <!-- SERVICIO 1 -->
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-4" data-category="salud">
                 <div class="card servicio-card h-100">
                     <div class="servicio-imagen-contenedor">
                         <img src="img/hero-contacto..png" class="servicio-imagen" alt="Consulta General">
@@ -146,7 +146,7 @@
                 </div>
             </div>
             <!-- SERVICIO 2 -->
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-4" data-category="prevencion">
                 <div class="card servicio-card h-100">
                     <div class="servicio-imagen-contenedor">
                         <img src="img/hero-contacto..png" class="servicio-imagen" alt="Vacunación">
@@ -184,7 +184,7 @@
                 </div>
             </div>
             <!-- SERVICIO 3 -->
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-4" data-category="domicilio">
                 <div class="card servicio-card h-100">
                     <div class="servicio-imagen-contenedor">
                         <img src="img/hero-contacto..png" class="servicio-imagen" alt="Desparasitación">
@@ -322,6 +322,7 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/shared/servicios-storage.js"></script>
+    <script src="js/shared/tipos-servicio-storage.js"></script>
     <script src="js/servicios.js"></script>
 </body>
 
