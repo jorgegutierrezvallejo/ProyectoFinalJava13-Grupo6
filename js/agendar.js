@@ -529,17 +529,24 @@
                     for (let diaNumero = 1; diaNumero <= diasMes; diaNumero++) {
                         const dia = document.createElement("div");
                         const fecha = `${anioCalendario}-${String(mesCalendario + 1).padStart(2, "0")}-${String(diaNumero).padStart(2, "0")}`;
+                        const esFechaPasada = typeof hoyISO === "function" && fecha < hoyISO();
 
-                        dia.className = `cal-dia${fecha === fechaSeleccionada ? " seleccionado" : ""}`;
+                        dia.className = `cal-dia${fecha === fechaSeleccionada ? " seleccionado" : ""}${esFechaPasada ? " deshabilitado" : ""}`;
                         dia.dataset.fecha = fecha;
                         dia.dataset.dia = String(diaNumero);
                         dia.textContent = diaNumero;
+
+                        if (esFechaPasada) {
+                            grid.appendChild(dia);
+                            continue;
+                        }
 
                         dia.addEventListener("click", function () {
                             grid.querySelectorAll(".cal-dia").forEach(d => d.classList.remove("seleccionado"));
                             this.classList.add("seleccionado");
                             fechaSeleccionada = this.dataset.fecha;
                             guardarDatosPaso2();
+                            cargarHorarios();
                         });
 
                         grid.appendChild(dia);
@@ -591,15 +598,33 @@
                     "04:00 p. m."
                 ];
 
+                const horasOcupadas = typeof horasOcupadasEnFecha === "function"
+                    ? horasOcupadasEnFecha(fechaSeleccionada)
+                    : new Set();
+
+                const estaOcupada = hora => typeof horaAFranja === "function" && horasOcupadas.has(horaAFranja(hora));
+
+                // si la hora que tenia elegida quedo ocupada al cambiar de fecha, se limpia
+                if (horaSeleccionada && estaOcupada(horaSeleccionada)) {
+                    horaSeleccionada = "";
+                }
+
                 container.innerHTML = "";
 
                 horas.forEach(hora => {
+                    const ocupada = estaOcupada(hora);
                     const item = document.createElement("div");
-                    item.className = `hora-item${hora === horaSeleccionada ? " seleccionado" : ""}`;
-                    item.textContent = hora;
+                    item.className = `hora-item${hora === horaSeleccionada ? " seleccionado" : ""}${ocupada ? " hora-item--ocupada" : ""}`;
+                    item.textContent = ocupada ? `${hora} · Ocupado` : hora;
                     item.setAttribute("role", "button");
-                    item.setAttribute("tabindex", "0");
+                    item.setAttribute("tabindex", ocupada ? "-1" : "0");
                     item.setAttribute("aria-pressed", hora === horaSeleccionada ? "true" : "false");
+                    item.setAttribute("aria-disabled", ocupada ? "true" : "false");
+
+                    if (ocupada) {
+                        container.appendChild(item);
+                        return;
+                    }
 
                     const seleccionarHora = function () {
                         container.querySelectorAll(".hora-item").forEach(h => {
@@ -792,6 +817,24 @@
                     }
 
                     const datosP2 = obtenerDatosPaso2();
+
+                    // revalida disponibilidad por si el horario se ocupo mientras se llenaba el formulario
+                    if (typeof horaEstaDisponible === "function" && !horaEstaDisponible(datosP2.fecha, datosP2.hora)) {
+                        if (typeof Swal !== "undefined") {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Horario ya no disponible",
+                                text: "Otra persona acaba de reservar ese horario. Por favor elige otra hora.",
+                                confirmButtonColor: "#17a9a7"
+                            });
+                        } else {
+                            alert("Ese horario ya no esta disponible. Por favor elige otra hora.");
+                        }
+                        cambiarPaso(3, 2);
+                        cargarHorarios();
+                        return;
+                    }
+
                     let ubicacionCita = "HuellaVet — Sede Centro";
                     if (datosP1.modalidad === "domicilio") {
                         ubicacionCita = direccionCliente ? `Domicilio: ${direccionCliente}` : "Servicio a Domicilio";

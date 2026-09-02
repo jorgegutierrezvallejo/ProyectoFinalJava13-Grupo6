@@ -19,6 +19,7 @@
     <!-- Estilos de componentes modulares -->
     <link rel="stylesheet" href="../css/user-sidebar.css">
     <link rel="stylesheet" href="../css/user-topbar.css">
+    <link rel="stylesheet" href="../css/user-dashboard.css">
     <link rel="stylesheet" href="../css/user-perfil.css">
 </head>
 
@@ -45,7 +46,7 @@
                     </div>
                 </div>
 
-                <div class="perfil-grid">
+                <div class="perfil-grid" id="perfilGrid">
                     <div class="perfil-item">
                         <label>Nombre completo</label>
                         <div class="perfil-valor" id="info-nombre">Cargando...</div>
@@ -67,10 +68,10 @@
                         <div class="perfil-valor" id="info-fecha-nacimiento">No especificada</div>
                     </div>
                 </div>
-                
-                <div class="mt-4 text-end">
-                    <button class="btn btn-outline-secondary" disabled>
-                        <i class="bi bi-pencil-square me-1"></i> Editar Perfil (Próximamente)
+
+                <div class="mt-4 perfil-acciones" id="perfilAcciones">
+                    <button type="button" class="btn-perfil btn-perfil--primario" id="btnEditarPerfil">
+                        <i class="bi bi-pencil-square me-1"></i> Editar perfil
                     </button>
                 </div>
             </div>

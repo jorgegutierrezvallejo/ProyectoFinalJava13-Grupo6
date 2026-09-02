@@ -50,6 +50,21 @@ function citasPorFecha(fechaISO) {
         .sort((a, b) => normalizarHoraA24(a.hora).localeCompare(normalizarHoraA24(b.hora)));
 }
 
+// estados que no bloquean la franja horaria para nuevas citas
+const ESTADOS_QUE_NO_OCUPAN_FRANJA = ["Cancelada", "Rechazada"];
+
+function horasOcupadasEnFecha(fechaISO) {
+    return new Set(
+        citasPorFecha(fechaISO)
+            .filter(cita => !ESTADOS_QUE_NO_OCUPAN_FRANJA.includes(cita.estado))
+            .map(cita => horaAFranja(cita.hora))
+    );
+}
+
+function horaEstaDisponible(fechaISO, horaTexto) {
+    return !horasOcupadasEnFecha(fechaISO).has(horaAFranja(horaTexto));
+}
+
 function citasPorMascota(nombreMascota) {
     const nombreNormalizado = String(nombreMascota || "").trim().toLowerCase();
     if (!nombreNormalizado) return [];

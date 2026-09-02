@@ -32,6 +32,16 @@ function registrarUsuario(datosUsuario) {
     return usuario;
 }
 
+function actualizarUsuario(idUsuario, camposParciales) {
+    const usuarios = obtenerUsuarios();
+    const index = usuarios.findIndex(usuario => String(usuario.id) === String(idUsuario));
+    if (index === -1) return null;
+
+    usuarios[index] = { ...usuarios[index], ...camposParciales };
+    guardarUsuarios(usuarios);
+    return usuarios[index];
+}
+
 function obtenerUsuarioPorId(idUsuario) {
     return obtenerUsuarios().find(usuario => String(usuario.id) === String(idUsuario)) || null;
 }

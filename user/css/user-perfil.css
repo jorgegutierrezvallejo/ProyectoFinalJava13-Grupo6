@@ -1,5 +1,5 @@
 .perfil-container {
-    max-width: 800px;
+    max-width: 1040px;
     margin: 0 auto;
     background-color: var(--color-blanco);
     border-radius: 16px;
@@ -41,7 +41,7 @@
 
 .perfil-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
 }
 
@@ -64,6 +64,58 @@
     font-size: 1.1rem;
     color: var(--color-texto-oscuro);
     font-weight: 500;
+}
+
+.perfil-item input.form-control,
+.perfil-item select.form-select {
+    font-size: 1rem;
+    border-color: var(--color-borde);
+}
+
+.perfil-item .perfil-telefono-grupo {
+    display: flex;
+    gap: 8px;
+}
+
+.perfil-item .perfil-telefono-grupo select {
+    max-width: 110px;
+}
+
+.perfil-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btn-perfil {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 1px solid var(--color-borde);
+    background-color: var(--color-blanco);
+    color: var(--color-texto-oscuro);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-perfil:hover {
+    background-color: #f2f6f5;
+}
+
+.btn-perfil--primario {
+    border-color: var(--color-primario-oscuro);
+    background-color: var(--color-primario-oscuro);
+    color: var(--color-blanco);
+}
+
+.btn-perfil--primario:hover {
+    background-color: var(--color-primario);
+    border-color: var(--color-primario);
+}
+
+.perfil-item.campo-error input,
+.perfil-item.campo-error select {
+    border-color: #dc3545 !important;
 }
 
 @media (max-width: 768px) {

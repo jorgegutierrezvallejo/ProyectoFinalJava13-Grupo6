@@ -676,6 +676,20 @@
     box-shadow: 0 2px 8px rgba(186, 214, 65, 0.35);
 }
 
+.hora-item.hora-item--ocupada {
+    background-color: #f3f5f4;
+    color: #adb8b5;
+    border-color: #e2e8e6;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+.hora-item.hora-item--ocupada:hover {
+    border-color: #e2e8e6;
+    background-color: #f3f5f4;
+    color: #adb8b5;
+}
+
 .alerta-duracion {
     background-color: var(--color-fondo-claro);
     border: 1px solid #d9ebd1;
