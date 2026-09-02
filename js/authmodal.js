@@ -1,3 +1,94 @@
+if (!document.querySelector('script[src*="sweetalert2"]')) {
+    let script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
+    document.head.appendChild(script);
+}
+
+let destinoAgendarNavbar = null;
+
+function mostrarAvisoReserva(requiereSesion) {
+    document.getElementById("intro-reserva-sesion")?.classList.toggle("d-none", !requiereSesion);
+}
+
+function usuarioTieneSesionActiva() {
+    return typeof obtenerUsuarioRegistrado === "function" && Boolean(obtenerUsuarioRegistrado());
+}
+
+function abrirModalAutenticacion() {
+    const modal = document.getElementById("auth-modal");
+    if (!modal) return false;
+
+    modal.classList.add("active");
+    modal.setAttribute("aria-hidden", "false");
+    mostrarAvisoReserva(Boolean(destinoAgendarNavbar));
+    document.getElementById("hv-tab-login")?.click();
+    window.setTimeout(() => document.getElementById("login-correo")?.focus(), 0);
+    return true;
+}
+
+function tomarDestinoAgendarNavbar() {
+    const destino = destinoAgendarNavbar;
+    destinoAgendarNavbar = null;
+    return destino;
+}
+
+window.solicitarInicioSesionParaAgendar = function (destino) {
+    if (usuarioTieneSesionActiva()) return true;
+    destinoAgendarNavbar = destino || "agendar.html";
+    abrirModalAutenticacion();
+    return false;
+};
+
+function actualizarSesionNavbar() {
+    const invitado = document.getElementById("nav-auth-invitado");
+    const usuarioNav = document.getElementById("nav-auth-usuario");
+    const usuario = typeof obtenerUsuarioRegistrado === "function"
+        ? obtenerUsuarioRegistrado()
+        : null;
+
+    if (!invitado || !usuarioNav) return;
+
+    invitado.classList.toggle("d-none", Boolean(usuario));
+    usuarioNav.classList.toggle("d-none", !usuario);
+    if (!usuario) return;
+
+    const nombre = usuario.nombreCompleto || "Usuario";
+    document.getElementById("navUserName").textContent = nombre;
+    document.getElementById("navUserMenuName").textContent = nombre;
+    document.getElementById("navUserMenuEmail").textContent = usuario.email || "";
+
+    const botonMenu = document.getElementById("navUserMenuButton");
+    const menu = document.getElementById("navUserMenu");
+    const botonSalir = document.getElementById("navLogoutButton");
+    if (!botonMenu || !menu || botonMenu.dataset.inicializado) return;
+
+    botonMenu.dataset.inicializado = "true";
+    botonMenu.addEventListener("click", function (evento) {
+        evento.stopPropagation();
+        const abierto = menu.classList.toggle("show");
+        botonMenu.setAttribute("aria-expanded", String(abierto));
+    });
+    document.addEventListener("click", function () {
+        menu.classList.remove("show");
+        botonMenu.setAttribute("aria-expanded", "false");
+    });
+    botonSalir?.addEventListener("click", function () {
+        cerrarSesionUsuario();
+        window.location.href = "index.html";
+    });
+}
+
+// Compuerta exclusiva del botón "Agendar cita" de la navbar.
+document.addEventListener("click", function (evento) {
+    const enlaceAgendar = evento.target.closest("[data-agendar-requiere-sesion]");
+    if (!enlaceAgendar || usuarioTieneSesionActiva()) return;
+
+    evento.preventDefault();
+    evento.stopImmediatePropagation();
+    destinoAgendarNavbar = enlaceAgendar.href;
+    abrirModalAutenticacion();
+}, true);
+
 function iniciarAuthModal() {
 
 
@@ -8,15 +99,12 @@ function iniciarAuthModal() {
     let modal = document.getElementById("auth-modal");
     let botonCerrar = document.getElementById("btn-close-modal");
 
-    // Modal Admin
-    let botonAdminLogin = document.getElementById("btn-login-admin");
-    let modalAdmin = document.getElementById("modal-auth-admin");
-    let botonCerrarAdmin = document.getElementById("btn-cerrar-modal-admin");
-    let formAdmin = document.getElementById("formulario-login-admin");
+
 
     if (botonLogin && modal && botonCerrar) {
         botonLogin.addEventListener("click", function (evento) {
             evento.preventDefault();
+            mostrarAvisoReserva(false);
             modal.classList.add("active");
             modal.setAttribute("aria-hidden", "false");
         });
@@ -32,42 +120,7 @@ function iniciarAuthModal() {
         });
     }
 
-    if (botonAdminLogin && modalAdmin && botonCerrarAdmin) {
-        botonAdminLogin.addEventListener("click", function (evento) {
-            evento.preventDefault();
-            modalAdmin.classList.add("active");
-            modalAdmin.setAttribute("aria-hidden", "false");
-        });
 
-        botonCerrarAdmin.addEventListener("click", function () {
-            cerrarAuthModal(modalAdmin);
-        });
-
-        modalAdmin.addEventListener("click", function (evento) {
-            if (evento.target === modalAdmin) {
-                cerrarAuthModal(modalAdmin);
-            }
-        });
-    }
-
-    if (formAdmin) {
-        formAdmin.addEventListener("submit", function (e) {
-            e.preventDefault();
-            let adminUser = document.getElementById("usuario-admin").value.trim();
-            let adminPass = document.getElementById("contrasena-admin").value;
-            let errorMsg = document.getElementById("mensaje-error-admin");
-            
-            // Logica simple: redirige al dashboard si escribe algo (o poner credenciales por defecto)
-            if (adminUser === "admin" && adminPass === "admin123") {
-                // Redirigir al dashboard admin (asumiendo que se llama admin-dashboard.html)
-                // Dependiendo de dónde estemos, la ruta puede variar, usaremos la ruta absoluta relativa al origen
-                window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
-            } else {
-                errorMsg.textContent = "Usuario o contraseña incorrectos (Usa: admin / admin123)";
-                errorMsg.style.display = "block";
-            }
-        });
-    }
 
     // ========================================
     // VALIDACIONES DEL FORMULARIO DE REGISTRO
@@ -79,6 +132,7 @@ function iniciarAuthModal() {
     let campoApellido = document.getElementById("last-name");
     let campoCorreo = document.getElementById("email");
     let campoTelefono = document.getElementById("telephone");
+    let campoCiudad = document.getElementById("city");
     let indicativoPais = document.getElementById("country-code");
     let campoContrasena = document.getElementById("pass");
     let campoConfirmar = document.getElementById("confirmpass");
@@ -367,34 +421,54 @@ function iniciarAuthModal() {
     if (formularioLoginUsuario) {
         formularioLoginUsuario.addEventListener('submit', function (evento) {
             evento.preventDefault();
-            
+
             let correoIngresado = document.getElementById('login-correo').value.trim();
             let contrasenaIngresada = document.getElementById('login-contrasena').value;
             let mensajeErrorLogin = document.getElementById('mensaje-error-login');
-            
+
             if (mensajeErrorLogin) {
                 mensajeErrorLogin.style.display = 'none';
                 mensajeErrorLogin.textContent = '';
             }
-            
-            const usuarioRegistrado = obtenerUsuarioRegistrado();
-            
-            if (!usuarioRegistrado) {
-                if (mensajeErrorLogin) {
-                    mensajeErrorLogin.textContent = 'No hay ningún usuario registrado. Por favor, regístrate primero.';
-                    mensajeErrorLogin.style.display = 'block';
-                }
+
+            // Verificamos si es admin
+            if (correoIngresado.toLowerCase() === "admin" && contrasenaIngresada === "admin123") {
+                cerrarAuthModal(document.getElementById("auth-modal"));
+                Swal.fire({
+                    title: "¡Inicio de sesión exitoso!",
+                    text: "Has ingresado como Administrador",
+                    icon: "success",
+                    confirmButtonText: "Continuar",
+                    confirmButtonColor: "#007b83"
+                }).then(() => {
+                    window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
+                });
                 return;
             }
-            
-            if (correoIngresado === usuarioRegistrado.email && contrasenaIngresada === usuarioRegistrado.contrasena) {
-                window.location.href = './user/html/user-dashboard.html';
-            } else {
+
+            const usuarioRegistrado = obtenerUsuarioPorCredenciales(correoIngresado, contrasenaIngresada);
+
+            if (!usuarioRegistrado) {
                 if (mensajeErrorLogin) {
                     mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
                     mensajeErrorLogin.style.display = 'block';
                 }
+                return;
             }
+
+            guardarSesionUsuario(usuarioRegistrado.id);
+            actualizarSesionNavbar();
+            const destinoDespuesDelLogin = tomarDestinoAgendarNavbar();
+            cerrarAuthModal(document.getElementById("auth-modal"));
+            Swal.fire({
+                title: "¡Inicio de sesión exitoso!",
+                text: "Bienvenido a HuellaVet",
+                icon: "success",
+                confirmButtonText: "Continuar",
+                confirmButtonColor: "#007b83"
+            }).then(() => {
+                window.location.href = destinoDespuesDelLogin || './user/html/user-dashboard.html';
+            });
         });
     }
 
@@ -454,11 +528,36 @@ function iniciarAuthModal() {
             nombreCompleto: (campoNombre?.value || "") + " " + (campoApellido?.value || ""),
             telefono: campoTelefono?.value || "",
             indicativoPais: indicativoPais?.value || "+57",
+            ciudad: campoCiudad?.selectedOptions?.[0]?.text || "",
+            fechaNacimiento: campoFecha?.value || "",
             email: campoCorreo?.value || "",
             contrasena: campoContrasena?.value || ""
         };
 
-        guardarUsuarioRegistrado(datosUsuario);
+        const nuevoUsuario = registrarUsuario(datosUsuario);
+
+        if (!nuevoUsuario) {
+            mostrarMensaje("Ya existe una cuenta con este correo.", "error");
+            return;
+        }
+
+        guardarSesionUsuario(nuevoUsuario.id);
+        actualizarSesionNavbar();
+
+        const destinoDespuesDelRegistro = tomarDestinoAgendarNavbar();
+        if (destinoDespuesDelRegistro) {
+            cerrarAuthModal(document.getElementById("auth-modal"));
+            Swal.fire({
+                title: "¡Registro exitoso!",
+                text: "Tu cuenta está lista. Ya puedes agendar tu cita.",
+                icon: "success",
+                confirmButtonText: "Continuar",
+                confirmButtonColor: "#007b83"
+            }).then(() => {
+                window.location.href = destinoDespuesDelRegistro;
+            });
+            return;
+        }
 
         // Si todo esta bien, muestro mensaje de exito
         mostrarMensaje(
@@ -475,9 +574,17 @@ function iniciarAuthModal() {
 function cerrarAuthModal(modal) {
     modal.classList.remove("active");
     modal.setAttribute("aria-hidden", "true");
+    destinoAgendarNavbar = null;
+    mostrarAvisoReserva(false);
 }
 
 document.addEventListener(
     "componentesCargados",
-    iniciarAuthModal
+    function () {
+        iniciarAuthModal();
+        actualizarSesionNavbar();
+        if (destinoAgendarNavbar && !usuarioTieneSesionActiva()) {
+            abrirModalAutenticacion();
+        }
+    }
 );

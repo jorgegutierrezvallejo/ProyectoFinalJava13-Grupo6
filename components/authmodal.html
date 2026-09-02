@@ -13,6 +13,14 @@
             </span>
         </div>
 
+        <section id="intro-reserva-sesion" class="hv-reserva-intro d-none" aria-labelledby="titulo-reserva-sesion">
+            <img src="./img/registro-login.png" alt="Perro y gato protegidos por HuellaVet">
+            <div>
+                <h2 id="titulo-reserva-sesion">Inicia sesión para reservar tu cita</h2>
+                <p>Ingresa a tu cuenta o crea una nueva para continuar con la reserva.</p>
+            </div>
+        </section>
+
         <input type="radio" name="hv-tab" id="hv-tab-login" class="d-none" checked>
         <input type="radio" name="hv-tab" id="hv-tab-register" class="d-none">
 
@@ -23,7 +31,7 @@
 
         <form class="hv-form hv-form-login" id="formulario-login-usuario">
             <div class="mb-3">
-                <input type="email" class="form-control" id="login-correo" placeholder="Correo electrónico" required>
+                <input type="text" class="form-control" id="login-correo" placeholder="Correo electrónico o Usuario" required>
             </div>
 
             <div class="mb-3">
@@ -131,36 +139,6 @@
                 <div class="boton-registro">
                     <button type="submit" class="btn btn-primary">Registrarse</button>
                 </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Modal Admin Login -->
-<div class="hv-modal-overlay" id="modal-auth-admin" aria-hidden="true">
-    <div class="hv-modal-card" style="max-width: 400px;">
-        <button type="button" id="btn-cerrar-modal-admin" class="hv-btn-close" aria-label="Cerrar modal">
-            &times;
-        </button>
-
-        <div class="hv-modal-logo justify-content-center">
-            <i class="bi bi-shield-lock-fill text-primario fs-1 me-2"></i>
-            <span class="hv-modal-marca">Admin Login</span>
-        </div>
-
-        <form class="hv-form hv-form-login d-block mt-4" id="formulario-login-admin">
-            <div class="mb-3">
-                <input type="text" class="form-control" id="usuario-admin" placeholder="Usuario administrador" required>
-            </div>
-
-            <div class="mb-3">
-                <input type="password" class="form-control" id="contrasena-admin" placeholder="Contraseña" required>
-            </div>
-            
-            <div id="mensaje-error-admin" class="mensaje-formulario error mb-3"></div>
-
-            <div class="boton-login w-100">
-                <button type="submit" class="btn-sesion w-100">Ingresar al Dashboard</button>
             </div>
         </form>
     </div>

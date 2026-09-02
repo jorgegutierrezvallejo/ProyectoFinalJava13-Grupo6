@@ -40,6 +40,7 @@
         <a
             href="../../agendar.html"
             class="topbar-add-service topbar-agendar-btn"
+            data-abrir-agendar-cita
         >
             <i class="bi bi-plus-lg"></i>
             <span>Agendar cita</span>
@@ -104,8 +105,13 @@
 
                 <hr class="dropdown-divider my-1">
 
+                <a href="../../index.html" class="topbar-profile-item">
+                    <i class="bi bi-house-door"></i>
+                    <span>Inicio</span>
+                </a>
+
                 <a
-                    href="#"
+                    href="./user-perfil.html"
                     class="topbar-profile-item"
                 >
                     <i class="bi bi-person"></i>
@@ -113,17 +119,23 @@
                 </a>
 
                 <a
-                    href="#"
+                    href="./user-mascotas.html"
                     class="topbar-profile-item"
                 >
                     <i class="bi bi-heart"></i>
                     <span>Mis mascotas</span>
                 </a>
 
+                <a href="./user-citas.html" class="topbar-profile-item">
+                    <i class="bi bi-calendar3"></i>
+                    <span>Mis citas</span>
+                </a>
+
                 <hr class="dropdown-divider my-1">
 
                 <a
-                    href="../../index.html"
+                    href="../../somos.html"
+                    id="userLogoutButton"
                     class="topbar-profile-item text-danger"
                 >
                     <i class="bi bi-box-arrow-right"></i>

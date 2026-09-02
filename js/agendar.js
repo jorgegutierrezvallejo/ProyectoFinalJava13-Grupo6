@@ -1,5 +1,6 @@
 
-        document.addEventListener("DOMContentLoaded", function () {
+        // funcion global: la llama tambien el componente modal agendar-cita.js
+        function iniciarAgendarCita() {
             const hoy = new Date();
             const anioActual = hoy.getFullYear();
             const mesActual = hoy.getMonth();
@@ -15,9 +16,13 @@
 
             const datosPaso1StorageKey = "datosCita_Paso1";
             const datosPaso2StorageKey = "datosCita_Paso2";
+            const servicioIdDesdeEnlace = new URLSearchParams(window.location.search).get("servicioId");
+            const mascotaIdDesdeEnlace = new URLSearchParams(window.location.search).get("mascotaId");
 
             cargarServiciosDesdeDashboard();
             iniciarFiltroTipoServicioAgendar();
+            iniciarSelectorMascotaGuardada();
+            precargarDatosDeContacto();
             iniciarEnvioPaso1();
             iniciarCalendario();
             cargarHorarios();
@@ -36,6 +41,10 @@
                 if (filtroTipoId) {
                     servicios = servicios.filter(s => String(s.tipoServicioId || "") === String(filtroTipoId));
                 }
+
+                const servicioIdPreseleccionado = servicios.some(servicio => String(servicio.id) === String(servicioIdDesdeEnlace))
+                    ? String(servicioIdDesdeEnlace)
+                    : "";
 
                 if (servicios.length === 0) {
                     const selectorWrapperVacio = document.getElementById("serviciosSelectorWrapper");
@@ -72,6 +81,7 @@
                     if (selectorWrapper) selectorWrapper.classList.remove("d-none");
 
                     if (selectGrande) {
+                        let omitirDetalleInicial = Boolean(servicioIdPreseleccionado);
                         selectGrande.innerHTML = `<option value="" disabled selected>-- Selecciona un servicio (${servicios.length} disponibles) --</option>`;
                         servicios.forEach((serv, i) => {
                             const mod = serv.modalidad || (serv.esDomicilio ? "domicilio" : (serv.esVirtual ? "virtual" : "clinica"));
@@ -101,7 +111,7 @@
                                             </div>
                                             <div class="servicio-preview-card__texto">
                                                 <h4>${escaparHtml(serv.nombre)}</h4>
-                                                <p>${escaparHtml(serv.descripcion || "Servicio veterinario profesional")}</p>
+                                                <p>Precio: <strong>$${Number(serv.precio || 0).toLocaleString("es-CO")} COP</strong></p>
                                             </div>
                                         </div>
                                         <div class="d-flex flex-column align-items-end gap-1">
@@ -112,23 +122,14 @@
                                 `;
                             }
 
-                            if (serv.tieneCostoReserva && serv.costoReserva > 0 && typeof Swal !== "undefined") {
-                                const precioTotal = serv.precio ? Number(serv.precio).toLocaleString("es-CO") : null;
-                                const precioAviso = precioTotal ? ` (Precio total del servicio: <strong>$${precioTotal} COP</strong>)` : "";
-
-                                Swal.fire({
-                                    icon: "info",
-                                    title: "Servicio con cobro de anticipo",
-                                    html: `El servicio <strong>${escaparHtml(serv.nombre)}</strong> requiere un valor de anticipo de <strong>$${Number(serv.costoReserva).toLocaleString("es-CO")} COP</strong> para confirmar la reserva.<br><br>
-                                    <div class="alert alert-success text-start py-2 px-3 small mb-2" style="background-color: #f2f9f5; border: 1px solid #d4ebdc; color: #1e5a38; border-radius: 8px;">
-                                        <i class="bi bi-info-circle-fill me-1"></i><strong>Ten en cuenta:</strong> Este valor se descuenta del valor total del servicio${precioAviso}.
-                                    </div>
-                                    <span style="font-size: 0.85rem; color: #526765;">Deberás enviar el comprobante de pago para que el Médico Veterinario apruebe tu cita.</span>`,
-                                    confirmButtonText: "Entendido",
-                                    confirmButtonColor: "#17a9a7"
-                                });
-                            }
+                            if (!omitirDetalleInicial) mostrarDetalleServicio(serv);
+                            omitirDetalleInicial = false;
                         });
+
+                        if (servicioIdPreseleccionado) {
+                            selectGrande.value = servicioIdPreseleccionado;
+                            selectGrande.dispatchEvent(new Event("change"));
+                        }
                     }
                     return;
                 }
@@ -147,7 +148,10 @@
                     const modalidadIcono = esVirtual ? "bi bi-camera-video" : (esDomicilio ? "bi bi-house-door" : "bi bi-hospital");
 
                     const card = document.createElement("div");
-                    card.className = `servicio-card-option ${index === 0 ? "selected" : ""}`;
+                    const estaPreseleccionado = servicioIdPreseleccionado
+                        ? String(servicio.id) === servicioIdPreseleccionado
+                        : index === 0;
+                    card.className = `servicio-card-option ${estaPreseleccionado ? "selected" : ""}`;
                     card.dataset.id = servicio.id ?? "";
                     card.dataset.tieneReserva = servicio.tieneCostoReserva ? "true" : "false";
                     card.dataset.costoReserva = servicio.costoReserva || 0;
@@ -159,7 +163,7 @@
                     card.dataset.direccionClinica = servicio.direccionClinica || "HuellaVet — Sede Centro";
                     card.setAttribute("role", "button");
                     card.setAttribute("tabindex", "0");
-                    card.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+                    card.setAttribute("aria-pressed", estaPreseleccionado ? "true" : "false");
 
                     const badgeReservaHtml = servicio.tieneCostoReserva && servicio.costoReserva > 0
                         ? `<span class="badge-anticipo"><i class="bi bi-tag-fill me-1"></i>Cobro de anticipo</span>`
@@ -173,14 +177,14 @@
                             <i class="${servicio.icono || "fa-solid fa-paw"}"></i>
                         </div>
                         <div class="servicio-card-option__titulo">${escaparHtml(servicio.nombre || "Servicio")}</div>
-                        <div class="servicio-card-option__desc">${escaparHtml(servicio.descripcion || "")}</div>
+                        <div class="servicio-card-option__precio"><i class="bi bi-coin"></i>$${Number(servicio.precio || 0).toLocaleString("es-CO")} COP</div>
                         <div class="servicio-card-option__badges">
                             ${badgeModalidadHtml}
                             ${badgeReservaHtml}
                         </div>
                     `;
 
-                    const seleccionarServicio = function (mostrarAlerta = true) {
+                    const seleccionarServicio = function (mostrarDetalle = true) {
                         document.querySelectorAll(".servicio-card-option").forEach(c => {
                             c.classList.remove("selected");
                             c.setAttribute("aria-pressed", "false");
@@ -189,24 +193,7 @@
                         card.classList.add("selected");
                         card.setAttribute("aria-pressed", "true");
 
-                        if (mostrarAlerta && servicio.tieneCostoReserva && servicio.costoReserva > 0) {
-                            if (typeof Swal !== "undefined") {
-                                const precioTotal = servicio.precio ? Number(servicio.precio).toLocaleString("es-CO") : null;
-                                const precioAviso = precioTotal ? ` (Precio total del servicio: <strong>$${precioTotal} COP</strong>)` : "";
-
-                                Swal.fire({
-                                    icon: "info",
-                                    title: "Servicio con cobro de anticipo",
-                                    html: `El servicio <strong>${escaparHtml(servicio.nombre)}</strong> requiere un valor de anticipo de <strong>$${Number(servicio.costoReserva).toLocaleString("es-CO")} COP</strong> para confirmar la reserva.<br><br>
-                                    <div class="alert alert-success text-start py-2 px-3 small mb-2" style="background-color: #f2f9f5; border: 1px solid #d4ebdc; color: #1e5a38; border-radius: 8px;">
-                                        <i class="bi bi-info-circle-fill me-1"></i><strong>Ten en cuenta:</strong> Este valor se descuenta del valor total del servicio${precioAviso}.
-                                    </div>
-                                    <span style="font-size: 0.85rem; color: #526765;">Deberás enviar el comprobante de pago para que el Médico Veterinario apruebe tu cita.</span>`,
-                                    confirmButtonText: "Entendido",
-                                    confirmButtonColor: "#17a9a7"
-                                });
-                            }
-                        }
+                        if (mostrarDetalle) mostrarDetalleServicio(servicio);
                     };
 
                     card.addEventListener("click", function () {
@@ -250,6 +237,125 @@
                         contenedor.addEventListener("scroll", actualizarEstadoBotones);
                         setTimeout(actualizarEstadoBotones, 150);
                     }
+                }
+            }
+
+            // autocompleta y bloquea los campos si elige una mascota ya guardada
+            function iniciarSelectorMascotaGuardada() {
+                const wrapper = document.getElementById("selectorMascotaGuardadaWrapper");
+                const select = document.getElementById("selectMascotaGuardada");
+
+                if (!wrapper || !select || typeof obtenerMascotas !== "function") {
+                    return;
+                }
+
+                const usuarioActivo = typeof obtenerUsuarioRegistrado === "function"
+                    ? obtenerUsuarioRegistrado()
+                    : null;
+                const mascotasGuardadas = usuarioActivo
+                    ? obtenerMascotasPorUsuarioId(usuarioActivo.id)
+                    : [];
+
+                if (mascotasGuardadas.length === 0) {
+                    wrapper.classList.add("d-none");
+                    return;
+                }
+
+                wrapper.classList.remove("d-none");
+
+                select.innerHTML = `<option value="" selected>Nueva mascota (completar datos manualmente)</option>` +
+                    mascotasGuardadas.map(mascota => {
+                        const especieTexto = mascota.especie
+                            ? ` · ${mascota.especie.charAt(0).toUpperCase()}${mascota.especie.slice(1)}`
+                            : "";
+                        return `<option value="${mascota.id}">${escaparHtml(mascota.nombre || "Mascota")}${especieTexto}</option>`;
+                    }).join("");
+
+                const campoNombreMascota = document.getElementById("nombreMascota");
+                const campoEspecieMascota = document.getElementById("especieMascota");
+                const campoRazaMascota = document.getElementById("razaMascota");
+                const campoFechaNacimientoMascota = document.getElementById("fechaNacimientoMascota");
+                const campoPesoMascota = document.getElementById("pesoMascota");
+                const campoUnidadPesoMascota = document.getElementById("unidadPesoMascota");
+
+                const camposAutocompletados = [
+                    campoNombreMascota,
+                    campoEspecieMascota,
+                    campoRazaMascota,
+                    campoFechaNacimientoMascota,
+                    campoPesoMascota,
+                    campoUnidadPesoMascota
+                ];
+
+                select.addEventListener("change", function () {
+                    const idSeleccionado = this.value;
+
+                    if (!idSeleccionado) {
+                        camposAutocompletados.forEach(campo => { if (campo) campo.disabled = false; });
+                        if (campoNombreMascota) campoNombreMascota.value = "";
+                        if (campoEspecieMascota) campoEspecieMascota.selectedIndex = 0;
+                        if (campoRazaMascota) campoRazaMascota.value = "";
+                        if (campoFechaNacimientoMascota) campoFechaNacimientoMascota.value = "";
+                        if (campoPesoMascota) campoPesoMascota.value = "";
+                        return;
+                    }
+
+                    const mascota = mascotasGuardadas.find(m => String(m.id) === idSeleccionado);
+                    if (!mascota) return;
+
+                    if (campoNombreMascota) campoNombreMascota.value = mascota.nombre || "";
+                    if (campoEspecieMascota) campoEspecieMascota.value = mascota.especie || "";
+                    if (campoRazaMascota) campoRazaMascota.value = mascota.raza || "";
+                    if (campoFechaNacimientoMascota) campoFechaNacimientoMascota.value = mascota.fechaNacimiento || "";
+
+                    // El peso se guarda como texto, ej. "20 kg" o "500 g"
+                    const [valorPeso, unidadPeso] = String(mascota.peso || "").trim().split(" ");
+                    if (campoPesoMascota) campoPesoMascota.value = valorPeso || "";
+                    if (campoUnidadPesoMascota && unidadPeso) campoUnidadPesoMascota.value = unidadPeso;
+
+                    camposAutocompletados.forEach(campo => { if (campo) campo.disabled = true; });
+                });
+
+                if (mascotaIdDesdeEnlace && mascotasGuardadas.some(mascota => String(mascota.id) === String(mascotaIdDesdeEnlace))) {
+                    select.value = String(mascotaIdDesdeEnlace);
+                    select.dispatchEvent(new Event("change"));
+                }
+            }
+
+            // precarga datos de contacto del usuario logueado (editables)
+            function precargarDatosDeContacto() {
+                if (typeof obtenerUsuarioRegistrado !== "function") {
+                    return;
+                }
+
+                const usuario = obtenerUsuarioRegistrado();
+                if (!usuario) {
+                    return;
+                }
+
+                const campoNombreCliente = document.getElementById("nombreCliente");
+                const campoCodigoPais = document.getElementById("codigoPais");
+                const campoTelefonoCliente = document.getElementById("telefonoCliente");
+                const campoEmailCliente = document.getElementById("emailCliente");
+                const campoEmailClienteConfirm = document.getElementById("emailClienteConfirm");
+
+                if (campoNombreCliente && !campoNombreCliente.value) {
+                    campoNombreCliente.value = (usuario.nombreCompleto || "").trim();
+                }
+
+                if (campoTelefonoCliente && !campoTelefonoCliente.value && usuario.telefono) {
+                    campoTelefonoCliente.value = usuario.telefono;
+                    if (campoCodigoPais && usuario.indicativoPais) {
+                        campoCodigoPais.value = usuario.indicativoPais;
+                    }
+                }
+
+                if (campoEmailCliente && !campoEmailCliente.value && usuario.email) {
+                    campoEmailCliente.value = usuario.email;
+                }
+
+                if (campoEmailClienteConfirm && !campoEmailClienteConfirm.value && usuario.email) {
+                    campoEmailClienteConfirm.value = usuario.email;
                 }
             }
 
@@ -358,6 +464,7 @@
                     }
 
                     const datosPaso1 = {
+                        mascotaId: document.getElementById("selectMascotaGuardada")?.value || "",
                         nombreMascota,
                         especie,
                         raza: document.getElementById("razaMascota")?.value.trim() || "",
@@ -428,17 +535,24 @@
                     for (let diaNumero = 1; diaNumero <= diasMes; diaNumero++) {
                         const dia = document.createElement("div");
                         const fecha = `${anioCalendario}-${String(mesCalendario + 1).padStart(2, "0")}-${String(diaNumero).padStart(2, "0")}`;
+                        const esFechaPasada = typeof hoyISO === "function" && fecha < hoyISO();
 
-                        dia.className = `cal-dia${fecha === fechaSeleccionada ? " seleccionado" : ""}`;
+                        dia.className = `cal-dia${fecha === fechaSeleccionada ? " seleccionado" : ""}${esFechaPasada ? " deshabilitado" : ""}`;
                         dia.dataset.fecha = fecha;
                         dia.dataset.dia = String(diaNumero);
                         dia.textContent = diaNumero;
+
+                        if (esFechaPasada) {
+                            grid.appendChild(dia);
+                            continue;
+                        }
 
                         dia.addEventListener("click", function () {
                             grid.querySelectorAll(".cal-dia").forEach(d => d.classList.remove("seleccionado"));
                             this.classList.add("seleccionado");
                             fechaSeleccionada = this.dataset.fecha;
                             guardarDatosPaso2();
+                            cargarHorarios();
                         });
 
                         grid.appendChild(dia);
@@ -490,15 +604,33 @@
                     "04:00 p. m."
                 ];
 
+                const horasOcupadas = typeof horasOcupadasEnFecha === "function"
+                    ? horasOcupadasEnFecha(fechaSeleccionada)
+                    : new Set();
+
+                const estaOcupada = hora => typeof horaAFranja === "function" && horasOcupadas.has(horaAFranja(hora));
+
+                // si la hora que tenia elegida quedo ocupada al cambiar de fecha, se limpia
+                if (horaSeleccionada && estaOcupada(horaSeleccionada)) {
+                    horaSeleccionada = "";
+                }
+
                 container.innerHTML = "";
 
                 horas.forEach(hora => {
+                    const ocupada = estaOcupada(hora);
                     const item = document.createElement("div");
-                    item.className = `hora-item${hora === horaSeleccionada ? " seleccionado" : ""}`;
-                    item.textContent = hora;
+                    item.className = `hora-item${hora === horaSeleccionada ? " seleccionado" : ""}${ocupada ? " hora-item--ocupada" : ""}`;
+                    item.textContent = ocupada ? `${hora} · Ocupado` : hora;
                     item.setAttribute("role", "button");
-                    item.setAttribute("tabindex", "0");
+                    item.setAttribute("tabindex", ocupada ? "-1" : "0");
                     item.setAttribute("aria-pressed", hora === horaSeleccionada ? "true" : "false");
+                    item.setAttribute("aria-disabled", ocupada ? "true" : "false");
+
+                    if (ocupada) {
+                        container.appendChild(item);
+                        return;
+                    }
 
                     const seleccionarHora = function () {
                         container.querySelectorAll(".hora-item").forEach(h => {
@@ -691,6 +823,24 @@
                     }
 
                     const datosP2 = obtenerDatosPaso2();
+
+                    // revalida disponibilidad por si el horario se ocupo mientras se llenaba el formulario
+                    if (typeof horaEstaDisponible === "function" && !horaEstaDisponible(datosP2.fecha, datosP2.hora)) {
+                        if (typeof Swal !== "undefined") {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Horario ya no disponible",
+                                text: "Otra persona acaba de reservar ese horario. Por favor elige otra hora.",
+                                confirmButtonColor: "#17a9a7"
+                            });
+                        } else {
+                            alert("Ese horario ya no esta disponible. Por favor elige otra hora.");
+                        }
+                        cambiarPaso(3, 2);
+                        cargarHorarios();
+                        return;
+                    }
+
                     let ubicacionCita = "HuellaVet — Sede Centro";
                     if (datosP1.modalidad === "domicilio") {
                         ubicacionCita = direccionCliente ? `Domicilio: ${direccionCliente}` : "Servicio a Domicilio";
@@ -700,8 +850,29 @@
                         ubicacionCita = datosP1.direccionClinica || "HuellaVet — Sede Centro";
                     }
 
+                    const usuarioActivo = obtenerUsuarioRegistrado();
+                    if (!usuarioActivo) {
+                        alert("Debes iniciar sesión para agendar una cita.");
+                        return;
+                    }
+
+                    const mascotaExistente = datosP1.mascotaId
+                        ? obtenerMascotaPorId(datosP1.mascotaId)
+                        : null;
+                    const mascota = mascotaExistente || registrarMascotaSiNoExiste({
+                        nombre: datosP1.nombreMascota,
+                        especie: datosP1.especie,
+                        raza: datosP1.raza,
+                        fechaNacimiento: datosP1.fechaNacimiento === "No especificada" ? "" : datosP1.fechaNacimiento,
+                        peso: datosP1.peso === "No especificado" ? "" : datosP1.peso,
+                        foto: "",
+                        usuarioId: usuarioActivo.id
+                    });
+
                     const nuevaCita = {
                         id: Date.now(),
+                        usuarioId: usuarioActivo.id,
+                        mascotaId: mascota.id,
                         fecha: datosP2.fecha || "2026-08-28",
                         hora: datosP2.hora || "10:30 AM",
                         nombreMascota: datosP1.nombreMascota || "Luna",
@@ -709,6 +880,7 @@
                         raza: datosP1.raza || "Siamés",
                         edad: datosP1.edad || "",
                         peso: datosP1.peso || "",
+                        fotoMascota: mascota.foto || "",
                         motivo: datosP1.motivoConsulta || "",
                         servicioId: datosP1.servicioId,
                         servicioNombre: datosP1.servicioNombre || "Consulta general",
@@ -733,17 +905,6 @@
 
                     agregarCita(nuevaCita);
 
-                    // La mascota pertenece al dominio Mascotas. Se registra aqui
-                    // porque el agendamiento tambien permite crear su primer perfil.
-                    registrarMascotaSiNoExiste({
-                        nombre: nuevaCita.nombreMascota,
-                        especie: nuevaCita.especie,
-                        raza: nuevaCita.raza,
-                        fechaNacimiento: datosP1.fechaNacimiento === "No especificada" ? "" : datosP1.fechaNacimiento,
-                        peso: datosP1.peso === "No especificado" ? "" : datosP1.peso,
-                        foto: ""
-                    });
-
                     if (typeof Swal !== "undefined") {
                         const tieneReserva = datosP1.tieneCostoReserva && datosP1.costoReserva > 0;
                         const textoReserva = tieneReserva
@@ -761,7 +922,14 @@
                             cancelButtonText: "Aceptar"
                         }).then(result => {
                             if (result.isConfirmed) {
-                                window.location.href = "./user/html/user-dashboard.html";
+                                if (typeof cerrarAgendarCitaModal === "function" && window.location.pathname.includes("/user/html/")) {
+                                    cerrarAgendarCitaModal();
+                                    window.location.reload();
+                                } else {
+                                    window.location.href = window.location.pathname.includes("/user/html/")
+                                        ? "user-dashboard.html"
+                                        : "./user/html/user-dashboard.html";
+                                }
                             }
                         });
                     } else {
@@ -864,9 +1032,32 @@
                 const resumenFecha = document.getElementById("resumenFecha");
                 const resumenHora = document.getElementById("resumenHora");
                 const resumenCostoReserva = document.getElementById("resumenCostoReserva");
+                const resumenFotoMascota = document.getElementById("resumenFotoMascota");
+                const resumenAvatar = resumenFotoMascota?.closest(".resumen-cita__avatar");
 
                 if (resumenNombre) resumenNombre.textContent = nombreResumen;
                 if (resumenServicio) resumenServicio.textContent = servicioNombre;
+
+                if (resumenFotoMascota && resumenAvatar) {
+                    const mascotaGuardada = datosPaso1.mascotaId && typeof obtenerMascotaPorId === "function"
+                        ? obtenerMascotaPorId(datosPaso1.mascotaId)
+                        : null;
+                    const fotoGuardada = mascotaGuardada?.foto || datosPaso1.fotoMascota || "";
+                    const fotoGenerica = typeof resolverRutaRecursoHuellaVet === "function"
+                        ? resolverRutaRecursoHuellaVet("img/hero-contacto..png")
+                        : "/img/hero-contacto..png";
+
+                    resumenAvatar.classList.toggle("resumen-cita__avatar--mascota", Boolean(fotoGuardada));
+                    resumenFotoMascota.alt = fotoGuardada ? `Foto de ${nombreMascota}` : "Mascota";
+                    resumenFotoMascota.onerror = function () {
+                        resumenFotoMascota.onerror = null;
+                        resumenAvatar.classList.remove("resumen-cita__avatar--mascota");
+                        resumenFotoMascota.src = fotoGenerica;
+                    };
+                    resumenFotoMascota.src = fotoGuardada && typeof resolverRutaRecursoHuellaVet === "function"
+                        ? resolverRutaRecursoHuellaVet(fotoGuardada)
+                        : (fotoGuardada || fotoGenerica);
+                }
 
                 const esDomicilio = datosPaso1.esDomicilio;
                 if (resumenModalidad) {
@@ -952,5 +1143,12 @@
                 filtroSelect.addEventListener("change", function () {
                     cargarServiciosDesdeDashboard(this.value);
                 });
+            }
+        }
+
+        // auto-inicia solo si el formulario ya esta en el dom (pagina standalone)
+        document.addEventListener("DOMContentLoaded", function () {
+            if (document.getElementById("agendarcita")) {
+                iniciarAgendarCita();
             }
         });

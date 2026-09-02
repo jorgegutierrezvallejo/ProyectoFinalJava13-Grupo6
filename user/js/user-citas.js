@@ -33,6 +33,13 @@ let idCitaEnPanelUsuario = null;
 
 // Pestaña activa del listado de citas ("proximas" | "pendientes" | "historial").
 let filtroCitasActivo = "proximas";
+let filtroMascotaCitasActivo = "";
+let filtroMascotaCitasNombre = "";
+
+function obtenerCitasDelUsuarioActivo() {
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    return usuarioActivo ? obtenerCitasPorUsuarioId(usuarioActivo.id) : [];
+}
 
 const ESTADO_A_CLASE_USUARIO = {
     "Pendiente": "pendiente",
@@ -131,7 +138,7 @@ function renderizarPanelCitaUsuario() {
 
     if (idCitaEnPanelUsuario !== null) {
         cita = obtenerCitaPorId(idCitaEnPanelUsuario);
-        if (cita) {
+        if (cita && String(cita.usuarioId) === String(obtenerUsuarioRegistrado()?.id)) {
             esVistaEspecifica = true;
         } else {
             idCitaEnPanelUsuario = null;
@@ -139,7 +146,8 @@ function renderizarPanelCitaUsuario() {
     }
 
     if (!cita) {
-        cita = proximaCitaGlobal();
+        const usuarioActivo = obtenerUsuarioRegistrado();
+        cita = usuarioActivo ? proximaCitaGlobal(usuarioActivo.id) : null;
         esVistaEspecifica = false;
     }
 
@@ -170,7 +178,7 @@ function renderizarPanelCitaUsuario() {
         avatarPanelEl.classList.remove("hv-detalle__avatar--perro", "hv-detalle__avatar--gato", "hv-detalle__avatar--ave", "hv-detalle__avatar--otro");
         if (cita.fotoMascota) {
             avatarPanelEl.classList.remove("hv-detalle__avatar--icono");
-            avatarPanelEl.style.backgroundImage = `url('${cita.fotoMascota}')`;
+            avatarPanelEl.style.backgroundImage = `url('${resolverRutaRecursoHuellaVet(cita.fotoMascota)}')`;
             avatarPanelEl.style.backgroundSize = "cover";
             avatarPanelEl.style.backgroundPosition = "center";
             avatarPanelEl.innerHTML = "";
@@ -523,7 +531,7 @@ const ALERTA_POR_ESTADO_USUARIO = {
 // antigua que la clinica haya tocado despues, en vez de seguir contando
 // que paso con la que el usuario acaba de agendar.
 function citaMasRecienteParaAlerta() {
-    const citas = obtenerTodasLasCitas();
+    const citas = obtenerCitasDelUsuarioActivo();
     if (citas.length === 0) return null;
 
     return citas.slice().sort((a, b) => {
@@ -576,7 +584,7 @@ const COLOR_ICONO_POR_CLASE_USUARIO = {
 // mas reciente que muestra la alerta de arriba), ordenadas por su ultima
 // novedad. Se abre con el boton "Ver todas las alertas" de la alerta.
 function mostrarModalTodasLasAlertasUsuario() {
-    const citas = obtenerTodasLasCitas().slice().sort((a, b) => {
+    const citas = obtenerCitasDelUsuarioActivo().slice().sort((a, b) => {
         const marcaA = new Date(a.actualizadoEn || a.fechaCreacion || 0).getTime();
         const marcaB = new Date(b.actualizadoEn || b.fechaCreacion || 0).getTime();
         return marcaB - marcaA;
@@ -635,6 +643,27 @@ function iniciarFiltrosCitasUsuario() {
             renderizarListaCitasUsuario();
         });
     });
+
+    const selectorMascota = document.getElementById("filtroMascotaCitasUsuario");
+    if (!selectorMascota) return;
+
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    const mascotas = usuarioActivo
+        ? obtenerMascotasPorUsuarioId(usuarioActivo.id)
+            .sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || ""), "es"))
+        : [];
+
+    selectorMascota.innerHTML = `<option value="">Todas mis mascotas</option>` +
+        mascotas.map(mascota => `
+            <option value="${escaparHtmlCitasUsuario(mascota.id || "")}" data-nombre="${escaparHtmlCitasUsuario(mascota.nombre || "")}">
+                ${escaparHtmlCitasUsuario(mascota.nombre || "Mascota")}
+            </option>`).join("");
+
+    selectorMascota.addEventListener("change", function () {
+        filtroMascotaCitasActivo = this.value;
+        filtroMascotaCitasNombre = this.selectedOptions[0]?.dataset.nombre || "";
+        renderizarListaCitasUsuario();
+    });
 }
 
 function momentoDeCitaUsuario(cita) {
@@ -645,25 +674,32 @@ function momentoDeCitaUsuario(cita) {
 
 function citasFiltradasUsuario() {
     const ahora = new Date();
-    const citas = obtenerTodasLasCitas();
+    const citas = obtenerCitasDelUsuarioActivo();
     const ESTADOS_TERMINALES = ["Completada", "Cancelada", "Rechazada"];
 
+    let resultado;
+
     if (filtroCitasActivo === "pendientes") {
-        return citas
+        resultado = citas
             .filter(c => c.estado === "Pendiente")
+            .sort((a, b) => momentoDeCitaUsuario(a) - momentoDeCitaUsuario(b));
+    } else if (filtroCitasActivo === "historial") {
+        resultado = citas
+            .filter(c => ESTADOS_TERMINALES.includes(c.estado) || momentoDeCitaUsuario(c) < ahora)
+            .sort((a, b) => momentoDeCitaUsuario(b) - momentoDeCitaUsuario(a));
+    } else {
+        // "proximas" (pestaña por defecto)
+        resultado = citas
+            .filter(c => !ESTADOS_TERMINALES.includes(c.estado) && momentoDeCitaUsuario(c) >= ahora)
             .sort((a, b) => momentoDeCitaUsuario(a) - momentoDeCitaUsuario(b));
     }
 
-    if (filtroCitasActivo === "historial") {
-        return citas
-            .filter(c => ESTADOS_TERMINALES.includes(c.estado) || momentoDeCitaUsuario(c) < ahora)
-            .sort((a, b) => momentoDeCitaUsuario(b) - momentoDeCitaUsuario(a));
-    }
+    if (!filtroMascotaCitasActivo) return resultado;
 
-    // "proximas" (pestaña por defecto)
-    return citas
-        .filter(c => !ESTADOS_TERMINALES.includes(c.estado) && momentoDeCitaUsuario(c) >= ahora)
-        .sort((a, b) => momentoDeCitaUsuario(a) - momentoDeCitaUsuario(b));
+    return resultado.filter(cita =>
+        String(cita.mascotaId || "") === String(filtroMascotaCitasActivo) ||
+        (!cita.mascotaId && String(cita.nombreMascota || "").trim().toLowerCase() === filtroMascotaCitasNombre.trim().toLowerCase())
+    );
 }
 
 const MENSAJE_VACIO_LISTA_CITAS_USUARIO = {
@@ -710,7 +746,7 @@ function filaCitaUsuarioHtml(cita) {
     const nombreMascota = cita.nombreMascota || "Mascota";
 
     const avatarHtml = cita.fotoMascota
-        ? `<img class="hv-agenda-cita__avatar" src="${escaparHtmlCitasUsuario(cita.fotoMascota)}" alt="${escaparHtmlCitasUsuario(nombreMascota)}">`
+        ? `<img class="hv-agenda-cita__avatar" src="${escaparHtmlCitasUsuario(resolverRutaRecursoHuellaVet(cita.fotoMascota))}" alt="${escaparHtmlCitasUsuario(nombreMascota)}">`
         : `<div class="hv-agenda-cita__avatar hv-agenda-cita__avatar--icono hv-agenda-cita__avatar--${especie.clase}"><i class="fa-solid ${especie.icono}"></i></div>`;
 
     const especieRaza = [especie.texto, cita.raza].filter(Boolean).join(" · ") || "Sin datos";

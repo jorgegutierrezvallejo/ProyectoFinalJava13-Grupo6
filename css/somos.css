@@ -1,45 +1,147 @@
 /* Hero del veterinario */
 
 .hero-veterinario {
-    background-color: var(--color-fondo-claro);
+    min-height: 540px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--color-fondo-claro);
 }
 
-.hero-veterinario__imagen {
+.hero-veterinario__fondo {
     width: 100%;
-    height: 350px;
+    height: calc(100% + 32px);
+    position: absolute;
+    inset: -16px;
     object-fit: cover;
+    object-position: center;
+    transform: translate(var(--fondo-x, 0), var(--fondo-y, 0)) scale(1.03);
+    transition: transform .35s ease-out;
+    will-change: transform;
+}
+
+.hero-veterinario::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(255,255,255,.12) 25%, rgba(255,255,255,.97) 66%, #fff 100%);
+}
+
+.hero-veterinario__contenedor {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.hero-veterinario__vet {
+    width: auto;
+    height: 110%;
+    max-width: none;
+    max-height: none;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: auto;
+    left: max(0px, calc((100% - 1320px) / 2 - 60px));
+    object-fit: contain;
+    object-position: bottom;
+    pointer-events: none;
+}
+
+.hero-veterinario__contenido {
+    width: min(48%, 600px);
+    margin-right: 8.333333%;
+    text-align: right;
 }
 
 .hero-veterinario__etiqueta {
+    margin-bottom: 10px;
     color: var(--color-primario);
     font-weight: 700;
 }
 
 .hero-veterinario__titulo {
     font-family: var(--fuente-marca);
-    font-size: 3rem;
+    margin-bottom: 10px;
+    font-size: clamp(2.7rem, 4.4vw, 4.5rem);
     color: var(--color-texto-oscuro);
 }
 
 .hero-veterinario__profesion {
+    margin-bottom: 15px;
     color: var(--color-primario);
     font-size: 1.25rem;
     font-weight: 600;
 }
 
 .hero-veterinario__descripcion {
+    max-width: 490px;
+    margin: 0 0 24px auto;
     line-height: 1.7;
 }
+
+.hero-veterinario__acciones { display: flex; justify-content: flex-end; gap: 12px; }
+.hero-veterinario__acciones .btn { display: inline-flex; align-items: center; gap: 7px; }
+.hero-veterinario__secundario { border: 1px solid #b8c5c8; background: rgba(255,255,255,.82); color: var(--color-texto-oscuro); font-weight: 700; }
+.hero-veterinario__secundario:hover { border-color: var(--color-primario); background: #fff; color: var(--color-texto-oscuro); }
+
+.hero-veterinario-info {
+    position: relative;
+    z-index: 3;
+    margin-top: -38px;
+    margin-bottom: -56px;
+}
+
+.hero-veterinario-info__card {
+    min-height: 94px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+    padding: 16px 26px;
+    border-radius: 14px;
+    background: #07858a;
+    box-shadow: 0 12px 28px rgba(34, 62, 60, .18);
+}
+
+.hero-veterinario-info__item {
+    min-width: 0;
+    padding: 4px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-right: 1px solid rgba(255,255,255,.2);
+    color: #fff;
+}
+
+.hero-veterinario-info__item:last-child { border-right: 0; }
+.hero-veterinario-info__item > i { width: 43px; height: 43px; flex: 0 0 43px; display: grid; place-items: center; border: 1px solid var(--color-acento); border-radius: 50%; color: var(--color-acento); font-size: 21px; }
+.hero-veterinario-info__item strong, .hero-veterinario-info__item span { display: block; }
+.hero-veterinario-info__item strong { font-size: .86rem; }
+.hero-veterinario-info__item span { margin-top: 2px; color: rgba(255,255,255,.8); font-size: .73rem; }
 
 /* Mi historia */
 
 .mi-historia {
-    background-color: var(--color-blanco);
+    position: relative;
+    z-index: 1;
+    padding: 130px 0 74px;
+    background-color: var(--color-fondo-claro);
 }
 
 .historia-card {
-    background-color: var(--color-fondo-claro);
-    border-radius: 16px;
+    min-height: 330px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    border-radius: 20px;
+    background-color: var(--color-blanco);
+    box-shadow: 0 12px 30px rgba(34, 62, 60, .1);
+}
+
+.historia-card__contenido {
+    padding: 45px 52px;
 }
 
 .historia-card__icono {
@@ -55,17 +157,53 @@
 }
 
 .historia-card__titulo {
+    margin: 16px 0 15px;
     font-family: var(--fuente-marca);
-    font-size: 2.5rem;
+    font-size: 2.3rem;
     color: var(--color-texto-oscuro);
 }
 
 .historia-card__texto {
+    margin-bottom: 14px;
+    color: var(--color-texto-suave);
     line-height: 1.7;
 }
 
-.historia-card__imagen {
-    max-width: 230px;
+.historia-card__mensaje {
+    margin: 20px 0 0;
+    color: var(--color-primario-oscuro);
+    font-size: .9rem;
+    font-weight: 700;
+}
+
+.historia-card__mensaje i { margin-right: 7px; }
+
+.historia-card__media {
+    min-height: 330px;
+    position: relative;
+    overflow: hidden;
+}
+
+.historia-card__media img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+.historia-card__dato {
+    position: absolute;
+    bottom: 22px;
+    left: 22px;
+    padding: 15px 18px;
+    border-radius: 13px;
+    background: var(--color-primario-oscuro);
+    color: #fff;
+    font-size: .75rem;
+    line-height: 1.45;
+}
+
+.historia-card__dato strong { display: block; font-size: 1.3rem; }
 }
 
 /* Formación y experiencia */
@@ -214,20 +352,80 @@
 /* Responsive */
 
 @media (max-width: 991px) {
+    .hero-veterinario {
+        min-height: 460px;
+    }
+
     .hero-veterinario__contenido {
+        width: min(58%, 510px);
+        margin-right: 0;
         text-align: center;
+    }
+
+    .hero-veterinario__descripcion {
+        margin-right: auto;
+    }
+
+    .hero-veterinario__acciones {
+        justify-content: center;
     }
 
     .hero-veterinario__titulo {
         font-size: 2.3rem;
     }
 
-    .hero-veterinario__imagen {
-        height: 280px;
+    .hero-veterinario__fondo {
+        height: 100%;
     }
+
+    .hero-veterinario__vet { height: 110%; }
+
+    .hero-veterinario-info { margin-bottom: -96px; }
+    .mi-historia { padding-top: 136px; }
+    .hero-veterinario-info__card { grid-template-columns: repeat(2, 1fr); }
+    .hero-veterinario-info__item:nth-child(2) { border-right: 0; }
+    .hero-veterinario-info__item:nth-child(-n + 2) { border-bottom: 1px solid rgba(255,255,255,.2); }
 }
 
 @media (max-width: 767px) {
+    .hero-veterinario {
+        min-height: 510px;
+    }
+
+    .hero-veterinario::after {
+        background: rgba(255, 255, 255, .82);
+    }
+
+    .hero-veterinario__contenido {
+        width: 100%;
+    }
+
+    .hero-veterinario__vet {
+        height: 62%;
+        top: auto;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        opacity: .45;
+    }
+
+    .hero-veterinario__acciones {
+        flex-wrap: wrap;
+    }
+
+    .hero-veterinario-info { margin-top: -24px; margin-bottom: -220px; }
+    .mi-historia { padding-top: 268px; }
+    .hero-veterinario-info__card { grid-template-columns: 1fr; padding: 10px 14px; }
+    .hero-veterinario-info__item,
+    .hero-veterinario-info__item:nth-child(2) { padding: 10px 4px; border-right: 0; border-bottom: 1px solid rgba(255,255,255,.2); }
+    .hero-veterinario-info__item:last-child { border-bottom: 0; }
+
+    .mi-historia { padding: 268px 0 52px; }
+    .historia-card { grid-template-columns: 1fr; }
+    .historia-card__contenido { padding: 34px 26px; }
+    .historia-card__media { min-height: 250px; order: -1; }
+    .historia-card__titulo { font-size: 2rem; }
+
     .seccion-vet {
         padding-top: 2.5rem !important;
         padding-bottom: 2.5rem !important;

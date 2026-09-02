@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Contacta con HuellaVet para recibir información y agendar la atención veterinaria de tu mascota.">
+        content="HuellaVet: atención veterinaria profesional y servicios para el bienestar de tu mascota.">
     <link rel="icon" href="./img/HuellaVet-icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -20,15 +20,25 @@
         rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/authmodal.css">
+    <link rel="stylesheet" href="css/inicio.css">
     <script src="js/shared/local-storage.js"></script>
     <script src="js/shared/usuarios-storage.js"></script>
+    <script src="js/shared/citas-storage.js"></script>
+    <script src="js/shared/mascotas-storage.js"></script>
+    <script src="js/shared/servicios-storage.js"></script>
+    <script src="js/footer.js" defer></script>
+    <script src="js/shared/tipos-servicio-storage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/shared/servicio-detalle.js"></script>
     <script src="js/components.js" defer></script>
     <script src="js/authmodal.js" defer></script>
-    <title> Contacto | HuellaVet - Sistema de Reservas Veterinarias</title>
+    <script src="js/inicio.js" defer></script>
+    <script src="components/agendar-cita/agendar-cita.js" defer></script>
+    <title>HuellaVet | Cuidado veterinario</title>
 
 </head>
 
-<body data-page="contacto">
+<body data-page="inicio">
 
     <!-- Navbar HV -->
     <div id="header-container"></div>
@@ -36,20 +46,67 @@
     <!-- LOGIN/REGISTER -->
     <div id="authmodal-container"></div>
 
-    <!-- Login y registro -->
-    <div id="authmodal-container"></div>
-
     <main class="contenido-principal">
-        <!-- Contenido -->
+        <section class="inicio-hero" aria-labelledby="titulo-inicio">
+            <div class="container inicio-hero__contenido">
+                <p class="inicio-hero__eyebrow">Sistema de reservas veterinario</p>
+                <h1 id="titulo-inicio">Conectamos a los Médicos Veterinarios con sus pacientes</h1>
+                <p class="inicio-hero__descripcion">En HuellaVet, tu compañero recibirá bienestar, amor y la atención que merece.</p>
+                <div class="inicio-hero__acciones">
+                    <a href="agendar.html" class="btn btn-agendar" data-agendar-requiere-sesion><i class="bi bi-calendar3"></i> Agendar cita</a>
+                    <a href="servicios.html#servicios" class="btn inicio-hero__secundario"><i class="bi bi-heart-pulse"></i> Conoce nuestros servicios</a>
+                </div>
+            </div>
+        </section>
 
+        <section class="container inicio-servicios" aria-labelledby="titulo-servicios-inicio">
+            <header class="inicio-servicios__encabezado">
+                <p>Atención pensada para su bienestar</p>
+                <h2 id="titulo-servicios-inicio">Servicios destacados</h2>
+                <span aria-hidden="true"></span>
+            </header>
+            <div id="servicios-inicio" class="inicio-servicios__grid" aria-live="polite"></div>
+            <div class="inicio-servicios__ver-mas">
+                <a href="servicios.html" class="btn inicio-hero__secundario">Ver todos los servicios <i class="bi bi-arrow-right"></i></a>
+            </div>
+        </section>
 
-
-
-
+        <section class="resenas-huellavet" aria-labelledby="titulo-resenas">
+            <div class="container">
+                <header class="resenas-huellavet__encabezado">
+                    <p>Experiencias que nos motivan</p>
+                    <h2 id="titulo-resenas">Lo que dicen nuestras familias</h2>
+                </header>
+                <div id="resenasCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <article class="resena-card"><div class="resena-card__estrellas">★★★★★</div><blockquote>“La atención fue cercana y muy profesional. Mi mascota se sintió tranquila desde el primer momento.”</blockquote><footer><strong>Laura Gómez</strong><span>Familia de Max</span></footer></article>
+                        </div>
+                        <div class="carousel-item">
+                            <article class="resena-card"><div class="resena-card__estrellas">★★★★★</div><blockquote>“Explicaron cada paso con paciencia. Es reconfortante encontrar un equipo que realmente ama a los animales.”</blockquote><footer><strong>Andrés Ramírez</strong><span>Familia de Luna</span></footer></article>
+                        </div>
+                        <div class="carousel-item">
+                            <article class="resena-card"><div class="resena-card__estrellas">★★★★★</div><blockquote>“Agendar fue muy fácil y recibimos un acompañamiento excelente durante toda la consulta.”</blockquote><footer><strong>Camila Torres</strong><span>Familia de Milo</span></footer></article>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#resenasCarousel" data-bs-slide="prev" aria-label="Reseña anterior"><i class="bi bi-arrow-left-circle-fill"></i></button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#resenasCarousel" data-bs-slide="next" aria-label="Siguiente reseña"><i class="bi bi-arrow-right-circle-fill"></i></button>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
     <div id="footer-container"></div>
+
+    <!-- componente agendar cita -->
+    <div
+        id="agendar-cita-container"
+        data-agendar-html="components/agendar-cita/agendar-cita.html"
+        data-agendar-css-modal="components/agendar-cita/agendar-cita.css"
+        data-agendar-css-formulario="css/agendar.css"
+        data-agendar-js="js/agendar.js"
+    ></div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

@@ -50,20 +50,27 @@
 
 
         <!-- NOTIFICACIONES -->
-        <button
-            type="button"
-            class="topbar-notification"
-            id="notificationButton"
-            aria-label="Notificaciones"
-        >
-
-            <i class="bi bi-bell"></i>
-
-            <span class="topbar-notification-badge">
-                2
-            </span>
-
-        </button>
+        <div class="topbar-notification-wrapper">
+            <button
+                type="button"
+                class="topbar-notification"
+                id="notificationButton"
+                aria-label="Notificaciones"
+                aria-expanded="false"
+                aria-controls="notificationPanel"
+            >
+                <i class="bi bi-bell"></i>
+                <span class="topbar-notification-badge" id="notificationBadge" hidden>0</span>
+            </button>
+            <div class="topbar-notification-panel" id="notificationPanel" hidden>
+                <header>
+                    <strong>Actividad reciente</strong>
+                    <span>Movimientos de las citas</span>
+                </header>
+                <div class="topbar-notification-list" id="notificationList"></div>
+                <a href="./admin-citas.html">Ver todas las citas</a>
+            </div>
+        </div>
 
 
         <!-- PERFIL -->
@@ -126,7 +133,7 @@
 
                 <div class="topbar-dropdown-divider"></div>
 
-                <button type="button" onclick="window.location.href='../../somos.html';">
+                <button type="button" id="adminLogoutButton">
                     <i class="bi bi-box-arrow-right"></i>
                     Cerrar sesión
                 </button>

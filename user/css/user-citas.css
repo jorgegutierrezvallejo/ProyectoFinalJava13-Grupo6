@@ -164,8 +164,7 @@
     gap: 0.7rem;
 }
 
-.hv-selector,
-.hv-buscador {
+.hv-selector {
     height: 42px;
     border: 1px solid #dce6e2;
     border-radius: 0.55rem;
@@ -173,7 +172,7 @@
 }
 
 .hv-selector {
-    min-width: 185px;
+    min-width: 220px;
     padding: 0 0.8rem;
     display: flex;
     align-items: center;
@@ -189,23 +188,6 @@
     font-family: var(--fuente-principal);
     font-size: 0.75rem;
     font-weight: 600;
-}
-
-.hv-buscador {
-    min-width: 220px;
-    padding: 0 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.55rem;
-}
-
-.hv-buscador input {
-    width: 100%;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    font-family: var(--fuente-principal);
-    font-size: 0.75rem;
 }
 
 /* --- Listado de citas --- */
@@ -361,8 +343,7 @@
         flex-direction: column;
     }
 
-    .hv-selector,
-    .hv-buscador {
+    .hv-selector {
         width: 100%;
     }
 }

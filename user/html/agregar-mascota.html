@@ -45,7 +45,7 @@
             <section class="col-12 col-lg-8">
                 <div class="tarjeta-formulario">
 
-                    <h2 class="titulo-seccion">
+                    <h2 class="titulo-seccion" id="tituloFormularioMascota">
                         <i class="bi bi-paw-fill me-2"></i>Información de la mascota
                     </h2>
 
@@ -111,15 +111,23 @@
                             </div>
                         </div>
 
-                        <!-- Fila 3: Fecha y Color -->
+                        <!-- Fila 3: Fecha, Color y esterilización -->
                         <div class="row mb-3">
-                            <div class="col-12 col-md-6 mb-3 mb-md-0">
-                                <label for="fecha-nacimiento" class="form-label">Fecha de nacimiento</label>
+                            <div class="col-12 col-md-4 mb-3 mb-md-0">
+                                <label for="fecha-nacimiento" class="form-label">Ultima desparasitacion (aprox.)</label>
                                 <input type="date" class="form-control text-muted" id="fecha-nacimiento" onclick="this.max=new Date().toISOString().split('T')[0]">
                             </div>
-                            <div class="col-12 col-md-6">
+                            <div class="col-12 col-md-4 mb-3 mb-md-0">
                                 <label for="color" class="form-label">Color</label>
                                 <input type="text" class="form-control" id="color" placeholder="Ej. Dorado">
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label for="esterilizada-mascota" class="form-label">¿Está esterilizado/a?</label>
+                                <select class="form-select" id="esterilizada-mascota">
+                                    <option value="">Sin especificar</option>
+                                    <option value="true">Sí</option>
+                                    <option value="false">No</option>
+                                </select>
                             </div>
                         </div>
 
@@ -149,7 +157,7 @@
                         <!-- Botones-->
                         <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
                             <div class="d-flex gap-2">
-                                <button type="button"
+                                <button type="button" id="btnGuardarMascota"
                                     class="btn btn-guardar d-flex align-items-center justify-content-center">
                                     <i class="bi bi-floppy text-white fs-5 me-2"></i> Guardar mascota
                                 </button>
@@ -244,6 +252,15 @@
 
     </div>
 
+    <!-- componente agendar cita -->
+    <div
+        id="agendar-cita-container"
+        data-agendar-html="../../components/agendar-cita/agendar-cita.html"
+        data-agendar-css-modal="../../components/agendar-cita/agendar-cita.css"
+        data-agendar-css-formulario="../../css/agendar.css"
+        data-agendar-js="../../js/agendar.js"
+    ></div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -251,8 +268,13 @@
     <script src="../js/user-sidebar.js"></script>
     <script src="../js/user-topbar.js"></script>
     <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/usuarios-storage.js"></script>
     <script src="../../js/shared/mascotas-storage.js"></script>
+    <script src="../../js/shared/citas-storage.js"></script>
+    <script src="../../js/shared/servicios-storage.js"></script>
+    <script src="../../js/shared/tipos-servicio-storage.js"></script>
     <script src="../js/agregar-mascota.js"></script>
+    <script src="../../components/agendar-cita/agendar-cita.js"></script>
 
 </body>
 

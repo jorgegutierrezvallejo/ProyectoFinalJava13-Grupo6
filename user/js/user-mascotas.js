@@ -2,80 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
     iniciarPaginaMascotas();
 });
 
-// ========================================
-// Datos base (semilla) + fusion con citas
-// ========================================
-
-const FOTO_LUNA = "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=400&h=400&fit=crop&q=70";
-const FOTO_MAX = "https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=400&h=400&fit=crop&q=70";
-
-// Semilla inicial de "Mis mascotas": solo se escribe en localStorage.mascotas
-// la primera vez (si el usuario edita/elimina despues, eso se respeta en
-// las siguientes cargas en vez de reescribirse siempre).
-const MASCOTAS_SEMILLA = [
-    {
-        id: "PET-000245",
-        nombre: "Luna",
-        especie: "gato",
-        raza: "Siamés",
-        edad: "3 años",
-        peso: "4.2 kg",
-        sexo: "Hembra",
-        color: "Crema con puntos marrón oscuro",
-        fechaNacimiento: "2023-06-15",
-        esterilizada: true,
-        microchip: "985141004321098",
-        alergias: "Ninguna conocida",
-        observaciones: "Muy juguetona y cariñosa. Se estresa con ruidos fuertes.",
-        foto: FOTO_LUNA,
-        vacunasAlDia: true
-    },
-    {
-        id: "PET-000246",
-        nombre: "Max",
-        especie: "perro",
-        raza: "Criollo",
-        edad: "5 años",
-        peso: "18 kg",
-        sexo: "Macho",
-        color: "Café con blanco",
-        fechaNacimiento: "2021-03-02",
-        esterilizada: false,
-        microchip: "985141004322045",
-        alergias: "Ninguna conocida",
-        observaciones: "Muy activo, disfruta pasear largas distancias.",
-        foto: FOTO_MAX,
-        vacunasAlDia: false
-    }
-];
-
-// Recordatorios de referencia (los mismos 3 que se muestran en el Resumen,
-// hoy no hay un origen de datos dinamico para recordatorios todavia).
-const RECORDATORIOS_REFERENCIA = [
-    { titulo: "Vacuna antirrábica", mascota: "luna", fecha: "Vence: 28 ago", badge: "Por vencer", claseBadge: "lila", icono: "bi-calendar-check" },
-    { titulo: "Control de peso", mascota: "max", fecha: "5 sept", badge: "Programado", claseBadge: "verde", icono: "bi-heart-pulse" },
-    { titulo: "Desparasitación", mascota: "luna", fecha: "12 sept", badge: "Pendiente", claseBadge: "naranja", icono: "bi-capsule" }
-];
-
 let mascotaSeleccionadaId = null;
-let filtroActivo = "todas";
 let textoBusqueda = "";
 
 function iniciarPaginaMascotas() {
-    asegurarSemillaMascotas();
-
-    const filtros = document.getElementById("mascotasFiltros");
-    if (filtros) {
-        filtros.querySelectorAll(".mascotas-filtro-chip").forEach(chip => {
-            chip.addEventListener("click", function () {
-                filtros.querySelectorAll(".mascotas-filtro-chip").forEach(c => c.classList.remove("mascotas-filtro-chip--activo"));
-                chip.classList.add("mascotas-filtro-chip--activo");
-                filtroActivo = chip.dataset.filtro;
-                renderizarListaMascotas();
-            });
-        });
-    }
-
     const buscador = document.getElementById("buscadorMascotas");
     if (buscador) {
         buscador.addEventListener("input", function () {
@@ -94,14 +24,9 @@ function iniciarPaginaMascotas() {
     renderizarListaMascotas();
 }
 
-// Si localStorage.mascotas no existe todavia, la crea con la semilla.
-// Si ya existe (el usuario ya interactuo con la pagina antes), no la toca.
-function asegurarSemillaMascotas() {
-    asegurarMascotasIniciales(MASCOTAS_SEMILLA);
-}
-
 function obtenerMascotasGuardadas() {
-    return obtenerMascotas();
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    return usuarioActivo ? obtenerMascotasPorUsuarioId(usuarioActivo.id) : [];
 }
 
 // La pagina consume unicamente el repositorio de Mascotas. La sincronizacion
@@ -149,6 +74,31 @@ function formatearFechaMascota(fechaISO) {
     }
 }
 
+function calcularEdadMascota(fechaISO) {
+    if (!fechaISO) return "";
+    const partes = String(fechaISO).split("-").map(Number);
+    if (partes.length !== 3 || partes.some(numero => !Number.isFinite(numero))) return "";
+
+    const [anio, mes, dia] = partes;
+    const nacimiento = new Date(anio, mes - 1, dia);
+    const hoy = new Date();
+    if (Number.isNaN(nacimiento.getTime()) || nacimiento > hoy) return "";
+
+    let anios = hoy.getFullYear() - nacimiento.getFullYear();
+    let meses = hoy.getMonth() - nacimiento.getMonth();
+    if (hoy.getDate() < nacimiento.getDate()) meses--;
+    if (meses < 0) {
+        anios--;
+        meses += 12;
+    }
+
+    if (anios > 0) return `${anios} año${anios === 1 ? "" : "s"}`;
+    if (meses > 0) return `${meses} mes${meses === 1 ? "" : "es"}`;
+
+    const dias = Math.max(0, Math.floor((hoy - nacimiento) / 86400000));
+    return `${dias} día${dias === 1 ? "" : "s"}`;
+}
+
 // ========================================
 // Columna izquierda: lista de mascotas
 // ========================================
@@ -160,12 +110,9 @@ function renderizarListaMascotas() {
 
     const todas = obtenerMascotasCombinadas();
 
-    const filtradas = todas.filter(m => {
-        const especie = infoPorEspecie(m.especie).clase;
-        const pasaFiltro = filtroActivo === "todas" || especie === filtroActivo;
-        const pasaBusqueda = !textoBusqueda || (m.nombre || "").toLowerCase().includes(textoBusqueda);
-        return pasaFiltro && pasaBusqueda;
-    });
+    const filtradas = todas.filter(m =>
+        !textoBusqueda || (m.nombre || "").toLowerCase().includes(textoBusqueda)
+    );
 
     if (contador) {
         contador.textContent = `Mostrando ${filtradas.length} de ${todas.length} mascota${todas.length === 1 ? "" : "s"}`;
@@ -192,7 +139,7 @@ function renderizarListaMascotas() {
                 <div class="mascotas-vacio__icono"><i class="bi bi-search"></i></div>
                 <div class="mascotas-vacio__contenido">
                     <strong>Sin resultados</strong>
-                    <p>Ninguna mascota coincide con el filtro o la búsqueda.</p>
+                    <p>Ninguna mascota coincide con la búsqueda.</p>
                 </div>
             </div>
         `;
@@ -221,10 +168,11 @@ function crearTarjetaListaMascota(mascota) {
     const activa = claveMascota(mascota) === mascotaSeleccionadaId;
 
     const avatarHtml = mascota.foto
-        ? `<img class="mascota-lista-card__avatar" src="${escaparHtmlMascotas(mascota.foto)}" alt="${escaparHtmlMascotas(mascota.nombre)}">`
+        ? `<img class="mascota-lista-card__avatar" src="${escaparHtmlMascotas(resolverRutaRecursoHuellaVet(mascota.foto))}" alt="${escaparHtmlMascotas(mascota.nombre)}">`
         : `<div class="mascota-lista-card__avatar mascota-lista-card__avatar--icono mascota-lista-card__avatar--${especieInfo.clase}"><i class="fa-solid ${especieInfo.icono}"></i></div>`;
 
-    const detalles = [mascota.edad, mascota.peso].filter(Boolean).join(" · ") || "Sin datos adicionales";
+    const edadCalculada = calcularEdadMascota(mascota.fechaNacimiento) || mascota.edad || "";
+    const detalles = [edadCalculada, mascota.peso].filter(Boolean).join(" · ") || "Sin datos adicionales";
 
     let estadoHtml = `<span class="mascota-lista-card__estado mascota-lista-card__estado--info"><i class="bi bi-dot"></i> Registrada mediante una cita</span>`;
     if (mascota.vacunasAlDia === true) {
@@ -289,7 +237,7 @@ function renderizarDetalleMascota() {
     const especieInfo = infoPorEspecie(mascota.especie);
 
     const avatarHtml = mascota.foto
-        ? `<img class="mascota-detalle-avatar" src="${escaparHtmlMascotas(mascota.foto)}" alt="${escaparHtmlMascotas(mascota.nombre)}">`
+        ? `<img class="mascota-detalle-avatar" src="${escaparHtmlMascotas(resolverRutaRecursoHuellaVet(mascota.foto))}" alt="${escaparHtmlMascotas(mascota.nombre)}">`
         : `<div class="mascota-detalle-avatar mascota-detalle-avatar--icono mascota-detalle-avatar--${especieInfo.clase}"><i class="fa-solid ${especieInfo.icono}"></i></div>`;
 
     let estadoBadgeHtml = "";
@@ -300,13 +248,12 @@ function renderizarDetalleMascota() {
     }
 
     const noEspecificado = "No especificado";
-    const campoEdad = mascota.edad || noEspecificado;
+    const campoEdad = calcularEdadMascota(mascota.fechaNacimiento) || mascota.edad || noEspecificado;
     const campoPeso = mascota.peso || noEspecificado;
     const campoSexo = mascota.sexo || noEspecificado;
     const campoColor = mascota.color || noEspecificado;
     const campoNacimiento = mascota.fechaNacimiento ? formatearFechaMascota(mascota.fechaNacimiento) : noEspecificado;
     const campoEsterilizacion = mascota.esterilizada === true ? "Sí" : mascota.esterilizada === false ? "No" : noEspecificado;
-    const campoMicrochip = mascota.microchip || noEspecificado;
     const campoAlergias = mascota.alergias || noEspecificado;
 
     const idTexto = mascota.id ? `ID: ${escaparHtmlMascotas(mascota.id)}` : "Registrada mediante una cita";
@@ -327,7 +274,13 @@ function renderizarDetalleMascota() {
                 </div>
                 <div class="mascota-detalle-header-derecha">
                     ${estadoBadgeHtml}
-                    <button type="button" class="mascota-detalle-menu" id="btnMenuMascota" aria-label="Más opciones"><i class="bi bi-three-dots-vertical"></i></button>
+                    <div class="mascota-detalle-menu-wrap">
+                        <button type="button" class="mascota-detalle-menu" id="btnMenuMascota" aria-label="Más opciones" aria-expanded="false" aria-controls="menuOpcionesMascota"><i class="bi bi-three-dots-vertical"></i></button>
+                        <div class="mascota-detalle-menu-opciones" id="menuOpcionesMascota" hidden>
+                            <button type="button" id="btnEditarPerfilMascota"><i class="bi bi-pencil"></i> Editar perfil</button>
+                            <button type="button" class="mascota-detalle-menu-opciones__eliminar" id="btnEliminarPerfilMascota"><i class="bi bi-trash"></i> Eliminar perfil</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -342,8 +295,6 @@ function renderizarDetalleMascota() {
                 <div class="mascota-detalle-campo"><i class="bi bi-scissors"></i><div class="mascota-detalle-campo-texto"><span>Esterilización</span><strong>${escaparHtmlMascotas(campoEsterilizacion)}</strong></div></div>
 
                 <div class="mascota-detalle-campo"><i class="bi bi-speedometer2"></i><div class="mascota-detalle-campo-texto"><span>Peso</span><strong>${escaparHtmlMascotas(campoPeso)}</strong></div></div>
-                <div class="mascota-detalle-campo"><i class="bi bi-upc-scan"></i><div class="mascota-detalle-campo-texto"><span>Microchip</span><strong>${escaparHtmlMascotas(campoMicrochip)}</strong></div></div>
-
                 <div class="mascota-detalle-campo"><i class="bi bi-gender-ambiguous"></i><div class="mascota-detalle-campo-texto"><span>Sexo</span><strong>${escaparHtmlMascotas(campoSexo)}</strong></div></div>
                 <div class="mascota-detalle-campo"><i class="bi bi-exclamation-triangle"></i><div class="mascota-detalle-campo-texto"><span>Alergias</span><strong>${escaparHtmlMascotas(campoAlergias)}</strong></div></div>
             </div>
@@ -359,10 +310,8 @@ function renderizarDetalleMascota() {
             </div>
 
             <div class="mascota-detalle-acciones">
-                <button type="button" id="btnEditarPerfilMascota"><i class="bi bi-pencil"></i> Editar perfil</button>
                 <button type="button" id="btnVerHistorialMascota"><i class="bi bi-journal-text"></i> Ver historial</button>
-                <a href="../../agendar.html" class="mascota-detalle-acciones__agendar"><i class="bi bi-calendar-plus"></i> Agendar cita</a>
-                <button type="button" class="mascota-detalle-acciones__eliminar" id="btnEliminarPerfilMascota"><i class="bi bi-trash"></i> Eliminar perfil</button>
+                <a href="#" class="mascota-detalle-acciones__agendar" data-abrir-agendar-cita data-mascota-id="${escaparHtmlMascotas(mascota.id || "")}"><i class="bi bi-calendar-plus"></i> Agendar cita</a>
             </div>
         </div>
     `;
@@ -371,7 +320,7 @@ function renderizarDetalleMascota() {
 }
 
 function crearSubcardProximaCita(mascota) {
-    const cita = obtenerProximaCitaPorMascota(mascota.nombre);
+    const cita = obtenerProximaCitaPorMascotaId(mascota.id);
 
     if (!cita) {
         return `
@@ -394,12 +343,163 @@ function crearSubcardProximaCita(mascota) {
     `;
 }
 
+const CLASE_ESTADO_CITA_MASCOTA = {
+    "Pendiente": "pendiente",
+    "Confirmada": "confirmada",
+    "En curso": "en-curso",
+    "Completada": "completada",
+    "Reprogramada": "reprogramada",
+    "Cancelada": "cancelada",
+    "Rechazada": "rechazada"
+};
+
+function abrirDetalleCitaMascota(mascota) {
+    const cita = obtenerProximaCitaPorMascotaId(mascota.id);
+    const modalElemento = document.getElementById("modalDetalleCitaMascota");
+    const contenido = document.getElementById("modalDetalleCitaMascotaContenido");
+    if (!cita || !modalElemento || !contenido || typeof bootstrap === "undefined") return;
+
+    const especieInfo = infoPorEspecie(cita.especie || mascota.especie);
+    const foto = cita.fotoMascota || mascota.foto || "";
+    const avatar = foto
+        ? `<img class="mascota-cita-modal__avatar" src="${escaparHtmlMascotas(resolverRutaRecursoHuellaVet(foto))}" alt="${escaparHtmlMascotas(cita.nombreMascota || mascota.nombre)}">`
+        : `<div class="mascota-cita-modal__avatar mascota-cita-modal__avatar--icono mascota-cita-modal__avatar--${especieInfo.clase}"><i class="fa-solid ${especieInfo.icono}"></i></div>`;
+    const nombreMascota = cita.nombreMascota || mascota.nombre || "Mascota";
+    const especieRaza = [especieInfo.texto, cita.raza || mascota.raza].filter(Boolean).join(" • ") || "Sin datos registrados";
+    const modalidad = cita.ubicacion || (cita.modalidad === "domicilio" ? "Servicio a domicilio" : "En clínica");
+    const estado = cita.estado || "Pendiente";
+    const claseEstado = CLASE_ESTADO_CITA_MASCOTA[estado] || "pendiente";
+    const observaciones = cita.motivo || "Sin observaciones registradas.";
+
+    contenido.innerHTML = `
+        <div class="mascota-cita-modal__perfil">
+            ${avatar}
+            <h3>${escaparHtmlMascotas(nombreMascota)}</h3>
+            <span>ID: ${escaparHtmlMascotas(cita.id || "Sin asignar")}</span>
+        </div>
+
+        <div class="mascota-cita-modal__datos">
+            ${crearFilaDetalleCitaMascota("bi-heart", "Mascota", nombreMascota, especieRaza)}
+            ${crearFilaDetalleCitaMascota("bi-person-badge", "Veterinario", cita.veterinario || "Por asignar")}
+            ${crearFilaDetalleCitaMascota("bi-shield-plus", "Servicio", cita.servicioNombre || "Consulta general", modalidad)}
+            ${crearFilaDetalleCitaMascota("bi-calendar3", "Fecha", fechaISOaTextoLargo(cita.fecha))}
+            ${crearFilaDetalleCitaMascota("bi-clock", "Hora", cita.hora || "Hora no definida")}
+            <div class="mascota-cita-modal__fila">
+                <i class="bi bi-check-circle"></i>
+                <span class="mascota-cita-modal__etiqueta">Estado</span>
+                <span class="mascota-cita-modal__estado mascota-cita-modal__estado--${claseEstado}">${escaparHtmlMascotas(estado)}</span>
+            </div>
+            ${crearFilaDetalleCitaMascota("bi-chat-left-text", "Observaciones", observaciones)}
+        </div>
+
+        <div class="mascota-cita-modal__acciones">
+            <button type="button" class="mascota-cita-modal__boton mascota-cita-modal__boton--editar" id="btnEditarCitaDesdeMascota">
+                <i class="bi bi-pencil"></i> Editar
+            </button>
+            <button type="button" class="mascota-cita-modal__boton mascota-cita-modal__boton--reprogramar" id="btnReprogramarCitaDesdeMascota">
+                <i class="bi bi-calendar"></i> Reprogramar
+            </button>
+            <button type="button" class="mascota-cita-modal__boton mascota-cita-modal__boton--cancelar" id="btnCancelarCitaDesdeMascota">
+                <i class="bi bi-x-circle"></i> Cancelar
+            </button>
+        </div>
+    `;
+
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElemento);
+    iniciarAccionesModalCitaMascota(cita, mascota, modal);
+    modal.show();
+}
+
+function crearFilaDetalleCitaMascota(icono, etiqueta, valor, detalle = "") {
+    return `
+        <div class="mascota-cita-modal__fila">
+            <i class="bi ${icono}"></i>
+            <span class="mascota-cita-modal__etiqueta">${escaparHtmlMascotas(etiqueta)}</span>
+            <span class="mascota-cita-modal__valor">
+                ${escaparHtmlMascotas(valor)}
+                ${detalle ? `<small>${escaparHtmlMascotas(detalle)}</small>` : ""}
+            </span>
+        </div>
+    `;
+}
+
+function iniciarAccionesModalCitaMascota(cita, mascota, modal) {
+    document.getElementById("btnEditarCitaDesdeMascota")?.addEventListener("click", function () {
+        modal.hide();
+        if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: "info",
+                title: "Editar cita",
+                text: "La edición de los datos de la cita estará disponible pronto.",
+                confirmButtonColor: "#17a9a7"
+            });
+        }
+    });
+
+    document.getElementById("btnReprogramarCitaDesdeMascota")?.addEventListener("click", function () {
+        modal.hide();
+        solicitarCambioCitaDesdeMascota(cita, mascota, "Reprogramada", {
+            titulo: "¿Solicitar reprogramación?",
+            texto: "La clínica revisará tu solicitud para acordar una nueva fecha y hora.",
+            placeholder: "Indica el motivo de la reprogramación...",
+            confirmar: "Sí, solicitar",
+            color: "#17a9a7"
+        });
+    });
+
+    document.getElementById("btnCancelarCitaDesdeMascota")?.addEventListener("click", function () {
+        modal.hide();
+        solicitarCambioCitaDesdeMascota(cita, mascota, "Cancelada", {
+            titulo: "¿Cancelar esta cita?",
+            texto: "Esta acción no se puede deshacer.",
+            placeholder: "Indica el motivo de la cancelación...",
+            confirmar: "Sí, cancelar",
+            color: "#e53935"
+        });
+    });
+}
+
+function solicitarCambioCitaDesdeMascota(cita, mascota, nuevoEstado, opciones) {
+    if (typeof Swal === "undefined") return;
+
+    Swal.fire({
+        icon: "warning",
+        title: opciones.titulo,
+        html: `
+            <p class="text-start small text-muted">${escaparHtmlMascotas(opciones.texto)}</p>
+            <textarea id="motivoCambioCitaMascota" class="swal2-textarea m-0 w-100" placeholder="${escaparHtmlMascotas(opciones.placeholder)}"></textarea>
+        `,
+        showCancelButton: true,
+        confirmButtonText: opciones.confirmar,
+        cancelButtonText: "Volver",
+        confirmButtonColor: opciones.color,
+        cancelButtonColor: "#6c757d",
+        focusConfirm: false,
+        preConfirm: () => {
+            const motivo = document.getElementById("motivoCambioCitaMascota")?.value.trim() || "";
+            if (!motivo) {
+                Swal.showValidationMessage("Escribe el motivo.");
+                return false;
+            }
+            return motivo;
+        }
+    }).then(resultado => {
+        if (!resultado.isConfirmed) return;
+        actualizarCamposCita(cita.id, { estado: nuevoEstado, motivoEstado: resultado.value });
+        renderizarDetalleMascota();
+        Swal.fire({
+            icon: "success",
+            title: nuevoEstado === "Cancelada" ? "Cita cancelada" : "Solicitud enviada",
+            confirmButtonColor: "#17a9a7"
+        });
+    });
+}
+
 // Recomendaciones reales que el veterinario dejo al finalizar una cita
 // (cita.recordatorio, ver admin/js/admin-citas.js -> abrirFormularioRecordatorio),
-// para esta mascota. Se combinan con RECORDATORIOS_REFERENCIA y se muestran
-// primero, porque son las que sí vienen de una cita real y no de la semilla.
+// para esta mascota.
 function recordatoriosRealesDeMascota(mascota) {
-    return obtenerCitasConRecordatorioPorMascota(mascota.nombre)
+    return obtenerCitasConRecordatorioPorMascotaId(mascota.id)
         .map(cita => ({
             titulo: cita.recordatorio.texto,
             fecha: cita.recordatorio.fecha ? `Sugerida: ${formatearFechaMascota(cita.recordatorio.fecha)}` : `De tu visita del ${formatearFechaMascota(cita.fecha)}`,
@@ -412,8 +512,7 @@ function recordatoriosRealesDeMascota(mascota) {
 
 function crearSubcardRecordatorios(mascota) {
     const reales = recordatoriosRealesDeMascota(mascota);
-    const referencia = RECORDATORIOS_REFERENCIA.filter(r => r.mascota === (mascota.nombre || "").trim().toLowerCase());
-    const items = reales.concat(referencia);
+    const items = reales;
 
     if (items.length === 0) {
         return `
@@ -448,6 +547,7 @@ function iniciarBotonesDetalleMascota(mascota) {
     const btnEliminar = document.getElementById("btnEliminarPerfilMascota");
     const btnCambiarFoto = document.getElementById("btnCambiarFotoMascota");
     const btnMenu = document.getElementById("btnMenuMascota");
+    const menuOpciones = document.getElementById("menuOpcionesMascota");
     const btnVerCita = document.getElementById("btnVerDetalleCitaMascota");
 
     const avisoProximamente = (titulo) => {
@@ -458,11 +558,27 @@ function iniciarBotonesDetalleMascota(mascota) {
         }
     };
 
-    if (btnEditar) btnEditar.addEventListener("click", () => avisoProximamente("Editar perfil"));
+    if (btnEditar) btnEditar.addEventListener("click", () => {
+        window.location.href = `agregar-mascota.html?mascotaId=${encodeURIComponent(mascota.id || "")}`;
+    });
     if (btnHistorial) btnHistorial.addEventListener("click", () => avisoProximamente("Ver historial"));
     if (btnCambiarFoto) btnCambiarFoto.addEventListener("click", () => avisoProximamente("Cambiar foto"));
-    if (btnMenu) btnMenu.addEventListener("click", () => avisoProximamente("Más opciones"));
-    if (btnVerCita) btnVerCita.addEventListener("click", () => { window.location.href = "user-citas.html"; });
+    if (btnMenu && menuOpciones) {
+        btnMenu.addEventListener("click", function (evento) {
+            evento.stopPropagation();
+            const abrir = menuOpciones.hidden;
+            menuOpciones.hidden = !abrir;
+            btnMenu.setAttribute("aria-expanded", String(abrir));
+
+            if (abrir) {
+                document.addEventListener("click", function cerrarMenu() {
+                    menuOpciones.hidden = true;
+                    btnMenu.setAttribute("aria-expanded", "false");
+                }, { once: true });
+            }
+        });
+    }
+    if (btnVerCita) btnVerCita.addEventListener("click", () => abrirDetalleCitaMascota(mascota));
 
     if (btnEliminar) {
         btnEliminar.addEventListener("click", function () {

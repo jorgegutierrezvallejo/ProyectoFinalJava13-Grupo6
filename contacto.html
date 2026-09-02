@@ -32,6 +32,8 @@
 
     <script src="js/shared/local-storage.js"></script>
     <script src="js/shared/usuarios-storage.js"></script>
+    <script src="js/shared/servicios-storage.js"></script>
+    <script src="js/footer.js" defer></script>
     <script src="js/components.js" defer></script>
     <script src="js/authmodal.js" defer></script>
 
@@ -80,7 +82,7 @@
                                 Enviar mensaje
                             </a>
 
-                            <a href="agendar.html" class="btn btn-agendar-contacto">
+                            <a href="agendar.html" class="btn btn-agendar-contacto" data-agendar-requiere-sesion>
                                 <i class="bi bi-calendar-check me-2" aria-hidden="true"></i>
                                 Agendar cita
                             </a>
@@ -587,7 +589,7 @@
 
                                     <div class="col-12 d-flex justify-content-center">
 
-                                        <a href="agendar.html"
+                                        <a href="agendar.html" data-agendar-requiere-sesion
                                             class="btn btn-agendar d-flex align-items-center justify-content-center gap-2">
 
                                             <i class="bi bi-calendar-event"></i>
@@ -660,187 +662,6 @@
                                     title="Ubicación de HuellaVet en Bogotá" loading="lazy"
                                     referrerpolicy="no-referrer-when-downgrade"></iframe>
 
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-        <!-- Preguntas frecuentes -->
-        <section class="container mt-5">
-
-            <div class="border rounded-4 p-4 bg-white shadow-sm">
-
-                <div class="mb-4 d-flex align-items-center gap-3">
-
-                    <img src="https://static.vecteezy.com/system/resources/thumbnails/047/463/667/small_2x/dog-paw-print-transparent-background-free-png.png"
-                        alt="icono-de-huella" width="32">
-
-                    <h2 class="fw-bold mb-0" style="color: #1a4a38;">
-                        Preguntas frecuentes
-                    </h2>
-
-                </div>
-
-                <div class="accordion" id="accordionExample">
-
-                    <div class="accordion-item custom-accordion-item border-0">
-
-                        <h2 class="accordion-header">
-
-                            <button class="accordion-button custom-accordion-btn" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true"
-                                aria-controls="collapseOne">
-
-                                <div class="d-flex align-items-center">
-
-                                    <span class="icon-box">
-                                        <i class="bi bi-calendar4-week"></i>
-                                    </span>
-
-                                    <span class="ms-3 fw-medium">
-                                        ¿Cómo puedo agendar una cita?
-                                    </span>
-
-                                </div>
-
-                            </button>
-
-                        </h2>
-
-                        <div id="collapseOne" class="accordion-collapse collapse show"
-                            data-bs-parent="#accordionExample">
-
-                            <div class="accordion-body">
-                                El proceso de agendamiento se realiza directamente
-                                a través del módulo de usuarios de la plataforma.
-                                La confirmación de la cita estará sujeta a la
-                                disponibilidad de horarios y a la validación de la
-                                agenda configurada previamente por el administrador
-                                del sistema.
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="accordion-item custom-accordion-item border-0">
-
-                        <h2 class="accordion-header">
-
-                            <button class="accordion-button custom-accordion-btn collapsed" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
-                                aria-controls="collapseTwo">
-
-                                <div class="d-flex align-items-center">
-
-                                    <span class="icon-box">
-                                        <i class="bi bi-house-door"></i>
-                                    </span>
-
-                                    <span class="ms-3 fw-medium">
-                                        ¿Atiendes a domicilio?
-                                    </span>
-
-                                </div>
-
-                            </button>
-
-                        </h2>
-
-                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-
-                            <div class="accordion-body">
-                                La disponibilidad y cobertura de los servicios a
-                                domicilio dependen estrictamente de las políticas
-                                operativas activas en el sistema. El alcance de este
-                                servicio se determina según la zona de cobertura y
-                                los parámetros logísticos establecidos por la
-                                administración.
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <div class="accordion-item custom-accordion-item border-0">
-
-                        <h2 class="accordion-header">
-
-                            <button class="accordion-button custom-accordion-btn collapsed" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false"
-                                aria-controls="collapseThree">
-
-                                <div class="d-flex align-items-center">
-
-                                    <span class="icon-box">
-                                        <i class="bi bi-credit-card"></i>
-                                    </span>
-
-                                    <span class="ms-3 fw-medium">
-                                        ¿Qué métodos de pago aceptas?
-                                    </span>
-
-                                </div>
-
-                            </button>
-
-                        </h2>
-
-                        <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-
-                            <div class="accordion-body">
-                                El sistema está estructurado para soportar múltiples
-                                alternativas de transacción. Las pasarelas de pago y
-                                opciones exactas, efectivo, tarjetas o transferencias,
-                                dependerán netamente de la configuración comercial y
-                                los convenios que el establecimiento decida habilitar
-                                en la plataforma.
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- PREGUNTA 4: ¿Qué debo llevar a la consulta? -->
-                    <div class="accordion-item custom-accordion-item border-0">
-
-                        <h2 class="accordion-header">
-
-                            <button class="accordion-button custom-accordion-btn collapsed" type="button"
-                                data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false"
-                                aria-controls="collapseFour">
-
-                                <div class="d-flex align-items-center">
-
-                                    <span class="icon-box">
-                                        <i class="bi bi-file-earmark-text"></i>
-                                    </span>
-
-                                    <span class="ms-3 fw-medium">
-                                        ¿Qué debo llevar a la consulta?
-                                    </span>
-
-                                </div>
-
-                            </button>
-
-                        </h2>
-
-                        <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-
-                            <div class="accordion-body">
-                                Los requerimientos específicos pueden variar
-                                dinámicamente según el tipo de atención solicitada.
-                                La plataforma está diseñada para emitir recordatorios
-                                y notificaciones previas con las indicaciones exactas
-                                y la documentación necesaria según el caso.
                             </div>
 
                         </div>

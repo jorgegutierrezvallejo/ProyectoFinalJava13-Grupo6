@@ -22,6 +22,10 @@ function obtenerCitaPorId(idCita) {
     return obtenerTodasLasCitas().find(cita => String(cita.id) === String(idCita)) || null;
 }
 
+function obtenerCitasPorUsuarioId(idUsuario) {
+    return obtenerTodasLasCitas().filter(cita => String(cita.usuarioId) === String(idUsuario));
+}
+
 function actualizarEstadoCita(idCita, nuevoEstado) {
     return actualizarCamposCita(idCita, { estado: nuevoEstado });
 }
@@ -46,6 +50,21 @@ function citasPorFecha(fechaISO) {
         .sort((a, b) => normalizarHoraA24(a.hora).localeCompare(normalizarHoraA24(b.hora)));
 }
 
+// estados que no bloquean la franja horaria para nuevas citas
+const ESTADOS_QUE_NO_OCUPAN_FRANJA = ["Cancelada", "Rechazada"];
+
+function horasOcupadasEnFecha(fechaISO) {
+    return new Set(
+        citasPorFecha(fechaISO)
+            .filter(cita => !ESTADOS_QUE_NO_OCUPAN_FRANJA.includes(cita.estado))
+            .map(cita => horaAFranja(cita.hora))
+    );
+}
+
+function horaEstaDisponible(fechaISO, horaTexto) {
+    return !horasOcupadasEnFecha(fechaISO).has(horaAFranja(horaTexto));
+}
+
 function citasPorMascota(nombreMascota) {
     const nombreNormalizado = String(nombreMascota || "").trim().toLowerCase();
     if (!nombreNormalizado) return [];
@@ -53,6 +72,10 @@ function citasPorMascota(nombreMascota) {
     return obtenerTodasLasCitas().filter(cita =>
         String(cita.nombreMascota || "").trim().toLowerCase() === nombreNormalizado
     );
+}
+
+function citasPorMascotaId(idMascota) {
+    return obtenerTodasLasCitas().filter(cita => String(cita.mascotaId) === String(idMascota));
 }
 
 function obtenerProximaCitaPorMascota(nombreMascota) {
@@ -64,8 +87,25 @@ function obtenerProximaCitaPorMascota(nombreMascota) {
         .sort((a, b) => momentoCita(a) - momentoCita(b))[0] || null;
 }
 
+function obtenerProximaCitaPorMascotaId(idMascota) {
+    const estadosTerminados = ["Cancelada", "Rechazada", "Completada"];
+    const ahora = new Date();
+    return citasPorMascotaId(idMascota)
+        .filter(cita => !estadosTerminados.includes(cita.estado))
+        .filter(cita => momentoCita(cita) >= ahora)
+        .sort((a, b) => momentoCita(a) - momentoCita(b))[0] || null;
+}
+
 function obtenerCitasConRecordatorioPorMascota(nombreMascota) {
     return citasPorMascota(nombreMascota)
+        .filter(cita => cita.estado === "Completada" && cita.recordatorio?.texto)
+        .sort((a, b) =>
+            new Date(b.recordatorio.fechaCreacion || 0) - new Date(a.recordatorio.fechaCreacion || 0)
+        );
+}
+
+function obtenerCitasConRecordatorioPorMascotaId(idMascota) {
+    return citasPorMascotaId(idMascota)
         .filter(cita => cita.estado === "Completada" && cita.recordatorio?.texto)
         .sort((a, b) =>
             new Date(b.recordatorio.fechaCreacion || 0) - new Date(a.recordatorio.fechaCreacion || 0)
@@ -129,15 +169,16 @@ function momentoCita(cita) {
     return new Date(anio, mes - 1, dia, hora, minutos);
 }
 
-function obtenerCitasFuturas() {
+function obtenerCitasFuturas(idUsuario = null) {
     const estadosTerminados = ["Cancelada", "Rechazada", "Completada"];
     const ahora = new Date();
-    return obtenerTodasLasCitas()
+    const citas = idUsuario === null ? obtenerTodasLasCitas() : obtenerCitasPorUsuarioId(idUsuario);
+    return citas
         .filter(cita => !estadosTerminados.includes(cita.estado))
         .filter(cita => momentoCita(cita) >= ahora)
         .sort((a, b) => momentoCita(a) - momentoCita(b));
 }
 
-function proximaCitaGlobal() {
-    return obtenerCitasFuturas()[0] || null;
+function proximaCitaGlobal(idUsuario = null) {
+    return obtenerCitasFuturas(idUsuario)[0] || null;
 }

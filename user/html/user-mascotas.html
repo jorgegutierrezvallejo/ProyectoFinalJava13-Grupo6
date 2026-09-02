@@ -57,12 +57,6 @@
                         <input type="text" id="buscadorMascotas" placeholder="Buscar mascota" autocomplete="off">
                     </div>
 
-                    <div class="mascotas-filtros" id="mascotasFiltros">
-                        <button type="button" class="mascotas-filtro-chip mascotas-filtro-chip--activo" data-filtro="todas">Todas</button>
-                        <button type="button" class="mascotas-filtro-chip" data-filtro="perro"><i class="fa-solid fa-dog"></i> Perros</button>
-                        <button type="button" class="mascotas-filtro-chip" data-filtro="gato"><i class="fa-solid fa-cat"></i> Gatos</button>
-                    </div>
-
                     <div class="mascotas-lista-perfil" id="mascotasListaPerfil">
                         <!-- Tarjetas generadas dinamicamente por user-mascotas.js -->
                     </div>
@@ -82,6 +76,29 @@
 
     </div>
 
+    <!-- Detalle de la próxima cita de la mascota seleccionada -->
+    <div class="modal fade" id="modalDetalleCitaMascota" tabindex="-1"
+        aria-labelledby="modalDetalleCitaMascotaTitulo" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable mascota-cita-modal-dialog">
+            <div class="modal-content mascota-cita-modal">
+                <div class="modal-header mascota-cita-modal__encabezado">
+                    <h2 class="modal-title" id="modalDetalleCitaMascotaTitulo">Próxima cita</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body mascota-cita-modal__cuerpo" id="modalDetalleCitaMascotaContenido"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- componente agendar cita -->
+    <div
+        id="agendar-cita-container"
+        data-agendar-html="../../components/agendar-cita/agendar-cita.html"
+        data-agendar-css-modal="../../components/agendar-cita/agendar-cita.css"
+        data-agendar-css-formulario="../../css/agendar.css"
+        data-agendar-js="../../js/agendar.js"
+    ></div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -89,10 +106,14 @@
     <script src="../js/user-sidebar.js"></script>
     <script src="../js/user-topbar.js"></script>
     <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/usuarios-storage.js"></script>
     <script src="../../js/shared/citas-storage.js"></script>
     <script src="../../js/shared/mascotas-storage.js"></script>
+    <script src="../../js/shared/servicios-storage.js"></script>
+    <script src="../../js/shared/tipos-servicio-storage.js"></script>
     <script src="../../js/shared/data-migrations.js"></script>
     <script src="../js/user-mascotas.js"></script>
+    <script src="../../components/agendar-cita/agendar-cita.js"></script>
 
 </body>
 

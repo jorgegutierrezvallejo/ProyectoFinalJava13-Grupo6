@@ -398,17 +398,21 @@
     margin-bottom: 0.25rem;
 }
 
-.servicio-card-option__desc {
-    font-size: 0.72rem;
-    color: var(--color-texto-suave);
-    line-height: 1.35;
+.servicio-card-option__precio {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
     min-height: 2rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
     margin-bottom: 0.65rem;
+    color: var(--color-texto-oscuro);
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.servicio-card-option__precio i {
+    color: var(--color-primario-oscuro);
+    font-size: 0.85rem;
 }
 
 .servicio-card-option__badges {
@@ -670,6 +674,20 @@
     border-color: var(--color-acento) !important;
     font-weight: 700;
     box-shadow: 0 2px 8px rgba(186, 214, 65, 0.35);
+}
+
+.hora-item.hora-item--ocupada {
+    background-color: #f3f5f4;
+    color: #adb8b5;
+    border-color: #e2e8e6;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+.hora-item.hora-item--ocupada:hover {
+    border-color: #e2e8e6;
+    background-color: #f3f5f4;
+    color: #adb8b5;
 }
 
 .alerta-duracion {
@@ -974,6 +992,21 @@
     transform: scale(1.05);
 }
 
+.resumen-cita__avatar--mascota {
+    width: 170px;
+    height: 170px;
+    min-width: 170px;
+    flex: 0 0 170px;
+    align-self: center;
+    border-radius: 50%;
+}
+
+.resumen-cita__avatar--mascota img {
+    min-height: 0;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 /* =========================================================
    Alerta Informativa de Aprobación (Diseño Plano y Limpio)
    ========================================================= */
@@ -1196,5 +1229,16 @@
         padding-left: 0.9rem;
         padding-right: 0.9rem;
         font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .resumen-cita__avatar--mascota {
+        width: 150px;
+        height: 150px;
+        min-width: 150px;
+        min-height: 150px;
+        flex: 0 0 150px;
+        align-self: center;
     }
 }

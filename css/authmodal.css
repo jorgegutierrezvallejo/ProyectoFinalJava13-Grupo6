@@ -75,11 +75,11 @@
 }
 
 .hv-modal-logo {
-    margin-bottom: 8px;
+    margin-bottom: 14px;
 
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
 .hv-modal-logo img {
@@ -95,6 +95,34 @@
     font-weight: 700;
 
     color: var(--color-texto-oscuro);
+}
+
+.hv-reserva-intro {
+    margin: 6px auto 14px;
+    max-width: 510px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.hv-reserva-intro img {
+    width: 145px;
+    height: 105px;
+    object-fit: contain;
+}
+
+.hv-reserva-intro h2 {
+    margin: 0 0 6px;
+    color: var(--color-primario-oscuro);
+    font-size: 1.35rem;
+    font-weight: 700;
+}
+
+.hv-reserva-intro p {
+    margin: 0;
+    color: var(--color-texto-suave);
+    font-size: .9rem;
+    line-height: 1.45;
 }
 
 .hv-tabs {
@@ -367,5 +395,18 @@
     .condiciones-formulario,
     .boton-registro {
         grid-column: auto;
+    }
+
+    .hv-reserva-intro {
+        gap: 10px;
+    }
+
+    .hv-reserva-intro img {
+        width: 105px;
+        height: 82px;
+    }
+
+    .hv-reserva-intro h2 {
+        font-size: 1.1rem;
     }
 }
