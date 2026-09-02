@@ -1,3 +1,9 @@
+if (!document.querySelector('script[src*="sweetalert2"]')) {
+    let script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/sweetalert2@11";
+    document.head.appendChild(script);
+}
+
 function iniciarAuthModal() {
 
 
@@ -8,11 +14,7 @@ function iniciarAuthModal() {
     let modal = document.getElementById("auth-modal");
     let botonCerrar = document.getElementById("btn-close-modal");
 
-    // Modal Admin
-    let botonAdminLogin = document.getElementById("btn-login-admin");
-    let modalAdmin = document.getElementById("modal-auth-admin");
-    let botonCerrarAdmin = document.getElementById("btn-cerrar-modal-admin");
-    let formAdmin = document.getElementById("formulario-login-admin");
+
 
     if (botonLogin && modal && botonCerrar) {
         botonLogin.addEventListener("click", function (evento) {
@@ -32,42 +34,7 @@ function iniciarAuthModal() {
         });
     }
 
-    if (botonAdminLogin && modalAdmin && botonCerrarAdmin) {
-        botonAdminLogin.addEventListener("click", function (evento) {
-            evento.preventDefault();
-            modalAdmin.classList.add("active");
-            modalAdmin.setAttribute("aria-hidden", "false");
-        });
 
-        botonCerrarAdmin.addEventListener("click", function () {
-            cerrarAuthModal(modalAdmin);
-        });
-
-        modalAdmin.addEventListener("click", function (evento) {
-            if (evento.target === modalAdmin) {
-                cerrarAuthModal(modalAdmin);
-            }
-        });
-    }
-
-    if (formAdmin) {
-        formAdmin.addEventListener("submit", function (e) {
-            e.preventDefault();
-            let adminUser = document.getElementById("usuario-admin").value.trim();
-            let adminPass = document.getElementById("contrasena-admin").value;
-            let errorMsg = document.getElementById("mensaje-error-admin");
-            
-            // Logica simple: redirige al dashboard si escribe algo (o poner credenciales por defecto)
-            if (adminUser === "admin" && adminPass === "admin123") {
-                // Redirigir al dashboard admin (asumiendo que se llama admin-dashboard.html)
-                // Dependiendo de dónde estemos, la ruta puede variar, usaremos la ruta absoluta relativa al origen
-                window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
-            } else {
-                errorMsg.textContent = "Usuario o contraseña incorrectos (Usa: admin / admin123)";
-                errorMsg.style.display = "block";
-            }
-        });
-    }
 
     // ========================================
     // VALIDACIONES DEL FORMULARIO DE REGISTRO
@@ -79,6 +46,7 @@ function iniciarAuthModal() {
     let campoApellido = document.getElementById("last-name");
     let campoCorreo = document.getElementById("email");
     let campoTelefono = document.getElementById("telephone");
+    let campoCiudad = document.getElementById("city");
     let indicativoPais = document.getElementById("country-code");
     let campoContrasena = document.getElementById("pass");
     let campoConfirmar = document.getElementById("confirmpass");
@@ -367,43 +335,52 @@ function iniciarAuthModal() {
     if (formularioLoginUsuario) {
         formularioLoginUsuario.addEventListener('submit', function (evento) {
             evento.preventDefault();
-            
+
             let correoIngresado = document.getElementById('login-correo').value.trim();
             let contrasenaIngresada = document.getElementById('login-contrasena').value;
             let mensajeErrorLogin = document.getElementById('mensaje-error-login');
-            
+
             if (mensajeErrorLogin) {
                 mensajeErrorLogin.style.display = 'none';
                 mensajeErrorLogin.textContent = '';
             }
-            
-            let jsonUsuario = localStorage.getItem('usuarioRegistrado');
-            
-            if (!jsonUsuario) {
+
+            // Verificamos si es admin
+            if (correoIngresado.toLowerCase() === "admin" && contrasenaIngresada === "admin123") {
+                cerrarAuthModal(document.getElementById("auth-modal"));
+                Swal.fire({
+                    title: "¡Inicio de sesión exitoso!",
+                    text: "Has ingresado como Administrador",
+                    icon: "success",
+                    confirmButtonText: "Continuar",
+                    confirmButtonColor: "#007b83"
+                }).then(() => {
+                    window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
+                });
+                return;
+            }
+
+            const usuarioRegistrado = obtenerUsuarioPorCredenciales(correoIngresado, contrasenaIngresada);
+
+            if (!usuarioRegistrado) {
                 if (mensajeErrorLogin) {
-                    mensajeErrorLogin.textContent = 'No hay ningún usuario registrado. Por favor, regístrate primero.';
+                    mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
                     mensajeErrorLogin.style.display = 'block';
                 }
                 return;
             }
-            
-            try {
-                let usuarioRegistrado = JSON.parse(jsonUsuario);
-                
-                if (correoIngresado === usuarioRegistrado.email && contrasenaIngresada === usuarioRegistrado.contrasena) {
-                    window.location.href = './user/html/user-dashboard.html';
-                } else {
-                    if (mensajeErrorLogin) {
-                        mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
-                        mensajeErrorLogin.style.display = 'block';
-                    }
-                }
-            } catch(e) {
-                if (mensajeErrorLogin) {
-                    mensajeErrorLogin.textContent = 'Error al leer los datos de registro.';
-                    mensajeErrorLogin.style.display = 'block';
-                }
-            }
+
+            guardarSesionUsuario(usuarioRegistrado.id);
+            cerrarAuthModal(document.getElementById("auth-modal"));
+            Swal.fire({
+                title: "¡Inicio de sesión exitoso!",
+                text: "Bienvenido a HuellaVet",
+                icon: "success",
+                confirmButtonText: "Continuar",
+                confirmButtonColor: "#007b83"
+            }).then(() => {
+                window.location.href = './user/html/user-dashboard.html';
+            });
         });
     }
 
@@ -463,14 +440,20 @@ function iniciarAuthModal() {
             nombreCompleto: (campoNombre?.value || "") + " " + (campoApellido?.value || ""),
             telefono: campoTelefono?.value || "",
             indicativoPais: indicativoPais?.value || "+57",
+            ciudad: campoCiudad?.selectedOptions?.[0]?.text || "",
+            fechaNacimiento: campoFecha?.value || "",
             email: campoCorreo?.value || "",
             contrasena: campoContrasena?.value || ""
         };
 
-        // Convertir a string JSON y guardar en LocalStorage
-        let jsonUsuario = JSON.stringify(datosUsuario);
-        localStorage.setItem('usuarioRegistrado', jsonUsuario);
-        console.log("Usuario registrado en localStorage:", jsonUsuario);
+        const nuevoUsuario = registrarUsuario(datosUsuario);
+
+        if (!nuevoUsuario) {
+            mostrarMensaje("Ya existe una cuenta con este correo.", "error");
+            return;
+        }
+
+        guardarSesionUsuario(nuevoUsuario.id);
 
         // Si todo esta bien, muestro mensaje de exito
         mostrarMensaje(

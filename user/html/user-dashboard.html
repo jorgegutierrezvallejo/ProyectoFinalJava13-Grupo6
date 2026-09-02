@@ -36,7 +36,8 @@
 
             <!-- SALUDO AL USUARIO -->
             <div class="user-saludo">
-                Hola, <strong>Ana</strong>. Aquí tienes el resumen del cuidado de tus mascotas.
+                <h2>Hola, Ana 👋</h2>
+                <p>Aquí tienes el resumen del cuidado de tus mascotas.</p>
             </div>
 
             <!-- FILA DE 4 KPIS / METRICAS -->
@@ -117,10 +118,13 @@
                             <a href="#" class="dash-card__link">Ver calendario</a>
                         </div>
 
+                        <!-- Contenido dinamico: ficha de la cita o estado vacio -->
+                        <div id="proximaCitaContenido">
+
                         <!-- Ficha Mascota y Estado -->
                         <div class="cita-mascota-box">
                             <div class="cita-mascota-info">
-                                <div class="cita-mascota-avatar">
+                                <div class="cita-mascota-avatar" id="proximaCitaAvatar">
                                     <i class="fa-solid fa-paw"></i>
                                 </div>
                                 <div>
@@ -201,6 +205,8 @@
                                 <span>Cancelar</span>
                             </button>
                         </div>
+
+                        </div>
                     </div>
 
                     <!-- SECCIÓN: MIS MASCOTAS -->
@@ -208,12 +214,12 @@
                         <div class="dash-card__header">
                             <div>
                                 <h2 class="dash-card__title">Mis mascotas</h2>
-                                <p class="dash-card__subtitle">2 mascotas registradas</p>
+                                <p class="dash-card__subtitle" id="mascotasContadorTexto">2 mascotas registradas</p>
                             </div>
                             <a href="#" class="dash-card__link">Ver todas</a>
                         </div>
 
-                        <div class="mascotas-lista">
+                        <div class="mascotas-lista" id="mascotasLista">
                             <!-- Mascota 1: Luna -->
                             <div class="mascota-item-card">
                                 <div class="mascota-item-main">
@@ -258,6 +264,37 @@
                                         <span class="mascota-item-detalles">5 años · 28 kg</span>
                                         <span class="mascota-item-estado mascota-item-estado--aviso">
                                             <i class="bi bi-dot"></i> Próxima vacuna en 15 días
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="mascota-item-botones">
+                                    <a href="#" class="btn-mascota-accion">
+                                        <i class="bi bi-journal-text"></i>
+                                        <span>Ver historial</span>
+                                    </a>
+                                    <a href="../../agendar.html" class="btn-mascota-accion">
+                                        <i class="bi bi-calendar-plus"></i>
+                                        <span>Agendar cita</span>
+                                    </a>
+                                </div>
+                            </div>
+
+
+                            <!-- Mascota 1: Luna -->
+                            <div class="mascota-item-card">
+                                <div class="mascota-item-main">
+                                    <div class="mascota-item-avatar mascota-item-avatar--gato">
+                                        <i class="fa-solid fa-cat"></i>
+                                    </div>
+                                    <div class="mascota-item-info">
+                                        <div class="mascota-item-header">
+                                            <span class="mascota-item-nombre">Luna</span>
+                                            <span class="badge-mascota-raza badge-mascota-raza--azul">Gato · Siamés</span>
+                                        </div>
+                                        <span class="mascota-item-detalles">3 años · 4.2 kg</span>
+                                        <span class="mascota-item-estado mascota-item-estado--ok">
+                                            <i class="bi bi-dot"></i> Al día con vacunas
                                         </span>
                                     </div>
                                 </div>
@@ -337,55 +374,6 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN: ACTIVIDAD RECIENTE -->
-                    <div class="dash-card">
-                        <div class="dash-card__header">
-                            <div>
-                                <h2 class="dash-card__title">Actividad reciente</h2>
-                                <p class="dash-card__subtitle">Tus últimos movimientos</p>
-                            </div>
-                            <a href="#" class="dash-card__link">Ver todas</a>
-                        </div>
-
-                        <div class="actividad-lista">
-                            <!-- Actividad 1 -->
-                            <div class="actividad-item">
-                                <div class="actividad-icono actividad-icono--cita">
-                                    <i class="bi bi-calendar3"></i>
-                                </div>
-                                <div class="actividad-info">
-                                    <span class="actividad-titulo">Cita agendada</span>
-                                    <span class="actividad-desc">Control de peso para Max</span>
-                                    <span class="actividad-tiempo">Hace 2 días</span>
-                                </div>
-                            </div>
-
-                            <!-- Actividad 2 -->
-                            <div class="actividad-item">
-                                <div class="actividad-icono actividad-icono--vacuna">
-                                    <i class="bi bi-shield-check"></i>
-                                </div>
-                                <div class="actividad-info">
-                                    <span class="actividad-titulo">Vacuna aplicada</span>
-                                    <span class="actividad-desc">Antirrábica a Luna</span>
-                                    <span class="actividad-tiempo">Hace 1 semana</span>
-                                </div>
-                            </div>
-
-                            <!-- Actividad 3 -->
-                            <div class="actividad-item">
-                                <div class="actividad-icono actividad-icono--perfil">
-                                    <i class="bi bi-pencil"></i>
-                                </div>
-                                <div class="actividad-info">
-                                    <span class="actividad-titulo">Perfil actualizado</span>
-                                    <span class="actividad-desc">Datos de Max</span>
-                                    <span class="actividad-tiempo">Hace 2 semanas</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
 
             </div>
@@ -394,13 +382,30 @@
 
     </div>
 
+    <!-- componente agendar cita -->
+    <div
+        id="agendar-cita-container"
+        data-agendar-html="../../components/agendar-cita/agendar-cita.html"
+        data-agendar-css-modal="../../components/agendar-cita/agendar-cita.css"
+        data-agendar-css-formulario="../../css/agendar.css"
+        data-agendar-js="../../js/agendar.js"
+    ></div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../js/components.js"></script>
     <script src="../js/user-sidebar.js"></script>
     <script src="../js/user-topbar.js"></script>
+    <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/usuarios-storage.js"></script>
+    <script src="../../js/shared/citas-storage.js"></script>
+    <script src="../../js/shared/mascotas-storage.js"></script>
+    <script src="../../js/shared/servicios-storage.js"></script>
+    <script src="../../js/shared/tipos-servicio-storage.js"></script>
+    <script src="../../js/shared/data-migrations.js"></script>
     <script src="../js/user-dashboard.js"></script>
+    <script src="../../components/agendar-cita/agendar-cita.js"></script>
 
 </body>
 

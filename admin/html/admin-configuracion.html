@@ -74,14 +74,219 @@
 
 
         <main class="admin-configuracion">
+            <section class="configuracion-layout" aria-label="Configuración de la cuenta">
+                <aside class="configuracion-menu" aria-label="Secciones de configuración">
+                    <h2>Configuración</h2>
 
-            <!--
-                AQUÍ DISEÑAREMOS
-                LA VISTA DE CONFIGURACIÓN
-            -->
+                    <nav class="configuracion-menu__nav" role="tablist" aria-label="Opciones de configuración">
+                        <button class="configuracion-menu__opcion configuracion-menu__opcion--activa" type="button" role="tab" aria-selected="true" aria-controls="panel-perfil" data-config-tab="perfil">
+                            <i class="bi bi-person"></i>
+                            <span>Perfil</span>
+                        </button>
+                        <button class="configuracion-menu__opcion" type="button" role="tab" aria-selected="false" aria-controls="panel-cuenta" data-config-tab="cuenta">
+                            <i class="bi bi-person"></i>
+                            <span>Cuenta</span>
+                        </button>
+                        <div class="configuracion-menu__separador"></div>
+                        <button class="configuracion-menu__opcion" type="button" role="tab" aria-selected="false" aria-controls="panel-negocio" data-config-tab="negocio">
+                            <i class="bi bi-shop"></i>
+                            <span>Tu negocio</span>
+                        </button>
+                        <div class="configuracion-menu__separador"></div>
+                        <button class="configuracion-menu__opcion" type="button" role="tab" aria-selected="false" aria-controls="panel-datos" data-config-tab="datos">
+                            <i class="bi bi-database"></i>
+                            <span>Datos</span>
+                        </button>
+                    </nav>
+                </aside>
+
+                <div class="configuracion-contenido">
+                    <section class="configuracion-panel" id="panel-perfil" role="tabpanel" data-config-panel="perfil">
+                        <header class="configuracion-panel__encabezado">
+                            <span class="configuracion-panel__icono"><i class="bi bi-person"></i></span>
+                            <div>
+                                <h2>Perfil</h2>
+                                <p>Administra tu información personal y datos de contacto.</p>
+                            </div>
+                        </header>
+
+                        <form id="formPerfilAdmin" class="configuracion-form" novalidate>
+                            <div class="configuracion-foto">
+                                <div class="configuracion-foto__imagen">
+                                    <div class="configuracion-foto__preview" id="fotoPerfilPreview" aria-label="Foto de perfil">
+                                        <img src="../../img/HuellaVet-icon.svg" alt="Foto de perfil del administrador">
+                                    </div>
+                                    <label class="configuracion-foto__cambiar" for="fotoPerfil" title="Cambiar foto de perfil">
+                                        <i class="bi bi-upload"></i>
+                                        <span class="visually-hidden">Cambiar foto</span>
+                                    </label>
+                                    <button class="configuracion-foto__eliminar" id="eliminarFotoPerfil" type="button" aria-label="Eliminar foto de perfil" title="Eliminar foto de perfil" hidden>
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                                <input class="visually-hidden" id="fotoPerfil" type="file" accept="image/png, image/jpeg">
+                                <div class="configuracion-foto__texto">
+                                    <strong>Foto de perfil</strong>
+                                    <span>JPG o PNG, mínimo 200 × 200 px.</span>
+                                </div>
+                            </div>
+
+                            <div class="configuracion-form__grid">
+                                <label class="configuracion-campo">
+                                    <span>Nombre(s)</span>
+                                    <span class="configuracion-campo__control">
+                                        <input id="adminNombres" name="nombres" type="text" value="Administrador" disabled required>
+                                        <button type="button" class="configuracion-campo__editar" data-edit-field="adminNombres" aria-label="Editar nombres"><i class="bi bi-pencil"></i></button>
+                                    </span>
+                                </label>
+
+                                <label class="configuracion-campo">
+                                    <span>Apellido(s)</span>
+                                    <span class="configuracion-campo__control">
+                                        <input id="adminApellidos" name="apellidos" type="text" value="HuellaVet" disabled required>
+                                        <button type="button" class="configuracion-campo__editar" data-edit-field="adminApellidos" aria-label="Editar apellidos"><i class="bi bi-pencil"></i></button>
+                                    </span>
+                                </label>
+
+                                <label class="configuracion-campo">
+                                    <span>Teléfono</span>
+                                    <span class="configuracion-campo__telefono">
+                                        <select id="adminIndicativo" name="indicativo" disabled aria-label="Indicativo telefónico">
+                                            <option value="+57">CO +57</option>
+                                            <option value="+52">MX +52</option>
+                                            <option value="+1">US +1</option>
+                                        </select>
+                                        <span class="configuracion-campo__control">
+                                            <input id="adminTelefono" name="telefono" type="tel" value="300 000 0000" disabled required>
+                                            <button type="button" class="configuracion-campo__editar" data-edit-field="adminTelefono" aria-label="Editar teléfono"><i class="bi bi-pencil"></i></button>
+                                        </span>
+                                    </span>
+                                </label>
+
+                                <label class="configuracion-campo">
+                                    <span>Ciudad</span>
+                                    <span class="configuracion-campo__control">
+                                        <input id="adminCiudad" name="ciudad" type="text" value="Medellín, Antioquia" disabled required>
+                                        <button type="button" class="configuracion-campo__editar" data-edit-field="adminCiudad" aria-label="Editar ciudad"><i class="bi bi-pencil"></i></button>
+                                    </span>
+                                </label>
+
+                                <label class="configuracion-campo">
+                                    <span>Fecha de nacimiento</span>
+                                    <span class="configuracion-campo__control">
+                                        <input id="adminNacimiento" name="fechaNacimiento" type="date" value="1985-04-15" disabled>
+                                        <button type="button" class="configuracion-campo__editar" data-edit-field="adminNacimiento" aria-label="Editar fecha de nacimiento"><i class="bi bi-pencil"></i></button>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="configuracion-acciones">
+                                <button class="configuracion-boton configuracion-boton--primario" type="submit"><i class="bi bi-floppy"></i> Guardar perfil</button>
+                                <button class="configuracion-boton configuracion-boton--secundario" type="button" data-cancelar-form="perfil"><i class="bi bi-x-lg"></i> Cancelar</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section class="configuracion-panel" id="panel-cuenta" role="tabpanel" data-config-panel="cuenta" hidden>
+                        <header class="configuracion-panel__encabezado">
+                            <span class="configuracion-panel__icono"><i class="bi bi-person"></i></span>
+                            <div>
+                                <h2>Cuenta</h2>
+                                <p>Gestiona tu acceso, correo y seguridad.</p>
+                            </div>
+                        </header>
+
+                        <form id="formCuentaAdmin" class="configuracion-form configuracion-form--cuenta" novalidate>
+                            <h3>Acceso de la cuenta</h3>
+                            <div class="configuracion-form__cuenta-campos">
+                                <label class="configuracion-campo">
+                                    <span>Correo electrónico</span>
+                                    <span class="configuracion-campo__control">
+                                        <input id="adminCorreo" name="correo" type="email" value="admin@huellavet.com" disabled required>
+                                        <button type="button" class="configuracion-campo__editar" data-edit-field="adminCorreo" aria-label="Editar correo electrónico"><i class="bi bi-pencil"></i></button>
+                                    </span>
+                                </label>
+                                <label class="configuracion-campo">
+                                    <span>Contraseña</span>
+                                    <span class="configuracion-campo__control">
+                                        <input id="adminContrasena" name="contrasena" type="password" value="HuellaVet2026" disabled required>
+                                        <button type="button" class="configuracion-campo__ver" data-toggle-password="adminContrasena" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                                        <button type="button" class="configuracion-campo__editar" data-open-password-modal aria-label="Cambiar contraseña"><i class="bi bi-pencil"></i></button>
+                                    </span>
+                                </label>
+                            </div>
+                            <div class="configuracion-acciones configuracion-acciones--cuenta">
+                                <button class="configuracion-boton configuracion-boton--primario" type="button" id="abrirModalContrasena"><i class="bi bi-lock"></i> Actualizar contraseña</button>
+                            </div>
+                        </form>
+                    </section>
+
+                    <section class="configuracion-panel" id="panel-negocio" role="tabpanel" data-config-panel="negocio" hidden>
+                        <header class="configuracion-panel__encabezado">
+                            <span class="configuracion-panel__icono"><i class="bi bi-shop"></i></span>
+                            <div>
+                                <h2>Tu negocio</h2>
+                                <p>Administra la información y preferencias de tu clínica.</p>
+                            </div>
+                        </header>
+                        <div class="configuracion-panel__vacio" aria-label="Contenido de Tu negocio pendiente"></div>
+                    </section>
+
+                    <section class="configuracion-panel" id="panel-datos" role="tabpanel" data-config-panel="datos" hidden>
+                        <header class="configuracion-panel__encabezado">
+                            <span class="configuracion-panel__icono"><i class="bi bi-database"></i></span>
+                            <div>
+                                <h2>Datos</h2>
+                                <p>Gestiona la información almacenada en HuellaVet.</p>
+                            </div>
+                        </header>
+                        <div class="configuracion-panel__vacio" aria-label="Contenido de Datos pendiente"></div>
+                    </section>
+                </div>
+            </section>
 
         </main>
 
+    </div>
+
+    <div class="configuracion-modal" id="modalContrasena" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="tituloModalContrasena">
+        <div class="configuracion-modal__contenedor">
+            <header class="configuracion-modal__encabezado">
+                <span class="configuracion-panel__icono"><i class="bi bi-lock"></i></span>
+                <div>
+                    <h2 id="tituloModalContrasena">Cambiar contraseña</h2>
+                    <p>Te recomendamos usar una contraseña segura con letras, números y símbolos.</p>
+                </div>
+            </header>
+            <form id="formCambiarContrasena" class="configuracion-modal__form" novalidate>
+                <label class="configuracion-campo">
+                    <span>Contraseña actual</span>
+                    <span class="configuracion-campo__control">
+                        <input id="contrasenaActual" type="password" required autocomplete="current-password">
+                        <button type="button" class="configuracion-campo__ver" data-toggle-password="contrasenaActual" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                    </span>
+                </label>
+                <label class="configuracion-campo">
+                    <span>Nueva contraseña</span>
+                    <span class="configuracion-campo__control">
+                        <input id="nuevaContrasena" type="password" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="configuracion-campo__ver" data-toggle-password="nuevaContrasena" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                    </span>
+                </label>
+                <label class="configuracion-campo">
+                    <span>Confirmar nueva contraseña</span>
+                    <span class="configuracion-campo__control">
+                        <input id="confirmarContrasena" type="password" minlength="6" required autocomplete="new-password">
+                        <button type="button" class="configuracion-campo__ver" data-toggle-password="confirmarContrasena" aria-label="Mostrar contraseña"><i class="bi bi-eye"></i></button>
+                    </span>
+                </label>
+                <p class="configuracion-modal__error" id="errorContrasena" role="alert"></p>
+                <div class="configuracion-acciones configuracion-modal__acciones">
+                    <button class="configuracion-boton configuracion-boton--primario" type="submit"><i class="bi bi-lock"></i> Actualizar contraseña</button>
+                    <button class="configuracion-boton configuracion-boton--secundario" type="button" data-cerrar-modal><i class="bi bi-x-lg"></i> Cancelar</button>
+                </div>
+            </form>
+        </div>
     </div>
 
 
@@ -90,6 +295,7 @@
     ></script>
 
 
+    <script src="../../js/shared/local-storage.js"></script>
     <script src="../js/admin-sidebar.js"></script>
     <script src="../js/topbar.js"></script>
 

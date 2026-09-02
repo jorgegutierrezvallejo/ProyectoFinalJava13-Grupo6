@@ -1,5 +1,6 @@
 
-        document.addEventListener("DOMContentLoaded", function () {
+        // funcion global: la llama tambien el componente modal agendar-cita.js
+        function iniciarAgendarCita() {
             const hoy = new Date();
             const anioActual = hoy.getFullYear();
             const mesActual = hoy.getMonth();
@@ -13,11 +14,13 @@
             let mesCalendario = mesActual;
             let anioCalendario = anioActual;
 
-            const serviciosStorageKey = "servicios";
             const datosPaso1StorageKey = "datosCita_Paso1";
             const datosPaso2StorageKey = "datosCita_Paso2";
 
             cargarServiciosDesdeDashboard();
+            iniciarFiltroTipoServicioAgendar();
+            iniciarSelectorMascotaGuardada();
+            precargarDatosDeContacto();
             iniciarEnvioPaso1();
             iniciarCalendario();
             cargarHorarios();
@@ -25,20 +28,32 @@
             iniciarRecordatorios();
             iniciarConfirmacion();
 
-            function cargarServiciosDesdeDashboard() {
+            function cargarServiciosDesdeDashboard(filtroTipoId) {
                 const contenedor = document.getElementById("servicios-container");
                 if (!contenedor) return;
 
-                let servicios = [];
+                let servicios = obtenerServicios();
 
-                try {
-                    servicios = JSON.parse(localStorage.getItem(serviciosStorageKey)) || [];
-                } catch (error) {
-                    console.error("No fue posible leer los servicios del Dashboard:", error);
+                const huboServiciosSinFiltrar = servicios.length > 0;
+
+                if (filtroTipoId) {
+                    servicios = servicios.filter(s => String(s.tipoServicioId || "") === String(filtroTipoId));
                 }
 
-                if (!Array.isArray(servicios) || servicios.length === 0) {
-                    contenedor.innerHTML = `
+                if (servicios.length === 0) {
+                    const selectorWrapperVacio = document.getElementById("serviciosSelectorWrapper");
+                    if (selectorWrapperVacio) selectorWrapperVacio.classList.add("d-none");
+                    const carruselWrapperVacio = document.getElementById("serviciosCarruselContenedor");
+                    if (carruselWrapperVacio) carruselWrapperVacio.classList.remove("d-none");
+
+                    contenedor.innerHTML = filtroTipoId && huboServiciosSinFiltrar
+                        ? `
+                <div class="servicios-vacio">
+                    <i class="bi bi-funnel fs-4 d-block mb-2"></i>
+                    <p class="mb-0">No hay servicios de este tipo por ahora.</p>
+                </div>
+            `
+                        : `
                 <div class="servicios-vacio">
                     <i class="bi bi-info-circle fs-4 d-block mb-2"></i>
                     <p class="mb-0">No hay servicios registrados en el sistema.</p>
@@ -241,6 +256,120 @@
                 }
             }
 
+            // autocompleta y bloquea los campos si elige una mascota ya guardada
+            function iniciarSelectorMascotaGuardada() {
+                const wrapper = document.getElementById("selectorMascotaGuardadaWrapper");
+                const select = document.getElementById("selectMascotaGuardada");
+
+                if (!wrapper || !select || typeof obtenerMascotas !== "function") {
+                    return;
+                }
+
+                const usuarioActivo = typeof obtenerUsuarioRegistrado === "function"
+                    ? obtenerUsuarioRegistrado()
+                    : null;
+                const mascotasGuardadas = usuarioActivo
+                    ? obtenerMascotasPorUsuarioId(usuarioActivo.id)
+                    : [];
+
+                if (mascotasGuardadas.length === 0) {
+                    wrapper.classList.add("d-none");
+                    return;
+                }
+
+                wrapper.classList.remove("d-none");
+
+                select.innerHTML = `<option value="" selected>Nueva mascota (completar datos manualmente)</option>` +
+                    mascotasGuardadas.map(mascota => {
+                        const especieTexto = mascota.especie
+                            ? ` · ${mascota.especie.charAt(0).toUpperCase()}${mascota.especie.slice(1)}`
+                            : "";
+                        return `<option value="${mascota.id}">${escaparHtml(mascota.nombre || "Mascota")}${especieTexto}</option>`;
+                    }).join("");
+
+                const campoNombreMascota = document.getElementById("nombreMascota");
+                const campoEspecieMascota = document.getElementById("especieMascota");
+                const campoRazaMascota = document.getElementById("razaMascota");
+                const campoFechaNacimientoMascota = document.getElementById("fechaNacimientoMascota");
+                const campoPesoMascota = document.getElementById("pesoMascota");
+                const campoUnidadPesoMascota = document.getElementById("unidadPesoMascota");
+
+                const camposAutocompletados = [
+                    campoNombreMascota,
+                    campoEspecieMascota,
+                    campoRazaMascota,
+                    campoFechaNacimientoMascota,
+                    campoPesoMascota,
+                    campoUnidadPesoMascota
+                ];
+
+                select.addEventListener("change", function () {
+                    const idSeleccionado = this.value;
+
+                    if (!idSeleccionado) {
+                        camposAutocompletados.forEach(campo => { if (campo) campo.disabled = false; });
+                        if (campoNombreMascota) campoNombreMascota.value = "";
+                        if (campoEspecieMascota) campoEspecieMascota.selectedIndex = 0;
+                        if (campoRazaMascota) campoRazaMascota.value = "";
+                        if (campoFechaNacimientoMascota) campoFechaNacimientoMascota.value = "";
+                        if (campoPesoMascota) campoPesoMascota.value = "";
+                        return;
+                    }
+
+                    const mascota = mascotasGuardadas.find(m => String(m.id) === idSeleccionado);
+                    if (!mascota) return;
+
+                    if (campoNombreMascota) campoNombreMascota.value = mascota.nombre || "";
+                    if (campoEspecieMascota) campoEspecieMascota.value = mascota.especie || "";
+                    if (campoRazaMascota) campoRazaMascota.value = mascota.raza || "";
+                    if (campoFechaNacimientoMascota) campoFechaNacimientoMascota.value = mascota.fechaNacimiento || "";
+
+                    // El peso se guarda como texto, ej. "20 kg" o "500 g"
+                    const [valorPeso, unidadPeso] = String(mascota.peso || "").trim().split(" ");
+                    if (campoPesoMascota) campoPesoMascota.value = valorPeso || "";
+                    if (campoUnidadPesoMascota && unidadPeso) campoUnidadPesoMascota.value = unidadPeso;
+
+                    camposAutocompletados.forEach(campo => { if (campo) campo.disabled = true; });
+                });
+            }
+
+            // precarga datos de contacto del usuario logueado (editables)
+            function precargarDatosDeContacto() {
+                if (typeof obtenerUsuarioRegistrado !== "function") {
+                    return;
+                }
+
+                const usuario = obtenerUsuarioRegistrado();
+                if (!usuario) {
+                    return;
+                }
+
+                const campoNombreCliente = document.getElementById("nombreCliente");
+                const campoCodigoPais = document.getElementById("codigoPais");
+                const campoTelefonoCliente = document.getElementById("telefonoCliente");
+                const campoEmailCliente = document.getElementById("emailCliente");
+                const campoEmailClienteConfirm = document.getElementById("emailClienteConfirm");
+
+                if (campoNombreCliente && !campoNombreCliente.value) {
+                    campoNombreCliente.value = (usuario.nombreCompleto || "").trim();
+                }
+
+                if (campoTelefonoCliente && !campoTelefonoCliente.value && usuario.telefono) {
+                    campoTelefonoCliente.value = usuario.telefono;
+                    if (campoCodigoPais && usuario.indicativoPais) {
+                        campoCodigoPais.value = usuario.indicativoPais;
+                    }
+                }
+
+                if (campoEmailCliente && !campoEmailCliente.value && usuario.email) {
+                    campoEmailCliente.value = usuario.email;
+                }
+
+                if (campoEmailClienteConfirm && !campoEmailClienteConfirm.value && usuario.email) {
+                    campoEmailClienteConfirm.value = usuario.email;
+                }
+            }
+
             function iniciarEnvioPaso1() {
                 const btnContinuar = document.getElementById("btnContinuarPaso1");
                 if (!btnContinuar) return;
@@ -270,7 +399,7 @@
                             return;
                         }
 
-                        const sObj = servicios.find(s => String(s.id) === String(sId));
+                        const sObj = obtenerServicioPorId(sId);
                         if (!sObj) return;
 
                         servicioId = sObj.id;
@@ -346,6 +475,7 @@
                     }
 
                     const datosPaso1 = {
+                        mascotaId: document.getElementById("selectMascotaGuardada")?.value || "",
                         nombreMascota,
                         especie,
                         raza: document.getElementById("razaMascota")?.value.trim() || "",
@@ -688,8 +818,29 @@
                         ubicacionCita = datosP1.direccionClinica || "HuellaVet — Sede Centro";
                     }
 
+                    const usuarioActivo = obtenerUsuarioRegistrado();
+                    if (!usuarioActivo) {
+                        alert("Debes iniciar sesión para agendar una cita.");
+                        return;
+                    }
+
+                    const mascotaExistente = datosP1.mascotaId
+                        ? obtenerMascotaPorId(datosP1.mascotaId)
+                        : null;
+                    const mascota = mascotaExistente || registrarMascotaSiNoExiste({
+                        nombre: datosP1.nombreMascota,
+                        especie: datosP1.especie,
+                        raza: datosP1.raza,
+                        fechaNacimiento: datosP1.fechaNacimiento === "No especificada" ? "" : datosP1.fechaNacimiento,
+                        peso: datosP1.peso === "No especificado" ? "" : datosP1.peso,
+                        foto: "",
+                        usuarioId: usuarioActivo.id
+                    });
+
                     const nuevaCita = {
                         id: Date.now(),
+                        usuarioId: usuarioActivo.id,
+                        mascotaId: mascota.id,
                         fecha: datosP2.fecha || "2026-08-28",
                         hora: datosP2.hora || "10:30 AM",
                         nombreMascota: datosP1.nombreMascota || "Luna",
@@ -719,10 +870,7 @@
                     // Guardar en sessionStorage para la sesión actual
                     sessionStorage.setItem("datosCita", JSON.stringify(nuevaCita));
 
-                    // Guardar en localStorage para que persista en el Dashboard de Usuario
-                    let citas = JSON.parse(localStorage.getItem("citas")) || [];
-                    citas.unshift(nuevaCita);
-                    localStorage.setItem("citas", JSON.stringify(citas));
+                    agregarCita(nuevaCita);
 
                     if (typeof Swal !== "undefined") {
                         const tieneReserva = datosP1.tieneCostoReserva && datosP1.costoReserva > 0;
@@ -741,7 +889,14 @@
                             cancelButtonText: "Aceptar"
                         }).then(result => {
                             if (result.isConfirmed) {
-                                window.location.href = "./user/html/user-dashboard.html";
+                                if (typeof cerrarAgendarCitaModal === "function" && window.location.pathname.includes("/user/html/")) {
+                                    cerrarAgendarCitaModal();
+                                    window.location.reload();
+                                } else {
+                                    window.location.href = window.location.pathname.includes("/user/html/")
+                                        ? "user-dashboard.html"
+                                        : "./user/html/user-dashboard.html";
+                                }
                             }
                         });
                     } else {
@@ -908,6 +1063,36 @@
                 div.textContent = String(valor);
                 return div.innerHTML;
             }
-        });
 
-   
+            // Llena el filtro "Todos los tipos" (junto al titulo "Tipo de
+            // servicio") con los tipos que el admin ha creado, y vuelve a
+            // pintar el carrusel/selector filtrado cada vez que cambia.
+            function iniciarFiltroTipoServicioAgendar() {
+                const filtroSelect = document.getElementById("filtroTipoServicioAgendar");
+                if (!filtroSelect || typeof obtenerTiposServicio !== "function") {
+                    return;
+                }
+
+                const tipos = obtenerTiposServicio();
+
+                if (tipos.length === 0) {
+                    const contenedorFiltro = filtroSelect.closest(".servicios-seccion__filtro");
+                    if (contenedorFiltro) contenedorFiltro.classList.add("d-none");
+                    return;
+                }
+
+                filtroSelect.innerHTML = `<option value="" selected>Todos los tipos</option>` +
+                    tipos.map(tipo => `<option value="${tipo.id}">${escaparHtml(tipo.nombre)}</option>`).join("");
+
+                filtroSelect.addEventListener("change", function () {
+                    cargarServiciosDesdeDashboard(this.value);
+                });
+            }
+        }
+
+        // auto-inicia solo si el formulario ya esta en el dom (pagina standalone)
+        document.addEventListener("DOMContentLoaded", function () {
+            if (document.getElementById("agendarcita")) {
+                iniciarAgendarCita();
+            }
+        });

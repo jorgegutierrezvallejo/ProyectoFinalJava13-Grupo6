@@ -5,6 +5,7 @@
 .user-page {
     margin-left: var(--sidebar-width);
     min-height: 100vh;
+    height: 100vh;
     background-color: #f7faf8;
     display: flex;
     flex-direction: column;
@@ -14,6 +15,8 @@
     padding: 2rem 2.25rem;
     max-width: 1360px;
     width: 100%;
+    overflow-y: auto;
+    flex: 1;
 }
 
 /* ========================================
@@ -21,14 +24,26 @@
 ======================================== */
 
 .user-saludo {
-    font-size: 0.98rem;
-    color: #4b6663;
-    margin-bottom: 1.6rem;
+    margin-bottom: 27px;
 }
 
-.user-saludo strong {
-    color: var(--color-primario-oscuro);
+.user-saludo h2 {
+    margin: 0 0 6px;
+    font-size: 25px;
     font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.user-saludo p {
+    margin: 0;
+    color: #4b6663;
+    font-size: 14px;
+}
+
+@media (max-width: 480px) {
+    .user-saludo h2 {
+        font-size: 21px;
+    }
 }
 
 /* ========================================
@@ -136,6 +151,14 @@
     gap: 1.5rem;
 }
 
+/* Si la columna solo tiene una tarjeta (ej. Recordatorios sin Actividad reciente),
+   que ocupe todo el alto disponible para que ambas columnas queden simetricas */
+.dashboard-col .dash-card:only-child {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
 /* TARJETAS BASE */
 .dash-card {
     background-color: #ffffff;
@@ -216,6 +239,11 @@
     border-radius: 50%;
     object-fit: cover;
 }
+
+.cita-mascota-avatar--perro { background-color: #fef6e7; color: #d97706; }
+.cita-mascota-avatar--gato  { background-color: #e5f6f5; color: #007981; }
+.cita-mascota-avatar--ave   { background-color: #eaf6ec; color: #2f855a; }
+.cita-mascota-avatar--otro  { background-color: #eef1f0; color: #4b6663; }
 
 .cita-mascota-nombre {
     margin: 0;
@@ -330,6 +358,53 @@
 }
 
 /* ========================================
+   PROXIMA CITA - ESTADO VACIO
+======================================== */
+
+/* Mismo estilo/tamaño que el panel compacto "Pendientes por confirmar"
+   de admin-citas.css (.hv-pendientes--vacio) */
+.proxima-cita-vacio {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.1rem;
+    background-color: #fffdf8;
+    border: 1px solid #f4d99d;
+    border-radius: 0.85rem;
+}
+
+.proxima-cita-vacio__icono {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f4e4af;
+    color: #b9860f;
+    font-size: 1.1rem;
+}
+
+.proxima-cita-vacio__contenido {
+    min-width: 0;
+    flex: 1;
+}
+
+.proxima-cita-vacio__contenido strong {
+    display: block;
+    margin-bottom: 0.1rem;
+    font-size: 0.9rem;
+    color: var(--color-texto-oscuro);
+}
+
+.proxima-cita-vacio__contenido p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #7f8987;
+}
+
+/* ========================================
    SECCION: RECORDATORIOS
 ======================================== */
 
@@ -411,7 +486,39 @@
     display: flex;
     flex-direction: column;
     gap: 0.95rem;
+
+
+    max-height: 250px; 
+    overflow-y: auto;  
+    padding-right: 8px;
 }
+
+
+.mascotas-lista::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mascotas-lista::-webkit-scrollbar-track {
+    background: #f8faf9; 
+    border-radius: 10px;
+}
+
+.mascotas-lista::-webkit-scrollbar-thumb {
+    background: #d5e4e0; 
+    border-radius: 10px;
+}
+
+.mascotas-lista::-webkit-scrollbar-thumb:hover {
+    background: #728c89; 
+}
+
+
+
+
+
+
+
+
 
 .mascota-item-card {
     display: flex;
@@ -443,6 +550,8 @@
 
 .mascota-item-avatar--gato { background-color: #e5f6f5; color: #007981; }
 .mascota-item-avatar--perro { background-color: #fef6e7; color: #d97706; }
+.mascota-item-avatar--ave { background-color: #eaf6ec; color: #2f855a; }
+.mascota-item-avatar--otro { background-color: #eef1f0; color: #4b6663; }
 
 .mascota-item-info {
     display: flex;
@@ -471,6 +580,8 @@
 
 .badge-mascota-raza--azul { background-color: #e9f4ff; color: #2b6cb0; }
 .badge-mascota-raza--dorado { background-color: #fef6e7; color: #b7791f; }
+.badge-mascota-raza--verde { background-color: #eaf6ec; color: #2f855a; }
+.badge-mascota-raza--gris { background-color: #eef1f0; color: #4b6663; }
 
 .mascota-item-detalles {
     font-size: 0.76rem;
@@ -485,6 +596,7 @@
 
 .mascota-item-estado--ok { color: #38a169; }
 .mascota-item-estado--aviso { color: #dd6b20; }
+.mascota-item-estado--info { color: #4b6663; }
 
 .mascota-item-botones {
     display: flex;
@@ -511,60 +623,6 @@
     background-color: var(--color-primario-oscuro);
     border-color: var(--color-primario-oscuro);
     color: #ffffff;
-}
-
-/* ========================================
-   SECCION: ACTIVIDAD RECIENTE
-======================================== */
-
-.actividad-lista {
-    display: flex;
-    flex-direction: column;
-    gap: 0.95rem;
-}
-
-.actividad-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.85rem;
-}
-
-.actividad-icono {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.95rem;
-    flex-shrink: 0;
-}
-
-.actividad-icono--cita { background-color: #e5f6f5; color: #007981; }
-.actividad-icono--vacuna { background-color: #e6f7eb; color: #38a169; }
-.actividad-icono--perfil { background-color: #fef6e7; color: #dd6b20; }
-
-.actividad-info {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.25;
-}
-
-.actividad-titulo {
-    font-size: 0.86rem;
-    font-weight: 700;
-    color: var(--color-texto-oscuro);
-}
-
-.actividad-desc {
-    font-size: 0.76rem;
-    color: #728c89;
-    margin: 0.1rem 0;
-}
-
-.actividad-tiempo {
-    font-size: 0.7rem;
-    color: #9ab3b0;
 }
 
 /* ========================================

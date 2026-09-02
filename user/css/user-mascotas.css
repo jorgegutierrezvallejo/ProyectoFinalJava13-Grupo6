@@ -1,0 +1,719 @@
+/* ========================================
+   PAGINA: MIS MASCOTAS
+======================================== */
+
+.mascotas-page {
+    padding-bottom: 2.5rem;
+}
+
+/* ---------- Encabezado ---------- */
+
+.mascotas-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.6rem;
+}
+
+.mascotas-header__titulo {
+    margin: 0 0 6px;
+    font-size: 25px;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.mascotas-header__subtitulo {
+    margin: 0;
+    font-size: 14px;
+    color: #4b6663;
+}
+
+.btn-agregar-mascota {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.1rem;
+    border-radius: 10px;
+    border: 1.5px solid var(--color-primario);
+    background-color: #eef8f7;
+    color: var(--color-primario-oscuro);
+    font-family: var(--fuente-principal);
+    font-size: 0.9rem;
+    font-weight: 700;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-agregar-mascota:hover {
+    background-color: var(--color-primario);
+    color: #ffffff;
+}
+
+/* ---------- Layout de 2 columnas ---------- */
+
+.mascotas-layout {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+/* ---------- Columna izquierda ---------- */
+
+.mascotas-columna-lista {
+    background-color: #ffffff;
+    border: 1px solid #e1ebe8;
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 2px 10px rgba(34, 62, 60, 0.03);
+}
+
+.mascotas-buscador {
+    position: relative;
+    margin-bottom: 0.9rem;
+}
+
+.mascotas-buscador i {
+    position: absolute;
+    left: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #8aa19d;
+    font-size: 0.9rem;
+}
+
+.mascotas-buscador input {
+    width: 100%;
+    padding: 0.6rem 0.9rem 0.6rem 2.3rem;
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    font-family: var(--fuente-principal);
+    font-size: 0.88rem;
+    color: var(--color-texto-oscuro);
+    background-color: #f7faf8;
+}
+
+.mascotas-buscador input:focus {
+    outline: none;
+    border-color: var(--color-primario);
+    background-color: #ffffff;
+}
+
+.mascotas-filtros {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.1rem;
+}
+
+.mascotas-filtro-chip {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-borde);
+    background-color: #ffffff;
+    color: #4b6663;
+    font-family: var(--fuente-principal);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mascotas-filtro-chip:hover {
+    border-color: var(--color-primario);
+}
+
+.mascotas-filtro-chip--activo {
+    background-color: var(--color-acento);
+    border-color: var(--color-acento);
+    color: var(--color-texto-oscuro);
+}
+
+.mascotas-lista-perfil {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    max-height: calc(100vh - 320px);
+    overflow-y: auto;
+    padding-right: 0.2rem;
+}
+
+.mascotas-contador {
+    margin: 0.9rem 0 0;
+    font-size: 0.76rem;
+    color: #8aa19d;
+    text-align: center;
+}
+
+/* ---------- Tarjeta de mascota (lista) ---------- */
+
+.mascota-lista-card {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.9rem;
+    border: 1.5px solid var(--color-borde);
+    border-radius: 12px;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.mascota-lista-card:hover {
+    border-color: var(--color-secundario-claro);
+}
+
+.mascota-lista-card--activa {
+    border-color: var(--color-primario);
+    background-color: #eef8f7;
+}
+
+.mascota-lista-card__fila {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.mascota-lista-card__avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+    background-color: #f0ece8;
+}
+
+.mascota-lista-card__avatar--icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+}
+
+.mascota-lista-card__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mascota-lista-card__nombre-fila {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.15rem;
+}
+
+.mascota-lista-card__nombre {
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.mascota-lista-card__detalles {
+    display: block;
+    font-size: 0.76rem;
+    color: #728c89;
+    margin-bottom: 0.2rem;
+}
+
+.mascota-lista-card__estado {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.74rem;
+    font-weight: 600;
+}
+
+.mascota-lista-card__estado--ok { color: #38a169; }
+.mascota-lista-card__estado--aviso { color: #dd6b20; }
+.mascota-lista-card__estado--info { color: #4b6663; }
+
+.mascota-lista-card__flecha {
+    color: #b7c7c3;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.mascota-lista-card__botones {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #edf1f1;
+}
+
+.mascotas-vacio {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem 1.1rem;
+    background-color: #fffdf8;
+    border: 1px solid #f4d99d;
+    border-radius: 0.85rem;
+}
+
+.mascotas-vacio__icono {
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #f4e4af;
+    color: #b9860f;
+    font-size: 1.1rem;
+}
+
+.mascotas-vacio__contenido strong {
+    display: block;
+    margin-bottom: 0.1rem;
+    font-size: 0.9rem;
+    color: var(--color-texto-oscuro);
+}
+
+.mascotas-vacio__contenido p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #7f8987;
+}
+
+/* ---------- Columna derecha: detalle ---------- */
+
+.mascotas-columna-detalle {
+    background-color: #ffffff;
+    border: 1px solid #e1ebe8;
+    border-radius: 16px;
+    padding: 1.6rem;
+    box-shadow: 0 2px 10px rgba(34, 62, 60, 0.03);
+}
+
+.mascota-detalle-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.1rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #edf1f1;
+    margin-bottom: 1.35rem;
+}
+
+.mascota-detalle-avatar-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.mascota-detalle-avatar {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--color-primario);
+    background-color: #f0ece8;
+}
+
+.mascota-detalle-avatar--icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.3rem;
+}
+
+.mascota-detalle-avatar-editar {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    background-color: var(--color-primario);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.mascota-detalle-titulo {
+    flex: 1;
+    min-width: 0;
+}
+
+.mascota-detalle-nombre-fila {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 0.3rem;
+}
+
+.mascota-detalle-nombre-fila h2 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.mascota-detalle-id {
+    font-size: 0.78rem;
+    color: #8aa19d;
+}
+
+.mascota-detalle-header-derecha {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+}
+
+.mascota-detalle-estado-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.76rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.mascota-detalle-estado-badge--ok {
+    background-color: #e6f6ec;
+    color: #2f855a;
+}
+
+.mascota-detalle-estado-badge--aviso {
+    background-color: #fff2e2;
+    color: #c05621;
+}
+
+.mascota-detalle-menu {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid var(--color-borde);
+    background-color: #ffffff;
+    color: #4b6663;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.mascota-detalle-menu:hover {
+    background-color: #f7faf8;
+}
+
+.mascota-detalle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem 2rem;
+    margin-bottom: 1.35rem;
+}
+
+.mascota-detalle-campo {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    font-size: 0.85rem;
+}
+
+.mascota-detalle-campo i {
+    color: var(--color-primario);
+    font-size: 0.9rem;
+    margin-top: 0.15rem;
+    width: 16px;
+    text-align: center;
+}
+
+.mascota-detalle-campo-texto {
+    display: flex;
+    flex-direction: column;
+}
+
+.mascota-detalle-campo-texto span {
+    font-size: 0.72rem;
+    color: #8aa19d;
+}
+
+.mascota-detalle-campo-texto strong {
+    font-size: 0.88rem;
+    color: var(--color-texto-oscuro);
+    font-weight: 700;
+}
+
+.mascota-detalle-observaciones {
+    background-color: #f7faf8;
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 1.35rem;
+}
+
+.mascota-detalle-observaciones span {
+    display: block;
+    font-size: 0.72rem;
+    color: #8aa19d;
+    margin-bottom: 0.25rem;
+}
+
+.mascota-detalle-observaciones p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-texto-oscuro);
+    line-height: 1.5;
+}
+
+/* ---------- Subtarjetas: Proxima cita / Recordatorios ---------- */
+
+.mascota-detalle-subcards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.35rem;
+}
+
+.mascota-detalle-subcard {
+    border: 1px solid var(--color-borde);
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.mascota-detalle-subcard__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.mascota-detalle-subcard__header i {
+    color: var(--color-primario);
+}
+
+.mascota-detalle-subcard__header strong {
+    flex: 1;
+    font-size: 0.88rem;
+    color: var(--color-texto-oscuro);
+}
+
+.mascota-detalle-subcard__header a {
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: var(--color-primario-oscuro);
+    text-decoration: none;
+}
+
+.mascota-detalle-subcard__header a:hover {
+    text-decoration: underline;
+}
+
+.mascota-cita-mini {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.mascota-cita-mini__servicio {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.mascota-cita-mini__badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    background-color: #eef8f7;
+    color: var(--color-primario-oscuro);
+}
+
+.mascota-cita-mini__detalle {
+    font-size: 0.78rem;
+    color: #728c89;
+}
+
+.mascota-cita-mini__boton {
+    margin-top: 0.7rem;
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-borde);
+    background-color: #ffffff;
+    color: var(--color-texto-oscuro);
+    font-family: var(--fuente-principal);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.mascota-cita-mini__boton:hover {
+    background-color: var(--color-primario-oscuro);
+    border-color: var(--color-primario-oscuro);
+    color: #ffffff;
+}
+
+.mascota-cita-mini--vacio {
+    font-size: 0.8rem;
+    color: #8aa19d;
+}
+
+.mascota-recordatorio-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.45rem 0;
+}
+
+.mascota-recordatorio-item + .mascota-recordatorio-item {
+    border-top: 1px solid #edf1f1;
+}
+
+.mascota-recordatorio-item__texto {
+    display: flex;
+    flex-direction: column;
+}
+
+.mascota-recordatorio-item__titulo {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-texto-oscuro);
+}
+
+.mascota-recordatorio-item__fecha {
+    font-size: 0.72rem;
+    color: #8aa19d;
+}
+
+.mascota-recordatorio-item__badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.mascota-recordatorio-item__badge--lila { background-color: #eee5fb; color: #6b46c1; }
+.mascota-recordatorio-item__badge--verde { background-color: #e6f6ec; color: #2f855a; }
+.mascota-recordatorio-item__badge--naranja { background-color: #fff2e2; color: #c05621; }
+
+.mascota-detalle-recordatorios--vacio {
+    font-size: 0.8rem;
+    color: #8aa19d;
+}
+
+/* ---------- Acciones finales ---------- */
+
+.mascota-detalle-acciones {
+    display: flex;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+}
+
+.mascota-detalle-acciones button,
+.mascota-detalle-acciones a {
+    flex: 1;
+    min-width: 140px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.65rem 0.9rem;
+    border-radius: 9px;
+    font-family: var(--fuente-principal);
+    font-size: 0.83rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid var(--color-borde);
+    background-color: #ffffff;
+    color: var(--color-texto-oscuro);
+    transition: all 0.2s ease;
+}
+
+.mascota-detalle-acciones button:hover,
+.mascota-detalle-acciones a:hover {
+    border-color: var(--color-primario);
+}
+
+.mascota-detalle-acciones__agendar {
+    background-color: var(--color-primario) !important;
+    border-color: var(--color-primario) !important;
+    color: #ffffff !important;
+}
+
+.mascota-detalle-acciones__agendar:hover {
+    background-color: var(--color-primario-oscuro) !important;
+    border-color: var(--color-primario-oscuro) !important;
+}
+
+.mascota-detalle-acciones__eliminar {
+    color: #e53e3e !important;
+    border-color: #f3c9c9 !important;
+}
+
+.mascota-detalle-acciones__eliminar:hover {
+    background-color: #fdecec !important;
+    border-color: #e53e3e !important;
+}
+
+/* Colores de avatar/detalle por especie (compartidos con Resumen) */
+
+.mascota-lista-card__avatar--gato,
+.mascota-detalle-avatar--gato { background-color: #e5f6f5; color: #007981; }
+
+.mascota-lista-card__avatar--perro,
+.mascota-detalle-avatar--perro { background-color: #fef6e7; color: #d97706; }
+
+.mascota-lista-card__avatar--ave,
+.mascota-detalle-avatar--ave { background-color: #eaf6ec; color: #2f855a; }
+
+.mascota-lista-card__avatar--otro,
+.mascota-detalle-avatar--otro { background-color: #eef1f0; color: #4b6663; }
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 1200px) {
+    .mascotas-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .mascotas-lista-perfil {
+        max-height: none;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .mascotas-header {
+        flex-direction: column;
+    }
+
+    .btn-agregar-mascota {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .mascota-detalle-grid,
+    .mascota-detalle-subcards {
+        grid-template-columns: 1fr;
+    }
+
+    .mascota-detalle-header {
+        flex-wrap: wrap;
+    }
+
+    .mascota-detalle-acciones button,
+    .mascota-detalle-acciones a {
+        min-width: 100%;
+    }
+}

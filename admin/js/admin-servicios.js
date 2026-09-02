@@ -1,8 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
+    iniciarFiltroTipoServicio();
     mostrarServicios();
 });
 
 function mostrarServicios() {
+    const filtroSelect = document.getElementById("filtroTipoServicio");
+    const filtroTipoId = filtroSelect ? filtroSelect.value : "";
     const contenedorServicios = document.getElementById("contenedorServicios");
     const totalServicios = document.getElementById("totalServicios");
 
@@ -10,12 +13,24 @@ function mostrarServicios() {
         return;
     }
 
-    const servicios = JSON.parse(localStorage.getItem("servicios")) || [];
+    const todosLosServicios = obtenerServicios();
+    const servicios = filtroTipoId
+        ? todosLosServicios.filter(s => String(s.tipoServicioId || "") === String(filtroTipoId))
+        : todosLosServicios;
 
     actualizarTotalServicios(servicios, totalServicios);
 
     if (servicios.length === 0) {
-        contenedorServicios.innerHTML = `
+        const esPorFiltro = filtroTipoId && todosLosServicios.length > 0;
+        contenedorServicios.innerHTML = esPorFiltro
+            ? `
+            <div class="servicios-vacio">
+                <i class="bi bi-funnel"></i>
+                <h3>Sin servicios de este tipo</h3>
+                <p>No tienes servicios asignados a este tipo todavía.</p>
+            </div>
+        `
+            : `
             <div class="servicios-vacio">
                 <i class="bi bi-briefcase"></i>
                 <h3>No hay servicios creados</h3>
@@ -47,6 +62,7 @@ function mostrarServicios() {
             </div>
 
             <div class="servicio-info">
+                ${nombreTipoServicio(servicio.tipoServicioId) ? `<span class="servicio-tipo-badge">${escaparHtmlServicios(nombreTipoServicio(servicio.tipoServicioId))}</span>` : ""}
                 <h3>${servicio.nombre}</h3>
                 <p>${servicio.descripcion}</p>
             </div>
@@ -86,7 +102,7 @@ function mostrarServicios() {
             </div>
 
             <div class="servicio-acciones">
-                <button type="button" class="btn btn-modificar" onclick="modificarServicio(${servicio.id})">
+                <button type="button" class="btn btn-modificar" onclick="modificarServicio('${servicio.id}')">
                     <i class="bi bi-pencil"></i>
                     Modificar
                 </button>
@@ -94,7 +110,7 @@ function mostrarServicios() {
                 <button
                     type="button"
                     class="btn btn-eliminar"
-                    onclick="eliminarServicio(${servicio.id})"
+                    onclick="eliminarServicio('${servicio.id}')"
                 >
                     <i class="bi bi-trash"></i>
                     Eliminar
@@ -152,13 +168,7 @@ function eliminarServicio(idServicio) {
             return;
         }
 
-        let servicios = JSON.parse(localStorage.getItem("servicios")) || [];
-
-        servicios = servicios.filter(function (servicio) {
-            return servicio.id !== idServicio;
-        });
-
-        localStorage.setItem("servicios", JSON.stringify(servicios));
+        eliminarServicioGuardado(idServicio);
 
         mostrarServicios();
 
@@ -170,4 +180,28 @@ function eliminarServicio(idServicio) {
             confirmButtonColor: "#bad641"
         });
     });
+}
+// Llena el filtro "Todos los servicios" con los tipos de servicio
+// que el admin ha creado (ver js/shared/tipos-servicio-storage.js), y vuelve a pintar
+// la grilla cada vez que el admin cambia el filtro.
+function iniciarFiltroTipoServicio() {
+    const filtroSelect = document.getElementById("filtroTipoServicio");
+    if (!filtroSelect || typeof obtenerTiposServicio !== "function") {
+        return;
+    }
+
+    const tipos = obtenerTiposServicio();
+
+    filtroSelect.innerHTML = `<option value="" selected>Todos los servicios</option>` +
+        tipos.map(tipo => `<option value="${tipo.id}">${escaparHtmlServicios(tipo.nombre)}</option>`).join("");
+
+    filtroSelect.addEventListener("change", function () {
+        mostrarServicios();
+    });
+}
+
+function escaparHtmlServicios(valor) {
+    const div = document.createElement("div");
+    div.textContent = valor == null ? "" : String(valor);
+    return div.innerHTML;
 }

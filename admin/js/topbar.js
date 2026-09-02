@@ -72,6 +72,8 @@ function iniciarTopbar() {
 
     iniciarBotonSidebar();
 
+    document.dispatchEvent(new CustomEvent("topbarCargada"));
+
 }
 
 

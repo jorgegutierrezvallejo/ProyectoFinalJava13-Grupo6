@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Mascotas | HuellaVet</title>
+    <link rel="icon" href="../../img/HuellaVet-icon.svg" type="image/svg+xml">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Estilos de componentes modulares -->
+    <link rel="stylesheet" href="../css/user-sidebar.css">
+    <link rel="stylesheet" href="../css/user-topbar.css">
+    <link rel="stylesheet" href="../css/user-dashboard.css">
+    <link rel="stylesheet" href="../css/user-mascotas.css">
+
+</head>
+
+<body data-page="mascotas" data-page-title="Mis Mascotas">
+
+    <!-- CONTENEDOR SIDEBAR (Componente Dinámico) -->
+    <div id="sidebar-container"></div>
+
+    <div class="user-page">
+
+        <!-- CONTENEDOR TOPBAR (Componente Dinámico) -->
+        <div id="topbar-container"></div>
+
+        <main class="user-dashboard-content mascotas-page">
+
+            <!-- Encabezado de la pagina -->
+            <div class="mascotas-header">
+                <div>
+                    <h1 class="mascotas-header__titulo">Mis Mascotas</h1>
+                    <p class="mascotas-header__subtitulo">Consulta, edita y agenda servicios para cada mascota.</p>
+                </div>
+                <button type="button" class="btn-agregar-mascota" id="btnAgregarMascota">
+                    <i class="bi bi-plus-circle"></i>
+                    <span>Agregar mascotas</span>
+                </button>
+            </div>
+
+            <div class="mascotas-layout">
+                <!-- COLUMNA IZQUIERDA: buscador + filtros + lista -->
+                <div class="mascotas-columna-lista">
+
+                    <div class="mascotas-buscador">
+                        <i class="bi bi-search"></i>
+                        <input type="text" id="buscadorMascotas" placeholder="Buscar mascota" autocomplete="off">
+                    </div>
+
+                    <div class="mascotas-filtros" id="mascotasFiltros">
+                        <button type="button" class="mascotas-filtro-chip mascotas-filtro-chip--activo" data-filtro="todas">Todas</button>
+                        <button type="button" class="mascotas-filtro-chip" data-filtro="perro"><i class="fa-solid fa-dog"></i> Perros</button>
+                        <button type="button" class="mascotas-filtro-chip" data-filtro="gato"><i class="fa-solid fa-cat"></i> Gatos</button>
+                    </div>
+
+                    <div class="mascotas-lista-perfil" id="mascotasListaPerfil">
+                        <!-- Tarjetas generadas dinamicamente por user-mascotas.js -->
+                    </div>
+
+                    <p class="mascotas-contador" id="mascotasContadorLista">Mostrando 0 de 0 mascotas</p>
+
+                </div>
+
+                <!-- COLUMNA DERECHA: detalle de la mascota seleccionada -->
+                <div class="mascotas-columna-detalle" id="mascotasColumnaDetalle">
+                    <!-- Contenido generado dinamicamente por user-mascotas.js -->
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- componente agendar cita -->
+    <div
+        id="agendar-cita-container"
+        data-agendar-html="../../components/agendar-cita/agendar-cita.html"
+        data-agendar-css-modal="../../components/agendar-cita/agendar-cita.css"
+        data-agendar-css-formulario="../../css/agendar.css"
+        data-agendar-js="../../js/agendar.js"
+    ></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../js/components.js"></script>
+    <script src="../js/user-sidebar.js"></script>
+    <script src="../js/user-topbar.js"></script>
+    <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/usuarios-storage.js"></script>
+    <script src="../../js/shared/citas-storage.js"></script>
+    <script src="../../js/shared/mascotas-storage.js"></script>
+    <script src="../../js/shared/servicios-storage.js"></script>
+    <script src="../../js/shared/tipos-servicio-storage.js"></script>
+    <script src="../../js/shared/data-migrations.js"></script>
+    <script src="../js/user-mascotas.js"></script>
+    <script src="../../components/agendar-cita/agendar-cita.js"></script>
+
+</body>
+
+</html>
