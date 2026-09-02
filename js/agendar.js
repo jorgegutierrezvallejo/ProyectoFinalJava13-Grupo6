@@ -16,6 +16,7 @@
 
             const datosPaso1StorageKey = "datosCita_Paso1";
             const datosPaso2StorageKey = "datosCita_Paso2";
+            const servicioIdDesdeEnlace = new URLSearchParams(window.location.search).get("servicioId");
 
             cargarServiciosDesdeDashboard();
             iniciarFiltroTipoServicioAgendar();
@@ -39,6 +40,10 @@
                 if (filtroTipoId) {
                     servicios = servicios.filter(s => String(s.tipoServicioId || "") === String(filtroTipoId));
                 }
+
+                const servicioIdPreseleccionado = servicios.some(servicio => String(servicio.id) === String(servicioIdDesdeEnlace))
+                    ? String(servicioIdDesdeEnlace)
+                    : "";
 
                 if (servicios.length === 0) {
                     const selectorWrapperVacio = document.getElementById("serviciosSelectorWrapper");
@@ -75,6 +80,7 @@
                     if (selectorWrapper) selectorWrapper.classList.remove("d-none");
 
                     if (selectGrande) {
+                        let omitirDetalleInicial = Boolean(servicioIdPreseleccionado);
                         selectGrande.innerHTML = `<option value="" disabled selected>-- Selecciona un servicio (${servicios.length} disponibles) --</option>`;
                         servicios.forEach((serv, i) => {
                             const mod = serv.modalidad || (serv.esDomicilio ? "domicilio" : (serv.esVirtual ? "virtual" : "clinica"));
@@ -104,7 +110,7 @@
                                             </div>
                                             <div class="servicio-preview-card__texto">
                                                 <h4>${escaparHtml(serv.nombre)}</h4>
-                                                <p>${escaparHtml(serv.descripcion || "Servicio veterinario profesional")}</p>
+                                                <p>Precio: <strong>$${Number(serv.precio || 0).toLocaleString("es-CO")} COP</strong></p>
                                             </div>
                                         </div>
                                         <div class="d-flex flex-column align-items-end gap-1">
@@ -115,23 +121,14 @@
                                 `;
                             }
 
-                            if (serv.tieneCostoReserva && serv.costoReserva > 0 && typeof Swal !== "undefined") {
-                                const precioTotal = serv.precio ? Number(serv.precio).toLocaleString("es-CO") : null;
-                                const precioAviso = precioTotal ? ` (Precio total del servicio: <strong>$${precioTotal} COP</strong>)` : "";
-
-                                Swal.fire({
-                                    icon: "info",
-                                    title: "Servicio con cobro de anticipo",
-                                    html: `El servicio <strong>${escaparHtml(serv.nombre)}</strong> requiere un valor de anticipo de <strong>$${Number(serv.costoReserva).toLocaleString("es-CO")} COP</strong> para confirmar la reserva.<br><br>
-                                    <div class="alert alert-success text-start py-2 px-3 small mb-2" style="background-color: #f2f9f5; border: 1px solid #d4ebdc; color: #1e5a38; border-radius: 8px;">
-                                        <i class="bi bi-info-circle-fill me-1"></i><strong>Ten en cuenta:</strong> Este valor se descuenta del valor total del servicio${precioAviso}.
-                                    </div>
-                                    <span style="font-size: 0.85rem; color: #526765;">Deberás enviar el comprobante de pago para que el Médico Veterinario apruebe tu cita.</span>`,
-                                    confirmButtonText: "Entendido",
-                                    confirmButtonColor: "#17a9a7"
-                                });
-                            }
+                            if (!omitirDetalleInicial) mostrarDetalleServicio(serv);
+                            omitirDetalleInicial = false;
                         });
+
+                        if (servicioIdPreseleccionado) {
+                            selectGrande.value = servicioIdPreseleccionado;
+                            selectGrande.dispatchEvent(new Event("change"));
+                        }
                     }
                     return;
                 }
@@ -150,7 +147,10 @@
                     const modalidadIcono = esVirtual ? "bi bi-camera-video" : (esDomicilio ? "bi bi-house-door" : "bi bi-hospital");
 
                     const card = document.createElement("div");
-                    card.className = `servicio-card-option ${index === 0 ? "selected" : ""}`;
+                    const estaPreseleccionado = servicioIdPreseleccionado
+                        ? String(servicio.id) === servicioIdPreseleccionado
+                        : index === 0;
+                    card.className = `servicio-card-option ${estaPreseleccionado ? "selected" : ""}`;
                     card.dataset.id = servicio.id ?? "";
                     card.dataset.tieneReserva = servicio.tieneCostoReserva ? "true" : "false";
                     card.dataset.costoReserva = servicio.costoReserva || 0;
@@ -162,7 +162,7 @@
                     card.dataset.direccionClinica = servicio.direccionClinica || "HuellaVet — Sede Centro";
                     card.setAttribute("role", "button");
                     card.setAttribute("tabindex", "0");
-                    card.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+                    card.setAttribute("aria-pressed", estaPreseleccionado ? "true" : "false");
 
                     const badgeReservaHtml = servicio.tieneCostoReserva && servicio.costoReserva > 0
                         ? `<span class="badge-anticipo"><i class="bi bi-tag-fill me-1"></i>Cobro de anticipo</span>`
@@ -176,14 +176,14 @@
                             <i class="${servicio.icono || "fa-solid fa-paw"}"></i>
                         </div>
                         <div class="servicio-card-option__titulo">${escaparHtml(servicio.nombre || "Servicio")}</div>
-                        <div class="servicio-card-option__desc">${escaparHtml(servicio.descripcion || "")}</div>
+                        <div class="servicio-card-option__precio"><i class="bi bi-coin"></i>$${Number(servicio.precio || 0).toLocaleString("es-CO")} COP</div>
                         <div class="servicio-card-option__badges">
                             ${badgeModalidadHtml}
                             ${badgeReservaHtml}
                         </div>
                     `;
 
-                    const seleccionarServicio = function (mostrarAlerta = true) {
+                    const seleccionarServicio = function (mostrarDetalle = true) {
                         document.querySelectorAll(".servicio-card-option").forEach(c => {
                             c.classList.remove("selected");
                             c.setAttribute("aria-pressed", "false");
@@ -192,24 +192,7 @@
                         card.classList.add("selected");
                         card.setAttribute("aria-pressed", "true");
 
-                        if (mostrarAlerta && servicio.tieneCostoReserva && servicio.costoReserva > 0) {
-                            if (typeof Swal !== "undefined") {
-                                const precioTotal = servicio.precio ? Number(servicio.precio).toLocaleString("es-CO") : null;
-                                const precioAviso = precioTotal ? ` (Precio total del servicio: <strong>$${precioTotal} COP</strong>)` : "";
-
-                                Swal.fire({
-                                    icon: "info",
-                                    title: "Servicio con cobro de anticipo",
-                                    html: `El servicio <strong>${escaparHtml(servicio.nombre)}</strong> requiere un valor de anticipo de <strong>$${Number(servicio.costoReserva).toLocaleString("es-CO")} COP</strong> para confirmar la reserva.<br><br>
-                                    <div class="alert alert-success text-start py-2 px-3 small mb-2" style="background-color: #f2f9f5; border: 1px solid #d4ebdc; color: #1e5a38; border-radius: 8px;">
-                                        <i class="bi bi-info-circle-fill me-1"></i><strong>Ten en cuenta:</strong> Este valor se descuenta del valor total del servicio${precioAviso}.
-                                    </div>
-                                    <span style="font-size: 0.85rem; color: #526765;">Deberás enviar el comprobante de pago para que el Médico Veterinario apruebe tu cita.</span>`,
-                                    confirmButtonText: "Entendido",
-                                    confirmButtonColor: "#17a9a7"
-                                });
-                            }
-                        }
+                        if (mostrarDetalle) mostrarDetalleServicio(servicio);
                     };
 
                     card.addEventListener("click", function () {

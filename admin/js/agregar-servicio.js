@@ -199,7 +199,10 @@ function iniciarServicios() {
                 icono: icono,
                 imagen: imagenBase64,
                 tieneCostoReserva: tieneReserva,
-                costoReserva: tieneReserva ? parseFloat(costoReservaVal) : 0
+                costoReserva: tieneReserva ? parseFloat(costoReservaVal) : 0,
+                mostrarEnHome: Boolean(servicioExistente.mostrarEnHome),
+                destacado: Boolean(servicioExistente.destacado),
+                ordenInicio: servicioExistente.ordenInicio || null
             };
 
             if (index !== -1) {

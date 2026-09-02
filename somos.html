@@ -21,8 +21,11 @@
     <link rel="stylesheet" href="css/somos.css">
     <script src="js/shared/local-storage.js"></script>
     <script src="js/shared/usuarios-storage.js"></script>
+    <script src="js/shared/servicios-storage.js"></script>
+    <script src="js/footer.js" defer></script>
     <script src="js/components.js" defer></script>
     <script src="js/authmodal.js" defer></script>
+    <script src="js/hero-veterinario.js" defer></script>
     <title> Quiénes Somos | HuellaVet - Sistema de Reservas Veterinarias</title>
 
 </head>
@@ -39,139 +42,62 @@
     <!-- Contenido -->
 
 
-    <!-- HERO + MI HISTORIA - LIZETH -->
- <!-- HERO
-    Creo la sección principal para presentar al veterinario y con ega espacio arriba y abajo
-      mediante una clase de Bootstrap -->
-    <section id="hero-veterinario" class="hero-veterinario py-5">
-        <!-- Utilizo container para centrar el contenido y conservar márgenes a los lados-->
-        <div class="container">
-
-            <!--Creo una fila para organizar la imagen
-        y la información.
-
-        align-items-center centra ambas columnas.
-
-        g-4 agrega separación entre ellas -->
-
-            <div class="row align-items-center g-4">
-                <!--Creo la columna de la imagen.
-
-            En móvil ocupa todo el ancho.
-
-            Desde pantallas grandes ocupa la mitad de la fila -->
-                <div class="col-12 col-lg-6">
-                    <!--Muestro la fotografía del veterinario.
-
-              img-fluid permite que sea responsive.
-
-              rounded-4 agrega esquinas redondeadas.
-
-              shadow-sm agrega una sombra sencilla-->
-                    <img src="https://hospitalveterinariomdc.com/wp-content/uploads/2025/04/NORMAL-iStockPhoto-1995860800-1.png" class="img-fluid rounded-4 shadow-sm hero-veterinario__imagen"
-                        alt="Veterinario acompañado por una mascota" />
-                </div>
-
-                <!--Creo la columna donde presentaréla información del veterinario -->
-                <div class="col-12 col-lg-6 hero-veterinario__contenido">
-                    <!--Presento un texto introductorio acompañado por un icono-->
-                    <p class="hero-veterinario__etiqueta mb-2">
-
-                        <!--Muestro un icono decorativo relacionado con la salud -->
-                        <i class="bi bi-heart-pulse me-2" aria-hidden="true"></i>
-
-                        Conoce a tu veterinario
-                    </p>
-
-                    <!--Presento el nombre del veterinario como título principal   -->
-                    <h1 class="hero-veterinario__titulo mb-2">
-                        Dr./Dra. [Nombre del veterinario]
-                    </h1>
-
-                    <!-- Presento la profesión -->
-                    <p class="hero-veterinario__profesion mb-3">
-                        Médico/a veterinario/a
-                    </p>
-
-                    <!--Agrego una descripción breve sobre el profesional -->
-                    <p class="hero-veterinario__descripcion mb-4">
-                        Profesional comprometido con el bienestar
-                        animal, la atención cercana y el cuidado
-                        responsable de cada mascota y su familia.
-                    </p>
-
-                    <!--Creo el botón para dirigir al usuario hacia el agendamiento de una cita -->
-                    <a href="#agendar-cita" class="btn btn-agendar btn-lg">
-                        <!--Muestro un icono de calendario dentro del botón  -->
-                        <i class="bi bi-calendar-check me-2" aria-hidden="true"></i>
-
-                        Agendar cita
-                    </a>
+    <section id="hero-veterinario" class="hero-veterinario" aria-labelledby="titulo-veterinario">
+        <img src="img/hero-aboutme-fondo.png"
+            class="hero-veterinario__fondo" alt="" aria-hidden="true">
+        <img src="img/veterinario.png" class="hero-veterinario__vet" alt="Veterinario" onerror="this.remove()">
+        <div class="container hero-veterinario__contenedor">
+            <div class="hero-veterinario__contenido">
+                <p class="hero-veterinario__etiqueta"><i class="bi bi-heart-pulse" aria-hidden="true"></i> Conoce a tu veterinario</p>
+                <h1 id="titulo-veterinario" class="hero-veterinario__titulo">Dr./Dra. [Nombre del veterinario]</h1>
+                <p class="hero-veterinario__profesion">Médico/a veterinario/a</p>
+                <p class="hero-veterinario__descripcion">Profesional comprometido con el bienestar animal, la atención cercana y el cuidado responsable de cada mascota y su familia.</p>
+                <div class="hero-veterinario__acciones">
+                    <a href="agendar.html" class="btn btn-agendar" data-agendar-requiere-sesion><i class="bi bi-calendar-check"></i> Agendar cita</a>
+                    <a href="servicios.html#servicios" class="btn hero-veterinario__secundario"><i class="bi bi-heart-pulse"></i> Conoce nuestros servicios</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!--MI HISTORIA Responsable: Lizeth
-    Creo una segunda sección para presentar la historia del veterinario-->
-    <section id="mi-historia" class="mi-historia py-5">
-        <!--Utilizo container para alinear esta sección con el contenido del Hero-->
+    <section class="hero-veterinario-info" aria-label="Información de HuellaVet">
         <div class="container">
-
-            <!--Creo una fila y centro su contenido-->
-            <div class="row justify-content-center">
-
-                <!--En móvil utilizo todo el ancho y desde pantallas grandes utilizo 10 de las 12 columnas -->
-                <div class="col-12 col-lg-10">
-
-                    <!--Utilizo una Card de Bootstrap para agrupar la historia-->
-                    <article class="card historia-card border-0 shadow-sm">
-                        <!--Agrego espacio interno dentro de la Card-->
-                        <div class="card-body p-4">
-
-                            <!--Creo una fila interna para separar el texto y la imagen decorativa-->
-                            <div class="row align-items-center g-4">
-
-                                <!--Creo la columna principal donde irá el contenido -->
-                                <div class="col-12 col-lg-8">
-
-                                    <!--Creo un círculo para mostrar el icono de atención veterinaria-->
-                                    <div class="historia-card__icono mb-3" aria-hidden="true">
-                                        <i class="bi bi-heart-pulse"></i>
-                                    </div>
-
-                                    <!--Presento el título de la sección-->
-                                    <h2 class="historia-card__titulo mb-3">
-                                        Mi historia
-                                    </h2>
-
-                                    <!--Presento el primer párrafo de la historia-->
-                                    <p class="historia-card__texto">
-                                        Desde el inicio de mi formación descubrí
-                                        que mi propósito estaba relacionado con
-                                        el cuidado y el bienestar de los animales.
-                                    </p>
-
-                                    <!--Complemento la información con un segundo párrafo -->
-                                    <p class="historia-card__texto mb-0">
-                                        Mi compromiso es acompañar a cada familia,
-                                        brindar una orientación clara y ofrecer
-                                        una atención basada en el respeto y
-                                        el bienestar de cada mascota.
-                                    </p>
-                                </div>
-
-                                <!--Creo una columna para mostrar una imagen decorativa, con d-none la oculta en pantallas pequeñas y
-                d-lg-block la muestra en pantallas grandes-->
-                                <div class="col-lg-4 d-none d-lg-block text-center">
-                                    <img src="../img/historia-mascotas.png" class="img-fluid historia-card__imagen"
-                                        alt="" />
-                                </div>
-                            </div>
-                        </div>
-                    </article>
+            <div class="hero-veterinario-info__card">
+                <div class="hero-veterinario-info__item">
+                    <i class="bi bi-clock"></i>
+                    <div><strong>Lun. a Vier. 8:00 am - 6:00 pm</strong><span>Sábados 8:00 am - 4:00 pm</span></div>
+                </div>
+                <div class="hero-veterinario-info__item">
+                    <i class="bi bi-geo-alt"></i>
+                    <div><strong>Ubicación en Bogotá</strong><span>Siempre al lado de tu mascota</span></div>
+                </div>
+                <div class="hero-veterinario-info__item">
+                    <i class="bi bi-heart-pulse"></i>
+                    <div><strong>Servicio profesional</strong><span>Con amor, ética y compromiso</span></div>
+                </div>
+                <div class="hero-veterinario-info__item">
+                    <i class="bi bi-person"></i>
+                    <div><strong>Acompañamiento personalizado</strong><span>En cada etapa de su vida</span></div>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <section id="mi-historia" class="mi-historia">
+        <div class="container">
+            <article class="historia-card">
+                <div class="historia-card__contenido">
+                    <div class="historia-card__icono" aria-hidden="true"><i class="bi bi-heart-pulse"></i></div>
+                    <h2 class="historia-card__titulo">Mi historia</h2>
+                    <p class="historia-card__texto">Desde el inicio de mi formación descubrí que mi propósito estaba relacionado con el cuidado y el bienestar de los animales.</p>
+                    <p class="historia-card__texto">Mi compromiso es acompañar a cada familia, brindar una orientación clara y ofrecer una atención basada en el respeto y el bienestar de cada mascota.</p>
+                    <p class="historia-card__mensaje"><i class="bi bi-heart"></i> Gracias por ser parte de nuestra historia</p>
+                </div>
+                <div class="historia-card__media">
+                    <img src="img/hero-contacto..png" alt="Mascotas atendidas con cuidado">
+                    <span class="historia-card__dato"><strong>+5.000</strong> mascotas atendidas<br>con amor</span>
+                </div>
+            </article>
         </div>
     </section>
 
@@ -381,23 +307,6 @@
             </div>
         </div>
 
-        <!-- Call to action -->
-        <div
-            class="p-4 mt-4 rounded-4 d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 banner">
-            <div class="d-flex align-items-center gap-3">
-                <img src="img/icono_mascota.svg" alt="Icono de mascota" class="icono-mascota">
-                <div>
-                    <p class="mb-1 text-dark fs-5"><strong>¿Tu mascota necesita atención?</strong></p>
-                    <p class="mb-0 text-muted">Estoy aquí para cuidar de su salud y bienestar.</p>
-                </div>
-            </div>
-            <div>
-                <a href="agendar.html" class="btn btn-agendar px-4 py-2">
-                    <i class="bi bi-calendar-event me-2"></i>Agendar cita
-                </a>
-            </div>
-        </div>
-    </div>
 
 
 

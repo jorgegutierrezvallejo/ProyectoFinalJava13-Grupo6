@@ -1,5 +1,5 @@
-// controlador del modal "agendar cita": usa #agendar-cita-container (con
-// sus data-agendar-*) y abre con [data-abrir-agendar-cita]
+// Cargador del componente "agendar cita": puede mostrarse como página o modal.
+// Usa #agendar-cita-container y sus atributos data-agendar-*.
 (function () {
 
     function cargarCssUnaVez(href) {
@@ -32,11 +32,31 @@
         document.body.appendChild(script);
     }
 
-    function configurarAperturaYCierre() {
+    function configurarAperturaYCierre(modo) {
         const overlay = document.getElementById("agendarCitaOverlay");
         const btnCerrar = document.getElementById("agendarCitaCerrar");
 
         if (!overlay) {
+            return;
+        }
+
+        if (modo === "pagina") {
+            overlay.classList.add("hv-agendar-overlay--pagina");
+            overlay.setAttribute("aria-hidden", "false");
+
+            window.abrirAgendarCitaModal = function () {
+                document.getElementById("agendarcita")?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            };
+
+            document.addEventListener("click", function (evento) {
+                const disparador = evento.target.closest("[data-abrir-agendar-cita]");
+                if (!disparador) return;
+                evento.preventDefault();
+                window.abrirAgendarCitaModal();
+            });
             return;
         }
 
@@ -87,6 +107,7 @@
         const rutaCssModal = contenedor.dataset.agendarCssModal;
         const rutaCssFormulario = contenedor.dataset.agendarCssFormulario;
         const rutaJsFormulario = contenedor.dataset.agendarJs;
+        const modo = contenedor.dataset.agendarModo || "modal";
 
         cargarCssUnaVez(rutaCssModal);
         cargarCssUnaVez(rutaCssFormulario);
@@ -103,7 +124,7 @@
                 if (typeof iniciarAgendarCita === "function") {
                     iniciarAgendarCita();
                 }
-                configurarAperturaYCierre();
+                configurarAperturaYCierre(modo);
             });
         } catch (error) {
             console.error("No se pudo cargar el componente Agendar cita:", error);

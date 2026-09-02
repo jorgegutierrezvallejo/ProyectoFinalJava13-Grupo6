@@ -47,6 +47,13 @@ function iniciarTopbarUsuario() {
             }
         });
     }
+
+    const botonCerrarSesion = document.getElementById("userLogoutButton");
+    botonCerrarSesion?.addEventListener("click", function (evento) {
+        evento.preventDefault();
+        cerrarSesionUsuario();
+        window.location.href = "../../index.html";
+    });
 }
 
 

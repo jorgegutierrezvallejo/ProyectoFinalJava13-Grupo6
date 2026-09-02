@@ -4,6 +4,91 @@ if (!document.querySelector('script[src*="sweetalert2"]')) {
     document.head.appendChild(script);
 }
 
+let destinoAgendarNavbar = null;
+
+function mostrarAvisoReserva(requiereSesion) {
+    document.getElementById("intro-reserva-sesion")?.classList.toggle("d-none", !requiereSesion);
+}
+
+function usuarioTieneSesionActiva() {
+    return typeof obtenerUsuarioRegistrado === "function" && Boolean(obtenerUsuarioRegistrado());
+}
+
+function abrirModalAutenticacion() {
+    const modal = document.getElementById("auth-modal");
+    if (!modal) return false;
+
+    modal.classList.add("active");
+    modal.setAttribute("aria-hidden", "false");
+    mostrarAvisoReserva(Boolean(destinoAgendarNavbar));
+    document.getElementById("hv-tab-login")?.click();
+    window.setTimeout(() => document.getElementById("login-correo")?.focus(), 0);
+    return true;
+}
+
+function tomarDestinoAgendarNavbar() {
+    const destino = destinoAgendarNavbar;
+    destinoAgendarNavbar = null;
+    return destino;
+}
+
+window.solicitarInicioSesionParaAgendar = function (destino) {
+    if (usuarioTieneSesionActiva()) return true;
+    destinoAgendarNavbar = destino || "agendar.html";
+    abrirModalAutenticacion();
+    return false;
+};
+
+function actualizarSesionNavbar() {
+    const invitado = document.getElementById("nav-auth-invitado");
+    const usuarioNav = document.getElementById("nav-auth-usuario");
+    const usuario = typeof obtenerUsuarioRegistrado === "function"
+        ? obtenerUsuarioRegistrado()
+        : null;
+
+    if (!invitado || !usuarioNav) return;
+
+    invitado.classList.toggle("d-none", Boolean(usuario));
+    usuarioNav.classList.toggle("d-none", !usuario);
+    if (!usuario) return;
+
+    const nombre = usuario.nombreCompleto || "Usuario";
+    document.getElementById("navUserName").textContent = nombre;
+    document.getElementById("navUserMenuName").textContent = nombre;
+    document.getElementById("navUserMenuEmail").textContent = usuario.email || "";
+
+    const botonMenu = document.getElementById("navUserMenuButton");
+    const menu = document.getElementById("navUserMenu");
+    const botonSalir = document.getElementById("navLogoutButton");
+    if (!botonMenu || !menu || botonMenu.dataset.inicializado) return;
+
+    botonMenu.dataset.inicializado = "true";
+    botonMenu.addEventListener("click", function (evento) {
+        evento.stopPropagation();
+        const abierto = menu.classList.toggle("show");
+        botonMenu.setAttribute("aria-expanded", String(abierto));
+    });
+    document.addEventListener("click", function () {
+        menu.classList.remove("show");
+        botonMenu.setAttribute("aria-expanded", "false");
+    });
+    botonSalir?.addEventListener("click", function () {
+        cerrarSesionUsuario();
+        window.location.href = "index.html";
+    });
+}
+
+// Compuerta exclusiva del botón "Agendar cita" de la navbar.
+document.addEventListener("click", function (evento) {
+    const enlaceAgendar = evento.target.closest("[data-agendar-requiere-sesion]");
+    if (!enlaceAgendar || usuarioTieneSesionActiva()) return;
+
+    evento.preventDefault();
+    evento.stopImmediatePropagation();
+    destinoAgendarNavbar = enlaceAgendar.href;
+    abrirModalAutenticacion();
+}, true);
+
 function iniciarAuthModal() {
 
 
@@ -19,6 +104,7 @@ function iniciarAuthModal() {
     if (botonLogin && modal && botonCerrar) {
         botonLogin.addEventListener("click", function (evento) {
             evento.preventDefault();
+            mostrarAvisoReserva(false);
             modal.classList.add("active");
             modal.setAttribute("aria-hidden", "false");
         });
@@ -371,6 +457,8 @@ function iniciarAuthModal() {
             }
 
             guardarSesionUsuario(usuarioRegistrado.id);
+            actualizarSesionNavbar();
+            const destinoDespuesDelLogin = tomarDestinoAgendarNavbar();
             cerrarAuthModal(document.getElementById("auth-modal"));
             Swal.fire({
                 title: "¡Inicio de sesión exitoso!",
@@ -379,7 +467,7 @@ function iniciarAuthModal() {
                 confirmButtonText: "Continuar",
                 confirmButtonColor: "#007b83"
             }).then(() => {
-                window.location.href = './user/html/user-dashboard.html';
+                window.location.href = destinoDespuesDelLogin || './user/html/user-dashboard.html';
             });
         });
     }
@@ -454,6 +542,22 @@ function iniciarAuthModal() {
         }
 
         guardarSesionUsuario(nuevoUsuario.id);
+        actualizarSesionNavbar();
+
+        const destinoDespuesDelRegistro = tomarDestinoAgendarNavbar();
+        if (destinoDespuesDelRegistro) {
+            cerrarAuthModal(document.getElementById("auth-modal"));
+            Swal.fire({
+                title: "¡Registro exitoso!",
+                text: "Tu cuenta está lista. Ya puedes agendar tu cita.",
+                icon: "success",
+                confirmButtonText: "Continuar",
+                confirmButtonColor: "#007b83"
+            }).then(() => {
+                window.location.href = destinoDespuesDelRegistro;
+            });
+            return;
+        }
 
         // Si todo esta bien, muestro mensaje de exito
         mostrarMensaje(
@@ -470,9 +574,17 @@ function iniciarAuthModal() {
 function cerrarAuthModal(modal) {
     modal.classList.remove("active");
     modal.setAttribute("aria-hidden", "true");
+    destinoAgendarNavbar = null;
+    mostrarAvisoReserva(false);
 }
 
 document.addEventListener(
     "componentesCargados",
-    iniciarAuthModal
+    function () {
+        iniciarAuthModal();
+        actualizarSesionNavbar();
+        if (destinoAgendarNavbar && !usuarioTieneSesionActiva()) {
+            abrirModalAutenticacion();
+        }
+    }
 );

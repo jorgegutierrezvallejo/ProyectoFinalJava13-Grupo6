@@ -1,0 +1,87 @@
+.inicio-hero {
+    min-height: 545px;
+    max-width: 1920px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    background: url("../img/hero-servicios.png") center / cover no-repeat;
+}
+
+.inicio-hero__contenido { width: 100%; }
+.inicio-hero__contenido > * { width: min(45%, 680px); }
+.inicio-hero__eyebrow { margin: 0 0 10px; color: var(--color-primario-oscuro); font-size: 1rem; font-weight: 700; }
+.inicio-hero h1 { margin: 0 0 20px; color: var(--color-texto-oscuro); font-family: var(--fuente-marca); font-size: clamp(2.65rem, 4.4vw, 4.6rem); line-height: 1.05; }
+.inicio-hero__descripcion { margin: 0 0 22px; max-width: 510px; color: var(--color-texto-suave); font-size: 1rem; font-weight: 500; line-height: 1.65; }
+.inicio-hero__acciones { display: flex; flex-wrap: wrap; gap: 12px; }
+.inicio-hero__acciones .btn,
+.inicio-hero__secundario { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 18px; border-radius: 8px; font-size: .95rem; font-weight: 700; }
+.inicio-hero__secundario { border: 1px solid var(--color-borde); background: #fff; color: var(--color-texto-oscuro); }
+.inicio-hero__secundario:hover { border-color: var(--color-primario); background: #f1f9f7; color: var(--color-texto-oscuro); }
+
+.inicio-servicios { padding-top: 62px; padding-bottom: 64px; }
+.inicio-servicios__encabezado { display: grid; justify-items: center; gap: 7px; margin-bottom: 30px; text-align: center; }
+.inicio-servicios__encabezado p { margin: 0; color: var(--color-primario-oscuro); font-size: 14px; font-weight: 700; }
+.inicio-servicios__encabezado h2 { margin: 0; color: var(--color-texto-oscuro); font-family: var(--fuente-marca); font-size: clamp(2rem, 3vw, 2.65rem); }
+.inicio-servicios__encabezado span { width: 52px; height: 3px; border-radius: 5px; background: var(--color-primario); }
+.inicio-servicios__grid { display: grid; gap: 20px; }
+.inicio-servicios__grid:has(.inicio-servicio:nth-child(1):last-child) { grid-template-columns: minmax(0, 420px); justify-content: center; }
+.inicio-servicios__grid:has(.inicio-servicio:nth-child(2):last-child) { grid-template-columns: repeat(2, minmax(0, 420px)); justify-content: center; }
+.inicio-servicios__grid:has(.inicio-servicio:nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.inicio-servicio { display: flex; flex-direction: column; overflow: hidden; border: 1px solid #e1e8e6; border-radius: 12px; background: #fff; box-shadow: 0 4px 14px rgba(34, 62, 60, .08); }
+.inicio-servicio__imagen { height: 165px; position: relative; overflow: hidden; background: var(--color-fondo-claro); }
+.inicio-servicio__imagen img { width: 100%; height: 100%; object-fit: cover; }
+.inicio-servicio__imagen-vacia { width: 100%; height: 100%; display: grid; place-items: center; color: var(--color-primario-oscuro); font-size: 52px; }
+.inicio-servicio__icono { position: absolute; top: 13px; left: 13px; width: 47px; height: 47px; display: grid; place-items: center; border: 2px solid #eef6f4; border-radius: 50%; background: #fff; color: var(--color-primario-oscuro); font-size: 21px; }
+.inicio-servicio__contenido { flex: 1; padding: 15px 15px 11px; }
+.inicio-servicio__contenido h3 { margin: 0 0 8px; color: var(--color-texto-oscuro); font-size: 1.12rem; font-weight: 800; }
+.inicio-servicio__contenido p { min-height: 58px; margin: 0 0 13px; color: var(--color-texto-suave); font-size: .78rem; line-height: 1.45; }
+.inicio-servicio__datos { display: flex; flex-wrap: wrap; gap: 8px 15px; margin-bottom: 11px; color: var(--color-texto-oscuro); font-size: .78rem; font-weight: 800; }
+.inicio-servicio__datos span { display: inline-flex; align-items: center; gap: 5px; }
+.inicio-servicio__datos i { color: var(--color-primario-oscuro); }
+.inicio-servicio__etiquetas { display: flex; flex-wrap: wrap; gap: 6px; }
+.inicio-servicio__etiqueta { display: inline-flex; align-items: center; gap: 5px; padding: 5px 9px; border-radius: 5px; font-size: .7rem; font-weight: 700; }
+.inicio-servicio__etiqueta--clinica { background: #e5f4f1; color: #007981; }
+.inicio-servicio__etiqueta--domicilio { background: #edf5df; color: #647d24; }
+.inicio-servicio__etiqueta--virtual { background: #e9f1f8; color: #39708d; }
+.inicio-servicio__etiqueta--reserva { border: 1px dashed #7bbec0; background: #f3fbfb; color: #007981; }
+.inicio-servicio__acciones { display: flex; gap: 8px; padding: 0 15px 15px; }
+.inicio-servicio__acciones .btn { flex: 1; min-width: 0; min-height: 40px; display: inline-flex; justify-content: center; align-items: center; gap: 5px; padding: 7px 8px; border-radius: 6px; font-size: .75rem; font-weight: 700; white-space: nowrap; }
+.inicio-servicio__detalle { border: 1px solid #b8c5c8; background: #fff; color: var(--color-texto-oscuro); }
+.inicio-servicio__detalle:hover { border-color: var(--color-primario); background: #f1f9f7; color: var(--color-texto-oscuro); }
+.inicio-servicios__vacio { min-height: 175px; display: grid; place-items: center; border: 1px dashed var(--color-borde); border-radius: 12px; color: var(--color-texto-suave); font-size: .95rem; text-align: center; }
+.inicio-servicios__ver-mas { margin-top: 28px; display: flex; justify-content: center; }
+
+.resenas-huellavet { padding: 70px 0 42px; background: var(--color-primario-oscuro); }
+.resenas-huellavet__encabezado { margin-bottom: 24px; text-align: center; }
+.resenas-huellavet__encabezado p { margin: 0 0 6px; color: var(--color-secundario-claro); font-weight: 700; }
+.resenas-huellavet__encabezado h2 { margin: 0; color: var(--color-blanco); font-family: var(--fuente-marca); font-size: clamp(2rem, 4vw, 3rem); }
+.resena-card { max-width: 780px; min-height: 225px; margin: auto; padding: 38px 80px; border-radius: 18px; background: #fff; box-shadow: 0 10px 26px rgba(34,62,60,.1); text-align: center; }
+.resena-card__estrellas { margin-bottom: 13px; color: var(--color-acento); letter-spacing: 4px; font-size: 1.15rem; }
+.resena-card blockquote { margin: 0 0 22px; color: var(--color-texto-oscuro); font-size: 1.08rem; line-height: 1.65; }
+.resena-card footer strong, .resena-card footer span { display: block; }
+.resena-card footer strong { color: var(--color-primario-oscuro); }
+.resena-card footer span { margin-top: 2px; color: var(--color-texto-suave); font-size: .86rem; }
+#resenasCarousel .carousel-control-prev, #resenasCarousel .carousel-control-next { width: 9%; opacity: 1; }
+#resenasCarousel .carousel-control-prev i, #resenasCarousel .carousel-control-next i { color: var(--color-primario-oscuro); font-size: 2rem; }
+
+@media (max-width: 991.98px) {
+    .inicio-hero { min-height: 470px; background-position: 63% center; }
+    .inicio-hero__contenido > * { width: min(50%, 510px); }
+    .inicio-servicios__grid:has(.inicio-servicio:nth-child(3):last-child) { grid-template-columns: repeat(2, minmax(0, 420px)); justify-content: center; }
+}
+
+@media (max-width: 767.98px) {
+    .inicio-hero { min-height: auto; padding: 50px 0 245px; background-position: 68% bottom; background-size: auto 100%; }
+    .inicio-hero__contenido > * { width: 100%; }
+    .inicio-hero h1 { font-size: 2.55rem; }
+    .inicio-servicios { padding-top: 42px; }
+    .inicio-servicios__grid:has(.inicio-servicio:nth-child(2):last-child),
+    .inicio-servicios__grid:has(.inicio-servicio:nth-child(3):last-child) { grid-template-columns: minmax(0, 420px); }
+    .inicio-servicios__grid { justify-content: center; }
+}
+
+@media (max-width: 480px) {
+    .inicio-hero { padding-top: 42px; }
+    .inicio-hero h1 { font-size: 2.2rem; }
+    .inicio-hero__acciones .btn { width: 100%; }
+}

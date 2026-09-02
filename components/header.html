@@ -39,12 +39,12 @@
                 </li>
 
                 <li class="nav-item ms-lg-3">
-                    <a class="btn btn-agendar" href="agendar.html" data-abrir-agendar-cita>
+                    <a class="btn btn-agendar" href="agendar.html" data-agendar-requiere-sesion>
                         Agendar cita
                     </a>
                 </li>
 
-                <li class="nav-item ms-lg-2">
+                <li class="nav-item ms-lg-2" id="nav-auth-invitado">
                     <a class="nav-link d-flex align-items-center" href="#" id="btn-login"
                         aria-label="Iniciar sesión o registrarse" title="Iniciar sesión o registrarse">
                         <i class="bi bi-person-circle fs-4"></i>
@@ -53,6 +53,26 @@
                             Ingresar
                         </span>
                     </a>
+                </li>
+
+                <li class="nav-item ms-lg-2 d-none" id="nav-auth-usuario">
+                    <div class="hv-nav-profile">
+                        <button type="button" class="hv-nav-profile__button" id="navUserMenuButton" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i>
+                            <span id="navUserName">Usuario</span>
+                            <i class="bi bi-chevron-down hv-nav-profile__arrow"></i>
+                        </button>
+                        <div class="hv-nav-profile__menu" id="navUserMenu">
+                            <div class="hv-nav-profile__header">
+                                <strong id="navUserMenuName">Usuario</strong>
+                                <small id="navUserMenuEmail"></small>
+                            </div>
+                            <a href="user/html/user-perfil.html"><i class="bi bi-person"></i> Mi perfil</a>
+                            <a href="user/html/user-mascotas.html"><i class="bi bi-heart"></i> Mis mascotas</a>
+                            <a href="user/html/user-citas.html"><i class="bi bi-calendar3"></i> Mis citas</a>
+                            <button type="button" id="navLogoutButton"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</button>
+                        </div>
+                    </div>
                 </li>
 
             </ul>

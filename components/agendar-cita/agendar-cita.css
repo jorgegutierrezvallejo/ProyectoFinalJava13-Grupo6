@@ -72,6 +72,29 @@
     color: var(--color-primario-oscuro, #007b83);
 }
 
+/* El mismo componente también puede renderizarse como contenido de página. */
+.hv-agendar-overlay--pagina {
+    width: 100%;
+    height: auto;
+    padding: 0;
+    position: static;
+    display: block;
+    overflow: visible;
+    background: transparent;
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.hv-agendar-overlay--pagina .hv-agendar-card {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+}
+
+.hv-agendar-overlay--pagina .hv-agendar-close {
+    display: none;
+}
+
 /* menos padding vertical que en la pagina completa */
 .hv-agendar-card .agendar-seccion {
     padding-top: 8px;

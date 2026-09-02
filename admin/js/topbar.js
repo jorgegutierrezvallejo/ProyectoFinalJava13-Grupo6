@@ -72,8 +72,24 @@ function iniciarTopbar() {
 
     iniciarBotonSidebar();
 
+    iniciarCerrarSesionAdmin();
+
     document.dispatchEvent(new CustomEvent("topbarCargada"));
 
+}
+
+function iniciarCerrarSesionAdmin() {
+    const botonCerrarSesion = document.getElementById("adminLogoutButton");
+    if (!botonCerrarSesion) return;
+
+    botonCerrarSesion.addEventListener("click", function () {
+        if (typeof cerrarSesionUsuario === "function") {
+            cerrarSesionUsuario();
+        } else {
+            localStorage.removeItem("sesionUsuarioId");
+        }
+        window.location.href = "../../index.html";
+    });
 }
 
 
