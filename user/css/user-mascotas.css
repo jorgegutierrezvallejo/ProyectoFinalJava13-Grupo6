@@ -101,40 +101,6 @@
     background-color: #ffffff;
 }
 
-.mascotas-filtros {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.1rem;
-}
-
-.mascotas-filtro-chip {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.35rem;
-    padding: 0.45rem 0.6rem;
-    border-radius: 8px;
-    border: 1px solid var(--color-borde);
-    background-color: #ffffff;
-    color: #4b6663;
-    font-family: var(--fuente-principal);
-    font-size: 0.78rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.mascotas-filtro-chip:hover {
-    border-color: var(--color-primario);
-}
-
-.mascotas-filtro-chip--activo {
-    background-color: var(--color-acento);
-    border-color: var(--color-acento);
-    color: var(--color-texto-oscuro);
-}
-
 .mascotas-lista-perfil {
     display: flex;
     flex-direction: column;
@@ -410,6 +376,56 @@
     background-color: #f7faf8;
 }
 
+.mascota-detalle-menu-wrap {
+    position: relative;
+}
+
+.mascota-detalle-menu-opciones {
+    position: absolute;
+    z-index: 20;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 175px;
+    padding: 7px;
+    border: 1px solid var(--color-borde);
+    border-radius: 11px;
+    background: #ffffff;
+    box-shadow: 0 12px 30px rgba(34, 62, 60, 0.16);
+}
+
+.mascota-detalle-menu-opciones[hidden] {
+    display: none;
+}
+
+.mascota-detalle-menu-opciones button {
+    width: 100%;
+    padding: 10px 11px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-texto-oscuro);
+    font-family: var(--fuente-principal);
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-align: left;
+    cursor: pointer;
+}
+
+.mascota-detalle-menu-opciones button:hover {
+    background: #f3f8f7;
+}
+
+.mascota-detalle-menu-opciones .mascota-detalle-menu-opciones__eliminar {
+    color: #e53e3e;
+}
+
+.mascota-detalle-menu-opciones .mascota-detalle-menu-opciones__eliminar:hover {
+    background: #fdecec;
+}
+
 .mascota-detalle-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -667,6 +683,179 @@
     border-color: #e53e3e !important;
 }
 
+/* ---------- Modal: detalle de la próxima cita ---------- */
+
+.mascota-cita-modal-dialog {
+    max-width: 480px;
+}
+
+.mascota-cita-modal {
+    border: 0;
+    border-radius: 18px;
+    box-shadow: 0 20px 55px rgba(31, 61, 58, 0.2);
+    overflow: hidden;
+}
+
+.mascota-cita-modal__encabezado {
+    padding: 1.2rem 1.35rem 0.55rem;
+    border-bottom: 0;
+}
+
+.mascota-cita-modal__encabezado h2 {
+    margin: 0;
+    color: var(--color-texto-oscuro);
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.mascota-cita-modal__cuerpo {
+    padding: 0.35rem 1.35rem 1.35rem;
+}
+
+.mascota-cita-modal__perfil {
+    padding: 0.35rem 0 1rem;
+    border-bottom: 1px solid #edf1f1;
+    text-align: center;
+}
+
+.mascota-cita-modal__avatar {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 0.55rem;
+    display: block;
+    border: 3px solid var(--color-primario);
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #f0ece8;
+}
+
+.mascota-cita-modal__avatar--icono {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primario-oscuro);
+    font-size: 1.7rem;
+}
+
+.mascota-cita-modal__perfil h3 {
+    margin: 0;
+    color: var(--color-texto-oscuro);
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.mascota-cita-modal__perfil > span {
+    color: #718285;
+    font-size: 0.75rem;
+}
+
+.mascota-cita-modal__datos {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 1.15rem 0 1.25rem;
+}
+
+.mascota-cita-modal__fila {
+    display: grid;
+    grid-template-columns: 20px 92px minmax(0, 1fr);
+    align-items: start;
+    gap: 0.7rem;
+}
+
+.mascota-cita-modal__fila > i {
+    margin-top: 2px;
+    color: #718285;
+}
+
+.mascota-cita-modal__etiqueta {
+    color: #718285;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.mascota-cita-modal__valor {
+    color: var(--color-texto-oscuro);
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.mascota-cita-modal__valor small {
+    display: block;
+    color: #718285;
+    font-size: 0.72rem;
+    font-weight: 500;
+}
+
+.mascota-cita-modal__estado {
+    width: fit-content;
+    padding: 0.3rem 0.7rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-radius: 999px;
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+
+.mascota-cita-modal__estado::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.mascota-cita-modal__estado--confirmada { color: #00796b; background: #e0f2f1; }
+.mascota-cita-modal__estado--pendiente { color: #a1710f; background: #fbf1da; }
+.mascota-cita-modal__estado--en-curso { color: #e65100; background: #fff3e0; }
+.mascota-cita-modal__estado--completada { color: #558b2f; background: #eef7dc; }
+.mascota-cita-modal__estado--reprogramada { color: #c62828; background: #fce4ec; }
+.mascota-cita-modal__estado--cancelada,
+.mascota-cita-modal__estado--rechazada { color: #5f6b69; background: #eceeed; }
+
+.mascota-cita-modal__acciones {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.55rem;
+}
+
+.mascota-cita-modal__boton {
+    padding: 0.6rem 0.4rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    border-radius: 8px;
+    font-family: var(--fuente-principal);
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.mascota-cita-modal__boton--editar {
+    color: #718285;
+    border: 1px solid #e4ebea;
+    background: #fff;
+}
+
+.mascota-cita-modal__boton--reprogramar {
+    color: #f57f17;
+    border: 1px solid #ffe1a8;
+    background: #fffaf0;
+}
+
+.mascota-cita-modal__boton--cancelar {
+    color: #e53935;
+    border: 1px solid #f3c6c6;
+    background: #fff7f7;
+}
+
+.mascota-cita-modal__avatar--perro { background-color: #fef6e7; color: #d97706; }
+.mascota-cita-modal__avatar--gato { background-color: #e5f6f5; color: #007981; }
+.mascota-cita-modal__avatar--ave { background-color: #eaf6ec; color: #2f855a; }
+.mascota-cita-modal__avatar--otro { background-color: #eef1f0; color: #4b6663; }
+
 /* Colores de avatar/detalle por especie (compartidos con Resumen) */
 
 .mascota-lista-card__avatar--gato,
@@ -715,5 +904,9 @@
     .mascota-detalle-acciones button,
     .mascota-detalle-acciones a {
         min-width: 100%;
+    }
+
+    .mascota-cita-modal__acciones {
+        grid-template-columns: 1fr;
     }
 }

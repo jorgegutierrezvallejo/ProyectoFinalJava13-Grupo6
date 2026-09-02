@@ -55,6 +55,7 @@
                 const disparador = evento.target.closest("[data-abrir-agendar-cita]");
                 if (!disparador) return;
                 evento.preventDefault();
+                preseleccionarMascotaDesdeDisparador(disparador);
                 window.abrirAgendarCitaModal();
             });
             return;
@@ -79,6 +80,7 @@
                 return;
             }
             evento.preventDefault();
+            preseleccionarMascotaDesdeDisparador(disparador);
             window.abrirAgendarCitaModal();
         });
 
@@ -95,6 +97,17 @@
                 window.cerrarAgendarCitaModal();
             }
         });
+    }
+
+    function preseleccionarMascotaDesdeDisparador(disparador) {
+        const mascotaId = disparador?.dataset?.mascotaId;
+        if (!mascotaId) return;
+
+        const selector = document.getElementById("selectMascotaGuardada");
+        if (!selector || !Array.from(selector.options).some(opcion => String(opcion.value) === String(mascotaId))) return;
+
+        selector.value = String(mascotaId);
+        selector.dispatchEvent(new Event("change", { bubbles: true }));
     }
 
     async function iniciarComponenteAgendarCita() {

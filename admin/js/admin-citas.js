@@ -670,7 +670,7 @@ function renderizarAgendaDelDia() {
             const claseEstado = ESTADO_A_CLASE[cita.estado] || "pendiente";
             const icono = iconoParaServicio(cita.servicioNombre);
             const avatarHtml = cita.fotoMascota
-                ? `<img class="hv-agenda-cita__avatar" src="${escaparHtml(cita.fotoMascota)}" alt="${escaparHtml(cita.nombreMascota || "Mascota")}">`
+                ? `<img class="hv-agenda-cita__avatar" src="${escaparHtml(resolverRutaRecursoHuellaVet(cita.fotoMascota))}" alt="${escaparHtml(cita.nombreMascota || "Mascota")}">`
                 : `<div class="hv-agenda-cita__avatar hv-agenda-cita__avatar--icono"><i class="fa-solid ${iconoPorEspecieAdmin(cita.especie)}"></i></div>`;
 
             fila.innerHTML = `
@@ -773,7 +773,7 @@ function renderizarPanelCita() {
     if (avatarPanelEl) {
         if (cita.fotoMascota) {
             avatarPanelEl.classList.remove("hv-detalle__avatar--icono");
-            avatarPanelEl.style.backgroundImage = `url('${cita.fotoMascota}')`;
+            avatarPanelEl.style.backgroundImage = `url('${resolverRutaRecursoHuellaVet(cita.fotoMascota)}')`;
             avatarPanelEl.style.backgroundSize = "cover";
             avatarPanelEl.style.backgroundPosition = "center";
             avatarPanelEl.innerHTML = "";

@@ -42,3 +42,44 @@
 
     HuellaVetStorage.guardar(claveMigracion, true);
 })();
+
+/* Corrige los nombres y las rutas de foto de la primera versión del paquete
+ * demo sin obligar a eliminar y volver a cargar los datos. */
+(function actualizarDatosDemoV2() {
+    const claveMigracion = "migracion_datos_demo_v2";
+    if (HuellaVetStorage.leer(claveMigracion, false)) return;
+
+    const usuarios = obtenerUsuarios().map(usuario =>
+        String(usuario.id) === "demo-user-jorger"
+            ? { ...usuario, nombreCompleto: "Jorge Gutiérrez" }
+            : usuario
+    );
+    guardarUsuarios(usuarios);
+
+    const mascotas = obtenerMascotas().map(mascota => {
+        let actualizada = { ...mascota };
+        if (String(actualizada.id) === "demo-pet-london-jr") {
+            actualizada = { ...actualizada, nombre: "Río", foto: "/img/demo/Rio.JPG" };
+        }
+        if (String(actualizada.id) === "demo-pet-rio") {
+            actualizada = { ...actualizada, nombre: "Bruno", foto: "" };
+        }
+        if (String(actualizada.id).startsWith("demo-pet-") && /^img\/demo\//.test(String(actualizada.foto || ""))) {
+            actualizada.foto = `/${actualizada.foto}`;
+        }
+        return actualizada;
+    });
+    guardarMascotas(mascotas);
+
+    const mascotasPorId = new Map(mascotas.map(mascota => [String(mascota.id), mascota]));
+    const citas = obtenerTodasLasCitas().map(cita => {
+        if (!String(cita.id).startsWith("demo-cita-")) return cita;
+        const mascota = mascotasPorId.get(String(cita.mascotaId));
+        return mascota
+            ? { ...cita, nombreMascota: mascota.nombre, fotoMascota: mascota.foto || "" }
+            : cita;
+    });
+    guardarTodasLasCitas(citas);
+
+    HuellaVetStorage.guardar(claveMigracion, true);
+})();

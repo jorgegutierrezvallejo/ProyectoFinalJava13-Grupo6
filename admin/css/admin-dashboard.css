@@ -491,6 +491,26 @@ body {
     border-bottom: none;
 }
 
+.appointment-item--link {
+    color: inherit;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.appointment-item--link:hover {
+    background: #f6faf9;
+}
+
+.appointment-item--free {
+    background: #fbfdf9;
+}
+
+.appointment-status--free {
+    background: #eaf5dd;
+    color: #5c8d13;
+}
+
 
 .appointment-time {
     display: flex;
@@ -691,6 +711,34 @@ body {
 
 .dashboard-service-item:last-child {
     border-bottom: none;
+}
+
+.dashboard-service-item--link {
+    color: inherit;
+    text-decoration: none;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.dashboard-service-item--link:hover {
+    background: #f6faf9;
+}
+
+.dashboard-empty {
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    color: #718985;
+    font-size: 13px;
+    text-align: center;
+}
+
+.dashboard-empty i {
+    color: #08a4a1;
+    font-size: 24px;
 }
 
 

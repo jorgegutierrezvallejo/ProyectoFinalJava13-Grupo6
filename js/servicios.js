@@ -25,7 +25,7 @@ function renderizarServicioDestacado() {
         virtual: { texto: "Consulta virtual", icono: "bi-camera-video" }
     }[modalidad] || { texto: "En clínica", icono: "bi-hospital" };
     const imagen = servicio.imagen
-        ? `<img src="${escaparHtml(servicio.imagen)}" alt="${escaparHtml(servicio.nombre)}">`
+        ? `<img src="${escaparHtml(resolverRutaRecursoHuellaVet(servicio.imagen))}" alt="${escaparHtml(servicio.nombre)}">`
         : `<div class="servicio-destacado__imagen-vacia"><i class="${escaparHtml(servicio.icono || "bi bi-heart-pulse")}"></i></div>`;
 
     contenedor.hidden = false;
@@ -122,7 +122,7 @@ function crearTarjetaServicio(servicio) {
         virtual: { texto: "Consulta virtual", icono: "bi-camera-video" }
     }[modalidad] || { texto: "En clínica", icono: "bi-hospital" };
     const imagen = servicio.imagen
-        ? `<img src="${escaparHtml(servicio.imagen)}" alt="${escaparHtml(servicio.nombre)}">`
+        ? `<img src="${escaparHtml(resolverRutaRecursoHuellaVet(servicio.imagen))}" alt="${escaparHtml(servicio.nombre)}">`
         : `<div class="servicio-publico__imagen-vacia"><i class="${escaparHtml(servicio.icono || "bi bi-heart-pulse")}"></i></div>`;
     const reserva = servicio.tieneCostoReserva && Number(servicio.costoReserva) > 0
         ? `<span class="servicio-publico__etiqueta servicio-publico__etiqueta--reserva"><i class="bi bi-tag"></i> Reserva requerida</span>`

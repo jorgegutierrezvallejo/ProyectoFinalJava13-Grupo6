@@ -26,21 +26,22 @@ function iniciarTopbarUsuario() {
     if (notificationButton) {
         notificationButton.addEventListener("click", function () {
             if (typeof Swal !== "undefined") {
+                const usuario = typeof obtenerUsuarioRegistrado === "function" ? obtenerUsuarioRegistrado() : null;
+                const citas = usuario && typeof obtenerCitasFuturas === "function"
+                    ? obtenerCitasFuturas(usuario.id).slice(0, 3)
+                    : [];
+                const contenido = citas.length > 0
+                    ? citas.map(cita => `
+                        <div class="p-2 border-bottom">
+                            <strong>${escaparTextoTopbar(cita.servicioNombre || "Cita veterinaria")}</strong>
+                            <p class="text-muted mb-0">${escaparTextoTopbar(cita.nombreMascota || "Tu mascota")} · ${escaparTextoTopbar(cita.fecha || "Fecha pendiente")} · ${escaparTextoTopbar(cita.hora || "Hora pendiente")}</p>
+                        </div>
+                    `).join("")
+                    : `<div class="p-2"><strong>Sin notificaciones pendientes</strong><p class="text-muted mb-0">Tus próximas citas aparecerán aquí.</p></div>`;
                 Swal.fire({
                     icon: "info",
                     title: "Notificaciones",
-                    html: `
-                        <div class="text-start small">
-                            <div class="p-2 border-bottom">
-                                <strong>Recordatorio de vacuna</strong>
-                                <p class="text-muted mb-0">Luna tiene su vacuna antirrábica próxima a vencer (28 ago).</p>
-                            </div>
-                            <div class="p-2">
-                                <strong>Cita confirmada</strong>
-                                <p class="text-muted mb-0">Tu cita de consulta general para Luna está lista.</p>
-                            </div>
-                        </div>
-                    `,
+                    html: `<div class="text-start small">${contenido}</div>`,
                     confirmButtonText: "Entendido",
                     confirmButtonColor: "#17a9a7"
                 });
@@ -54,6 +55,15 @@ function iniciarTopbarUsuario() {
         cerrarSesionUsuario();
         window.location.href = "../../index.html";
     });
+}
+
+function escaparTextoTopbar(valor) {
+    return String(valor || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
 
 

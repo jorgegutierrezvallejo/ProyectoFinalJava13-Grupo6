@@ -240,7 +240,32 @@
                                 <p>Gestiona la información almacenada en HuellaVet.</p>
                             </div>
                         </header>
-                        <div class="configuracion-panel__vacio" aria-label="Contenido de Datos pendiente"></div>
+                        <div class="configuracion-datos">
+                            <article class="configuracion-datos__card">
+                                <span class="configuracion-datos__icono"><i class="bi bi-database-add"></i></span>
+                                <div class="configuracion-datos__contenido">
+                                    <h3>Cargar datos demo</h3>
+                                    <p>Agrega clientes, mascotas, servicios y citas para probar todas las vistas de HuellaVet.</p>
+                                    <ul>
+                                        <li>9 clientes y 13 mascotas.</li>
+                                        <li>8 servicios distribuidos en 4 categorías.</li>
+                                        <li>Citas programadas a partir del día de la carga.</li>
+                                        <li>Contraseña común para clientes demo: <strong>HV123</strong></li>
+                                    </ul>
+                                    <div class="configuracion-datos__acciones">
+                                        <div class="configuracion-datos__botones">
+                                            <button class="configuracion-boton configuracion-boton--primario" type="button" id="btnCargarDatosDemo">
+                                                <i class="bi bi-cloud-arrow-down"></i> Cargar datos demo
+                                            </button>
+                                            <button class="configuracion-boton configuracion-boton--peligro" type="button" id="btnEliminarDatosDemo" disabled>
+                                                <i class="bi bi-trash3"></i> Eliminar datos demo
+                                            </button>
+                                        </div>
+                                        <span class="configuracion-datos__estado" id="estadoDatosDemo" aria-live="polite">Aún no se han cargado datos demo.</span>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
                     </section>
                 </div>
             </section>
@@ -293,9 +318,16 @@
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/usuarios-storage.js"></script>
+    <script src="../../js/shared/mascotas-storage.js"></script>
+    <script src="../../js/shared/citas-storage.js"></script>
+    <script src="../../js/shared/servicios-storage.js"></script>
+    <script src="../../js/shared/tipos-servicio-storage.js"></script>
+    <script src="../../js/shared/demo-data.js"></script>
     <script src="../js/admin-sidebar.js"></script>
     <script src="../js/topbar.js"></script>
 

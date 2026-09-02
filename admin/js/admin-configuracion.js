@@ -1,5 +1,5 @@
 const ADMIN_CONFIGURACION_STORAGE_KEY = "adminConfiguracion";
-const FOTO_ADMIN_POR_DEFECTO = "../../img/HuellaVet-icon.svg";
+const FOTO_ADMIN_POR_DEFECTO = new URL("../../img/HuellaVet-icon.svg", window.location.href).href;
 let fotoPerfilEliminada = false;
 
 const configuracionInicial = {
@@ -25,6 +25,93 @@ function iniciarConfiguracion() {
     iniciarFotoPerfil();
     iniciarFormulariosConfiguracion();
     iniciarModalContrasena();
+    iniciarCargaDatosDemo();
+}
+
+function iniciarCargaDatosDemo() {
+    const boton = document.getElementById("btnCargarDatosDemo");
+    const botonEliminar = document.getElementById("btnEliminarDatosDemo");
+    const estado = document.getElementById("estadoDatosDemo");
+    if (!boton || !botonEliminar || typeof cargarDatosDemoHuellaVet !== "function") return;
+
+    actualizarEstadoDatosDemo(estado, obtenerEstadoDatosDemo());
+
+    boton.addEventListener("click", async () => {
+        const confirmado = typeof Swal === "undefined" || (await Swal.fire({
+            icon: "question",
+            title: "¿Cargar datos demo?",
+            html: "Se agregarán datos de prueba sin borrar la información existente.<br><strong>Todos los clientes demo usarán la contraseña HV123.</strong>",
+            showCancelButton: true,
+            confirmButtonText: "Sí, cargar datos",
+            cancelButtonText: "Cancelar",
+            confirmButtonColor: "#008e98"
+        })).isConfirmed;
+
+        if (!confirmado) return;
+        boton.disabled = true;
+        const resultado = cargarDatosDemoHuellaVet();
+        actualizarEstadoDatosDemo(estado, resultado);
+        boton.disabled = false;
+
+        if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: "success",
+                title: "Datos demo cargados",
+                text: `${resultado.usuarios} clientes, ${resultado.mascotas} mascotas, ${resultado.servicios} servicios y ${resultado.citas} citas están disponibles.`,
+                confirmButtonColor: "#008e98"
+            });
+        }
+    });
+
+    botonEliminar.addEventListener("click", async () => {
+        if (typeof eliminarDatosDemoHuellaVet !== "function") return;
+
+        const confirmado = typeof Swal !== "undefined"
+            ? (await Swal.fire({
+                icon: "warning",
+                title: "¿Eliminar los datos demo?",
+                text: "Se eliminarán los clientes, mascotas, servicios, categorías y citas identificados como demostrativos. Los demás datos se conservarán.",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar",
+                confirmButtonColor: "#c33d38"
+            })).isConfirmed
+            : window.confirm("¿Deseas eliminar todos los datos demo?");
+
+        if (!confirmado) return;
+        boton.disabled = true;
+        botonEliminar.disabled = true;
+        const resultado = eliminarDatosDemoHuellaVet();
+        actualizarEstadoDatosDemo(estado, null);
+        boton.disabled = false;
+
+        if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: "success",
+                title: "Datos demo eliminados",
+                text: `Se eliminaron ${resultado.usuarios} clientes, ${resultado.mascotas} mascotas, ${resultado.servicios} servicios y ${resultado.citas} citas demo.`,
+                confirmButtonColor: "#008e98"
+            });
+        }
+    });
+}
+
+function actualizarEstadoDatosDemo(elemento, datos) {
+    if (!elemento) return;
+    const botonEliminar = document.getElementById("btnEliminarDatosDemo");
+    const hayDatosDemo = Boolean(datos?.cargadoEn) ||
+        (typeof hayDatosDemoHuellaVet === "function" && hayDatosDemoHuellaVet());
+    if (botonEliminar) botonEliminar.disabled = !hayDatosDemo;
+    if (!datos?.cargadoEn) {
+        elemento.textContent = hayDatosDemo
+            ? "Se encontraron registros demo que puedes eliminar."
+            : "Aún no se han cargado datos demo.";
+        elemento.classList.toggle("configuracion-datos__estado--cargado", hayDatosDemo);
+        return;
+    }
+    const fecha = new Intl.DateTimeFormat("es-CO", { dateStyle: "medium", timeStyle: "short" }).format(new Date(datos.cargadoEn));
+    elemento.textContent = `Última carga: ${fecha}. Las citas parten del ${datos.fechaBaseCitas}.`;
+    elemento.classList.add("configuracion-datos__estado--cargado");
 }
 
 function obtenerConfiguracionAdmin() {
@@ -140,7 +227,13 @@ function iniciarFotoPerfil() {
 
 function actualizarVistaFoto(fuente) {
     const imagen = document.querySelector("#fotoPerfilPreview img");
-    if (imagen && fuente) imagen.src = fuente;
+    if (!imagen || !fuente) return;
+
+    imagen.onerror = function () {
+        imagen.onerror = null;
+        imagen.src = FOTO_ADMIN_POR_DEFECTO;
+    };
+    imagen.src = fuente;
 }
 
 function actualizarEstadoEliminarFoto(tieneFoto) {
@@ -153,7 +246,17 @@ function sincronizarFotoTopbar(foto) {
     if (!imagenTopbar) return;
 
     const configuracion = obtenerConfiguracionAdmin();
-    imagenTopbar.src = foto || configuracion?.foto || FOTO_ADMIN_POR_DEFECTO;
+    const fuente = foto || configuracion?.foto || FOTO_ADMIN_POR_DEFECTO;
+
+    imagenTopbar.onerror = function () {
+        imagenTopbar.onerror = null;
+        imagenTopbar.src = FOTO_ADMIN_POR_DEFECTO;
+
+        if (configuracion?.foto) {
+            guardarConfiguracionAdmin({ ...configuracion, foto: "" });
+        }
+    };
+    imagenTopbar.src = fuente;
 }
 
 function iniciarFormulariosConfiguracion() {

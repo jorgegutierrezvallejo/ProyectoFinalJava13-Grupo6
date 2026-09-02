@@ -17,6 +17,7 @@
             const datosPaso1StorageKey = "datosCita_Paso1";
             const datosPaso2StorageKey = "datosCita_Paso2";
             const servicioIdDesdeEnlace = new URLSearchParams(window.location.search).get("servicioId");
+            const mascotaIdDesdeEnlace = new URLSearchParams(window.location.search).get("mascotaId");
 
             cargarServiciosDesdeDashboard();
             iniciarFiltroTipoServicioAgendar();
@@ -314,6 +315,11 @@
 
                     camposAutocompletados.forEach(campo => { if (campo) campo.disabled = true; });
                 });
+
+                if (mascotaIdDesdeEnlace && mascotasGuardadas.some(mascota => String(mascota.id) === String(mascotaIdDesdeEnlace))) {
+                    select.value = String(mascotaIdDesdeEnlace);
+                    select.dispatchEvent(new Event("change"));
+                }
             }
 
             // precarga datos de contacto del usuario logueado (editables)
@@ -874,6 +880,7 @@
                         raza: datosP1.raza || "Siamés",
                         edad: datosP1.edad || "",
                         peso: datosP1.peso || "",
+                        fotoMascota: mascota.foto || "",
                         motivo: datosP1.motivoConsulta || "",
                         servicioId: datosP1.servicioId,
                         servicioNombre: datosP1.servicioNombre || "Consulta general",
@@ -1025,9 +1032,32 @@
                 const resumenFecha = document.getElementById("resumenFecha");
                 const resumenHora = document.getElementById("resumenHora");
                 const resumenCostoReserva = document.getElementById("resumenCostoReserva");
+                const resumenFotoMascota = document.getElementById("resumenFotoMascota");
+                const resumenAvatar = resumenFotoMascota?.closest(".resumen-cita__avatar");
 
                 if (resumenNombre) resumenNombre.textContent = nombreResumen;
                 if (resumenServicio) resumenServicio.textContent = servicioNombre;
+
+                if (resumenFotoMascota && resumenAvatar) {
+                    const mascotaGuardada = datosPaso1.mascotaId && typeof obtenerMascotaPorId === "function"
+                        ? obtenerMascotaPorId(datosPaso1.mascotaId)
+                        : null;
+                    const fotoGuardada = mascotaGuardada?.foto || datosPaso1.fotoMascota || "";
+                    const fotoGenerica = typeof resolverRutaRecursoHuellaVet === "function"
+                        ? resolverRutaRecursoHuellaVet("img/hero-contacto..png")
+                        : "/img/hero-contacto..png";
+
+                    resumenAvatar.classList.toggle("resumen-cita__avatar--mascota", Boolean(fotoGuardada));
+                    resumenFotoMascota.alt = fotoGuardada ? `Foto de ${nombreMascota}` : "Mascota";
+                    resumenFotoMascota.onerror = function () {
+                        resumenFotoMascota.onerror = null;
+                        resumenAvatar.classList.remove("resumen-cita__avatar--mascota");
+                        resumenFotoMascota.src = fotoGenerica;
+                    };
+                    resumenFotoMascota.src = fotoGuardada && typeof resolverRutaRecursoHuellaVet === "function"
+                        ? resolverRutaRecursoHuellaVet(fotoGuardada)
+                        : (fotoGuardada || fotoGenerica);
+                }
 
                 const esDomicilio = datosPaso1.esDomicilio;
                 if (resumenModalidad) {

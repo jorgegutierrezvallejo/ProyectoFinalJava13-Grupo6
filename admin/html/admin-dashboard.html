@@ -109,11 +109,11 @@
                             Citas hoy
                         </span>
 
-                        <strong>
+                        <strong id="dashboardCitasHoy">
                             8
                         </strong>
 
-                        <span class="dashboard-stat-change">
+                        <span class="dashboard-stat-change" id="dashboardCitasHoyDetalle">
                             <i class="bi bi-arrow-up"></i>
                             2 más que ayer
                         </span>
@@ -141,11 +141,11 @@
                             Citas esta semana
                         </span>
 
-                        <strong>
+                        <strong id="dashboardCitasSemana">
                             32
                         </strong>
 
-                        <span class="dashboard-stat-secondary">
+                        <span class="dashboard-stat-secondary" id="dashboardCitasSemanaDetalle">
                             24 completadas
                         </span>
 
@@ -172,11 +172,11 @@
                             Usuarios
                         </span>
 
-                        <strong>
+                        <strong id="dashboardUsuarios">
                             126
                         </strong>
 
-                        <span class="dashboard-stat-change">
+                        <span class="dashboard-stat-change" id="dashboardUsuariosDetalle">
                             <i class="bi bi-arrow-up"></i>
                             8 este mes
                         </span>
@@ -204,7 +204,7 @@
                             Servicios activos
                         </span>
 
-                        <strong>
+                        <strong id="dashboardServiciosActivos">
                             6
                         </strong>
 
@@ -297,14 +297,12 @@
                                 Próximas citas
                             </h3>
 
-                            <p>
-                                Para hoy
-                            </p>
+                            <p id="dashboardProximasCitasSubtitulo">Agenda próxima</p>
 
                         </div>
 
 
-                        <a href="#" class="dashboard-view-all">
+                        <a href="./admin-citas.html" class="dashboard-view-all">
                             Ver todas
                         </a>
 
@@ -312,7 +310,7 @@
 
 
 
-                    <div class="appointment-list">
+                    <div class="appointment-list" id="dashboardProximasCitas">
 
 
                         <div class="appointment-item">
@@ -531,7 +529,7 @@
                             </h3>
 
                             <p>
-                                Distribución durante este mes
+                                Distribución de los últimos 30 días
                             </p>
 
                         </div>
@@ -540,7 +538,7 @@
 
 
 
-                    <div class="service-chart-list">
+                    <div class="service-chart-list" id="dashboardCitasPorServicio">
 
 
                         <div class="service-chart-item">
@@ -692,7 +690,7 @@
                         </div>
 
 
-                        <a href="#" class="dashboard-view-all">
+                        <a href="./admin-servicios.html" class="dashboard-view-all">
                             Ver todos
                         </a>
 
@@ -700,7 +698,7 @@
 
 
 
-                    <div class="dashboard-service-list">
+                    <div class="dashboard-service-list" id="dashboardMisServicios">
 
 
                         <div class="dashboard-service-item">
@@ -828,173 +826,6 @@
 
 
             </section>
-
-
-
-            <!-- ========================================
-                 ACTIVIDAD RECIENTE
-            ========================================= -->
-
-            <section class="dashboard-card dashboard-activity">
-
-                <div class="dashboard-card-header">
-
-                    <div>
-
-                        <h3>
-                            Actividad reciente
-                        </h3>
-
-                        <p>
-                            Últimos movimientos relacionados con citas
-                        </p>
-
-                    </div>
-
-
-                    <a href="#" class="dashboard-view-all">
-                        Ver actividad
-                    </a>
-
-                </div>
-
-
-
-                <div class="activity-list">
-
-
-                    <div class="activity-item">
-
-                        <div class="activity-icon activity-icon--green">
-
-                            <i class="bi bi-calendar-check"></i>
-
-                        </div>
-
-
-                        <div class="activity-info">
-
-                            <p>
-                                <strong>Laura Gómez</strong>
-                                agendó una cita para
-                                <strong>Max</strong>
-                            </p>
-
-                            <span>
-                                Consulta general · Hoy, 9:00 AM
-                            </span>
-
-                        </div>
-
-
-                        <time>
-                            Hace 12 min
-                        </time>
-
-                    </div>
-
-
-
-                    <div class="activity-item">
-
-                        <div class="activity-icon activity-icon--blue">
-
-                            <i class="bi bi-check2-circle"></i>
-
-                        </div>
-
-
-                        <div class="activity-info">
-
-                            <p>
-                                La cita de
-                                <strong>Luna</strong>
-                                fue confirmada
-                            </p>
-
-                            <span>
-                                Vacunación · Hoy, 10:30 AM
-                            </span>
-
-                        </div>
-
-
-                        <time>
-                            Hace 35 min
-                        </time>
-
-                    </div>
-
-
-
-                    <div class="activity-item">
-
-                        <div class="activity-icon activity-icon--orange">
-
-                            <i class="bi bi-arrow-repeat"></i>
-
-                        </div>
-
-
-                        <div class="activity-info">
-
-                            <p>
-                                La cita de
-                                <strong>Toby</strong>
-                                fue reprogramada
-                            </p>
-
-                            <span>
-                                Nueva hora: Hoy, 1:00 PM
-                            </span>
-
-                        </div>
-
-
-                        <time>
-                            Hace 1 h
-                        </time>
-
-                    </div>
-
-
-
-                    <div class="activity-item">
-
-                        <div class="activity-icon activity-icon--purple">
-
-                            <i class="bi bi-calendar-plus"></i>
-
-                        </div>
-
-
-                        <div class="activity-info">
-
-                            <p>
-                                <strong>Daniela Torres</strong>
-                                agendó una nueva cita para
-                                <strong>Coco</strong>
-                            </p>
-
-                            <span>
-                                Control veterinario · Hoy, 3:30 PM
-                            </span>
-
-                        </div>
-
-
-                        <time>
-                            Hace 2 h
-                        </time>
-
-                    </div>
-
-
-                </div>
-
-            </section>
-
-
         </main>
 
     </div>
@@ -1015,7 +846,10 @@
 
     <!-- Dashboard -->
     <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/usuarios-storage.js"></script>
     <script src="../../js/shared/citas-storage.js"></script>
+    <script src="../../js/shared/servicios-storage.js"></script>
+    <script src="../../js/shared/tipos-servicio-storage.js"></script>
     <script src="../js/admin-dashboard.js"></script>
 
 

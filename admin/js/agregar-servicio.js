@@ -77,7 +77,7 @@ function iniciarServicios() {
 
             // Imagen
             if (servicioExistente.imagen && inputImagenPreview) {
-                inputImagenPreview.innerHTML = `<img src="${servicioExistente.imagen}" alt="${servicioExistente.nombre}">`;
+                inputImagenPreview.innerHTML = `<img src="${resolverRutaRecursoHuellaVet(servicioExistente.imagen)}" alt="${servicioExistente.nombre}">`;
             }
         }
     }

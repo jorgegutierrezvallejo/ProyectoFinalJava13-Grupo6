@@ -57,7 +57,7 @@ function mostrarServicios() {
             <div class="servicio-imagen">
                 ${
                     servicio.imagen
-                        ? `<img src="${servicio.imagen}" alt="${servicio.nombre}">`
+                        ? `<img src="${resolverRutaRecursoHuellaVet(servicio.imagen)}" alt="${servicio.nombre}">`
                         : `<div class="servicio-imagen-placeholder"></div>`
                 }
 

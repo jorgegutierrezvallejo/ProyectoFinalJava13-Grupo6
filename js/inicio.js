@@ -27,7 +27,7 @@ function crearTarjetaServicioInicio(servicio) {
         virtual: { texto: "Consulta virtual", icono: "bi-camera-video" }
     }[modalidad] || { texto: "En clínica", icono: "bi-hospital" };
     const imagen = servicio.imagen
-        ? `<img src="${escaparHtmlInicio(servicio.imagen)}" alt="${escaparHtmlInicio(servicio.nombre)}">`
+        ? `<img src="${escaparHtmlInicio(resolverRutaRecursoHuellaVet(servicio.imagen))}" alt="${escaparHtmlInicio(servicio.nombre)}">`
         : `<div class="inicio-servicio__imagen-vacia"><i class="${escaparHtmlInicio(servicio.icono || "bi bi-heart-pulse")}"></i></div>`;
 
     return `

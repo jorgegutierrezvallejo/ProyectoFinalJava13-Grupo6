@@ -28,3 +28,12 @@ window.HuellaVetStorage = {
         return localStorage.getItem(clave) !== null;
     }
 };
+
+/* Convierte rutas guardadas desde la raíz del proyecto para páginas que viven
+ * dentro de user/html o admin/html. URLs y datos base64 se conservan intactos. */
+function resolverRutaRecursoHuellaVet(ruta) {
+    const valor = String(ruta || "").trim();
+    if (!valor || /^(?:https?:|data:|blob:|\/)/i.test(valor)) return valor;
+    const esPaginaAnidada = /\/(?:user|admin)\/html\//.test(window.location.pathname);
+    return esPaginaAnidada ? `../../${valor.replace(/^\.\//, "")}` : valor;
+}
