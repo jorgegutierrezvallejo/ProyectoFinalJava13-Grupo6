@@ -80,6 +80,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    /* Igual que `gap-2` de la marca en la barra de navegación. */
+    gap: 0.5rem;
 }
 
 .hv-modal-logo img {

@@ -4,7 +4,7 @@
     margin: 0 auto;
     display: flex;
     align-items: center;
-    background: url("../img/hero-servicios.png") center / cover no-repeat;
+    background: url("../img/Hero-index.png") center / cover no-repeat;
 }
 
 .inicio-hero__contenido { width: 100%; }
@@ -62,7 +62,7 @@
 .resena-card footer strong { color: var(--color-primario-oscuro); }
 .resena-card footer span { margin-top: 2px; color: var(--color-texto-suave); font-size: .86rem; }
 #resenasCarousel .carousel-control-prev, #resenasCarousel .carousel-control-next { width: 9%; opacity: 1; }
-#resenasCarousel .carousel-control-prev i, #resenasCarousel .carousel-control-next i { color: var(--color-primario-oscuro); font-size: 2rem; }
+#resenasCarousel .carousel-control-prev i, #resenasCarousel .carousel-control-next i { color: #f3fbfb; font-size: 2rem; }
 
 @media (max-width: 991.98px) {
     .inicio-hero { min-height: 470px; background-position: 63% center; }
