@@ -59,17 +59,15 @@
 
         <main class="admin-mascotas">
 
-            <!--
-                AQUÍ DISEÑAREMOS
-                LA VISTA DE MASCOTAS
-            -->
-<div class="vacio">
-             
-            <div class="vacio">
-                
-                <h3>PRÓXIMAMENTE</h3>
-                <p>En esta sección incluiremos el listado de mascotas.</p>
-            </div>
+            <section class="admin-mascotas__encabezado">
+                <div>
+                    <h1>Mascotas</h1>
+                    <p>Consulta y actualiza la información clínica de las mascotas.</p>
+                </div>
+            </section>
+            <section class="admin-mascotas__listado" id="adminMascotasListado">
+                <p class="text-muted">Cargando mascotas...</p>
+            </section>
 
 
 
@@ -79,10 +77,13 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <script src="../js/admin-sidebar.js"></script>
     <script src="../js/topbar.js"></script>
+    <script src="../../js/shared/usuarios-storage.js"></script>
+    <script src="../../js/shared/mascotas-storage.js"></script>
 
     <script src="../js/admin-mascotas.js"></script>
 

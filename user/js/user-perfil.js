@@ -169,7 +169,7 @@ function restaurarAccionesDeSoloLectura() {
     document.getElementById("btnEditarPerfil")?.addEventListener("click", activarModoEdicion);
 }
 
-function guardarEdicionPerfil() {
+async function guardarEdicionPerfil() {
     limpiarErroresPerfil();
 
     const nombreCompleto = document.getElementById("editarNombreCompleto")?.value.trim() || "";
@@ -209,14 +209,37 @@ function guardarEdicionPerfil() {
     }
 
     const usuario = obtenerUsuarioRegistrado();
-    actualizarUsuario(usuario.id, {
+    const datosActualizados = {
         nombreCompleto,
         email,
         indicativoPais,
         telefono,
         ciudad,
         fechaNacimiento
-    });
+    };
+
+    try {
+        const usuarioBackend = await apiBackend("/usuarios/me", {
+            method: "PUT",
+            body: datosActualizados
+        });
+        guardarSesionUsuario({
+            ...usuario,
+            ...usuarioBackend,
+            token: getTokenActual(),
+            rol: usuario.rol
+        });
+    } catch (error) {
+        if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: "error",
+                title: "No se pudo actualizar el perfil",
+                text: error.message,
+                confirmButtonColor: "#17a9a7"
+            });
+        }
+        return;
+    }
 
     restaurarGridDeSoloLectura();
     restaurarAccionesDeSoloLectura();

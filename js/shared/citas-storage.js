@@ -124,7 +124,7 @@ async function sincronizarCitasDesdeBackend(idUsuario = null) {
     }
 }
 
-async function actualizarEstadoCitaEnBackend(idCita, nuevoEstado) {
+async function actualizarEstadoCitaEnBackend(idCita, nuevoEstado, datosNuevos = null) {
     if (!tieneSesionBackendActiva()) return null;
 
     const mapEstado = {
@@ -141,6 +141,7 @@ async function actualizarEstadoCitaEnBackend(idCita, nuevoEstado) {
 
     return apiBackend(`/citas/${encodeURIComponent(idCita)}/${accion}`, {
         method: "PUT"
+        , ...(accion === "reprogramar" && datosNuevos ? { body: datosNuevos } : {})
     });
 }
 

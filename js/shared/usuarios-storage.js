@@ -58,6 +58,20 @@ async function iniciarSesionBackend(email, contrasena) {
     return respuesta;
 }
 
+async function iniciarSesionAdminBackend(correo, contrasena) {
+    return apiBackend("/admin/login", {
+        method: "POST",
+        body: { correo, contrasena }
+    });
+}
+
+async function iniciarSesionVeterinarioBackend(correo, contrasena) {
+    return apiBackend("/veterinario/login", {
+        method: "POST",
+        body: { correo, contrasena }
+    });
+}
+
 async function registrarUsuarioBackend(datosUsuario) {
     const payload = {
         nombreCompleto: datosUsuario.nombreCompleto || "",

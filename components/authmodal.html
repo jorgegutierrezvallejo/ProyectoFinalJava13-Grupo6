@@ -31,6 +31,14 @@
 
         <form class="hv-form hv-form-login" id="formulario-login-usuario">
             <div class="mb-3">
+                <label class="form-label" for="login-rol">Tipo de acceso</label>
+                <select class="form-select" id="login-rol">
+                    <option value="USUARIO">Cliente</option>
+                    <option value="ADMINISTRADOR">Administrador</option>
+                    <option value="VETERINARIO">Veterinario</option>
+                </select>
+            </div>
+            <div class="mb-3">
                 <input type="text" class="form-control" id="login-correo" placeholder="Correo electrónico o Usuario" required>
             </div>
 
