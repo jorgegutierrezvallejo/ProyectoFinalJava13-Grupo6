@@ -1,10 +1,10 @@
-document.addEventListener("DOMContentLoaded", function () {
-    iniciarServicios();
+document.addEventListener("DOMContentLoaded", async function () {
+    await iniciarServicios();
     iniciarVistaPreviaImagen();
     iniciarTipoServicio();
 });
 
-function iniciarServicios() {
+async function iniciarServicios() {
     const formulario = document.getElementById("formServicio");
     const checkCostoReserva = document.getElementById("tieneCostoReserva");
     const contenedorCostoReserva = document.getElementById("contenedorCostoReserva");
@@ -20,7 +20,12 @@ function iniciarServicios() {
     let servicioExistente = null;
     let servicios = obtenerServicios();
 
+    if (tieneSesionBackendActiva() && !servicioId) {
+        servicios = await obtenerServiciosDesdeBackend();
+    }
+
     if (servicioId) {
+        servicios = tieneSesionBackendActiva() ? await obtenerServiciosDesdeBackend() : servicios;
         servicioExistente = servicios.find(s => String(s.id) === String(servicioId));
         if (servicioExistente) {
             // Actualizar interfaz para modo edición
@@ -181,13 +186,10 @@ function iniciarServicios() {
 
         servicios = obtenerServicios();
 
-        if (servicioExistente) {
-            // Actualizar servicio existente
-            const index = servicios.findIndex(s => String(s.id) === String(servicioExistente.id));
-            const servicioActualizado = {
-                id: servicioExistente.id,
+        try {
+            const payload = {
+                tipoServicioId: Number(tipoServicioId),
                 nombre: nombre,
-                tipoServicioId: tipoServicioId,
                 descripcion: descripcion,
                 precio: parseFloat(precio),
                 duracion: parseInt(duracion),
@@ -199,32 +201,104 @@ function iniciarServicios() {
                 icono: icono,
                 imagen: imagenBase64,
                 tieneCostoReserva: tieneReserva,
-                costoReserva: tieneReserva ? parseFloat(costoReservaVal) : 0,
-                mostrarEnHome: Boolean(servicioExistente.mostrarEnHome),
-                destacado: Boolean(servicioExistente.destacado),
-                ordenInicio: servicioExistente.ordenInicio || null
+                costoReserva: tieneReserva ? parseFloat(costoReservaVal) : 0
             };
 
-            if (index !== -1) {
-                servicios[index] = servicioActualizado;
-            } else {
-                servicios.push(servicioActualizado);
+            let servicioPersistido = null;
+
+            if (servicioExistente) {
+                servicioPersistido = await apiBackend(`/servicios/${encodeURIComponent(servicioExistente.id)}`, {
+                    method: "PUT",
+                    body: payload
+                });
+
+                const servicioActualizado = normalizarServicioDesdeBackend(servicioPersistido);
+                const index = servicios.findIndex(s => String(s.id) === String(servicioExistente.id));
+
+                if (index !== -1) {
+                    servicios[index] = servicioActualizado;
+                } else {
+                    servicios.push(servicioActualizado);
+                }
+
+                guardarServicios(servicios);
+
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Servicio actualizado exitosamente!",
+                    text: tieneReserva ? `El servicio tiene un costo de reserva de $${servicioActualizado.costoReserva.toLocaleString("es-CO")}.` : "",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#17a9a7"
+                }).then(function () {
+                    window.location.href = "./admin-servicios.html";
+                });
+                return;
             }
 
+            servicioPersistido = await apiBackend("/servicios", {
+                method: "POST",
+                body: payload
+            });
+
+            const nuevoServicio = normalizarServicioDesdeBackend(servicioPersistido);
+            servicios.push(nuevoServicio);
             guardarServicios(servicios);
 
             Swal.fire({
                 icon: "success",
-                title: "¡Servicio actualizado exitosamente!",
-                text: tieneReserva ? `El servicio tiene un costo de reserva de $${servicioActualizado.costoReserva.toLocaleString("es-CO")}.` : "",
+                title: "¡Servicio creado y guardado exitosamente!",
+                text: tieneReserva ? `El servicio tiene un costo de reserva de $${nuevoServicio.costoReserva.toLocaleString("es-CO")}.` : "",
                 confirmButtonText: "Aceptar",
                 confirmButtonColor: "#17a9a7"
             }).then(function () {
                 window.location.href = "./admin-servicios.html";
             });
+        } catch (error) {
+            console.warn("No se pudo guardar el servicio en el backend; se usará LocalStorage:", error);
 
-        } else {
-            // Crear nuevo servicio
+            if (servicioExistente) {
+                const index = servicios.findIndex(s => String(s.id) === String(servicioExistente.id));
+                const servicioActualizado = {
+                    id: servicioExistente.id,
+                    nombre: nombre,
+                    tipoServicioId: tipoServicioId,
+                    descripcion: descripcion,
+                    precio: parseFloat(precio),
+                    duracion: parseInt(duracion),
+                    modalidad: modalidadSeleccionada,
+                    esDomicilio: modalidadSeleccionada === "domicilio",
+                    esVirtual: modalidadSeleccionada === "virtual",
+                    esClinica: modalidadSeleccionada === "clinica",
+                    direccionClinica: modalidadSeleccionada === "clinica" ? direccionClinicaVal : "",
+                    icono: icono,
+                    imagen: imagenBase64,
+                    tieneCostoReserva: tieneReserva,
+                    costoReserva: tieneReserva ? parseFloat(costoReservaVal) : 0,
+                    mostrarEnHome: Boolean(servicioExistente.mostrarEnHome),
+                    destacado: Boolean(servicioExistente.destacado),
+                    ordenInicio: servicioExistente.ordenInicio || null
+                };
+
+                if (index !== -1) {
+                    servicios[index] = servicioActualizado;
+                } else {
+                    servicios.push(servicioActualizado);
+                }
+
+                guardarServicios(servicios);
+
+                Swal.fire({
+                    icon: "success",
+                    title: "¡Servicio actualizado exitosamente!",
+                    text: tieneReserva ? `El servicio tiene un costo de reserva de $${servicioActualizado.costoReserva.toLocaleString("es-CO")}.` : "",
+                    confirmButtonText: "Aceptar",
+                    confirmButtonColor: "#17a9a7"
+                }).then(function () {
+                    window.location.href = "./admin-servicios.html";
+                });
+                return;
+            }
+
             const nuevoServicio = {
                 id: Date.now(),
                 nombre: nombre,
