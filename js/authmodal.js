@@ -419,7 +419,7 @@ function iniciarAuthModal() {
     // ========================================
 
     if (formularioLoginUsuario) {
-        formularioLoginUsuario.addEventListener('submit', function (evento) {
+        formularioLoginUsuario.addEventListener('submit', async function (evento) {
             evento.preventDefault();
 
             let correoIngresado = document.getElementById('login-correo').value.trim();
@@ -431,48 +431,78 @@ function iniciarAuthModal() {
                 mensajeErrorLogin.textContent = '';
             }
 
-            // Verificamos si es admin
-            if (correoIngresado.toLowerCase() === "admin" && contrasenaIngresada === "admin123") {
+            try {
+                // Verificamos si es admin
+                if (correoIngresado.toLowerCase() === "admin" && contrasenaIngresada === "admin123") {
+                    const usuarioAdmin = { id: 'admin', email: 'admin', nombreCompleto: 'Administrador', rol: 'ADMINISTRADOR' };
+                    guardarSesionUsuario(usuarioAdmin);
+                    cerrarAuthModal(document.getElementById("auth-modal"));
+                    Swal.fire({
+                        title: "¡Inicio de sesión exitoso!",
+                        text: "Has ingresado como Administrador",
+                        icon: "success",
+                        confirmButtonText: "Continuar",
+                        confirmButtonColor: "#007b83"
+                    }).then(() => {
+                        window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
+                    });
+                    return;
+                }
+
+                const respuestaLogin = await iniciarSesionBackend(correoIngresado, contrasenaIngresada);
+                const usuarioRegistrado = respuestaLogin?.datos || respuestaLogin?.usuario || null;
+
+                if (!usuarioRegistrado) {
+                    throw new Error('No se recibieron datos del usuario');
+                }
+
+                guardarSesionUsuario({
+                    ...usuarioRegistrado,
+                    token: respuestaLogin.token,
+                    rol: respuestaLogin.rol
+                });
+                actualizarSesionNavbar();
+                const destinoDespuesDelLogin = tomarDestinoAgendarNavbar();
                 cerrarAuthModal(document.getElementById("auth-modal"));
                 Swal.fire({
                     title: "¡Inicio de sesión exitoso!",
-                    text: "Has ingresado como Administrador",
+                    text: "Bienvenido a HuellaVet",
                     icon: "success",
                     confirmButtonText: "Continuar",
                     confirmButtonColor: "#007b83"
                 }).then(() => {
-                    window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
+                    window.location.href = destinoDespuesDelLogin || './user/html/user-dashboard.html';
                 });
                 return;
-            }
+            } catch (error) {
+                const usuarioRegistrado = obtenerUsuarioPorCredenciales(correoIngresado, contrasenaIngresada);
 
-            const usuarioRegistrado = obtenerUsuarioPorCredenciales(correoIngresado, contrasenaIngresada);
-
-            if (!usuarioRegistrado) {
-                if (mensajeErrorLogin) {
-                    mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
-                    mensajeErrorLogin.style.display = 'block';
+                if (!usuarioRegistrado) {
+                    if (mensajeErrorLogin) {
+                        mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
+                        mensajeErrorLogin.style.display = 'block';
+                    }
+                    return;
                 }
-                return;
-            }
 
-            guardarSesionUsuario(usuarioRegistrado.id);
-            actualizarSesionNavbar();
-            const destinoDespuesDelLogin = tomarDestinoAgendarNavbar();
-            cerrarAuthModal(document.getElementById("auth-modal"));
-            Swal.fire({
-                title: "¡Inicio de sesión exitoso!",
-                text: "Bienvenido a HuellaVet",
-                icon: "success",
-                confirmButtonText: "Continuar",
-                confirmButtonColor: "#007b83"
-            }).then(() => {
-                window.location.href = destinoDespuesDelLogin || './user/html/user-dashboard.html';
-            });
+                guardarSesionUsuario(usuarioRegistrado.id);
+                actualizarSesionNavbar();
+                const destinoDespuesDelLogin = tomarDestinoAgendarNavbar();
+                cerrarAuthModal(document.getElementById("auth-modal"));
+                Swal.fire({
+                    title: "¡Inicio de sesión exitoso!",
+                    text: "Bienvenido a HuellaVet",
+                    icon: "success",
+                    confirmButtonText: "Continuar",
+                    confirmButtonColor: "#007b83"
+                }).then(() => {
+                    window.location.href = destinoDespuesDelLogin || './user/html/user-dashboard.html';
+                });
+            }
         });
     }
 
-    formularioRegistro.addEventListener('submit', function (evento) {
+    formularioRegistro.addEventListener('submit', async function (evento) {
         evento.preventDefault();
 
         ocultarMensaje();
@@ -534,40 +564,70 @@ function iniciarAuthModal() {
             contrasena: campoContrasena?.value || ""
         };
 
-        const nuevoUsuario = registrarUsuario(datosUsuario);
+        try {
+            await registrarUsuarioBackend(datosUsuario);
+            const respuestaLogin = await iniciarSesionBackend(datosUsuario.email, datosUsuario.contrasena);
+            const usuarioRegistrado = respuestaLogin?.datos || null;
 
-        if (!nuevoUsuario) {
-            mostrarMensaje("Ya existe una cuenta con este correo.", "error");
-            return;
-        }
+            if (!usuarioRegistrado) {
+                throw new Error('El registro fue exitoso, pero no se obtuvo la sesión del usuario.');
+            }
 
-        guardarSesionUsuario(nuevoUsuario.id);
-        actualizarSesionNavbar();
-
-        const destinoDespuesDelRegistro = tomarDestinoAgendarNavbar();
-        if (destinoDespuesDelRegistro) {
-            cerrarAuthModal(document.getElementById("auth-modal"));
-            Swal.fire({
-                title: "¡Registro exitoso!",
-                text: "Tu cuenta está lista. Ya puedes agendar tu cita.",
-                icon: "success",
-                confirmButtonText: "Continuar",
-                confirmButtonColor: "#007b83"
-            }).then(() => {
-                window.location.href = destinoDespuesDelRegistro;
+            guardarSesionUsuario({
+                ...usuarioRegistrado,
+                token: respuestaLogin.token,
+                rol: respuestaLogin.rol
             });
-            return;
+            actualizarSesionNavbar();
+
+            const destinoDespuesDelRegistro = tomarDestinoAgendarNavbar();
+            if (destinoDespuesDelRegistro) {
+                cerrarAuthModal(document.getElementById("auth-modal"));
+                Swal.fire({
+                    title: "¡Registro exitoso!",
+                    text: "Tu cuenta está lista. Ya puedes agendar tu cita.",
+                    icon: "success",
+                    confirmButtonText: "Continuar",
+                    confirmButtonColor: "#007b83"
+                }).then(() => {
+                    window.location.href = destinoDespuesDelRegistro;
+                });
+                return;
+            }
+
+            mostrarMensaje('¡Registro exitoso!', 'exito');
+            formularioRegistro.reset();
+            limpiarErrores();
+        } catch (error) {
+            const nuevoUsuario = registrarUsuario(datosUsuario);
+
+            if (!nuevoUsuario) {
+                mostrarMensaje("Ya existe una cuenta con este correo.", "error");
+                return;
+            }
+
+            guardarSesionUsuario(nuevoUsuario.id);
+            actualizarSesionNavbar();
+
+            const destinoDespuesDelRegistro = tomarDestinoAgendarNavbar();
+            if (destinoDespuesDelRegistro) {
+                cerrarAuthModal(document.getElementById("auth-modal"));
+                Swal.fire({
+                    title: "¡Registro exitoso!",
+                    text: "Tu cuenta está lista. Ya puedes agendar tu cita.",
+                    icon: "success",
+                    confirmButtonText: "Continuar",
+                    confirmButtonColor: "#007b83"
+                }).then(() => {
+                    window.location.href = destinoDespuesDelRegistro;
+                });
+                return;
+            }
+
+            mostrarMensaje('¡Registro exitoso!', 'exito');
+            formularioRegistro.reset();
+            limpiarErrores();
         }
-
-        // Si todo esta bien, muestro mensaje de exito
-        mostrarMensaje(
-            '¡Registro exitoso!',
-            'exito'
-        );
-
-        // Limpio el formulario y los errores
-        formularioRegistro.reset();
-        limpiarErrores();
     });
 }
 

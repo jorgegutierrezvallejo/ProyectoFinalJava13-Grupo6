@@ -2,6 +2,148 @@
 const CITAS_STORAGE_KEY = "citas";
 const HORAS_AGENDA = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"];
 
+function tieneSesionBackendActiva() {
+    return typeof getTokenActual === "function" && Boolean(getTokenActual());
+}
+
+function normalizarHoraApi(horaTexto) {
+    if (!horaTexto) return "00:00:00";
+    const texto = String(horaTexto).trim().toLowerCase();
+    const match = texto.match(/(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?|am|pm)?/);
+
+    if (!match) return "00:00:00";
+
+    let horas = Number(match[1]);
+    const minutos = String(match[2]).padStart(2, "0");
+    const periodo = match[4];
+
+    if (periodo) {
+        const esPM = periodo.startsWith("p");
+        if (esPM && horas < 12) horas += 12;
+        if (!esPM && horas === 12) horas = 0;
+    }
+
+    return `${String(horas).padStart(2, "0")}:${minutos}:00`;
+}
+
+function normalizarHoraVisible(horaTexto) {
+    if (!horaTexto) return "10:00 AM";
+    const texto = String(horaTexto).trim();
+
+    if (/[aApP]/.test(texto)) {
+        return texto;
+    }
+
+    const match = texto.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+    if (!match) return texto;
+
+    let horas = Number(match[1]);
+    const minutos = match[2];
+    const periodo = horas >= 12 ? "PM" : "AM";
+    if (horas > 12) horas -= 12;
+    if (horas === 0) horas = 12;
+    return `${horas}:${minutos} ${periodo}`;
+}
+
+function normalizarCitaDesdeBackend(cita = {}) {
+    return {
+        ...cita,
+        id: cita.id ?? Date.now(),
+        usuarioId: cita.usuarioId ?? cita.usuario?.id ?? "",
+        mascotaId: cita.mascotaId ?? cita.mascota?.id ?? "",
+        nombreMascota: cita.nombreMascota ?? cita.mascota?.nombre ?? "Mascota",
+        servicioNombre: cita.servicioNombre ?? cita.servicio?.nombre ?? "Consulta general",
+        fecha: cita.fecha || hoyISO(),
+        hora: normalizarHoraVisible(cita.hora),
+        estado: cita.estado || "Pendiente",
+        modalidad: cita.modalidad || "clinica",
+        ubicacion: cita.ubicacion || "HuellaVet — Sede Centro",
+        motivo: cita.motivo || "",
+        costoReserva: cita.costoReserva ?? 0,
+        tieneCostoReserva: Boolean(cita.tieneCostoReserva)
+    };
+}
+
+async function obtenerCitasDesdeBackend(idUsuario = null) {
+    if (!tieneSesionBackendActiva()) return [];
+
+    try {
+        const ruta = idUsuario == null
+            ? "/citas"
+            : `/citas/usuario/${encodeURIComponent(idUsuario)}`;
+        const respuesta = await apiBackend(ruta);
+        const citas = Array.isArray(respuesta) ? respuesta : [];
+        return citas.map(normalizarCitaDesdeBackend);
+    } catch (error) {
+        console.warn("No se pudieron cargar las citas desde el backend:", error);
+        return [];
+    }
+}
+
+async function guardarCitaEnBackend(cita) {
+    if (!tieneSesionBackendActiva()) {
+        return null;
+    }
+
+    const payload = {
+        usuarioId: String(cita.usuarioId || ""),
+        mascotaId: String(cita.mascotaId || ""),
+        servicioId: Number(cita.servicioId ?? 0),
+        fecha: cita.fecha || hoyISO(),
+        hora: normalizarHoraApi(cita.hora),
+        estado: cita.estado || "Pendiente",
+        modalidad: cita.modalidad || "clinica",
+        ubicacion: cita.ubicacion || "HuellaVet — Sede Centro",
+        motivo: cita.motivo || "",
+        tieneCostoReserva: Boolean(cita.tieneCostoReserva),
+        costoReserva: Number(cita.costoReserva || 0),
+        nombreMascota: cita.nombreMascota || "Mascota",
+        servicioNombre: cita.servicioNombre || "Consulta general"
+    };
+
+    return apiBackend("/citas", {
+        method: "POST",
+        body: payload
+    });
+}
+
+async function sincronizarCitasDesdeBackend(idUsuario = null) {
+    if (!tieneSesionBackendActiva()) {
+        return obtenerTodasLasCitas();
+    }
+
+    try {
+        const citasBackend = await obtenerCitasDesdeBackend(idUsuario);
+        if (citasBackend.length > 0) {
+            guardarTodasLasCitas(citasBackend);
+        }
+        return obtenerTodasLasCitas();
+    } catch (error) {
+        console.warn("No se pudo sincronizar citas desde el backend:", error);
+        return obtenerTodasLasCitas();
+    }
+}
+
+async function actualizarEstadoCitaEnBackend(idCita, nuevoEstado) {
+    if (!tieneSesionBackendActiva()) return null;
+
+    const mapEstado = {
+        Pendiente: "aceptar",
+        Confirmada: "aceptar",
+        Rechazada: "rechazar",
+        Cancelada: "cancelar",
+        Completada: "completar",
+        Reprogramada: "reprogramar"
+    };
+
+    const accion = mapEstado[nuevoEstado];
+    if (!accion) return null;
+
+    return apiBackend(`/citas/${encodeURIComponent(idCita)}/${accion}`, {
+        method: "PUT"
+    });
+}
+
 function obtenerTodasLasCitas() {
     const citas = HuellaVetStorage.leer(CITAS_STORAGE_KEY, []);
     return Array.isArray(citas) ? citas : [];
@@ -15,6 +157,13 @@ function agregarCita(cita) {
     const citas = obtenerTodasLasCitas();
     citas.unshift(cita);
     guardarTodasLasCitas(citas);
+
+    if (tieneSesionBackendActiva()) {
+        guardarCitaEnBackend(cita).catch(error => {
+            console.warn("No se pudo sincronizar la cita con el backend:", error);
+        });
+    }
+
     return cita;
 }
 
@@ -27,7 +176,15 @@ function obtenerCitasPorUsuarioId(idUsuario) {
 }
 
 function actualizarEstadoCita(idCita, nuevoEstado) {
-    return actualizarCamposCita(idCita, { estado: nuevoEstado });
+    const actualizado = actualizarCamposCita(idCita, { estado: nuevoEstado });
+
+    if (tieneSesionBackendActiva()) {
+        actualizarEstadoCitaEnBackend(idCita, nuevoEstado).catch(error => {
+            console.warn("No se pudo sincronizar el estado de la cita en el backend:", error);
+        });
+    }
+
+    return actualizado;
 }
 
 function actualizarCamposCita(idCita, camposParciales) {

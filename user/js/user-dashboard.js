@@ -8,6 +8,17 @@ document.addEventListener("userComponentsLoaded", function () {
 
 function iniciarDashboardUsuario() {
     cargarSaludoUsuario();
+
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    if (usuarioActivo && typeof sincronizarCitasDesdeBackend === "function") {
+        sincronizarCitasDesdeBackend(usuarioActivo.id).finally(() => {
+            cargarProximaCita();
+            cargarTotalMascotasDashboard();
+            iniciarAccionesCita();
+        });
+        return;
+    }
+
     cargarProximaCita();
     cargarTotalMascotasDashboard();
     iniciarAccionesCita();
