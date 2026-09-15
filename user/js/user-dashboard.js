@@ -3,61 +3,89 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("userComponentsLoaded", function () {
-    // Si hay lógica que dependa del topbar/sidebar ya cargados
+    // Escucha si la topbar o sidebar requieren re-renderizado
 });
 
-function iniciarDashboardUsuario() {
+async function iniciarDashboardUsuario() {
     cargarSaludoUsuario();
 
     const usuarioActivo = obtenerUsuarioRegistrado();
-    if (usuarioActivo && typeof sincronizarCitasDesdeBackend === "function") {
-        sincronizarCitasDesdeBackend(usuarioActivo.id).finally(() => {
-            cargarProximaCita();
-            cargarTotalMascotasDashboard();
-            iniciarAccionesCita();
-        });
+    if (!usuarioActivo || !usuarioActivo.id) {
+        console.warn("No hay un usuario con sesión activa en el sistema.");
         return;
     }
 
+    // 1. Sincronizar citas desde el backend en Java (/api/citas/usuario/{id})
+    if (typeof sincronizarCitasDesdeBackend === "function") {
+        try {
+            await sincronizarCitasDesdeBackend(usuarioActivo.id);
+        } catch (error) {
+            console.error("Error sincronizando citas:", error);
+        }
+    }
+
+    // 2. Cargar mascotas desde el backend (/api/mascotas/usuario/{id})
+    const mascotas = await obtenerMascotasBackend(usuarioActivo.id);
+
+    // 3. Renderizar KPIs y Próxima Cita con datos reales de la BD
+    cargarMetricasKPIs(mascotas, usuarioActivo.id);
     cargarProximaCita();
-    cargarTotalMascotasDashboard();
     iniciarAccionesCita();
 }
 
-// Especie cruda (valor del <select>, ej. "perro") -> { icono FA, clase de color, texto capitalizado }
-function infoPorEspecie(especieCruda) {
-    const clave = String(especieCruda || "").trim().toLowerCase();
-    const mapa = {
-        perro: { icono: "fa-dog", clase: "perro", texto: "Perro" },
-        gato: { icono: "fa-cat", clase: "gato", texto: "Gato" },
-        ave: { icono: "fa-dove", clase: "ave", texto: "Ave" }
-    };
-    if (mapa[clave]) return mapa[clave];
-    // "otro" o especie no reconocida: icono de huella genérico, pero con texto capitalizado igual
-    return { icono: "fa-paw", clase: "otro", texto: capitalizarPrimera(especieCruda) || "Mascota" };
+// Petición directa al CRUD de Java para listar mascotas
+async function obtenerMascotasBackend(usuarioId) {
+    try {
+        const respuesta = await apiBackend(`/mascotas/usuario/${encodeURIComponent(usuarioId)}`);
+        return Array.isArray(respuesta) ? respuesta : [];
+    } catch (error) {
+        console.warn("Fallo al obtener mascotas del backend, usando almacenamiento local:", error);
+        return typeof obtenerMascotasPorUsuarioId === "function" 
+            ? obtenerMascotasPorUsuarioId(usuarioId) 
+            : [];
+    }
 }
 
-function capitalizarPrimera(texto) {
-    const limpio = String(texto || "").trim();
-    if (!limpio) return "";
-    return limpio.charAt(0).toUpperCase() + limpio.slice(1).toLowerCase();
+// Cálculo dinámico de los 4 KPIs del Dashboard
+function cargarMetricasKPIs(mascotas, usuarioId) {
+    const kpiMascotas = document.getElementById("kpiMascotasValor");
+    const kpiProximasCitas = document.getElementById("kpiProximasCitasValor");
+    const kpiRecordatorios = document.getElementById("kpiRecordatoriosValor");
+    const kpiVacunas = document.getElementById("kpiVacunasValor");
+
+    // KPI 1: Total mascotas
+    if (kpiMascotas) kpiMascotas.textContent = mascotas.length;
+
+    // KPI 2: Citas futuras programadas
+    const citasFuturas = typeof obtenerCitasFuturas === "function" 
+        ? obtenerCitasFuturas(usuarioId) 
+        : [];
+    if (kpiProximasCitas) kpiProximasCitas.textContent = citasFuturas.length;
+
+    // KPI 3: Recordatorios pendientes
+    let totalRecordatorios = 0;
+    if (typeof obtenerTodasLasCitas === "function") {
+        const citasUsuario = obtenerTodasLasCitas().filter(c => String(c.usuarioId) === String(usuarioId));
+        totalRecordatorios = citasUsuario.filter(c => c.estado?.toUpperCase() === "PENDIENTE").length;
+    }
+    if (kpiRecordatorios) kpiRecordatorios.textContent = totalRecordatorios;
+
+    // KPI 4: Mascotas con vacunas pendientes o registradas
+    const mascotasConVacunas = mascotas.filter(m => m.vacunas && m.vacunas.trim() !== "").length;
+    if (kpiVacunas) kpiVacunas.textContent = mascotasConVacunas;
 }
 
+// Presentación de la ficha de la cita más cercana
 function cargarProximaCita() {
     const usuarioActivo = obtenerUsuarioRegistrado();
-    const citas = usuarioActivo ? obtenerCitasFuturas(usuarioActivo.id) : [];
+    const citas = usuarioActivo && typeof obtenerCitasFuturas === "function" 
+        ? obtenerCitasFuturas(usuarioActivo.id) 
+        : [];
 
     const contenedor = document.getElementById("proximaCitaContenido");
-    const kpiProximasCitasEl = document.getElementById("kpiProximasCitasValor");
-
     const proximaCita = citas[0] || null;
 
-    if (kpiProximasCitasEl) {
-        kpiProximasCitasEl.textContent = citas.length;
-    }
-
     if (!proximaCita) {
-        // No hay citas guardadas: mostrar estado vacío en vez de la ficha de la maqueta
         if (contenedor) {
             contenedor.innerHTML = `
                 <div class="proxima-cita-vacio">
@@ -74,7 +102,6 @@ function cargarProximaCita() {
         return;
     }
 
-    // Actualizar nombre y subtítulo
     const nombreMascotaEl = document.getElementById("proximaCitaMascotaNombre");
     const descMascotaEl = document.getElementById("proximaCitaMascotaDesc");
     const estadoCitaEl = document.getElementById("proximaCitaEstado");
@@ -84,111 +111,70 @@ function cargarProximaCita() {
     const vetCitaEl = document.getElementById("proximaCitaVet");
     const ubicacionCitaEl = document.getElementById("proximaCitaUbicacion");
 
-    const especieInfo = infoPorEspecie(proximaCita.especie);
+    const especieInfo = infoPorEspecie(proximaCita.especie || "otro");
+    const estadoTexto = capitalizarPrimera(proximaCita.estado || "Confirmada");
 
     if (nombreMascotaEl) nombreMascotaEl.textContent = proximaCita.nombreMascota || "Mascota";
-    if (descMascotaEl) descMascotaEl.textContent = `${especieInfo.texto}${proximaCita.raza ? ` · ${proximaCita.raza}` : ""} · ${proximaCita.servicioNombre || "Consulta general"}`;
-    if (estadoCitaEl) estadoCitaEl.textContent = proximaCita.estado || "Confirmada";
+    if (descMascotaEl) descMascotaEl.textContent = `${especieInfo.texto} · ${proximaCita.servicioNombre || "Consulta general"}`;
+    if (estadoCitaEl) {
+        estadoCitaEl.textContent = estadoTexto;
+        estadoCitaEl.className = `badge-estado-cita badge-estado-cita--${estadoTexto.toLowerCase()}`;
+    }
 
     const avatarEl = document.getElementById("proximaCitaAvatar");
     if (avatarEl) {
-        const mascotaCita = proximaCita.mascotaId && typeof obtenerMascotaPorId === "function"
-            ? obtenerMascotaPorId(proximaCita.mascotaId)
-            : null;
-        const fotoMascota = mascotaCita?.foto || proximaCita.fotoMascota || "";
-        avatarEl.classList.remove("cita-mascota-avatar--perro", "cita-mascota-avatar--gato", "cita-mascota-avatar--ave", "cita-mascota-avatar--otro");
-        avatarEl.classList.add(`cita-mascota-avatar--${especieInfo.clase}`);
-        avatarEl.innerHTML = fotoMascota
-            ? `<img data-avatar-mascota src="${escaparHtmlUsuario(resolverRutaRecursoHuellaVet(fotoMascota))}" alt="${escaparHtmlUsuario(proximaCita.nombreMascota || "Mascota")}">`
+        avatarEl.className = `cita-mascota-avatar cita-mascota-avatar--${especieInfo.clase}`;
+        avatarEl.innerHTML = proximaCita.fotoMascota 
+            ? `<img src="${escaparHtmlUsuario(proximaCita.fotoMascota)}" alt="${escaparHtmlUsuario(proximaCita.nombreMascota)}">` 
             : `<i class="fa-solid ${especieInfo.icono}"></i>`;
-        activarFallbackAvatarDashboard(avatarEl, especieInfo);
     }
 
-    if (fechaCitaEl) fechaCitaEl.textContent = formatearFechaCita(proximaCita.fecha) || "28 ago 2026";
-    if (horaCitaEl) horaCitaEl.textContent = proximaCita.hora || "10:30 AM";
+    if (fechaCitaEl) fechaCitaEl.textContent = formatearFechaCita(proximaCita.fecha);
+    if (horaCitaEl) horaCitaEl.textContent = proximaCita.hora || "10:00 AM";
     if (servicioCitaEl) servicioCitaEl.textContent = proximaCita.servicioNombre || "Consulta general";
-    if (vetCitaEl) vetCitaEl.textContent = "—";
+    if (vetCitaEl) vetCitaEl.textContent = proximaCita.veterinario?.nombre || "Por asignar";
     if (ubicacionCitaEl) ubicacionCitaEl.textContent = proximaCita.ubicacion || "HuellaVet — Sede Centro";
 }
 
-// La lista completa vive en "Mis mascotas"; el resumen solo conserva el KPI.
-function cargarTotalMascotasDashboard() {
-    const usuarioActivo = obtenerUsuarioRegistrado();
-    const mascotas = usuarioActivo ? obtenerMascotasPorUsuarioId(usuarioActivo.id) : [];
-    const kpiEl = document.getElementById("kpiMascotasValor");
-    if (kpiEl) kpiEl.textContent = mascotas.length;
-}
-
-function activarFallbackAvatarDashboard(contenedor, especieInfo) {
-    const imagen = contenedor.querySelector("img[data-avatar-mascota]");
-    if (!imagen) return;
-    imagen.addEventListener("error", function () {
-        imagen.parentElement.innerHTML = `<i class="fa-solid ${especieInfo.icono}"></i>`;
-    }, { once: true });
-}
-
-function escaparHtmlUsuario(valor) {
-    const div = document.createElement("div");
-    div.textContent = String(valor ?? "");
-    return div.innerHTML;
-}
-
-function formatearFechaCita(fechaISO) {
-    if (!fechaISO) return "28 ago 2026";
-    try {
-        const [anio, mes, dia] = fechaISO.split("-").map(Number);
-        const fecha = new Date(anio, mes - 1, dia);
-        const meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sept", "oct", "nov", "dic"];
-        return `${dia} ${meses[fecha.getMonth()]} ${anio}`;
-    } catch (e) {
-        return fechaISO;
-    }
-}
-
+// Listeners de los botones interactivos
 function iniciarAccionesCita() {
     const btnVerDetalle = document.getElementById("btnVerDetalleCita");
     const btnReprogramar = document.getElementById("btnReprogramarCita");
     const btnCancelar = document.getElementById("btnCancelarCita");
 
     if (btnVerDetalle) {
-        btnVerDetalle.addEventListener("click", function (e) {
+        btnVerDetalle.onclick = function (e) {
             e.preventDefault();
-            const cita = proximaCitaGlobal(obtenerUsuarioRegistrado()?.id || "");
+            const usuarioActivo = obtenerUsuarioRegistrado();
+            const cita = proximaCitaGlobal(usuarioActivo?.id);
 
-            if (typeof Swal !== "undefined") {
-                const nombre = cita?.nombreMascota || "Mascota";
-                const serv = cita?.servicioNombre || "Consulta general";
-                const fecha = cita?.fecha ? formatearFechaCita(cita.fecha) : "28 ago 2026";
-                const hora = cita?.hora || "10:30 AM";
-                const ubi = cita?.ubicacion || "HuellaVet — Sede Centro";
+            if (!cita || typeof Swal === "undefined") return;
 
-                Swal.fire({
-                    title: `Detalle de la Cita · ${nombre}`,
-                    html: `
-                        <div style="text-align: left; font-size: 0.9rem; line-height: 1.6; color: #223e3c;">
-                            <p class="mb-2"><strong>Mascota:</strong> ${nombre} (${cita?.especie || "Gato"})</p>
-                            <p class="mb-2"><strong>Servicio:</strong> ${serv}</p>
-                            <p class="mb-2"><strong>Fecha y Hora:</strong> ${fecha} a las ${hora}</p>
-                            <p class="mb-2"><strong>Veterinario a cargo:</strong> —</p>
-                            <p class="mb-2"><strong>Ubicación:</strong> ${ubi}</p>
-                            <p class="mb-0"><strong>Estado:</strong> <span class="badge bg-success">Confirmada</span></p>
-                        </div>
-                    `,
-                    confirmButtonText: "Cerrar",
-                    confirmButtonColor: "#17a9a7"
-                });
-            }
-        });
+            Swal.fire({
+                title: `Detalle de Cita · ${cita.nombreMascota}`,
+                html: `
+                    <div style="text-align: left; font-size: 0.9rem; line-height: 1.6; color: #223e3c;">
+                        <p class="mb-2"><strong>Mascota:</strong> ${cita.nombreMascota}</p>
+                        <p class="mb-2"><strong>Servicio:</strong> ${cita.servicioNombre}</p>
+                        <p class="mb-2"><strong>Fecha y Hora:</strong> ${formatearFechaCita(cita.fecha)} a las ${cita.hora}</p>
+                        <p class="mb-2"><strong>Ubicación:</strong> ${cita.ubicacion}</p>
+                        <p class="mb-0"><strong>Estado:</strong> <span class="badge bg-success">${capitalizarPrimera(cita.estado)}</span></p>
+                    </div>
+                `,
+                confirmButtonText: "Cerrar",
+                confirmButtonColor: "#17a9a7"
+            });
+        };
     }
 
     if (btnReprogramar) {
-        btnReprogramar.addEventListener("click", function (e) {
+        btnReprogramar.onclick = function (e) {
             e.preventDefault();
             if (typeof Swal !== "undefined") {
                 Swal.fire({
                     icon: "question",
                     title: "¿Deseas reprogramar tu cita?",
-                    text: "Te redirigiremos al formulario de agendamiento para seleccionar una nueva fecha y hora.",
+                    text: "Te redirigiremos al formulario de agendamiento.",
                     showCancelButton: true,
                     confirmButtonText: "Sí, reprogramar",
                     cancelButtonText: "Volver",
@@ -200,12 +186,17 @@ function iniciarAccionesCita() {
                     }
                 });
             }
-        });
+        };
     }
 
     if (btnCancelar) {
-        btnCancelar.addEventListener("click", function (e) {
+        btnCancelar.onclick = function (e) {
             e.preventDefault();
+            const usuarioActivo = obtenerUsuarioRegistrado();
+            const cita = proximaCitaGlobal(usuarioActivo?.id);
+
+            if (!cita) return;
+
             if (typeof Swal !== "undefined") {
                 Swal.fire({
                     icon: "warning",
@@ -216,22 +207,32 @@ function iniciarAccionesCita() {
                     cancelButtonText: "No cancelar",
                     confirmButtonColor: "#e53e3e",
                     cancelButtonColor: "#6c757d"
-                }).then(result => {
+                }).then(async (result) => {
                     if (result.isConfirmed) {
-                        const cita = proximaCitaGlobal(obtenerUsuarioRegistrado()?.id || "");
-                        if (cita) actualizarEstadoCita(cita.id, "Cancelada");
-                        Swal.fire({
-                            icon: "success",
-                            title: "Cita cancelada",
-                            text: "Tu cita ha sido cancelada exitosamente.",
-                            confirmButtonColor: "#17a9a7"
-                        }).then(() => {
-                            location.reload();
-                        });
+                        try {
+                            // Llama al PUT /api/citas/{id}/cancelar en Java
+                            await actualizarEstadoCita(cita.id, "Cancelada");
+                            
+                            Swal.fire({
+                                icon: "success",
+                                title: "Cita cancelada",
+                                text: "El estado se actualizó correctamente en la base de datos.",
+                                confirmButtonColor: "#17a9a7"
+                            }).then(() => {
+                                iniciarDashboardUsuario(); // Refresca sin recargar toda la página
+                            });
+                        } catch (err) {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "No se pudo cancelar la cita en el servidor.",
+                                confirmButtonColor: "#17a9a7"
+                            });
+                        }
                     }
                 });
             }
-        });
+        };
     }
 }
 
@@ -245,5 +246,39 @@ function cargarSaludoUsuario() {
                 saludoEl.textContent = `Hola, ${primerNombre} 👋`;
             }
         }
+    }
+}
+
+function infoPorEspecie(especieCruda) {
+    const clave = String(especieCruda || "").trim().toLowerCase();
+    const mapa = {
+        perro: { icono: "fa-dog", clase: "perro", texto: "Perro" },
+        gato: { icono: "fa-cat", clase: "gato", texto: "Gato" },
+        ave: { icono: "fa-dove", clase: "ave", texto: "Ave" }
+    };
+    return mapa[clave] || { icono: "fa-paw", clase: "otro", texto: capitalizarPrimera(especieCruda) || "Mascota" };
+}
+
+function capitalizarPrimera(texto) {
+    const limpio = String(texto || "").trim();
+    if (!limpio) return "";
+    return limpio.charAt(0).toUpperCase() + limpio.slice(1).toLowerCase();
+}
+
+function escaparHtmlUsuario(valor) {
+    const div = document.createElement("div");
+    div.textContent = String(valor ?? "");
+    return div.innerHTML;
+}
+
+function formatearFechaCita(fechaISO) {
+    if (!fechaISO) return "Sin fecha";
+    try {
+        const [anio, mes, dia] = fechaISO.split("-").map(Number);
+        const fecha = new Date(anio, mes - 1, dia);
+        const meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sept", "oct", "nov", "dic"];
+        return `${dia} ${meses[fecha.getMonth()]} ${anio}`;
+    } catch (e) {
+        return fechaISO;
     }
 }
