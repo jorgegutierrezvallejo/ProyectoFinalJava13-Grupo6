@@ -188,8 +188,7 @@ function aprobarCitaAdmin(idCita) {
     const index = citas.findIndex(c => String(c.id) === String(idCita));
 
     if (index !== -1) {
-        citas[index].estado = "Confirmada";
-        guardarTodasLasCitas(citas);
+        actualizarEstadoCita(idCita, "Confirmada");
 
         Swal.fire({
             icon: "success",
@@ -227,7 +226,8 @@ function rechazarCitaAdmin(idCita) {
         }
     }).then((result) => {
         if (result.isConfirmed) {
-            actualizarCamposCita(idCita, { estado: "Rechazada", motivoEstado: result.value });
+            actualizarEstadoCita(idCita, "Rechazada");
+            actualizarCamposCita(idCita, { motivoEstado: result.value });
 
             Swal.fire({
                 icon: "info",

@@ -2,9 +2,63 @@
 const SERVICIOS_STORAGE_KEY = "servicios";
 const MAX_SERVICIOS_INICIO = 3;
 
+function tieneSesionBackendActiva() {
+    return typeof getTokenActual === "function" && Boolean(getTokenActual());
+}
+
+function normalizarServicioDesdeBackend(servicio = {}) {
+    const modalidad = servicio.modalidad || (
+        servicio.esDomicilio ? "domicilio" : (servicio.esVirtual ? "virtual" : "clinica")
+    );
+
+    return {
+        id: servicio.id ?? Date.now(),
+        tipoServicioId: servicio.tipoServicioId ?? servicio.tipoServicio?.id ?? "",
+        nombre: servicio.nombre || "",
+        descripcion: servicio.descripcion || "",
+        precio: Number(servicio.precio ?? 0),
+        duracion: Number(servicio.duracion ?? 30),
+        modalidad,
+        esDomicilio: Boolean(servicio.esDomicilio || modalidad === "domicilio"),
+        esVirtual: Boolean(servicio.esVirtual || modalidad === "virtual"),
+        esClinica: Boolean(servicio.esClinica || modalidad === "clinica"),
+        direccionClinica: servicio.direccionClinica || "",
+        icono: servicio.icono || "bi bi-heart-pulse",
+        imagen: servicio.imagen || "",
+        tieneCostoReserva: Boolean(servicio.tieneCostoReserva),
+        costoReserva: Number(servicio.costoReserva ?? 0),
+        mostrarEnHome: Boolean(servicio.mostrarEnHome),
+        destacado: Boolean(servicio.destacado),
+        ordenInicio: servicio.ordenInicio ?? null
+    };
+}
+
+async function obtenerServiciosDesdeBackend() {
+    if (!tieneSesionBackendActiva()) {
+        return obtenerServicios();
+    }
+
+    try {
+        const respuesta = await apiBackend("/servicios");
+        const servicios = Array.isArray(respuesta) ? respuesta : [];
+        const normalizados = servicios.map(normalizarServicioDesdeBackend);
+        guardarServicios(normalizados);
+        return normalizados;
+    } catch (error) {
+        console.warn("No se pudieron cargar los servicios desde el backend:", error);
+        return obtenerServicios();
+    }
+}
+
 function obtenerServicios() {
     const servicios = HuellaVetStorage.leer(SERVICIOS_STORAGE_KEY, []);
-    return Array.isArray(servicios) ? servicios : [];
+    const lista = Array.isArray(servicios) ? servicios : [];
+
+    if (tieneSesionBackendActiva() && lista.length === 0 && typeof window !== "undefined") {
+        obtenerServiciosDesdeBackend().catch(() => {});
+    }
+
+    return lista;
 }
 
 function guardarServicios(servicios) {
@@ -19,6 +73,13 @@ function obtenerServicioPorId(idServicio) {
 function eliminarServicioGuardado(idServicio) {
     const servicios = obtenerServicios().filter(servicio => String(servicio.id) !== String(idServicio));
     guardarServicios(servicios);
+
+    if (tieneSesionBackendActiva()) {
+        apiBackend(`/servicios/${encodeURIComponent(idServicio)}`, { method: "DELETE" }).catch(error => {
+            console.warn("No se pudo eliminar el servicio en el backend:", error);
+        });
+    }
+
     return servicios;
 }
 

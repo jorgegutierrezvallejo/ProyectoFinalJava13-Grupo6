@@ -332,13 +332,7 @@ function iniciarBotonesPanelCitaUsuario() {
 
     document.getElementById("userPanelBtnReprogramar")?.addEventListener("click", function () {
         if (citaIdMostradaActualmenteUsuario === null) return;
-        pedirMotivoYCambiarEstadoUsuario(citaIdMostradaActualmenteUsuario, "Reprogramada", {
-            titulo: "¿Solicitar reprogramación?",
-            texto: "La clínica revisará tu solicitud para acordar una nueva fecha y hora. Indica el motivo:",
-            placeholder: "Ej. Tengo un imprevisto ese día, necesito otro horario...",
-            confirmButtonText: "Sí, solicitar",
-            confirmButtonColor: "#17a9a7"
-        });
+        pedirReprogramacionUsuario(citaIdMostradaActualmenteUsuario);
     });
 
     document.getElementById("userPanelBtnCancelar")?.addEventListener("click", function () {
@@ -356,6 +350,54 @@ function iniciarBotonesPanelCitaUsuario() {
         if (citaIdMostradaActualmenteUsuario === null) return;
         abrirFormularioComprobanteUsuario(citaIdMostradaActualmenteUsuario);
     });
+}
+
+async function pedirReprogramacionUsuario(idCita) {
+    const cita = obtenerCitaPorId(idCita);
+    if (!cita) return;
+
+    const resultado = await Swal.fire({
+        icon: "warning",
+        title: "¿Solicitar reprogramación?",
+        html: `
+            <p>Selecciona la nueva fecha y hora. La clínica revisará la solicitud.</p>
+            <input id="nuevaFechaCita" class="swal2-input" type="date" min="${hoyISO()}">
+            <input id="nuevaHoraCita" class="swal2-input" type="time" value="${normalizarHoraApi(cita.hora).slice(0, 5)}">
+            <textarea id="motivoReprogramacion" class="swal2-textarea" placeholder="Motivo"></textarea>
+        `,
+        showCancelButton: true,
+        confirmButtonText: "Sí, solicitar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#17a9a7",
+        preConfirm: () => {
+            const fecha = document.getElementById("nuevaFechaCita").value;
+            const hora = document.getElementById("nuevaHoraCita").value;
+            const motivo = document.getElementById("motivoReprogramacion").value.trim();
+            if (!fecha || !hora || !motivo) {
+                Swal.showValidationMessage("Completa fecha, hora y motivo.");
+                return false;
+            }
+            return { fecha, hora, motivo };
+        }
+    });
+
+    if (!resultado.isConfirmed) return;
+    try {
+        await actualizarEstadoCitaEnBackend(idCita, "Reprogramada", {
+            fecha: resultado.value.fecha,
+            hora: resultado.value.hora,
+            motivo: resultado.value.motivo
+        });
+        actualizarCamposCita(idCita, {
+            estado: "Reprogramada",
+            fecha: resultado.value.fecha,
+            hora: resultado.value.hora,
+            motivoEstado: resultado.value.motivo
+        });
+        refrescarVistaCitasUsuario();
+    } catch (error) {
+        Swal.fire({ icon: "error", title: "No se pudo reprogramar", text: error.message });
+    }
 }
 
 // Dialogo compartido para Reprogramar/Cancelar: pide un motivo

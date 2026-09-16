@@ -1,7 +1,69 @@
 /* Repositorio de usuarios y sesión local del prototipo. */
 const USUARIOS_STORAGE_KEY = "usuarios";
-const SESION_USUARIO_STORAGE_KEY = "sesionUsuarioId";
 const USUARIO_LEGACY_STORAGE_KEY = "usuarioRegistrado";
+
+/*
+ * getTokenActual/apiBackend son alias de compatibilidad hacia la capa
+ * única definida en js/config.js (obtenerToken/apiFetch). Se mantienen
+ * estos nombres porque decenas de archivos del proyecto ya los usan;
+ * así no hay que tocar cada uno, pero solo hay UNA implementación real
+ * del fetch/URL/token, la de config.js.
+ */
+function getTokenActual() {
+    return typeof obtenerToken === "function" ? obtenerToken() : null;
+}
+
+async function apiBackend(path, opciones = {}) {
+    return apiFetch(`/api${path}`, opciones);
+}
+
+async function iniciarSesionBackend(email, contrasena) {
+    const respuesta = await apiBackend("/auth/login", {
+        method: "POST",
+        body: {
+            email,
+            contrasena
+        }
+    });
+
+    if (respuesta?.token) {
+        const usuario = respuesta.datos || {};
+        guardarSesionUsuario({ ...usuario, token: respuesta.token, rol: respuesta.rol });
+    }
+
+    return respuesta;
+}
+
+async function iniciarSesionAdminBackend(correo, contrasena) {
+    return apiBackend("/admin/login", {
+        method: "POST",
+        body: { correo, contrasena }
+    });
+}
+
+async function iniciarSesionVeterinarioBackend(correo, contrasena) {
+    return apiBackend("/veterinario/login", {
+        method: "POST",
+        body: { correo, contrasena }
+    });
+}
+
+async function registrarUsuarioBackend(datosUsuario) {
+    const payload = {
+        nombreCompleto: datosUsuario.nombreCompleto || "",
+        email: String(datosUsuario.email || "").trim(),
+        contrasena: datosUsuario.contrasena || "",
+        telefono: datosUsuario.telefono || "",
+        indicativoPais: datosUsuario.indicativoPais || "+57",
+        ciudad: datosUsuario.ciudad || "",
+        fechaNacimiento: datosUsuario.fechaNacimiento || null
+    };
+
+    return apiBackend("/auth/registro", {
+        method: "POST",
+        body: payload
+    });
+}
 
 function obtenerUsuarios() {
     const usuarios = HuellaVetStorage.leer(USUARIOS_STORAGE_KEY, []);
@@ -54,17 +116,26 @@ function obtenerUsuarioPorCredenciales(email, contrasena) {
     ) || null;
 }
 
-function guardarSesionUsuario(idUsuario) {
-    return HuellaVetStorage.guardar(SESION_USUARIO_STORAGE_KEY, idUsuario);
+function guardarSesionUsuario(datosSesion) {
+    const datos = (datosSesion && typeof datosSesion === "object") ? datosSesion : { id: datosSesion };
+    // Delega en la sesión única de config.js (mismas claves de
+    // localStorage que ya usaba el proyecto: huellavetToken /
+    // huellavetUsuario / sesionUsuarioId).
+    return typeof guardarSesion === "function" ? guardarSesion(datos) : datos;
 }
 
 function cerrarSesionUsuario() {
-    localStorage.removeItem(SESION_USUARIO_STORAGE_KEY);
+    if (typeof cerrarSesionApi === "function") {
+        cerrarSesionApi();
+    }
 }
 
 function obtenerUsuarioRegistrado() {
-    const idUsuario = HuellaVetStorage.leer(SESION_USUARIO_STORAGE_KEY, null);
-    return idUsuario ? obtenerUsuarioPorId(idUsuario) : null;
+    const usuarioPersistido = typeof obtenerUsuarioActual === "function" ? obtenerUsuarioActual() : null;
+    if (usuarioPersistido && typeof usuarioPersistido === "object") {
+        return usuarioPersistido;
+    }
+    return null;
 }
 
 /* Conserva el usuario antiguo creado antes de introducir la lista. */
