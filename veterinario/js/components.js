@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     document.dispatchEvent(
         new CustomEvent(
-            "veterinarioComponentsLoaded"
+            "adminComponentsLoaded"
         )
     );
 
