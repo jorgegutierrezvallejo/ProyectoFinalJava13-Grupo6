@@ -34,6 +34,6 @@ window.HuellaVetStorage = {
 function resolverRutaRecursoHuellaVet(ruta) {
     const valor = String(ruta || "").trim();
     if (!valor || /^(?:https?:|data:|blob:|\/)/i.test(valor)) return valor;
-    const esPaginaAnidada = /\/(?:user|admin)\/html\//.test(window.location.pathname);
+    const esPaginaAnidada = /\/(?:user|admin|veterinario)\/html\//.test(window.location.pathname);
     return esPaginaAnidada ? `../../${valor.replace(/^\.\//, "")}` : valor;
 }

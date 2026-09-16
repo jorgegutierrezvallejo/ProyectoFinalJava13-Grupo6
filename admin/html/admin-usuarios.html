@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Clientes | HuellaVet Admin</title>
+    <link rel="icon" href="../../img/HuellaVet-icon.svg" type="image/svg+xml">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/admin-sidebar.css">
+    <link rel="stylesheet" href="../css/top-bar.css">
+    <link rel="stylesheet" href="../css/admin-panel.css">
+
+</head>
+
+<body data-page="usuarios" data-page-title="Clientes">
+
+    <div id="sidebar-container"></div>
+
+    <div class="admin-page">
+
+        <div id="topbar-container"></div>
+
+        <main class="admin-panel-main">
+
+            <h1>Clientes</h1>
+            <p class="subtitulo">Habilita o inhabilita las cuentas de los clientes registrados.</p>
+
+            <div class="admin-panel-card">
+                <div class="admin-panel-card__encabezado">
+                    <h2>Clientes registrados</h2>
+                </div>
+
+                <div id="listadoUsuarios">
+                    <p class="text-muted">Cargando clientes...</p>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="../js/admin-sidebar.js"></script>
+    <script src="../js/topbar.js"></script>
+    <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/usuarios-storage.js"></script>
+
+    <script src="../js/admin-usuarios.js"></script>
+
+</body>
+
+</html>
