@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | HuellaVet Admin</title>
+    <link rel="icon" href="../../img/HuellaVet-icon.svg" type="image/svg+xml">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Sour+Gummy:wght@600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/admin-sidebar.css">
+    <link rel="stylesheet" href="../css/top-bar.css">
+    <link rel="stylesheet" href="../css/admin-panel.css">
+
+</head>
+
+<body data-page="dashboard" data-page-title="Resumen">
+
+    <div id="sidebar-container"></div>
+
+    <div class="admin-page">
+
+        <div id="topbar-container"></div>
+
+        <main class="admin-panel-main">
+
+            <h1>Panel de administración</h1>
+            <p class="subtitulo">Resumen general de cuentas de HuellaVet.</p>
+
+            <div class="admin-stats" id="adminStats">
+                <div class="admin-stat-card">
+                    <span class="admin-stat-card__icono"><i class="bi bi-heart-pulse"></i></span>
+                    <div>
+                        <div class="admin-stat-card__numero" id="statVeterinariosTotal">--</div>
+                        <div class="admin-stat-card__etiqueta">Veterinarios registrados</div>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <span class="admin-stat-card__icono"><i class="bi bi-heart-pulse-fill"></i></span>
+                    <div>
+                        <div class="admin-stat-card__numero" id="statVeterinariosActivos">--</div>
+                        <div class="admin-stat-card__etiqueta">Veterinarios activos</div>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <span class="admin-stat-card__icono"><i class="bi bi-people"></i></span>
+                    <div>
+                        <div class="admin-stat-card__numero" id="statUsuariosTotal">--</div>
+                        <div class="admin-stat-card__etiqueta">Clientes registrados</div>
+                    </div>
+                </div>
+
+                <div class="admin-stat-card">
+                    <span class="admin-stat-card__icono"><i class="bi bi-people-fill"></i></span>
+                    <div>
+                        <div class="admin-stat-card__numero" id="statUsuariosActivos">--</div>
+                        <div class="admin-stat-card__etiqueta">Clientes activos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-panel-card">
+                <div class="admin-panel-card__encabezado">
+                    <h2>Accesos rápidos</h2>
+                </div>
+                <div class="admin-form-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+                    <a href="./admin-veterinarios.html" class="admin-btn admin-btn--primario" style="text-align:center; text-decoration:none;">
+                        <i class="bi bi-plus-lg"></i> Gestionar veterinarios
+                    </a>
+                    <a href="./admin-usuarios.html" class="admin-btn admin-btn--primario" style="text-align:center; text-decoration:none;">
+                        <i class="bi bi-people"></i> Gestionar clientes
+                    </a>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <script src="../../js/config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="../js/admin-sidebar.js"></script>
+    <script src="../js/topbar.js"></script>
+    <script src="../../js/shared/local-storage.js"></script>
+    <script src="../../js/shared/usuarios-storage.js"></script>
+
+    <script src="../js/admin-dashboard.js"></script>
+
+</body>
+
+</html>
