@@ -7,7 +7,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Mascotas | HuellaVet</title>
+    <title>Clientes | HuellaVet</title>
     <link rel="icon" href="../../img/HuellaVet-icon.svg" type="image/svg+xml">
 
 
@@ -25,14 +25,12 @@
         rel="stylesheet">
 
 
-    <link rel="stylesheet" href="../css/admin-sidebar.css">
+    <link rel="stylesheet" href="../css/veterinario-sidebar.css">
 
     <link rel="stylesheet" href="../css/top-bar.css">
 
-    <link rel="stylesheet" href="../css/admin-mascotas.css">
-
-
-    <style>
+    <link rel="stylesheet" href="../css/veterinario-clientes.css">
+<style>
 
     .vacio {
     padding: 40px 24px;
@@ -43,11 +41,10 @@
     color: #5f6f72;
 }
 </style>
-
 </head>
 
 
-<body data-page="mascotas" data-page-title="Mascotas">
+<body data-page="clientes" data-page-title="Clientes">
 
     <div id="sidebar-container"></div>
 
@@ -57,17 +54,24 @@
         <div id="topbar-container"></div>
 
 
-        <main class="admin-mascotas">
+        <main class="admin-clientes">
 
-            <section class="admin-mascotas__encabezado">
-                <div>
-                    <h1>Mascotas</h1>
-                    <p>Consulta y actualiza la información clínica de las mascotas.</p>
-                </div>
+            <section class="admin-clientes__listado" id="adminClientesListado">
+                <h1>Clientes</h1>
+                <p class="text-muted">Cargando clientes...</p>
             </section>
-            <section class="admin-mascotas__listado" id="adminMascotasListado">
-                <p class="text-muted">Cargando mascotas...</p>
-            </section>
+
+            <!--
+                AQUÍ DISEÑAREMOS
+                LA VISTA DE CLIENTES
+            -->
+<div class="vacio">
+             
+            <div class="vacio">
+                
+                <h3>PRÓXIMAMENTE</h3>
+                <p>En esta sección incluiremos el listado de clientes.</p>
+            </div>
 
 
 
@@ -77,15 +81,13 @@
 
     <script src="../../js/config.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <script src="../js/admin-sidebar.js"></script>
     <script src="../js/topbar.js"></script>
     <script src="../../js/shared/usuarios-storage.js"></script>
-    <script src="../../js/shared/mascotas-storage.js"></script>
 
-    <script src="../js/admin-mascotas.js"></script>
+    <script src="../js/admin-clientes.js"></script>
 
 </body>
 
