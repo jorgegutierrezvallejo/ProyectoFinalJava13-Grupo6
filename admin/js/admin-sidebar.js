@@ -33,6 +33,7 @@ async function cargarSidebar() {
 
         sidebarContainer.innerHTML = html;
 
+        aplicarPermisosSidebarPorRol();
 
         marcarOpcionActiva();
 
@@ -50,6 +51,23 @@ async function cargarSidebar() {
 
     }
 
+}
+
+function aplicarPermisosSidebarPorRol() {
+    const usuario = typeof obtenerUsuarioRegistrado === "function"
+        ? obtenerUsuarioRegistrado()
+        : null;
+    const rol = String(usuario?.rol || "").toUpperCase();
+
+    if (rol !== "ADMINISTRADOR" && rol !== "VETERINARIO") {
+        window.location.href = "../../index.html";
+        return;
+    }
+
+    if (rol !== "VETERINARIO") return;
+
+    document.querySelectorAll('[data-page="clientes"], [data-page="configuracion"]')
+        .forEach(link => link.remove());
 }
 
 

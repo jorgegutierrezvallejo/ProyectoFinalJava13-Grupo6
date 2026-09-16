@@ -58,10 +58,22 @@ function mostrarFechaActual() {
    RESUMEN DINÁMICO
 ======================================== */
 
-function cargarResumenDinamicoDashboard() {
-    const citas = typeof obtenerTodasLasCitas === "function" ? obtenerTodasLasCitas() : [];
-    const usuarios = typeof obtenerUsuarios === "function" ? obtenerUsuarios() : [];
-    const servicios = typeof obtenerServicios === "function" ? obtenerServicios() : [];
+async function cargarResumenDinamicoDashboard() {
+    const citas = typeof obtenerCitasDesdeBackend === "function" &&
+        typeof tieneSesionBackendActiva === "function" &&
+        tieneSesionBackendActiva()
+        ? await obtenerCitasDesdeBackend()
+        : (typeof obtenerTodasLasCitas === "function" ? obtenerTodasLasCitas() : []);
+    const usuarios = typeof apiBackend === "function" &&
+        typeof obtenerUsuarioRegistrado === "function" &&
+        obtenerUsuarioRegistrado()?.rol === "ADMINISTRADOR"
+        ? await apiBackend("/usuarios")
+        : (typeof obtenerUsuarios === "function" ? obtenerUsuarios() : []);
+    const servicios = typeof obtenerServiciosDesdeBackend === "function" &&
+        typeof tieneSesionBackendActiva === "function" &&
+        tieneSesionBackendActiva()
+        ? await obtenerServiciosDesdeBackend()
+        : (typeof obtenerServicios === "function" ? obtenerServicios() : []);
 
     renderizarMetricasDashboard(citas, usuarios, servicios);
     renderizarProximasCitasDashboard(citas);

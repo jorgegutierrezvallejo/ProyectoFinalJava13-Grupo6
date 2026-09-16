@@ -424,6 +424,7 @@ function iniciarAuthModal() {
 
             let correoIngresado = document.getElementById('login-correo').value.trim();
             let contrasenaIngresada = document.getElementById('login-contrasena').value;
+            let rolSeleccionado = document.getElementById('login-rol')?.value || 'USUARIO';
             let mensajeErrorLogin = document.getElementById('mensaje-error-login');
 
             if (mensajeErrorLogin) {
@@ -432,24 +433,11 @@ function iniciarAuthModal() {
             }
 
             try {
-                // Verificamos si es admin
-                if (correoIngresado.toLowerCase() === "admin" && contrasenaIngresada === "admin123") {
-                    const usuarioAdmin = { id: 'admin', email: 'admin', nombreCompleto: 'Administrador', rol: 'ADMINISTRADOR' };
-                    guardarSesionUsuario(usuarioAdmin);
-                    cerrarAuthModal(document.getElementById("auth-modal"));
-                    Swal.fire({
-                        title: "¡Inicio de sesión exitoso!",
-                        text: "Has ingresado como Administrador",
-                        icon: "success",
-                        confirmButtonText: "Continuar",
-                        confirmButtonColor: "#007b83"
-                    }).then(() => {
-                        window.location.href = window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html";
-                    });
-                    return;
-                }
-
-                const respuestaLogin = await iniciarSesionBackend(correoIngresado, contrasenaIngresada);
+                const respuestaLogin = rolSeleccionado === 'ADMINISTRADOR'
+                    ? await iniciarSesionAdminBackend(correoIngresado, contrasenaIngresada)
+                    : rolSeleccionado === 'VETERINARIO'
+                        ? await iniciarSesionVeterinarioBackend(correoIngresado, contrasenaIngresada)
+                        : await iniciarSesionBackend(correoIngresado, contrasenaIngresada);
                 const usuarioRegistrado = respuestaLogin?.datos || respuestaLogin?.usuario || null;
 
                 if (!usuarioRegistrado) {
@@ -463,18 +451,33 @@ function iniciarAuthModal() {
                 });
                 actualizarSesionNavbar();
                 const destinoDespuesDelLogin = tomarDestinoAgendarNavbar();
+                const destinoRol = rolSeleccionado === 'ADMINISTRADOR'
+                    ? (window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html")
+                    : rolSeleccionado === 'VETERINARIO'
+                        ? (window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html")
+                        : './user/html/user-dashboard.html';
                 cerrarAuthModal(document.getElementById("auth-modal"));
                 Swal.fire({
                     title: "¡Inicio de sesión exitoso!",
-                    text: "Bienvenido a HuellaVet",
+                    text: `Has ingresado como ${rolSeleccionado === 'USUARIO' ? 'cliente' : rolSeleccionado === 'ADMINISTRADOR' ? 'administrador' : 'veterinario'}`,
                     icon: "success",
                     confirmButtonText: "Continuar",
                     confirmButtonColor: "#007b83"
                 }).then(() => {
-                    window.location.href = destinoDespuesDelLogin || './user/html/user-dashboard.html';
+                    window.location.href = rolSeleccionado === 'USUARIO'
+                        ? (destinoDespuesDelLogin || destinoRol)
+                        : destinoRol;
                 });
                 return;
             } catch (error) {
+                if (rolSeleccionado !== 'USUARIO') {
+                    if (mensajeErrorLogin) {
+                        mensajeErrorLogin.textContent = 'Las credenciales no corresponden al rol seleccionado.';
+                        mensajeErrorLogin.style.display = 'block';
+                    }
+                    return;
+                }
+
                 const usuarioRegistrado = obtenerUsuarioPorCredenciales(correoIngresado, contrasenaIngresada);
 
                 if (!usuarioRegistrado) {

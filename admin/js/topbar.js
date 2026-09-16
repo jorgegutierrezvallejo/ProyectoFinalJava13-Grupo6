@@ -86,7 +86,7 @@ function iniciarTopbar() {
    ACTIVIDAD RECIENTE / NOTIFICACIONES
 ======================================== */
 
-function iniciarNotificacionesAdmin() {
+async function iniciarNotificacionesAdmin() {
     const boton = document.getElementById("notificationButton");
     const panel = document.getElementById("notificationPanel");
     const insignia = document.getElementById("notificationBadge");
@@ -94,7 +94,12 @@ function iniciarNotificacionesAdmin() {
 
     if (!boton || !panel || !insignia || !lista) return;
 
-    const citas = leerCitasTopbarAdmin()
+    const citasFuente = typeof obtenerCitasDesdeBackend === "function" &&
+        typeof tieneSesionBackendActiva === "function" &&
+        tieneSesionBackendActiva()
+        ? await obtenerCitasDesdeBackend()
+        : leerCitasTopbarAdmin();
+    const citas = citasFuente
         .sort((a, b) => fechaActividadAdmin(b) - fechaActividadAdmin(a));
     const recientes = citas.slice(0, 6);
 

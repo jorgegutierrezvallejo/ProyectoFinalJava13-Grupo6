@@ -107,6 +107,37 @@ async function guardarCitaEnBackend(cita) {
     });
 }
 
+/*
+ * Trae del backend solo las citas que corresponden al rol de quien esta
+ * conectado: un VETERINARIO solo debe ver sus propias citas asignadas
+ * (no las de toda la clinica), mientras que ADMINISTRADOR ve todas.
+ * Este es el punto unico que usan admin-dashboard.js, admin-citas.js y
+ * topbar.js para que el dashboard admin quede correctamente enlazado
+ * con el rol veterinario.
+ */
+async function obtenerCitasVisiblesSegunRolActual() {
+    const usuarioActivo = typeof obtenerUsuarioRegistrado === "function" ? obtenerUsuarioRegistrado() : null;
+    const rol = String(usuarioActivo?.rol || "").toUpperCase();
+
+    if (rol === "VETERINARIO" && usuarioActivo?.id != null) {
+        return obtenerCitasDesdeBackendPorVeterinario(usuarioActivo.id);
+    }
+    return obtenerCitasDesdeBackend();
+}
+
+async function obtenerCitasDesdeBackendPorVeterinario(idVeterinario) {
+    if (!tieneSesionBackendActiva()) return [];
+
+    try {
+        const respuesta = await apiBackend(`/citas/veterinario/${encodeURIComponent(idVeterinario)}`);
+        const citas = Array.isArray(respuesta) ? respuesta : [];
+        return citas.map(normalizarCitaDesdeBackend);
+    } catch (error) {
+        console.warn("No se pudieron cargar las citas del veterinario:", error);
+        return [];
+    }
+}
+
 async function sincronizarCitasDesdeBackend(idUsuario = null) {
     if (!tieneSesionBackendActiva()) {
         return obtenerTodasLasCitas();
@@ -114,9 +145,10 @@ async function sincronizarCitasDesdeBackend(idUsuario = null) {
 
     try {
         const citasBackend = await obtenerCitasDesdeBackend(idUsuario);
-        if (citasBackend.length > 0) {
-            guardarTodasLasCitas(citasBackend);
-        }
+        // Se guarda siempre (incluso vacio) para que el cache refleje
+        // fielmente lo que hay en la base de datos, sin dejar citas
+        // "fantasma" de una sesion anterior.
+        guardarTodasLasCitas(citasBackend);
         return obtenerTodasLasCitas();
     } catch (error) {
         console.warn("No se pudo sincronizar citas desde el backend:", error);
@@ -124,12 +156,13 @@ async function sincronizarCitasDesdeBackend(idUsuario = null) {
     }
 }
 
-async function actualizarEstadoCitaEnBackend(idCita, nuevoEstado) {
+async function actualizarEstadoCitaEnBackend(idCita, nuevoEstado, datosNuevos = null) {
     if (!tieneSesionBackendActiva()) return null;
 
     const mapEstado = {
         Pendiente: "aceptar",
         Confirmada: "aceptar",
+        "En curso": "iniciar",
         Rechazada: "rechazar",
         Cancelada: "cancelar",
         Completada: "completar",
@@ -141,6 +174,7 @@ async function actualizarEstadoCitaEnBackend(idCita, nuevoEstado) {
 
     return apiBackend(`/citas/${encodeURIComponent(idCita)}/${accion}`, {
         method: "PUT"
+        , ...(accion === "reprogramar" && datosNuevos ? { body: datosNuevos } : {})
     });
 }
 
@@ -153,7 +187,7 @@ function guardarTodasLasCitas(citas) {
     return HuellaVetStorage.guardar(CITAS_STORAGE_KEY, Array.isArray(citas) ? citas : []);
 }
 
-function agregarCita(cita) {
+function guardarCitaEnCache(cita) {
     const citas = obtenerTodasLasCitas();
     citas.unshift(cita);
     guardarTodasLasCitas(citas);
@@ -167,6 +201,23 @@ function agregarCita(cita) {
     return cita;
 }
 
+/*
+ * Crea la cita en el backend (fuente de verdad) y solo si la operacion
+ * es exitosa actualiza el cache local con los datos reales de la BD
+ * (id definitivo, estado, etc). Si el backend falla, lanza el error
+ * para que quien llama pueda informar al usuario; no se guarda nada
+ * de forma optimista en localStorage.
+ */
+async function agregarCita(cita) {
+    if (!tieneSesionBackendActiva()) {
+        throw new Error("Debes iniciar sesión para agendar una cita.");
+    }
+
+    const citaCreadaEnBackend = await guardarCitaEnBackend(cita);
+    const citaNormalizada = normalizarCitaDesdeBackend(citaCreadaEnBackend || cita);
+    return guardarCitaEnCache(citaNormalizada);
+}
+
 function obtenerCitaPorId(idCita) {
     return obtenerTodasLasCitas().find(cita => String(cita.id) === String(idCita)) || null;
 }
@@ -175,16 +226,23 @@ function obtenerCitasPorUsuarioId(idUsuario) {
     return obtenerTodasLasCitas().filter(cita => String(cita.usuarioId) === String(idUsuario));
 }
 
-function actualizarEstadoCita(idCita, nuevoEstado) {
-    const actualizado = actualizarCamposCita(idCita, { estado: nuevoEstado });
-
-    if (tieneSesionBackendActiva()) {
-        actualizarEstadoCitaEnBackend(idCita, nuevoEstado).catch(error => {
-            console.warn("No se pudo sincronizar el estado de la cita en el backend:", error);
-        });
+/*
+ * Cambia el estado de una cita SIEMPRE contra el backend primero.
+ * El cache local (localStorage) solo se actualiza despues de que la BD
+ * confirma el cambio, para que nunca quede desincronizado con Supabase.
+ */
+async function actualizarEstadoCita(idCita, nuevoEstado, datosNuevos = null) {
+    if (!tieneSesionBackendActiva()) {
+        throw new Error("Debes iniciar sesión para modificar esta cita.");
     }
 
-    return actualizado;
+    const citaActualizadaEnBackend = await actualizarEstadoCitaEnBackend(idCita, nuevoEstado, datosNuevos);
+    if (!citaActualizadaEnBackend) {
+        throw new Error("No se pudo actualizar el estado de la cita.");
+    }
+
+    const citaNormalizada = normalizarCitaDesdeBackend(citaActualizadaEnBackend);
+    return actualizarCamposCita(idCita, citaNormalizada);
 }
 
 function actualizarCamposCita(idCita, camposParciales) {

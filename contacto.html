@@ -29,7 +29,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/authmodal.css">
     <link rel="stylesheet" href="css/contacto.css">
-
+    <script src="js/config.js"></script>
     <script src="js/shared/local-storage.js"></script>
     <script src="js/shared/usuarios-storage.js"></script>
     <script src="js/shared/servicios-storage.js"></script>
@@ -308,7 +308,9 @@
                                             <label for="fechaNacimientoMascota" class="form-label">
                                                 Nacimiento (aprox.)
                                             </label>
-                                            <input type="date" class="form-control" id="fechaNacimientoMascota" name="fechaNacimientoMascota" onclick="this.max=new Date().toISOString().split('T')[0]">
+                                            <input type="date" class="form-control" id="fechaNacimientoMascota"
+                                                name="fechaNacimientoMascota"
+                                                onclick="this.max=new Date().toISOString().split('T')[0]">
                                         </div>
 
                                         <div class="col-12 col-md-4">
@@ -428,14 +430,12 @@
                                 <!-- Botón de envío -->
                                 <div class="d-grid mt-4">
 
-                                    <button type="submit"
-    class="btn btn-contacto px-4 py-2"
-    id="boton-enviar">
+                                    <button type="submit" class="btn btn-contacto px-4 py-2" id="boton-enviar">
 
-    <i class="bi bi-send me-2"></i>
-    Enviar mensaje
+                                        <i class="bi bi-send me-2"></i>
+                                        Enviar mensaje
 
-</button>
+                                    </button>
 
                                 </div>
 
