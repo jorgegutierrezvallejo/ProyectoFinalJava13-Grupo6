@@ -91,6 +91,34 @@ document.addEventListener("click", function (evento) {
 
 function iniciarAuthModal() {
 
+    document.querySelectorAll(".hv-password-toggle").forEach(function (boton) {
+        if (boton.dataset.inicializado === "true") return;
+
+        boton.dataset.inicializado = "true";
+
+        boton.addEventListener("click", function () {
+            const idCampo = boton.dataset.togglePassword;
+            const campo = document.getElementById(idCampo);
+
+            if (!campo) return;
+
+            const mostrar = campo.type === "password";
+
+            campo.type = mostrar ? "text" : "password";
+            boton.setAttribute(
+                "aria-label",
+                mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
+            );
+            boton.setAttribute("aria-pressed", String(mostrar));
+
+            const icono = boton.querySelector("i");
+            if (icono) {
+                icono.classList.toggle("bi-eye", !mostrar);
+                icono.classList.toggle("bi-eye-slash", mostrar);
+            }
+        });
+    });
+
 
 
 
