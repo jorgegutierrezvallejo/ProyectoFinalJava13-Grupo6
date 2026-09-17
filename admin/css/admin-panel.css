@@ -1,0 +1,230 @@
+/* ========================================
+   LAYOUT BASE DEL PANEL DE ADMINISTRADOR
+======================================== */
+
+.admin-page {
+    min-height: 100vh;
+    margin-left: 270px;
+    background-color: #f7faf8;
+    transition: margin-left 0.3s ease;
+}
+
+body.sidebar-collapsed .admin-page {
+    margin-left: 0;
+}
+
+@media (max-width: 768px) {
+    .admin-page {
+        margin-left: 0;
+    }
+}
+
+.admin-panel-main {
+    width: 100%;
+    min-height: calc(100vh - 86px);
+    padding: 32px;
+}
+
+.admin-panel-main h1 {
+    font-family: var(--fuente-marca, "Sour Gummy", sans-serif);
+    font-size: 26px;
+    color: var(--color-texto-oscuro, #223e3c);
+    margin-bottom: 4px;
+}
+
+.admin-panel-main > p.subtitulo {
+    color: #5f6f72;
+    margin-bottom: 24px;
+}
+
+/* ---------- TARJETAS DE RESUMEN ---------- */
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.admin-stat-card {
+    background-color: #ffffff;
+    border: 1px solid var(--color-borde, #d8e3df);
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.admin-stat-card__icono {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    background-color: var(--color-fondo-claro, #eef5e5);
+    color: var(--color-primario, #17a9a7);
+    flex-shrink: 0;
+}
+
+.admin-stat-card__numero {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-texto-oscuro, #223e3c);
+    line-height: 1.1;
+}
+
+.admin-stat-card__etiqueta {
+    color: #5f6f72;
+    font-size: 13px;
+}
+
+/* ---------- PANELES / TARJETAS ---------- */
+
+.admin-panel-card {
+    background-color: #ffffff;
+    border: 1px solid var(--color-borde, #d8e3df);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.admin-panel-card__encabezado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.admin-panel-card__encabezado h2 {
+    font-size: 18px;
+    color: var(--color-texto-oscuro, #223e3c);
+    margin: 0;
+}
+
+/* ---------- TABLA ---------- */
+
+.admin-tabla-wrapper {
+    overflow-x: auto;
+}
+
+table.admin-tabla {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+table.admin-tabla th {
+    text-align: left;
+    padding: 10px 12px;
+    color: #5f6f72;
+    font-weight: 600;
+    border-bottom: 2px solid var(--color-borde, #d8e3df);
+    white-space: nowrap;
+}
+
+table.admin-tabla td {
+    padding: 12px;
+    border-bottom: 1px solid var(--color-borde, #d8e3df);
+    vertical-align: middle;
+    color: var(--color-texto-oscuro, #223e3c);
+}
+
+table.admin-tabla tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.admin-badge--activo {
+    background-color: #e4f5e0;
+    color: #2f8b3a;
+}
+
+.admin-badge--inactivo {
+    background-color: #fbe6e6;
+    color: #c0392b;
+}
+
+.admin-btn {
+    border: none;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.admin-btn:hover {
+    opacity: 0.85;
+}
+
+.admin-btn--habilitar {
+    background-color: #e4f5e0;
+    color: #2f8b3a;
+}
+
+.admin-btn--inhabilitar {
+    background-color: #fbe6e6;
+    color: #c0392b;
+}
+
+.admin-btn--primario {
+    background-color: var(--color-acento, #bad641);
+    color: var(--color-texto-oscuro, #223e3c);
+}
+
+.admin-panel-vacio {
+    padding: 40px 24px;
+    border: 1px dashed var(--color-borde, #d8e3df);
+    border-radius: 10px;
+    text-align: center;
+    color: #5f6f72;
+}
+
+.admin-panel-error {
+    padding: 14px 16px;
+    border-radius: 10px;
+    background-color: #fbe6e6;
+    color: #c0392b;
+    margin-bottom: 16px;
+}
+
+/* ---------- FORMULARIO NUEVO VETERINARIO ---------- */
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.admin-form-grid label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-texto-oscuro, #223e3c);
+    margin-bottom: 6px;
+}
+
+.admin-form-grid input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-borde, #d8e3df);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+}

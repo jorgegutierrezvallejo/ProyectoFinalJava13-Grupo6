@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         loadComponent(
             "sidebar-container",
-            "./admin-sidebar.html"
+            "./veterinario-sidebar.html"
         ),
 
         loadComponent(

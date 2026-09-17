@@ -482,7 +482,7 @@ function iniciarAuthModal() {
                 const destinoRol = rolSeleccionado === 'ADMINISTRADOR'
                     ? (window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html")
                     : rolSeleccionado === 'VETERINARIO'
-                        ? (window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html")
+                        ? (window.location.pathname.includes('/veterinario/') ? "html/veterinario-dashboard.html" : "veterinario/html/veterinario-dashboard.html")
                         : './user/html/user-dashboard.html';
                 cerrarAuthModal(document.getElementById("auth-modal"));
                 Swal.fire({

@@ -32,9 +32,9 @@
 
 
     <!-- conecto los estilos del sidebar, topbar y la vista de citas -->
-    <link rel="stylesheet" href="../css/admin-sidebar.css">
+    <link rel="stylesheet" href="../css/veterinario-sidebar.css">
     <link rel="stylesheet" href="../css/top-bar.css">
-    <link rel="stylesheet" href="../css/admin-citas.css">
+    <link rel="stylesheet" href="../css/veterinario-citas.css">
 
 </head>
 
@@ -69,7 +69,7 @@
                  Los numeros y el chip de la tarjeta grande se recalculan
                  segun el periodo que muestra el calendario de la Agenda
                  (dia/semana/mes) -- ver renderizarResumen() en
-                 admin-citas.js. -->
+                 veterinario-citas.js. -->
             <!-- 5 tarjetas de resumen en una sola fila -- misma diagramacion
                  interna y altura que las stat-cards de admin-dashboard.html
                  (icono circular + etiqueta + numero + detalle), pedido
@@ -173,7 +173,7 @@
                         </div>
 
                         <div class="hv-pendientes__lista" id="contenedorPendientesCitas">
-                            <!-- Renderizado dinámicamente desde localStorage por admin-citas.js -->
+                            <!-- Renderizado dinámicamente desde localStorage por veterinario-citas.js -->
                         </div>
 
                         <div class="hv-pendientes__footer">
@@ -194,7 +194,7 @@
                         <!-- encabezado de la agenda: titulo dinamico a la
                              izquierda (se fusiona con el rango de fechas
                              mostrado -- ver textoTituloAgenda() en
-                             admin-citas.js), selector de vista + navegacion
+                             veterinario-citas.js), selector de vista + navegacion
                              a la derecha, en la misma fila (hv-card__header
                              ya es flex + space-between por defecto). -->
                         <div class="hv-card__header">
@@ -207,7 +207,7 @@
                                      Semana y Mes son solo para navegar y elegir un
                                      dia -- la agenda de abajo siempre muestra un
                                      solo dia (ver iniciarVistaSelector() en
-                                     admin-citas.js). -->
+                                     veterinario-citas.js). -->
                                 <div class="hv-vista-selector" id="hvVistaSelector">
                                     <button type="button" class="hv-vista-selector__btn hv-vista-selector__btn--activo"
                                         data-vista="dia">Día</button>
@@ -295,7 +295,7 @@
 
 
                     <!-- contenido dinamico: se llena con JS
-                         (renderizarPanelCita en admin-citas.js).
+                         (renderizarPanelCita en veterinario-citas.js).
                          Si no hay ninguna cita que mostrar, se
                          reemplaza por un estado vacio. -->
                     <div id="panelCitaContenido">
@@ -511,7 +511,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- componentes -->
-    <script src="../js/admin-sidebar.js"></script>
+    <script src="../js/veterinario-sidebar.js"></script>
     <script src="../js/topbar.js"></script>
 
 
@@ -519,7 +519,7 @@
     <script src="../../js/shared/local-storage.js"></script>
     <script src="../../js/shared/usuarios-storage.js"></script>
     <script src="../../js/shared/citas-storage.js"></script>
-    <script src="../js/admin-citas.js"></script>
+    <script src="../js/veterinario-citas.js"></script>
 
 
 </body>
