@@ -1,6 +1,24 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+    await sincronizarMascotasDesdeBackend();
     iniciarPaginaMascotas();
 });
+
+// Trae las mascotas reales desde Supabase (vía Spring Boot) y actualiza
+// la copia local, para que la vista siempre refleje lo que hay en la DB.
+async function sincronizarMascotasDesdeBackend() {
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    if (!usuarioActivo || typeof obtenerMascotasDesdeBackend !== "function") return;
+    if (typeof tieneSesionBackendMascotas === "function" && !tieneSesionBackendMascotas()) return;
+
+    try {
+        const mascotasBackend = await obtenerMascotasDesdeBackend(usuarioActivo.id);
+        if (Array.isArray(mascotasBackend)) {
+            mascotasBackend.forEach(mascota => guardarMascota(mascota));
+        }
+    } catch (error) {
+        console.warn("No se pudieron sincronizar las mascotas desde el servidor:", error);
+    }
+}
 
 let mascotaSeleccionadaId = null;
 let textoBusqueda = "";
@@ -592,10 +610,21 @@ function iniciarBotonesDetalleMascota(mascota) {
                 cancelButtonText: "Cancelar",
                 confirmButtonColor: "#e53e3e",
                 cancelButtonColor: "#6c757d"
-            }).then(resultado => {
+            }).then(async resultado => {
                 if (!resultado.isConfirmed) return;
 
                 if (mascota.id) {
+                    try {
+                        await eliminarMascotaEnBackend(mascota.id);
+                    } catch (error) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "No se pudo eliminar en el servidor",
+                            text: error?.message || "Intenta de nuevo.",
+                            confirmButtonColor: "#e53e3e"
+                        });
+                        return;
+                    }
                     eliminarMascota(mascota.id);
                 }
 

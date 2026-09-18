@@ -46,7 +46,7 @@ function iniciarFormularioMascota() {
         mostrarFotoMascotaEnZona(zonaUpload, fotoMascota);
     });
 
-    botonGuardar.addEventListener("click", function () {
+    botonGuardar.addEventListener("click", async function () {
         if (!formulario.checkValidity()) {
             formulario.reportValidity();
             return;
@@ -87,6 +87,32 @@ function iniciarFormularioMascota() {
             creadaEn: mascotaEdicion?.creadaEn || new Date().toISOString(),
             actualizadaEn: estaEditando ? new Date().toISOString() : undefined
         };
+
+        // Intenta guardar en el backend (Spring Boot -> Supabase).
+        // Si hay sesión JWT activa, esto es lo que realmente persiste
+        // la mascota en Postgres. Si falla, avisamos y no seguimos,
+        // para no dar una falsa sensación de "guardado" solo local.
+        try {
+            let mascotaBackend = null;
+
+            if (estaEditando) {
+                mascotaBackend = await actualizarMascotaEnBackend(mascotaEdicion.id, mascota);
+            } else {
+                mascotaBackend = await guardarMascotaEnBackend(mascota);
+            }
+
+            if (mascotaBackend) {
+                // El id real es el que genera Postgres (Long), no el
+                // crypto.randomUUID() que usábamos solo para el modo local.
+                mascota.id = mascotaBackend.id;
+            }
+        } catch (error) {
+            mostrarAvisoMascota(
+                "No se pudo guardar en el servidor",
+                error?.message || "Ocurrió un error al comunicarse con el servidor. Se guardó una copia local temporal.",
+                "warning"
+            );
+        }
 
         guardarMascota(mascota);
 
