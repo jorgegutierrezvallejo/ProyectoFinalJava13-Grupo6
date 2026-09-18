@@ -22,7 +22,7 @@
 
     <!--ESTE HTML ES GUARDAR MASCOTA-->
 
-<div class="container-fluid py-4 px-lg-5 contenido-principal">
+    <div class="container-fluid py-4 px-lg-5 contenido-principal">
         <section class="row g-4 justify-content-center">
 
             <!-- CAJA 1: FORMULARIO (IZQUIERDA) -->
@@ -54,13 +54,15 @@
                                 <div class="mb-3 mt-2 mt-md-0">
                                     <label for="nombre-mascota" class="form-label">Nombre de la mascota <span
                                             class="asterisco">*</span></label>
-                                    <input type="text" class="form-control" id="nombre-mascota" placeholder="Ej. Luna" required>
+                                    <input type="text" class="form-control" id="nombre-mascota" placeholder="Ej. Luna"
+                                        required>
                                 </div>
                                 <div class="row">
                                     <div class="col-6">
                                         <label for="especie" class="form-label">Especie <span
                                                 class="asterisco">*</span></label>
-                                        <input type="text" class="form-control" id="especie" placeholder="Ej. perro" required>
+                                        <input type="text" class="form-control" id="especie" placeholder="Ej. perro"
+                                            required>
                                     </div>
                                     <div class="col-6">
                                         <label for="raza" class="form-label">Raza</label>
@@ -75,7 +77,8 @@
                         <div class="row mb-3">
                             <div class="col-12 col-md-4 mb-3 mb-md-0">
                                 <label class="form-label">Nacimiento (aprox.) <span class="asterisco">*</span></label>
-                                <input type="date" class="form-control" id="fechaNacimientoMascota" required onclick="this.max=new Date().toISOString().split('T')[0]">
+                                <input type="date" class="form-control" id="fechaNacimientoMascota" required
+                                    onclick="this.max=new Date().toISOString().split('T')[0]">
                             </div>
                             <div class="col-12 col-md-4 mb-3 mb-md-0">
                                 <label for="sexo-mascota" class="form-label">Sexo <span
@@ -99,7 +102,8 @@
                         <div class="row mb-3">
                             <div class="col-12 col-md-6 mb-3 mb-md-0">
                                 <label for="fecha-nacimiento" class="form-label">Fecha de nacimiento</label>
-                                <input type="date" class="form-control text-muted" id="fecha-nacimiento" onclick="this.max=new Date().toISOString().split('T')[0]">
+                                <input type="date" class="form-control text-muted" id="fecha-nacimiento"
+                                    onclick="this.max=new Date().toISOString().split('T')[0]">
                             </div>
                             <div class="col-12 col-md-6">
                                 <label for="color" class="form-label">Color</label>
@@ -236,9 +240,9 @@
 
 
 
-
-        <script src="/user/js/components.js"></script>
-        <script src="/user/js/agregarMacota.js"></script>
+    <script src="../../js/config.js"></script>
+    <script src="/user/js/components.js"></script>
+    <script src="/user/js/agregarMacota.js"></script>
 </body>
 
 </html>
