@@ -14,32 +14,20 @@ function guardarTiposServicio(tipos) {
     return HuellaVetStorage.guardar(TIPOS_SERVICIO_STORAGE_KEY, Array.isArray(tipos) ? tipos : []);
 }
 
-function crearTipoServicio(nombreCrudo) {
+async function crearTipoServicio(nombreCrudo) {
     const nombre = String(nombreCrudo || "").trim();
     if (!nombre) return null;
 
-    const tipos = obtenerTiposServicio();
-    const existente = tipos.find(tipo => tipo.nombre.toLowerCase() === nombre.toLowerCase());
+    const existente = obtenerTiposServicio().find(tipo => tipo.nombre.toLowerCase() === nombre.toLowerCase());
     if (existente) return existente;
 
-    const tipo = { id: Date.now(), nombre };
-    tipos.push(tipo);
-    guardarTiposServicio(tipos);
-
-    if (typeof apiBackend === "function" && typeof getTokenActual === "function" && getTokenActual()) {
-        apiBackend("/tipos-servicio", { method: "POST", body: { id: null, nombre } })
-            .then(tipoBackend => {
-                const indice = obtenerTiposServicio().findIndex(item => String(item.id) === String(tipo.id));
-                if (indice === -1) return;
-                const actualizados = obtenerTiposServicio();
-                actualizados[indice] = tipoBackend;
-                guardarTiposServicio(actualizados);
-                document.dispatchEvent(new CustomEvent("tiposServicioSincronizados"));
-            })
-            .catch(error => console.warn("No se pudo sincronizar el tipo de servicio:", error));
+    if (typeof getTokenActual !== "function" || !getTokenActual()) {
+        throw new Error("Debes iniciar sesión para crear un tipo de servicio.");
     }
 
-    return tipo;
+    const tipoBackend = await apiBackend("/tipos-servicio", { method: "POST", body: { id: null, nombre } });
+    guardarTiposServicio([...obtenerTiposServicio(), tipoBackend]);
+    return tipoBackend;
 }
 
 async function sincronizarTiposServicioDesdeBackend() {

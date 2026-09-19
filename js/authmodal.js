@@ -498,37 +498,16 @@ function iniciarAuthModal() {
                 });
                 return;
             } catch (error) {
-                if (rolSeleccionado !== 'USUARIO') {
-                    if (mensajeErrorLogin) {
-                        mensajeErrorLogin.textContent = 'Las credenciales no corresponden al rol seleccionado.';
-                        mensajeErrorLogin.style.display = 'block';
-                    }
-                    return;
+                // La base de datos es la unica fuente de verdad: si el servidor no
+                // valida las credenciales, no se inicia sesion (sin respaldo local).
+                if (mensajeErrorLogin) {
+                    mensajeErrorLogin.textContent = esErrorDeRedAuth(error)
+                        ? 'No se pudo conectar con el servidor. Intenta de nuevo en unos segundos.'
+                        : (rolSeleccionado !== 'USUARIO'
+                            ? 'Las credenciales no corresponden al rol seleccionado.'
+                            : 'Correo o contraseña incorrectos.');
+                    mensajeErrorLogin.style.display = 'block';
                 }
-
-                const usuarioRegistrado = obtenerUsuarioPorCredenciales(correoIngresado, contrasenaIngresada);
-
-                if (!usuarioRegistrado) {
-                    if (mensajeErrorLogin) {
-                        mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
-                        mensajeErrorLogin.style.display = 'block';
-                    }
-                    return;
-                }
-
-                guardarSesionUsuario(usuarioRegistrado.id);
-                actualizarSesionNavbar();
-                const destinoDespuesDelLogin = tomarDestinoAgendarNavbar();
-                cerrarAuthModal(document.getElementById("auth-modal"));
-                Swal.fire({
-                    title: "¡Inicio de sesión exitoso!",
-                    text: "Bienvenido a HuellaVet",
-                    icon: "success",
-                    confirmButtonText: "Continuar",
-                    confirmButtonColor: "#007b83"
-                }).then(() => {
-                    window.location.href = destinoDespuesDelLogin || './user/html/user-dashboard.html';
-                });
             }
         });
     }
@@ -630,36 +609,20 @@ function iniciarAuthModal() {
             formularioRegistro.reset();
             limpiarErrores();
         } catch (error) {
-            const nuevoUsuario = registrarUsuario(datosUsuario);
-
-            if (!nuevoUsuario) {
-                mostrarMensaje("Ya existe una cuenta con este correo.", "error");
-                return;
-            }
-
-            guardarSesionUsuario(nuevoUsuario.id);
-            actualizarSesionNavbar();
-
-            const destinoDespuesDelRegistro = tomarDestinoAgendarNavbar();
-            if (destinoDespuesDelRegistro) {
-                cerrarAuthModal(document.getElementById("auth-modal"));
-                Swal.fire({
-                    title: "¡Registro exitoso!",
-                    text: "Tu cuenta está lista. Ya puedes agendar tu cita.",
-                    icon: "success",
-                    confirmButtonText: "Continuar",
-                    confirmButtonColor: "#007b83"
-                }).then(() => {
-                    window.location.href = destinoDespuesDelRegistro;
-                });
-                return;
-            }
-
-            mostrarMensaje('¡Registro exitoso!', 'exito');
-            formularioRegistro.reset();
-            limpiarErrores();
+            // Sin respaldo local: si el servidor no crea la cuenta, no existe cuenta.
+            mostrarMensaje(
+                esErrorDeRedAuth(error)
+                    ? "No se pudo conectar con el servidor. Intenta de nuevo en unos segundos."
+                    : (error?.message || "No se pudo completar el registro."),
+                "error"
+            );
         }
     });
+}
+
+/* fetch() rechaza con TypeError cuando no hay conexion con el servidor. */
+function esErrorDeRedAuth(error) {
+    return error instanceof TypeError;
 }
 
 function cerrarAuthModal(modal) {

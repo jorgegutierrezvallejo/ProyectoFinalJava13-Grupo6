@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", iniciarFormularioMascota);
 
-function iniciarFormularioMascota() {
+async function iniciarFormularioMascota() {
     const formulario = document.querySelector("main form");
     const inputFoto = document.getElementById("subir-foto");
     const zonaUpload = document.querySelector(".zona-upload");
@@ -12,6 +12,21 @@ function iniciarFormularioMascota() {
 
     const idMascotaEdicion = new URLSearchParams(window.location.search).get("mascotaId");
     const usuarioActivoInicial = obtenerUsuarioRegistrado();
+
+    // La base de datos es la fuente de verdad: se cargan sus mascotas antes de
+    // validar nombres repetidos o de abrir una mascota en modo edicion.
+    if (usuarioActivoInicial) {
+        try {
+            await sincronizarMascotasDesdeBackend(usuarioActivoInicial.id);
+        } catch (error) {
+            mostrarAvisoMascota(
+                "No se pudieron cargar tus mascotas",
+                error?.message || "No hay conexión con el servidor. Intenta de nuevo en unos segundos.",
+                "warning"
+            );
+        }
+    }
+
     const mascotaEdicion = idMascotaEdicion ? obtenerMascotaPorId(idMascotaEdicion) : null;
     const estaEditando = Boolean(
         mascotaEdicion && usuarioActivoInicial &&
@@ -69,7 +84,7 @@ function iniciarFormularioMascota() {
 
         const mascota = {
             ...(mascotaEdicion || {}),
-            id: mascotaEdicion?.id || crypto.randomUUID(),
+            id: mascotaEdicion?.id,
             usuarioId: usuarioActivo.id,
             nombre,
             especie: document.getElementById("especie")?.value.trim().toLowerCase() || "otro",
@@ -83,38 +98,27 @@ function iniciarFormularioMascota() {
             vacunas: separarValoresMascota(document.getElementById("vacunas")?.value),
             alergias: separarValoresMascota(document.getElementById("alergias")?.value),
             observaciones: document.getElementById("observaciones")?.value.trim() || "",
-            foto: fotoMascota,
-            creadaEn: mascotaEdicion?.creadaEn || new Date().toISOString(),
-            actualizadaEn: estaEditando ? new Date().toISOString() : undefined
+            foto: fotoMascota
         };
 
-        // Intenta guardar en el backend (Spring Boot -> Supabase).
-        // Si hay sesión JWT activa, esto es lo que realmente persiste
-        // la mascota en Postgres. Si falla, avisamos y no seguimos,
-        // para no dar una falsa sensación de "guardado" solo local.
+        // Se guarda SOLO en la base de datos (Spring Boot -> Supabase). Si el
+        // servidor falla se informa y no se da la mascota por guardada.
+        botonGuardar.disabled = true;
         try {
-            let mascotaBackend = null;
-
-            if (estaEditando) {
-                mascotaBackend = await actualizarMascotaEnBackend(mascotaEdicion.id, mascota);
-            } else {
-                mascotaBackend = await guardarMascotaEnBackend(mascota);
-            }
-
-            if (mascotaBackend) {
-                // El id real es el que genera Postgres (Long), no el
-                // crypto.randomUUID() que usábamos solo para el modo local.
-                mascota.id = mascotaBackend.id;
-            }
+            const mascotaGuardada = estaEditando
+                ? await actualizarMascota(mascotaEdicion.id, mascota)
+                : await crearMascota(mascota);
+            mascota.nombre = mascotaGuardada.nombre || mascota.nombre;
         } catch (error) {
             mostrarAvisoMascota(
-                "No se pudo guardar en el servidor",
-                error?.message || "Ocurrió un error al comunicarse con el servidor. Se guardó una copia local temporal.",
-                "warning"
+                "No se pudo guardar la mascota",
+                error?.message || "Ocurrió un error al comunicarse con el servidor. Intenta nuevamente.",
+                "error"
             );
+            return;
+        } finally {
+            botonGuardar.disabled = false;
         }
-
-        guardarMascota(mascota);
 
         if (typeof Swal !== "undefined") {
             Swal.fire({

@@ -1,4 +1,4 @@
-function iniciarAgendarCita() {
+async function iniciarAgendarCita() {
     const hoy = new Date();
     const anioActual = hoy.getFullYear();
     const mesActual = hoy.getMonth();
@@ -16,6 +16,29 @@ function iniciarAgendarCita() {
     const datosPaso2StorageKey = "datosCita_Paso2";
     const servicioIdDesdeEnlace = new URLSearchParams(window.location.search).get("servicioId");
     const mascotaIdDesdeEnlace = new URLSearchParams(window.location.search).get("mascotaId");
+
+    // Servicios, categorias y mascotas del cliente vienen de la base de datos:
+    // hay que esperar la respuesta del backend ANTES de pintar el formulario,
+    // o el selector de "mascota guardada" y el listado de servicios se
+    // inicializan vacios (ver iniciarSelectorMascotaGuardada).
+    const usuarioParaPrecarga = typeof obtenerUsuarioRegistrado === "function" ? obtenerUsuarioRegistrado() : null;
+    const tareasPrecarga = [asegurarServiciosCargados(), asegurarTiposServicioCargados()];
+    if (usuarioParaPrecarga && typeof tieneSesionBackendActiva === "function" && tieneSesionBackendActiva()) {
+        tareasPrecarga.push(sincronizarMascotasDesdeBackend(usuarioParaPrecarga.id));
+    }
+
+    const resultadosPrecarga = await Promise.allSettled(tareasPrecarga);
+    if (resultadosPrecarga.some(resultado => resultado.status === "rejected")) {
+        console.warn("Fallo la carga inicial de agendar:", resultadosPrecarga.filter(r => r.status === "rejected").map(r => r.reason));
+        if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: "warning",
+                title: "No pudimos cargar todos los datos",
+                text: "Revisa tu conexion y recarga la pagina para ver los servicios y tus mascotas.",
+                confirmButtonColor: "#17a9a7"
+            });
+        }
+    }
 
     cargarServiciosDesdeDashboard();
     iniciarFiltroTipoServicioAgendar();
@@ -582,9 +605,23 @@ function iniciarAgendarCita() {
         renderizarCalendario();
     }
 
-    function cargarHorarios() {
+    async function cargarHorarios() {
         const container = document.getElementById("horariosContainer");
         if (!container) return;
+
+        // Las franjas ocupadas salen de la base de datos (incluye a todos los
+        // clientes). Si el servidor no responde se usa lo que hay en memoria y
+        // el backend vuelve a validar el horario al crear la cita.
+        const fechaConsultada = fechaSeleccionada;
+        if (typeof cargarHorasOcupadasEnFecha === "function") {
+            try {
+                await cargarHorasOcupadasEnFecha(fechaConsultada);
+            } catch (error) {
+                console.warn("No se pudo consultar la disponibilidad:", error);
+            }
+            // El usuario cambio de fecha mientras se consultaba: descarta esta respuesta.
+            if (fechaConsultada !== fechaSeleccionada) return;
+        }
 
         const horas = [
             "08:00 a. m.",
@@ -811,6 +848,14 @@ function iniciarAgendarCita() {
 
             const datosP2 = obtenerDatosPaso2();
 
+            if (typeof cargarHorasOcupadasEnFecha === "function") {
+                try {
+                    await cargarHorasOcupadasEnFecha(datosP2.fecha);
+                } catch (error) {
+                    console.warn("No se pudo refrescar la disponibilidad:", error);
+                }
+            }
+
             if (typeof horaEstaDisponible === "function" && !horaEstaDisponible(datosP2.fecha, datosP2.hora)) {
                 if (typeof Swal !== "undefined") {
                     Swal.fire({
@@ -845,15 +890,32 @@ function iniciarAgendarCita() {
             const mascotaExistente = datosP1.mascotaId
                 ? obtenerMascotaPorId(datosP1.mascotaId)
                 : null;
-            const mascota = mascotaExistente || registrarMascotaSiNoExiste({
-                nombre: datosP1.nombreMascota,
-                especie: datosP1.especie,
-                raza: datosP1.raza,
-                fechaNacimiento: datosP1.fechaNacimiento === "No especificada" ? "" : datosP1.fechaNacimiento,
-                peso: datosP1.peso === "No especificado" ? "" : datosP1.peso,
-                foto: "",
-                usuarioId: usuarioActivo.id
-            });
+            // Si es una mascota nueva se crea primero en la base de datos: la cita
+            // necesita el id real (numerico) que genera PostgreSQL.
+            let mascota;
+            try {
+                mascota = mascotaExistente || await registrarMascotaSiNoExiste({
+                    nombre: datosP1.nombreMascota,
+                    especie: datosP1.especie,
+                    raza: datosP1.raza,
+                    fechaNacimiento: datosP1.fechaNacimiento === "No especificada" ? "" : datosP1.fechaNacimiento,
+                    peso: datosP1.peso === "No especificado" ? "" : datosP1.peso,
+                    foto: "",
+                    usuarioId: usuarioActivo.id
+                });
+            } catch (error) {
+                if (typeof Swal !== "undefined") {
+                    Swal.fire({
+                        icon: "error",
+                        title: "No se pudo registrar la mascota",
+                        text: error?.message || "Ocurrió un error al comunicarse con el servidor. Intenta nuevamente.",
+                        confirmButtonColor: "#17a9a7"
+                    });
+                } else {
+                    alert("No se pudo registrar la mascota. Intenta nuevamente.");
+                }
+                return;
+            }
 
             const nuevaCita = {
                 usuarioId: usuarioActivo.id,
@@ -1139,9 +1201,3 @@ function iniciarAgendarCita() {
         });
     }
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    if (document.getElementById("agendarcita")) {
-        iniciarAgendarCita();
-    }
-});

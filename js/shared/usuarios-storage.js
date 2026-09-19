@@ -1,6 +1,8 @@
-/* Repositorio de usuarios y sesión local del prototipo. */
-const USUARIOS_STORAGE_KEY = "usuarios";
-const USUARIO_LEGACY_STORAGE_KEY = "usuarioRegistrado";
+/*
+ * Usuarios: la base de datos (API) es la unica fuente de verdad.
+ * Aqui solo viven las llamadas de autenticacion y la sesion (token +
+ * usuario actual), que si deben conservarse en el navegador.
+ */
 
 /*
  * getTokenActual/apiBackend son alias de compatibilidad hacia la capa
@@ -11,6 +13,11 @@ const USUARIO_LEGACY_STORAGE_KEY = "usuarioRegistrado";
  */
 function getTokenActual() {
     return typeof obtenerToken === "function" ? obtenerToken() : null;
+}
+
+/* True si hay un JWT guardado, es decir, una sesion autenticada contra el backend. */
+function tieneSesionBackendActiva() {
+    return typeof getTokenActual === "function" && Boolean(getTokenActual());
 }
 
 async function apiBackend(path, opciones = {}) {
@@ -65,57 +72,6 @@ async function registrarUsuarioBackend(datosUsuario) {
     });
 }
 
-function obtenerUsuarios() {
-    const usuarios = HuellaVetStorage.leer(USUARIOS_STORAGE_KEY, []);
-    return Array.isArray(usuarios) ? usuarios : [];
-}
-
-function guardarUsuarios(usuarios) {
-    return HuellaVetStorage.guardar(USUARIOS_STORAGE_KEY, Array.isArray(usuarios) ? usuarios : []);
-}
-
-function registrarUsuario(datosUsuario) {
-    const usuarios = obtenerUsuarios();
-    const email = String(datosUsuario.email || "").trim().toLowerCase();
-
-    if (usuarios.some(usuario => String(usuario.email || "").trim().toLowerCase() === email)) {
-        return null;
-    }
-
-    const usuario = {
-        id: crypto.randomUUID(),
-        ...datosUsuario,
-        email,
-        creadoEn: new Date().toISOString()
-    };
-
-    usuarios.push(usuario);
-    guardarUsuarios(usuarios);
-    return usuario;
-}
-
-function actualizarUsuario(idUsuario, camposParciales) {
-    const usuarios = obtenerUsuarios();
-    const index = usuarios.findIndex(usuario => String(usuario.id) === String(idUsuario));
-    if (index === -1) return null;
-
-    usuarios[index] = { ...usuarios[index], ...camposParciales };
-    guardarUsuarios(usuarios);
-    return usuarios[index];
-}
-
-function obtenerUsuarioPorId(idUsuario) {
-    return obtenerUsuarios().find(usuario => String(usuario.id) === String(idUsuario)) || null;
-}
-
-function obtenerUsuarioPorCredenciales(email, contrasena) {
-    const emailNormalizado = String(email || "").trim().toLowerCase();
-    return obtenerUsuarios().find(usuario =>
-        String(usuario.email || "").trim().toLowerCase() === emailNormalizado &&
-        usuario.contrasena === contrasena
-    ) || null;
-}
-
 function guardarSesionUsuario(datosSesion) {
     const datos = (datosSesion && typeof datosSesion === "object") ? datosSesion : { id: datosSesion };
     // Delega en la sesión única de config.js (mismas claves de
@@ -137,19 +93,3 @@ function obtenerUsuarioRegistrado() {
     }
     return null;
 }
-
-/* Conserva el usuario antiguo creado antes de introducir la lista. */
-(function migrarUsuarioLegacy() {
-    if (obtenerUsuarios().length > 0) return;
-
-    const usuarioLegacy = HuellaVetStorage.leer(USUARIO_LEGACY_STORAGE_KEY, null);
-    if (!usuarioLegacy || typeof usuarioLegacy !== "object") return;
-
-    const usuarioMigrado = {
-        id: crypto.randomUUID(),
-        ...usuarioLegacy,
-        creadoEn: usuarioLegacy.creadoEn || new Date().toISOString()
-    };
-    guardarUsuarios([usuarioMigrado]);
-    guardarSesionUsuario(usuarioMigrado.id);
-})();

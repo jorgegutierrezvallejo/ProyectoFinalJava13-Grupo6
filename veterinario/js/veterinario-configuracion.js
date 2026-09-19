@@ -1,142 +1,45 @@
-const ADMIN_CONFIGURACION_STORAGE_KEY = "adminConfiguracion";
-const FOTO_ADMIN_POR_DEFECTO = new URL("../../img/HuellaVet-icon.svg", window.location.href).href;
-let fotoPerfilEliminada = false;
+const FOTO_VETERINARIO_POR_DEFECTO = new URL("../../img/HuellaVet-icon.svg", window.location.href).href;
+const CAMPOS_EDITABLES_PERFIL = ["adminIndicativo", "adminTelefono", "adminCiudad"];
 
-const configuracionInicial = {
-    nombres: "Administrador",
-    apellidos: "HuellaVet",
-    indicativo: "+57",
-    telefono: "300 000 0000",
-    ciudad: "Medellín, Antioquia",
-    fechaNacimiento: "1985-04-15",
-    correo: "admin@huellavet.com",
-    contrasena: "HuellaVet2026",
-    foto: ""
-};
+let perfilVeterinario = null;
 
 document.addEventListener("DOMContentLoaded", iniciarConfiguracion);
-document.addEventListener("topbarCargada", sincronizarFotoTopbar);
 
-function iniciarConfiguracion() {
-    const configuracion = obtenerConfiguracionAdmin();
-    cargarConfiguracionEnFormulario(configuracion);
+async function iniciarConfiguracion() {
     iniciarPestanasConfiguracion();
     iniciarEdicionCampos();
-    iniciarFotoPerfil();
-    iniciarFormulariosConfiguracion();
+    iniciarFormularioPerfil();
     iniciarModalContrasena();
-    iniciarCargaDatosDemo();
+    const pestanaInicial = new URLSearchParams(window.location.search).get("tab");
+    if (pestanaInicial === "perfil" || pestanaInicial === "cuenta") mostrarPestana(pestanaInicial);
+    await cargarPerfilDesdeBackend();
 }
 
-function iniciarCargaDatosDemo() {
-    const boton = document.getElementById("btnCargarDatosDemo");
-    const botonEliminar = document.getElementById("btnEliminarDatosDemo");
-    const estado = document.getElementById("estadoDatosDemo");
-    if (!boton || !botonEliminar || typeof cargarDatosDemoHuellaVet !== "function") return;
-
-    actualizarEstadoDatosDemo(estado, obtenerEstadoDatosDemo());
-
-    boton.addEventListener("click", async () => {
-        const confirmado = typeof Swal === "undefined" || (await Swal.fire({
-            icon: "question",
-            title: "¿Cargar datos demo?",
-            html: "Se agregarán datos de prueba sin borrar la información existente.<br><strong>Todos los clientes demo usarán la contraseña HV123.</strong>",
-            showCancelButton: true,
-            confirmButtonText: "Sí, cargar datos",
-            cancelButtonText: "Cancelar",
-            confirmButtonColor: "#008e98"
-        })).isConfirmed;
-
-        if (!confirmado) return;
-        boton.disabled = true;
-        const resultado = cargarDatosDemoHuellaVet();
-        actualizarEstadoDatosDemo(estado, resultado);
-        boton.disabled = false;
-
-        if (typeof Swal !== "undefined") {
-            Swal.fire({
-                icon: "success",
-                title: "Datos demo cargados",
-                text: `${resultado.usuarios} clientes, ${resultado.mascotas} mascotas, ${resultado.servicios} servicios y ${resultado.citas} citas están disponibles.`,
-                confirmButtonColor: "#008e98"
-            });
-        }
-    });
-
-    botonEliminar.addEventListener("click", async () => {
-        if (typeof eliminarDatosDemoHuellaVet !== "function") return;
-
-        const confirmado = typeof Swal !== "undefined"
-            ? (await Swal.fire({
-                icon: "warning",
-                title: "¿Eliminar los datos demo?",
-                text: "Se eliminarán los clientes, mascotas, servicios, categorías y citas identificados como demostrativos. Los demás datos se conservarán.",
-                showCancelButton: true,
-                confirmButtonText: "Sí, eliminar",
-                cancelButtonText: "Cancelar",
-                confirmButtonColor: "#c33d38"
-            })).isConfirmed
-            : window.confirm("¿Deseas eliminar todos los datos demo?");
-
-        if (!confirmado) return;
-        boton.disabled = true;
-        botonEliminar.disabled = true;
-        const resultado = eliminarDatosDemoHuellaVet();
-        actualizarEstadoDatosDemo(estado, null);
-        boton.disabled = false;
-
-        if (typeof Swal !== "undefined") {
-            Swal.fire({
-                icon: "success",
-                title: "Datos demo eliminados",
-                text: `Se eliminaron ${resultado.usuarios} clientes, ${resultado.mascotas} mascotas, ${resultado.servicios} servicios y ${resultado.citas} citas demo.`,
-                confirmButtonColor: "#008e98"
-            });
-        }
-    });
-}
-
-function actualizarEstadoDatosDemo(elemento, datos) {
-    if (!elemento) return;
-    const botonEliminar = document.getElementById("btnEliminarDatosDemo");
-    const hayDatosDemo = Boolean(datos?.cargadoEn) ||
-        (typeof hayDatosDemoHuellaVet === "function" && hayDatosDemoHuellaVet());
-    if (botonEliminar) botonEliminar.disabled = !hayDatosDemo;
-    if (!datos?.cargadoEn) {
-        elemento.textContent = hayDatosDemo
-            ? "Se encontraron registros demo que puedes eliminar."
-            : "Aún no se han cargado datos demo.";
-        elemento.classList.toggle("configuracion-datos__estado--cargado", hayDatosDemo);
-        return;
-    }
-    const fecha = new Intl.DateTimeFormat("es-CO", { dateStyle: "medium", timeStyle: "short" }).format(new Date(datos.cargadoEn));
-    elemento.textContent = `Última carga: ${fecha}. Las citas parten del ${datos.fechaBaseCitas}.`;
-    elemento.classList.add("configuracion-datos__estado--cargado");
-}
-
-function obtenerConfiguracionAdmin() {
-    const guardada = typeof HuellaVetStorage !== "undefined"
-        ? HuellaVetStorage.leer(ADMIN_CONFIGURACION_STORAGE_KEY, {})
-        : {};
-    return { ...configuracionInicial, ...(guardada || {}) };
-}
-
-function guardarConfiguracionAdmin(configuracion) {
-    if (typeof HuellaVetStorage !== "undefined") {
-        HuellaVetStorage.guardar(ADMIN_CONFIGURACION_STORAGE_KEY, configuracion);
+async function cargarPerfilDesdeBackend() {
+    try {
+        perfilVeterinario = await apiBackend("/veterinario/me");
+        mostrarPerfilEnFormulario(perfilVeterinario);
+        actualizarSesionConPerfil(perfilVeterinario);
+    } catch (error) {
+        console.error("No se pudo cargar el perfil del veterinario:", error);
+        mostrarErrorConfiguracion("No se pudo cargar tu perfil", error);
     }
 }
 
-function cargarConfiguracionEnFormulario(configuracion) {
+function actualizarSesionConPerfil(perfil) {
+    if (typeof obtenerUsuarioActual !== "function" || typeof guardarSesion !== "function") return;
+    const sesion = obtenerUsuarioActual();
+    if (sesion) guardarSesion({ ...sesion, ...perfil });
+}
+
+function mostrarPerfilEnFormulario(perfil) {
     const campos = {
-        adminNombres: configuracion.nombres,
-        adminApellidos: configuracion.apellidos,
-        adminIndicativo: configuracion.indicativo,
-        adminTelefono: configuracion.telefono,
-        adminCiudad: configuracion.ciudad,
-        adminNacimiento: configuracion.fechaNacimiento,
-        adminCorreo: configuracion.correo,
-        adminContrasena: configuracion.contrasena
+        adminNombres: perfil.nombres,
+        adminApellidos: perfil.apellidos,
+        adminIndicativo: perfil.indicativoPais || "+57",
+        adminTelefono: perfil.telefono,
+        adminCiudad: perfil.ciudad,
+        adminCorreo: perfil.correo
     };
 
     Object.entries(campos).forEach(([id, valor]) => {
@@ -144,12 +47,14 @@ function cargarConfiguracionEnFormulario(configuracion) {
         if (campo) campo.value = valor || "";
     });
 
-    if (configuracion.foto) actualizarVistaFoto(configuracion.foto);
-    else actualizarVistaFoto(FOTO_ADMIN_POR_DEFECTO);
-
-    fotoPerfilEliminada = false;
-    actualizarEstadoEliminarFoto(Boolean(configuracion.foto));
-    sincronizarFotoTopbar();
+    const imagen = document.querySelector("#fotoPerfilPreview img");
+    if (imagen) {
+        imagen.onerror = function () {
+            imagen.onerror = null;
+            imagen.src = FOTO_VETERINARIO_POR_DEFECTO;
+        };
+        imagen.src = perfil.foto || FOTO_VETERINARIO_POR_DEFECTO;
+    }
 }
 
 function iniciarPestanasConfiguracion() {
@@ -200,97 +105,48 @@ function iniciarEdicionCampos() {
     });
 }
 
-function iniciarFotoPerfil() {
-    const input = document.getElementById("fotoPerfil");
-    input?.addEventListener("change", () => {
-        const archivo = input.files?.[0];
-        if (!archivo || !archivo.type.startsWith("image/")) return;
-
-        const lector = new FileReader();
-        lector.addEventListener("load", () => {
-            fotoPerfilEliminada = false;
-            actualizarVistaFoto(lector.result);
-            actualizarEstadoEliminarFoto(true);
-            sincronizarFotoTopbar(lector.result);
-        });
-        lector.readAsDataURL(archivo);
-    });
-
-    document.getElementById("eliminarFotoPerfil")?.addEventListener("click", () => {
-        fotoPerfilEliminada = true;
-        input.value = "";
-        actualizarVistaFoto(FOTO_ADMIN_POR_DEFECTO);
-        actualizarEstadoEliminarFoto(false);
-        sincronizarFotoTopbar(FOTO_ADMIN_POR_DEFECTO);
-    });
-}
-
-function actualizarVistaFoto(fuente) {
-    const imagen = document.querySelector("#fotoPerfilPreview img");
-    if (!imagen || !fuente) return;
-
-    imagen.onerror = function () {
-        imagen.onerror = null;
-        imagen.src = FOTO_ADMIN_POR_DEFECTO;
-    };
-    imagen.src = fuente;
-}
-
-function actualizarEstadoEliminarFoto(tieneFoto) {
-    const boton = document.getElementById("eliminarFotoPerfil");
-    if (boton) boton.hidden = !tieneFoto;
-}
-
-function sincronizarFotoTopbar(foto) {
-    const imagenTopbar = document.querySelector(".topbar-profile-image");
-    if (!imagenTopbar) return;
-
-    const configuracion = obtenerConfiguracionAdmin();
-    const fuente = foto || configuracion?.foto || FOTO_ADMIN_POR_DEFECTO;
-
-    imagenTopbar.onerror = function () {
-        imagenTopbar.onerror = null;
-        imagenTopbar.src = FOTO_ADMIN_POR_DEFECTO;
-
-        if (configuracion?.foto) {
-            guardarConfiguracionAdmin({ ...configuracion, foto: "" });
-        }
-    };
-    imagenTopbar.src = fuente;
-}
-
-function iniciarFormulariosConfiguracion() {
-    document.getElementById("formPerfilAdmin")?.addEventListener("submit", evento => {
+function iniciarFormularioPerfil() {
+    document.getElementById("formPerfilAdmin")?.addEventListener("submit", async evento => {
         evento.preventDefault();
-        const configuracion = obtenerConfiguracionAdmin();
-        const foto = document.querySelector("#fotoPerfilPreview img")?.src || "";
-        const datos = {
-            ...configuracion,
-            nombres: valorCampo("adminNombres"),
-            apellidos: valorCampo("adminApellidos"),
-            indicativo: valorCampo("adminIndicativo"),
-            telefono: valorCampo("adminTelefono"),
-            ciudad: valorCampo("adminCiudad"),
-            fechaNacimiento: valorCampo("adminNacimiento"),
-            foto: fotoPerfilEliminada ? "" : (foto.startsWith("data:") ? foto : configuracion.foto)
-        };
-        guardarConfiguracionAdmin(datos);
-        sincronizarFotoTopbar(datos.foto || FOTO_ADMIN_POR_DEFECTO);
-        bloquearCampos(["adminNombres", "adminApellidos", "adminIndicativo", "adminTelefono", "adminCiudad", "adminNacimiento"]);
+
+        const telefono = valorCampo("adminTelefono");
+        const ciudad = valorCampo("adminCiudad");
+        const indicativoPais = valorCampo("adminIndicativo");
+
+        if (!/^[0-9 ]{7,15}$/.test(telefono)) {
+            mostrarAdvertenciaConfiguracion("Ingresa un teléfono válido, solo números (7 a 15 dígitos).");
+            return;
+        }
+        if (ciudad === "") {
+            mostrarAdvertenciaConfiguracion("La ciudad es obligatoria.");
+            return;
+        }
+
+        try {
+            perfilVeterinario = await apiBackend("/veterinario/me", {
+                method: "PUT",
+                body: { telefono, indicativoPais, ciudad }
+            });
+            mostrarPerfilEnFormulario(perfilVeterinario);
+            actualizarSesionConPerfil(perfilVeterinario);
+            bloquearCampos(CAMPOS_EDITABLES_PERFIL);
+            Swal.fire({
+                icon: "success",
+                title: "Perfil actualizado",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#008e98"
+            });
+        } catch (error) {
+            console.error("No se pudo guardar el perfil:", error);
+            mostrarErrorConfiguracion("No se pudo guardar el perfil", error);
+        }
     });
 
     document.querySelectorAll("[data-cancelar-form]").forEach(boton => {
         boton.addEventListener("click", () => {
-            cargarConfiguracionEnFormulario(obtenerConfiguracionAdmin());
-            bloquearCampos(["adminNombres", "adminApellidos", "adminIndicativo", "adminTelefono", "adminCiudad", "adminNacimiento"]);
+            if (perfilVeterinario) mostrarPerfilEnFormulario(perfilVeterinario);
+            bloquearCampos(CAMPOS_EDITABLES_PERFIL);
         });
-    });
-
-    const campoCorreo = document.getElementById("adminCorreo");
-    campoCorreo?.addEventListener("change", () => {
-        const configuracion = obtenerConfiguracionAdmin();
-        guardarConfiguracionAdmin({ ...configuracion, correo: valorCampo("adminCorreo") });
-        campoCorreo.disabled = true;
     });
 
     document.getElementById("formCuentaAdmin")?.addEventListener("submit", evento => {
@@ -335,19 +191,18 @@ function iniciarModalContrasena() {
         if (evento.key === "Escape" && modal.classList.contains("configuracion-modal--visible")) cerrar();
     });
 
-    formulario.addEventListener("submit", evento => {
+    formulario.addEventListener("submit", async evento => {
         evento.preventDefault();
-        const configuracion = obtenerConfiguracionAdmin();
-        const actual = valorCampo("contrasenaActual");
-        const nueva = valorCampo("nuevaContrasena");
-        const confirmacion = valorCampo("confirmarContrasena");
+        const actual = document.getElementById("contrasenaActual").value;
+        const nueva = document.getElementById("nuevaContrasena").value;
+        const confirmacion = document.getElementById("confirmarContrasena").value;
 
-        if (actual !== configuracion.contrasena) {
-            if (mensajeError) mensajeError.textContent = "La contraseña actual no es correcta.";
+        if (actual === "") {
+            if (mensajeError) mensajeError.textContent = "Ingresa tu contraseña actual.";
             return;
         }
-        if (nueva.length < 6) {
-            if (mensajeError) mensajeError.textContent = "La nueva contraseña debe tener al menos 6 caracteres.";
+        if (nueva.length < 8 || nueva.length > 20) {
+            if (mensajeError) mensajeError.textContent = "La nueva contraseña debe tener entre 8 y 20 caracteres.";
             return;
         }
         if (nueva !== confirmacion) {
@@ -355,14 +210,21 @@ function iniciarModalContrasena() {
             return;
         }
 
-        guardarConfiguracionAdmin({ ...configuracion, contrasena: nueva });
-        const campoCuenta = document.getElementById("adminContrasena");
-        if (campoCuenta) {
-            campoCuenta.value = nueva;
-            campoCuenta.disabled = true;
-            campoCuenta.type = "password";
+        try {
+            await apiBackend("/veterinario/me/contrasena", {
+                method: "PUT",
+                body: { contrasenaActual: actual, contrasenaNueva: nueva }
+            });
+            cerrar();
+            Swal.fire({
+                icon: "success",
+                title: "Contraseña actualizada",
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#008e98"
+            });
+        } catch (error) {
+            if (mensajeError) mensajeError.textContent = error?.message || "No se pudo actualizar la contraseña.";
         }
-        cerrar();
     });
 }
 
@@ -374,5 +236,25 @@ function bloquearCampos(ids) {
     ids.forEach(id => {
         const campo = document.getElementById(id);
         if (campo) campo.disabled = true;
+    });
+}
+
+function mostrarAdvertenciaConfiguracion(texto) {
+    Swal.fire({
+        icon: "warning",
+        title: "Revisa los datos",
+        text: texto,
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#008e98"
+    });
+}
+
+function mostrarErrorConfiguracion(titulo, error) {
+    Swal.fire({
+        icon: "error",
+        title: titulo,
+        text: error?.message || "Ocurrió un error al comunicarse con el servidor.",
+        confirmButtonText: "Entendido",
+        confirmButtonColor: "#008e98"
     });
 }

@@ -59,7 +59,7 @@ const ICONOS_POR_SERVICIO_USUARIO = {
     "Consulta dermatológica": "bi-bandaid"
 };
 
-document.addEventListener("userComponentsLoaded", function () {
+document.addEventListener("userComponentsLoaded", async function () {
     const botonCerrarAlerta = document.getElementById("cerrarAlertaCita");
     const alerta = document.getElementById("alertaCitaConfirmada");
     if (botonCerrarAlerta && alerta) {
@@ -74,6 +74,27 @@ document.addEventListener("userComponentsLoaded", function () {
     const botonVerTodasAlertas = document.getElementById("btnVerTodasAlertasUsuario");
     if (botonVerTodasAlertas) {
         botonVerTodasAlertas.addEventListener("click", mostrarModalTodasLasAlertasUsuario);
+    }
+
+    // Citas y mascotas del cliente vienen de la base de datos (nada en localStorage).
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    if (usuarioActivo) {
+        const resultados = await Promise.allSettled([
+            asegurarCitasCargadas(usuarioActivo.id),
+            asegurarMascotasCargadas(usuarioActivo.id)
+        ]);
+        const fallo = resultados.find(resultado => resultado.status === "rejected");
+        if (fallo) {
+            console.error("Error cargando las citas:", fallo.reason);
+            if (typeof Swal !== "undefined") {
+                Swal.fire({
+                    icon: "warning",
+                    title: "No pudimos cargar tus citas",
+                    text: "Revisa tu conexión y recarga la página.",
+                    confirmButtonColor: "#17a9a7"
+                });
+            }
+        }
     }
 
     iniciarFiltrosCitasUsuario();
@@ -383,13 +404,8 @@ async function pedirReprogramacionUsuario(idCita) {
 
     if (!resultado.isConfirmed) return;
     try {
-        await actualizarEstadoCitaEnBackend(idCita, "Reprogramada", {
-            fecha: resultado.value.fecha,
-            hora: resultado.value.hora,
-            motivo: resultado.value.motivo
-        });
-        actualizarCamposCita(idCita, {
-            estado: "Reprogramada",
+        // El servidor valida que la nueva franja siga libre y guarda el motivo.
+        await actualizarEstadoCita(idCita, "Reprogramada", {
             fecha: resultado.value.fecha,
             hora: resultado.value.hora,
             motivoEstado: resultado.value.motivo
@@ -424,10 +440,19 @@ function pedirMotivoYCambiarEstadoUsuario(idCita, nuevoEstado, opciones) {
             }
             return motivo;
         }
-    }).then((resultado) => {
+    }).then(async (resultado) => {
         if (!resultado.isConfirmed) return;
-        actualizarCamposCita(idCita, { estado: nuevoEstado, motivoEstado: resultado.value });
-        refrescarVistaCitasUsuario();
+        try {
+            await actualizarEstadoCita(idCita, nuevoEstado, { motivoEstado: resultado.value });
+            refrescarVistaCitasUsuario();
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "No se pudo actualizar la cita",
+                text: error?.message || "Intenta de nuevo.",
+                confirmButtonColor: "#17a9a7"
+            });
+        }
     });
 }
 
@@ -450,24 +475,31 @@ function abrirFormularioComprobanteUsuario(idCita) {
         inputValidator: (archivo) => {
             if (!archivo) return "Debes seleccionar una imagen del comprobante.";
         }
-    }).then((resultado) => {
+    }).then(async (resultado) => {
         if (!resultado.isConfirmed || !resultado.value) return;
 
-        convertirImagenABase64Usuario(resultado.value).then((imagenBase64) => {
-            actualizarCamposCita(idCita, {
-                abonoEstado: "pagado",
-                abonoComprobante: imagenBase64,
-                abonoFechaPago: new Date().toISOString()
-            });
-
+        try {
+            const imagenBase64 = await convertirImagenABase64Usuario(resultado.value);
+            // El comprobante se guarda en la base de datos; solo si el servidor
+            // confirma se muestra como enviado.
+            await registrarAbonoCita(idCita, imagenBase64);
+        } catch (error) {
             Swal.fire({
-                icon: "success",
-                title: "Comprobante enviado",
-                text: "La clínica revisará tu pago antes de aprobar la cita.",
+                icon: "error",
+                title: "No se pudo guardar el comprobante",
+                text: (error && error.message) || "Intenta de nuevo.",
                 confirmButtonColor: "#17a9a7"
-            }).then(() => {
-                refrescarVistaCitasUsuario();
             });
+            return;
+        }
+
+        Swal.fire({
+            icon: "success",
+            title: "Comprobante enviado",
+            text: "La clínica revisará tu pago antes de aprobar la cita.",
+            confirmButtonColor: "#17a9a7"
+        }).then(() => {
+            refrescarVistaCitasUsuario();
         });
     });
 }

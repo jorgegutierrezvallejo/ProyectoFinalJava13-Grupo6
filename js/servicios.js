@@ -2,7 +2,25 @@ let tipoActivoId = "todos";
 
 document.addEventListener("DOMContentLoaded", iniciarServiciosPublicos);
 
-function iniciarServiciosPublicos() {
+async function iniciarServiciosPublicos() {
+    // Categorias y servicios salen de la base de datos (endpoints publicos).
+    try {
+        await Promise.all([asegurarTiposServicioCargados(), asegurarServiciosCargados()]);
+    } catch (error) {
+        console.warn("No se pudieron cargar los servicios:", error);
+        const contenedor = document.getElementById("servicios-dinamicos");
+        if (contenedor) {
+            contenedor.innerHTML = `
+                <div class="servicios-publicos__vacio">
+                    <i class="bi bi-wifi-off"></i>
+                    <strong>No pudimos cargar los servicios.</strong>
+                    <span>Revisa tu conexión e intenta de nuevo en unos segundos.</span>
+                </div>
+            `;
+        }
+        return;
+    }
+
     renderizarFiltrosServicios();
     renderizarServicios();
     renderizarServicioDestacado();
