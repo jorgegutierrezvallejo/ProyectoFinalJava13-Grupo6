@@ -56,9 +56,11 @@ body.sidebar-collapsed .admin-page {
    detalle a la derecha) -- pedido explicito de Jorge. */
 .hv-resumen-card {
     min-height: 130px;
-    padding: 16px;
+    padding: 18px;
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
     gap: 12px;
     background-color: var(--hv-blanco);
     border: 1px solid var(--hv-borde);
@@ -67,14 +69,14 @@ body.sidebar-collapsed .admin-page {
 }
 
 .hv-resumen-card__icono {
-    width: 46px;
-    height: 46px;
+    width: 42px;
+    height: 42px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 12px;
-    font-size: 20px;
+    font-size: 19px;
 }
 
 .hv-resumen-card__icono--verde     { background-color: #edf6d7; color: #8ea900; }
@@ -84,6 +86,7 @@ body.sidebar-collapsed .admin-page {
 .hv-resumen-card__icono--rojo      { background-color: #ffe4e4; color: #ff5454; }
 
 .hv-resumen-card__info {
+    width: 100%;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -91,9 +94,6 @@ body.sidebar-collapsed .admin-page {
 
 .hv-resumen-card__label {
     margin-bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     color: var(--hv-texto-secundario);
     font-size: 13px;
     font-weight: 600;
@@ -947,7 +947,7 @@ body.sidebar-collapsed .admin-page {
 
 @media (max-width: 1250px) {
     .hv-resumen { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .hv-resumen-card { padding: 21px; gap: 17px; }
+    .hv-resumen-card { padding: 21px; gap: 17px; flex-direction: row; align-items: center; justify-content: flex-start; }
     .hv-resumen-card__icono { width: 54px; height: 54px; border-radius: 13px; font-size: 23px; }
     .hv-pendiente { grid-template-columns: 135px 1fr; }
     .hv-pendiente__acciones {
