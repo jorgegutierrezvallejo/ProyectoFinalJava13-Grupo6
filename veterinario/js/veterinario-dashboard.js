@@ -4,6 +4,8 @@ document.addEventListener(
 
         mostrarFechaActual();
 
+        mostrarSaludoDashboard();
+
         iniciarSidebarDashboard();
 
         iniciarCalendarioDashboard();
@@ -13,6 +15,14 @@ document.addEventListener(
     }
 );
 
+
+function mostrarSaludoDashboard() {
+    const saludo = document.getElementById("saludoDashboard");
+    const datos = typeof obtenerDatosSesionVeterinario === "function" ? obtenerDatosSesionVeterinario() : null;
+    if (saludo && datos) {
+        saludo.textContent = `Hola, ${datos.primerNombre} `;
+    }
+}
 
 /* ========================================
    FECHA ACTUAL

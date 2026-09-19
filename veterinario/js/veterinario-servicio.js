@@ -60,7 +60,7 @@ async function iniciarServicios() {
             if (contenedorDirClinica && inputDirClinica) {
                 if (modalidadGuardada === "clinica") {
                     contenedorDirClinica.classList.remove("d-none");
-                    inputDirClinica.value = servicioExistente.direccionClinica || "HuellaVet — Sede Centro";
+                    inputDirClinica.value = servicioExistente.direccionClinica || "HuellaVet - Sede Centro";
                 } else {
                     contenedorDirClinica.classList.add("d-none");
                 }
@@ -181,7 +181,7 @@ async function iniciarServicios() {
         }
 
         const modalidadSeleccionada = document.querySelector('input[name="modalidadAtencion"]:checked')?.value || "clinica";
-        const direccionClinicaVal = document.getElementById("direccionClinica")?.value.trim() || "HuellaVet — Sede Centro";
+        const direccionClinicaVal = document.getElementById("direccionClinica")?.value.trim() || "HuellaVet - Sede Centro";
         const imagenBase64 = archivoImagen ? await convertirImagenABase64(archivoImagen) : (servicioExistente?.imagen || "");
 
 
@@ -324,7 +324,7 @@ function iniciarTipoServicio() {
         const tipos = obtenerTiposServicio();
 
         if (tipos.length === 0) {
-            selectTipo.innerHTML = `<option value="" disabled selected>Aún no hay tipos — crea el primero con "+ Nuevo"</option>`;
+            selectTipo.innerHTML = `<option value="" disabled selected>Aún no hay tipos, crea el primero con "+ Nuevo"</option>`;
             if (ayudaTexto) {
                 ayudaTexto.textContent = "Todavía no has creado ningún tipo de servicio. Usa el botón \"+ Nuevo\" para crear el primero.";
             }

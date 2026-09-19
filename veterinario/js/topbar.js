@@ -64,7 +64,41 @@ async function cargarTopbar() {
    INICIAR TOPBAR
 ======================================== */
 
+function obtenerDatosSesionVeterinario() {
+    const sesion = typeof obtenerUsuarioActual === "function" ? obtenerUsuarioActual() : null;
+    if (!sesion) return null;
+
+    const nombre = sesion.nombreCompleto
+        || [sesion.nombres, sesion.apellidos].filter(Boolean).join(" ").trim()
+        || "Veterinario";
+
+    return {
+        nombre,
+        primerNombre: nombre.split(" ")[0],
+        correo: sesion.correo || sesion.email || "",
+        foto: sesion.foto || ""
+    };
+}
+
+function mostrarDatosSesionTopbar() {
+    const datos = obtenerDatosSesionVeterinario();
+    if (!datos) return;
+
+    const nombreElemento = document.querySelector(".topbar-profile-name");
+    const correoElemento = document.querySelector(".topbar-profile-email");
+    const imagenElemento = document.querySelector(".topbar-profile-image");
+
+    if (nombreElemento) nombreElemento.textContent = datos.nombre;
+    if (correoElemento) correoElemento.textContent = datos.correo;
+    if (imagenElemento) {
+        imagenElemento.alt = datos.nombre;
+        if (datos.foto) imagenElemento.src = datos.foto;
+    }
+}
+
 function iniciarTopbar() {
+
+    mostrarDatosSesionTopbar();
 
     cambiarTituloPagina();
 
