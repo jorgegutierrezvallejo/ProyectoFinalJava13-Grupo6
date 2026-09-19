@@ -10,6 +10,8 @@ async function iniciarConfiguracion() {
     iniciarEdicionCampos();
     iniciarFormularioPerfil();
     iniciarModalContrasena();
+    const pestanaInicial = new URLSearchParams(window.location.search).get("tab");
+    if (pestanaInicial === "perfil" || pestanaInicial === "cuenta") mostrarPestana(pestanaInicial);
     await cargarPerfilDesdeBackend();
 }
 
