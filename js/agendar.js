@@ -1,4 +1,4 @@
-function iniciarAgendarCita() {
+async function iniciarAgendarCita() {
     const hoy = new Date();
     const anioActual = hoy.getFullYear();
     const mesActual = hoy.getMonth();
@@ -16,6 +16,29 @@ function iniciarAgendarCita() {
     const datosPaso2StorageKey = "datosCita_Paso2";
     const servicioIdDesdeEnlace = new URLSearchParams(window.location.search).get("servicioId");
     const mascotaIdDesdeEnlace = new URLSearchParams(window.location.search).get("mascotaId");
+
+    // Servicios, categorias y mascotas del cliente vienen de la base de datos:
+    // hay que esperar la respuesta del backend ANTES de pintar el formulario,
+    // o el selector de "mascota guardada" y el listado de servicios se
+    // inicializan vacios (ver iniciarSelectorMascotaGuardada).
+    const usuarioParaPrecarga = typeof obtenerUsuarioRegistrado === "function" ? obtenerUsuarioRegistrado() : null;
+    const tareasPrecarga = [asegurarServiciosCargados(), asegurarTiposServicioCargados()];
+    if (usuarioParaPrecarga && typeof tieneSesionBackendActiva === "function" && tieneSesionBackendActiva()) {
+        tareasPrecarga.push(sincronizarMascotasDesdeBackend(usuarioParaPrecarga.id));
+    }
+
+    const resultadosPrecarga = await Promise.allSettled(tareasPrecarga);
+    if (resultadosPrecarga.some(resultado => resultado.status === "rejected")) {
+        console.warn("Fallo la carga inicial de agendar:", resultadosPrecarga.filter(r => r.status === "rejected").map(r => r.reason));
+        if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: "warning",
+                title: "No pudimos cargar todos los datos",
+                text: "Revisa tu conexion y recarga la pagina para ver los servicios y tus mascotas.",
+                confirmButtonColor: "#17a9a7"
+            });
+        }
+    }
 
     cargarServiciosDesdeDashboard();
     iniciarFiltroTipoServicioAgendar();
@@ -1178,29 +1201,3 @@ function iniciarAgendarCita() {
         });
     }
 }
-
-document.addEventListener("DOMContentLoaded", async function () {
-    if (!document.getElementById("agendarcita")) return;
-
-    // Servicios, categorias y mascotas del cliente vienen de la base de datos.
-    const usuario = typeof obtenerUsuarioRegistrado === "function" ? obtenerUsuarioRegistrado() : null;
-    const tareas = [asegurarServiciosCargados(), asegurarTiposServicioCargados()];
-    if (usuario && typeof tieneSesionBackendActiva === "function" && tieneSesionBackendActiva()) {
-        tareas.push(sincronizarMascotasDesdeBackend(usuario.id));
-    }
-
-    const resultados = await Promise.allSettled(tareas);
-    if (resultados.some(resultado => resultado.status === "rejected")) {
-        console.warn("Fallo la carga inicial de agendar:", resultados.filter(r => r.status === "rejected").map(r => r.reason));
-        if (typeof Swal !== "undefined") {
-            Swal.fire({
-                icon: "warning",
-                title: "No pudimos cargar todos los datos",
-                text: "Revisa tu conexión y recarga la página para ver los servicios y tus mascotas.",
-                confirmButtonColor: "#17a9a7"
-            });
-        }
-    }
-
-    iniciarAgendarCita();
-});
