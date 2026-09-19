@@ -27,11 +27,28 @@ async function apiFetch(ruta, opciones = {}) {
     });
 
     const texto = await respuesta.text();
-    const datos = texto ? JSON.parse(texto) : null;
+    // El backend responde JSON en los casos exitosos, pero los errores de
+    // validacion llegan como texto plano: no se debe romper el parseo.
+    let datos = null;
+    if (texto) {
+        try {
+            datos = JSON.parse(texto);
+        } catch (errorParseo) {
+            datos = texto;
+        }
+    }
 
     if (!respuesta.ok) {
-        const mensaje = datos?.mensaje || datos?.message || datos?.error || "Ocurrió un error al comunicarse con el servidor.";
-        throw new Error(typeof mensaje === "string" ? mensaje : JSON.stringify(mensaje));
+        const mensaje = (datos && typeof datos === "object")
+            ? (datos.mensaje || datos.message || datos.error)
+            : datos;
+        const error = new Error(
+            mensaje
+                ? (typeof mensaje === "string" ? mensaje : JSON.stringify(mensaje))
+                : "Ocurrió un error al comunicarse con el servidor."
+        );
+        error.status = respuesta.status;
+        throw error;
     }
 
     return datos;

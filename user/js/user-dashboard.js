@@ -15,35 +15,30 @@ async function iniciarDashboardUsuario() {
         return;
     }
 
-    // 1. Sincronizar citas desde el backend en Java (/api/citas/usuario/{id})
-    if (typeof sincronizarCitasDesdeBackend === "function") {
-        try {
-            await sincronizarCitasDesdeBackend(usuarioActivo.id);
-        } catch (error) {
-            console.error("Error sincronizando citas:", error);
+    // 1. Citas y mascotas vienen de la base de datos (una peticion cada una,
+    //    compartida con la topbar). Nada se lee de localStorage.
+    const resultados = await Promise.allSettled([
+        asegurarCitasCargadas(usuarioActivo.id),
+        asegurarMascotasCargadas(usuarioActivo.id)
+    ]);
+    const fallo = resultados.find(resultado => resultado.status === "rejected");
+    if (fallo) {
+        console.error("Error cargando datos del dashboard:", fallo.reason);
+        if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: "warning",
+                title: "No pudimos cargar todos tus datos",
+                text: "Revisa tu conexión y recarga la página.",
+                confirmButtonColor: "#17a9a7"
+            });
         }
     }
 
-    // 2. Cargar mascotas desde el backend (/api/mascotas/usuario/{id})
-    const mascotas = await obtenerMascotasBackend(usuarioActivo.id);
-
-    // 3. Renderizar KPIs y Próxima Cita con datos reales de la BD
+    // 2. Renderizar KPIs y Próxima Cita con datos reales de la BD
+    const mascotas = obtenerMascotasPorUsuarioId(usuarioActivo.id);
     cargarMetricasKPIs(mascotas, usuarioActivo.id);
     cargarProximaCita();
     iniciarAccionesCita();
-}
-
-// Petición directa al CRUD de Java para listar mascotas
-async function obtenerMascotasBackend(usuarioId) {
-    try {
-        const respuesta = await apiBackend(`/mascotas/usuario/${encodeURIComponent(usuarioId)}`);
-        return Array.isArray(respuesta) ? respuesta : [];
-    } catch (error) {
-        console.warn("Fallo al obtener mascotas del backend, usando almacenamiento local:", error);
-        return typeof obtenerMascotasPorUsuarioId === "function" 
-            ? obtenerMascotasPorUsuarioId(usuarioId) 
-            : [];
-    }
 }
 
 // Cálculo dinámico de los 4 KPIs del Dashboard
@@ -71,7 +66,9 @@ function cargarMetricasKPIs(mascotas, usuarioId) {
     if (kpiRecordatorios) kpiRecordatorios.textContent = totalRecordatorios;
 
     // KPI 4: Mascotas con vacunas pendientes o registradas
-    const mascotasConVacunas = mascotas.filter(m => m.vacunas && m.vacunas.trim() !== "").length;
+    const mascotasConVacunas = mascotas.filter(m => Array.isArray(m.vacunas)
+        ? m.vacunas.length > 0
+        : String(m.vacunas || "").trim() !== "").length;
     if (kpiVacunas) kpiVacunas.textContent = mascotasConVacunas;
 }
 

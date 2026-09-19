@@ -24,9 +24,17 @@ function iniciarTopbarUsuario() {
     }
 
     if (notificationButton) {
-        notificationButton.addEventListener("click", function () {
+        notificationButton.addEventListener("click", async function () {
             if (typeof Swal !== "undefined") {
                 const usuario = typeof obtenerUsuarioRegistrado === "function" ? obtenerUsuarioRegistrado() : null;
+                // Las citas salen de la base de datos (comparte la peticion con la pagina).
+                if (usuario && typeof asegurarCitasCargadas === "function") {
+                    try {
+                        await asegurarCitasCargadas(usuario.id);
+                    } catch (error) {
+                        console.warn("No se pudieron cargar las citas para las notificaciones:", error);
+                    }
+                }
                 const citas = usuario && typeof obtenerCitasFuturas === "function"
                     ? obtenerCitasFuturas(usuario.id).slice(0, 3)
                     : [];

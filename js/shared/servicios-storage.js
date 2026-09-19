@@ -1,10 +1,14 @@
-/* Repositorio unico de servicios veterinarios. */
-const SERVICIOS_STORAGE_KEY = "servicios";
+/* Repositorio unico de servicios veterinarios.
+ *
+ * La base de datos (API Spring Boot) es la UNICA fuente de verdad.
+ * GET /api/servicios es publico, asi que cualquier visitante puede
+ * sincronizar sin iniciar sesion. La lista vive solo en memoria mientras la
+ * pagina esta abierta; nada se guarda en localStorage. Crear, editar o borrar
+ * exige que el servidor confirme antes de tocar la copia en memoria.
+ */
 const MAX_SERVICIOS_INICIO = 3;
 
-function tieneSesionBackendActiva() {
-    return typeof getTokenActual === "function" && Boolean(getTokenActual());
-}
+let serviciosEnMemoria = [];
 
 function normalizarServicioDesdeBackend(servicio = {}) {
     const modalidad = servicio.modalidad || (
@@ -12,7 +16,7 @@ function normalizarServicioDesdeBackend(servicio = {}) {
     );
 
     return {
-        id: servicio.id ?? Date.now(),
+        id: servicio.id,
         tipoServicioId: servicio.tipoServicioId ?? servicio.tipoServicio?.id ?? "",
         nombre: servicio.nombre || "",
         descripcion: servicio.descripcion || "",
@@ -33,54 +37,132 @@ function normalizarServicioDesdeBackend(servicio = {}) {
     };
 }
 
-async function obtenerServiciosDesdeBackend() {
-    if (!tieneSesionBackendActiva()) {
-        return obtenerServicios();
-    }
+/* Refresca la copia en memoria con lo que hay en la BD. Lanza el error si el servidor falla. */
+async function sincronizarServiciosDesdeBackend() {
+    return obtenerServiciosDesdeBackend();
+}
 
-    try {
-        const respuesta = await apiBackend("/servicios");
-        const servicios = Array.isArray(respuesta) ? respuesta : [];
-        const normalizados = servicios.map(normalizarServicioDesdeBackend);
-        guardarServicios(normalizados);
-        return normalizados;
-    } catch (error) {
-        console.warn("No se pudieron cargar los servicios desde el backend:", error);
-        return obtenerServicios();
+/*
+ * Primera carga de la pagina: reutiliza la misma peticion si varios scripts
+ * (footer, inicio, servicios...) la piden a la vez. Si falla, permite reintentar.
+ */
+let promesaServiciosCargados = null;
+function asegurarServiciosCargados() {
+    if (!promesaServiciosCargados) {
+        promesaServiciosCargados = sincronizarServiciosDesdeBackend().catch(error => {
+            promesaServiciosCargados = null;
+            throw error;
+        });
     }
+    return promesaServiciosCargados;
+}
+
+// Endpoint publico: no requiere sesion.
+async function obtenerServiciosDesdeBackend() {
+    const respuesta = await apiBackend("/servicios");
+    const servicios = Array.isArray(respuesta) ? respuesta : [];
+    serviciosEnMemoria = normalizarServiciosInicio(servicios.map(normalizarServicioDesdeBackend));
+    return obtenerServicios();
 }
 
 function obtenerServicios() {
-    const servicios = HuellaVetStorage.leer(SERVICIOS_STORAGE_KEY, []);
-    const lista = Array.isArray(servicios) ? servicios : [];
-
-    if (tieneSesionBackendActiva() && lista.length === 0 && typeof window !== "undefined") {
-        obtenerServiciosDesdeBackend().catch(() => {});
-    }
-
-    return lista;
-}
-
-function guardarServicios(servicios) {
-    const lista = Array.isArray(servicios) ? servicios : [];
-    return HuellaVetStorage.guardar(SERVICIOS_STORAGE_KEY, normalizarServiciosInicio(lista));
+    return [...serviciosEnMemoria];
 }
 
 function obtenerServicioPorId(idServicio) {
-    return obtenerServicios().find(servicio => String(servicio.id) === String(idServicio)) || null;
+    return serviciosEnMemoria.find(servicio => String(servicio.id) === String(idServicio)) || null;
 }
 
-function eliminarServicioGuardado(idServicio) {
-    const servicios = obtenerServicios().filter(servicio => String(servicio.id) !== String(idServicio));
-    guardarServicios(servicios);
+function crearPayloadServicioBackend(servicio = {}) {
+    const modalidad = servicio.modalidad || (
+        servicio.esDomicilio ? "domicilio" : (servicio.esVirtual ? "virtual" : "clinica")
+    );
 
-    if (tieneSesionBackendActiva()) {
-        apiBackend(`/servicios/${encodeURIComponent(idServicio)}`, { method: "DELETE" }).catch(error => {
-            console.warn("No se pudo eliminar el servicio en el backend:", error);
-        });
+    return {
+        tipoServicioId: Number(servicio.tipoServicioId),
+        nombre: String(servicio.nombre || "").trim(),
+        descripcion: servicio.descripcion || "",
+        precio: Number(servicio.precio ?? 0),
+        duracion: Number(servicio.duracion ?? 30),
+        modalidad,
+        esDomicilio: Boolean(servicio.esDomicilio || modalidad === "domicilio"),
+        esVirtual: Boolean(servicio.esVirtual || modalidad === "virtual"),
+        esClinica: Boolean(servicio.esClinica || modalidad === "clinica"),
+        direccionClinica: servicio.direccionClinica || "",
+        tieneCostoReserva: Boolean(servicio.tieneCostoReserva),
+        costoReserva: Number(servicio.costoReserva || 0),
+        icono: servicio.icono || "bi bi-heart-pulse",
+        imagen: servicio.imagen || ""
+    };
+}
+
+function reemplazarServicioEnMemoria(servicio) {
+    const index = serviciosEnMemoria.findIndex(item => String(item.id) === String(servicio.id));
+    if (index === -1) {
+        serviciosEnMemoria.push(servicio);
+    } else {
+        serviciosEnMemoria[index] = servicio;
+    }
+    return servicio;
+}
+
+/* POST /api/servicios — devuelve el servicio con el id definitivo de la BD. */
+async function crearServicio(servicio) {
+    if (!tieneSesionBackendActiva()) {
+        throw new Error("Debes iniciar sesión para crear un servicio.");
     }
 
-    return servicios;
+    const creado = await apiBackend("/servicios", {
+        method: "POST",
+        body: crearPayloadServicioBackend(servicio)
+    });
+    return reemplazarServicioEnMemoria(normalizarServicioDesdeBackend(creado));
+}
+
+/* PUT /api/servicios/{id} */
+async function actualizarServicio(idServicio, servicio) {
+    if (!tieneSesionBackendActiva()) {
+        throw new Error("Debes iniciar sesión para editar un servicio.");
+    }
+
+    const actualizado = await apiBackend(`/servicios/${encodeURIComponent(idServicio)}`, {
+        method: "PUT",
+        body: crearPayloadServicioBackend(servicio)
+    });
+    return reemplazarServicioEnMemoria(normalizarServicioDesdeBackend(actualizado));
+}
+
+/* DELETE /api/servicios/{id} — solo se quita de memoria si el servidor confirma. */
+async function eliminarServicioGuardado(idServicio) {
+    if (!tieneSesionBackendActiva()) {
+        throw new Error("Debes iniciar sesión para eliminar un servicio.");
+    }
+
+    await apiBackend(`/servicios/${encodeURIComponent(idServicio)}`, { method: "DELETE" });
+    serviciosEnMemoria = serviciosEnMemoria.filter(servicio => String(servicio.id) !== String(idServicio));
+    return obtenerServicios();
+}
+
+/*
+ * PUT /api/servicios/inicio — guarda en la BD cuales servicios se publican en
+ * el inicio (maximo 3, en orden; el primero es el destacado).
+ */
+async function guardarServiciosParaInicio(idsServicios) {
+    if (!tieneSesionBackendActiva()) {
+        throw new Error("Debes iniciar sesión para publicar servicios en el inicio.");
+    }
+
+    const ids = [...new Set((Array.isArray(idsServicios) ? idsServicios : []).map(String))]
+        .slice(0, MAX_SERVICIOS_INICIO)
+        .map(Number);
+
+    const respuesta = await apiBackend("/servicios/inicio", {
+        method: "PUT",
+        body: { ids }
+    });
+    const servicios = Array.isArray(respuesta) ? respuesta : [];
+    serviciosEnMemoria = normalizarServiciosInicio(servicios.map(normalizarServicioDesdeBackend));
+    return obtenerServiciosParaInicio();
 }
 
 // Los primeros tres servicios se publican automáticamente mientras la clínica
@@ -100,24 +182,6 @@ function obtenerServiciosParaInicio() {
 function obtenerServicioDestacado() {
     const serviciosInicio = obtenerServiciosParaInicio();
     return serviciosInicio.find(servicio => servicio.destacado) || serviciosInicio[0] || null;
-}
-
-function guardarServiciosParaInicio(idsServicios) {
-    const ids = [...new Set((Array.isArray(idsServicios) ? idsServicios : []).map(String))]
-        .slice(0, MAX_SERVICIOS_INICIO);
-
-    const servicios = obtenerServicios().map(servicio => {
-        const indice = ids.indexOf(String(servicio.id));
-        return {
-            ...servicio,
-            mostrarEnHome: indice !== -1,
-            destacado: indice === 0,
-            ordenInicio: indice === -1 ? null : indice + 1
-        };
-    });
-
-    guardarServicios(servicios);
-    return obtenerServiciosParaInicio();
 }
 
 function normalizarServiciosInicio(servicios) {
