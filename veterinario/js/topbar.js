@@ -87,6 +87,9 @@ function mostrarDatosSesionTopbar() {
     const nombreElemento = document.querySelector(".topbar-profile-name");
     const correoElemento = document.querySelector(".topbar-profile-email");
     const imagenElemento = document.querySelector(".topbar-profile-image");
+    const saludoElemento = document.getElementById("saludoDashboard");
+
+    if (saludoElemento) saludoElemento.textContent = `Hola, ${datos.primerNombre} 👋`;
 
     if (nombreElemento) nombreElemento.textContent = datos.nombre;
     if (correoElemento) correoElemento.textContent = datos.correo;
