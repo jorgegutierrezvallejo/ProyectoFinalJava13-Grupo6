@@ -521,7 +521,7 @@ body.sidebar-collapsed .admin-page {
     cursor: pointer;
 }
 
-.hv-vista-selector__btn:hover { background-color: var(--hv-fondo); }
+.hv-vista-selector__btn:not(.hv-vista-selector__btn--activo):hover { background-color: var(--hv-fondo); }
 
 .hv-vista-selector__btn--activo {
     background-color: var(--hv-primario);
