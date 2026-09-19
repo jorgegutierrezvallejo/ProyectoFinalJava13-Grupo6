@@ -1,64 +1,52 @@
-/* Repositorio unico de tipos de servicio.
- *
- * La base de datos (API Spring Boot) es la UNICA fuente de verdad.
- * GET /api/tipos-servicio es publico. La lista vive en memoria mientras la
- * pagina esta abierta (nada en localStorage) y cada pagina debe esperar
- * sincronizarTiposServicioDesdeBackend() antes de pintar.
- */
-let tiposServicioEnMemoria = [];
+/* Repositorio unico de tipos de servicio. */
+const TIPOS_SERVICIO_STORAGE_KEY = "tiposServicio";
+
+document.addEventListener("DOMContentLoaded", () => {
+    sincronizarTiposServicioDesdeBackend();
+});
 
 function obtenerTiposServicio() {
-    return [...tiposServicioEnMemoria];
+    const tipos = HuellaVetStorage.leer(TIPOS_SERVICIO_STORAGE_KEY, []);
+    return Array.isArray(tipos) ? tipos : [];
 }
 
-/* Refresca la copia en memoria con la BD. Lanza el error si el servidor falla. */
-async function sincronizarTiposServicioDesdeBackend() {
-    const respuesta = await apiBackend("/tipos-servicio");
-    tiposServicioEnMemoria = Array.isArray(respuesta) ? respuesta : [];
-    document.dispatchEvent(new CustomEvent("tiposServicioSincronizados"));
-    return obtenerTiposServicio();
+function guardarTiposServicio(tipos) {
+    return HuellaVetStorage.guardar(TIPOS_SERVICIO_STORAGE_KEY, Array.isArray(tipos) ? tipos : []);
 }
 
-/* Primera carga de la pagina: una sola peticion aunque varios scripts la pidan. */
-let promesaTiposServicioCargados = null;
-function asegurarTiposServicioCargados() {
-    if (!promesaTiposServicioCargados) {
-        promesaTiposServicioCargados = sincronizarTiposServicioDesdeBackend().catch(error => {
-            promesaTiposServicioCargados = null;
-            throw error;
-        });
-    }
-    return promesaTiposServicioCargados;
-}
-
-/*
- * Crea el tipo en la BD (o devuelve el existente con ese nombre).
- * El id es siempre el que genera la base de datos, nunca uno temporal.
- */
 async function crearTipoServicio(nombreCrudo) {
     const nombre = String(nombreCrudo || "").trim();
     if (!nombre) return null;
 
-    const existente = tiposServicioEnMemoria.find(
-        tipo => String(tipo.nombre || "").toLowerCase() === nombre.toLowerCase()
-    );
+    const existente = obtenerTiposServicio().find(tipo => tipo.nombre.toLowerCase() === nombre.toLowerCase());
     if (existente) return existente;
 
-    if (!tieneSesionBackendActiva()) {
-        throw new Error("Debes iniciar sesión para crear una categoría.");
+    if (typeof getTokenActual !== "function" || !getTokenActual()) {
+        throw new Error("Debes iniciar sesión para crear un tipo de servicio.");
     }
 
-    const creado = await apiBackend("/tipos-servicio", {
-        method: "POST",
-        body: { id: null, nombre }
-    });
-    tiposServicioEnMemoria.push(creado);
-    document.dispatchEvent(new CustomEvent("tiposServicioSincronizados"));
-    return creado;
+    const tipoBackend = await apiBackend("/tipos-servicio", { method: "POST", body: { id: null, nombre } });
+    guardarTiposServicio([...obtenerTiposServicio(), tipoBackend]);
+    return tipoBackend;
+}
+
+async function sincronizarTiposServicioDesdeBackend() {
+    if (typeof apiBackend !== "function") return obtenerTiposServicio();
+
+    try {
+        const respuesta = await apiBackend("/tipos-servicio");
+        const tipos = Array.isArray(respuesta) ? respuesta : [];
+        guardarTiposServicio(tipos);
+        document.dispatchEvent(new CustomEvent("tiposServicioSincronizados"));
+        return tipos;
+    } catch (error) {
+        console.warn("No se pudieron cargar los tipos de servicio:", error);
+        return obtenerTiposServicio();
+    }
 }
 
 function obtenerTipoServicioPorId(idTipo) {
-    return tiposServicioEnMemoria.find(tipo => String(tipo.id) === String(idTipo)) || null;
+    return obtenerTiposServicio().find(tipo => String(tipo.id) === String(idTipo)) || null;
 }
 
 function nombreTipoServicio(idTipo) {
