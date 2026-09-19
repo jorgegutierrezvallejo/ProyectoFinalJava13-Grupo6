@@ -11,6 +11,35 @@ document.addEventListener("DOMContentLoaded", async function () {
         formulario.addEventListener("submit", manejarCrearVeterinario);
     }
 
+    // Mostrar / ocultar contraseña temporal del veterinario
+    const botonMostrarContrasena = document.getElementById("toggleVetContrasena");
+    const campoContrasena = document.getElementById("vetContrasena");
+
+    if (botonMostrarContrasena && campoContrasena) {
+        botonMostrarContrasena.addEventListener("click", function () {
+            const mostrar = campoContrasena.type === "password";
+
+            campoContrasena.type = mostrar ? "text" : "password";
+
+            botonMostrarContrasena.setAttribute(
+                "aria-label",
+                mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
+            );
+
+            botonMostrarContrasena.setAttribute(
+                "aria-pressed",
+                String(mostrar)
+            );
+
+            const icono = botonMostrarContrasena.querySelector("i");
+
+            if (icono) {
+                icono.classList.toggle("bi-eye", !mostrar);
+                icono.classList.toggle("bi-eye-slash", mostrar);
+            }
+        });
+    }
+
 });
 
 
