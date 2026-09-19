@@ -1,132 +1,154 @@
 /* Repositorio único de mascotas.
- * Mantiene temporalmente la persistencia local existente
- * y añade la integración con el backend Spring Boot.
+ *
+ * La base de datos (API Spring Boot) es la ÚNICA fuente de verdad.
+ * No se persiste nada en localStorage: la lista vive en memoria mientras
+ * la página está abierta y se vuelve a pedir al servidor en cada carga
+ * (sincronizarMascotasDesdeBackend). Toda escritura se hace primero contra
+ * la API y, si falla, se propaga el error: nunca se guarda "por si acaso".
+ *
+ * Contrato Spring Boot:
+ *   GET    /api/mascotas/usuario/{usuarioId}
+ *   GET    /api/mascotas/{id}
+ *   POST   /api/mascotas
+ *   PUT    /api/mascotas/{id}
+ *   DELETE /api/mascotas/{id}
  */
 
-const MASCOTAS_STORAGE_KEY = "mascotas";
+let mascotasEnMemoria = [];
 
 /* ============================================================
- * PERSISTENCIA LOCAL — LEGACY / RESPALDO TEMPORAL
+ * LECTURA SÍNCRONA (sobre la copia en memoria de esta página)
  * ============================================================ */
 
 function obtenerMascotas() {
-    const mascotas = HuellaVetStorage.leer(MASCOTAS_STORAGE_KEY, []);
-    return Array.isArray(mascotas) ? mascotas : [];
-}
-
-function guardarMascotas(mascotas) {
-    return HuellaVetStorage.guardar(
-        MASCOTAS_STORAGE_KEY,
-        Array.isArray(mascotas) ? mascotas : []
-    );
-}
-
-function asegurarMascotasIniciales(mascotasIniciales) {
-    if (!HuellaVetStorage.existe(MASCOTAS_STORAGE_KEY)) {
-        guardarMascotas(mascotasIniciales);
-    }
-
-    return obtenerMascotas();
+    return [...mascotasEnMemoria];
 }
 
 function obtenerMascotaPorId(idMascota) {
-    return obtenerMascotas().find(
+    return mascotasEnMemoria.find(
         mascota => String(mascota.id) === String(idMascota)
     ) || null;
 }
 
 function obtenerMascotasPorUsuarioId(idUsuario) {
-    return obtenerMascotas().filter(
+    return mascotasEnMemoria.filter(
         mascota => String(mascota.usuarioId) === String(idUsuario)
     );
 }
 
 function obtenerMascotaPorNombre(nombreMascota, idUsuario = null) {
-    const nombre = String(nombreMascota || "")
-        .trim()
-        .toLowerCase();
+    const nombre = String(nombreMascota || "").trim().toLowerCase();
 
-    return obtenerMascotas().find(mascota =>
-        String(mascota.nombre || "")
-            .trim()
-            .toLowerCase() === nombre &&
-        (
-            idUsuario === null ||
-            String(mascota.usuarioId) === String(idUsuario)
-        )
+    return mascotasEnMemoria.find(mascota =>
+        String(mascota.nombre || "").trim().toLowerCase() === nombre &&
+        (idUsuario === null || String(mascota.usuarioId) === String(idUsuario))
     ) || null;
 }
 
-function guardarMascota(mascota) {
-    const mascotas = obtenerMascotas();
-
-    const index = mascotas.findIndex(
+function reemplazarMascotaEnMemoria(mascota) {
+    const index = mascotasEnMemoria.findIndex(
         item => String(item.id) === String(mascota.id)
     );
-
     if (index === -1) {
-        mascotas.push(mascota);
+        mascotasEnMemoria.push(mascota);
     } else {
-        mascotas[index] = {
-            ...mascotas[index],
-            ...mascota
-        };
+        mascotasEnMemoria[index] = mascota;
     }
-
-    guardarMascotas(mascotas);
-
     return mascota;
-}
-
-function registrarMascotaSiNoExiste(datosMascota) {
-    const existente = obtenerMascotaPorNombre(
-        datosMascota.nombre,
-        datosMascota.usuarioId
-    );
-
-    if (existente) {
-        return existente;
-    }
-
-    const mascota = {
-        id: datosMascota.id || crypto.randomUUID(),
-        ...datosMascota,
-        creadaEn: datosMascota.creadaEn || new Date().toISOString()
-    };
-
-    guardarMascota(mascota);
-
-    return mascota;
-}
-
-function eliminarMascota(idMascota) {
-    const mascotas = obtenerMascotas().filter(
-        mascota => String(mascota.id) !== String(idMascota)
-    );
-
-    guardarMascotas(mascotas);
-
-    return mascotas;
 }
 
 /* ============================================================
- * INTEGRACIÓN BACKEND — MASCOTAS
+ * ESCRITURA / SINCRONIZACIÓN (siempre contra la base de datos)
+ * ============================================================ */
+
+/**
+ * Trae de la BD las mascotas del usuario y refresca la copia en memoria.
+ * Lanza el error si el servidor no responde: quien llama decide qué mostrar.
+ */
+async function sincronizarMascotasDesdeBackend(idUsuario) {
+    if (!tieneSesionBackendMascotas()) {
+        mascotasEnMemoria = [];
+        return [];
+    }
+
+    mascotasEnMemoria = await obtenerMascotasDesdeBackend(idUsuario);
+    return obtenerMascotas();
+}
+
+/*
+ * Primera carga de la pagina: varios scripts pueden pedirla a la vez y comparten
+ * una sola peticion. Si falla, se puede reintentar.
+ */
+let promesaMascotasCargadas = null;
+let claveMascotasCargadas = null;
+function asegurarMascotasCargadas(idUsuario) {
+    const clave = String(idUsuario ?? "");
+    if (!promesaMascotasCargadas || claveMascotasCargadas !== clave) {
+        claveMascotasCargadas = clave;
+        promesaMascotasCargadas = sincronizarMascotasDesdeBackend(idUsuario).catch(error => {
+            promesaMascotasCargadas = null;
+            claveMascotasCargadas = null;
+            throw error;
+        });
+    }
+    return promesaMascotasCargadas;
+}
+
+/** Crea la mascota en la BD. Devuelve la mascota con su id definitivo. */
+async function crearMascota(datosMascota) {
+    if (!tieneSesionBackendMascotas()) {
+        throw new Error("Debes iniciar sesión para registrar una mascota.");
+    }
+
+    const creada = await guardarMascotaEnBackend(datosMascota);
+    if (!creada) {
+        throw new Error("No se pudo registrar la mascota.");
+    }
+    return reemplazarMascotaEnMemoria(creada);
+}
+
+/** Actualiza la mascota en la BD y refresca la copia en memoria. */
+async function actualizarMascota(idMascota, datosMascota) {
+    if (!tieneSesionBackendMascotas()) {
+        throw new Error("Debes iniciar sesión para editar una mascota.");
+    }
+
+    const actualizada = await actualizarMascotaEnBackend(idMascota, datosMascota);
+    if (!actualizada) {
+        throw new Error("No se pudo actualizar la mascota.");
+    }
+    return reemplazarMascotaEnMemoria(actualizada);
+}
+
+/** Elimina la mascota en la BD; solo si el servidor confirma se quita de memoria. */
+async function eliminarMascota(idMascota) {
+    if (!tieneSesionBackendMascotas()) {
+        throw new Error("Debes iniciar sesión para eliminar una mascota.");
+    }
+
+    await eliminarMascotaEnBackend(idMascota);
+    mascotasEnMemoria = mascotasEnMemoria.filter(
+        mascota => String(mascota.id) !== String(idMascota)
+    );
+    return obtenerMascotas();
+}
+
+/**
+ * Devuelve la mascota del usuario con ese nombre o la crea en la BD.
+ * Se usa al agendar una cita cuando el cliente escribe una mascota nueva.
+ */
+async function registrarMascotaSiNoExiste(datosMascota) {
+    const existente = obtenerMascotaPorNombre(datosMascota.nombre, datosMascota.usuarioId);
+    if (existente) {
+        return existente;
+    }
+    return crearMascota(datosMascota);
+}
+
+/* ============================================================
+ * INTEGRACIÓN BACKEND — HTTP
  * ============================================================
- *
- * Contrato Spring Boot:
- *
- * GET    /api/mascotas
- * GET    /api/mascotas/{id}
- * GET    /api/mascotas/usuario/{usuarioId}
- * POST   /api/mascotas
- * PUT    /api/mascotas/{id}
- * DELETE /api/mascotas/{id}
- *
- * Estas funciones reutilizan apiBackend() y getTokenActual()
- * definidos previamente en usuarios-storage.js.
- *
- * La persistencia local se conserva temporalmente mientras
- * se valida la migración completa Front End ↔ Back End.
+ * Reutilizan apiBackend() y getTokenActual() de usuarios-storage.js.
  */
 
 /**

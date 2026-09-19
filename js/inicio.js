@@ -1,8 +1,17 @@
 document.addEventListener("DOMContentLoaded", renderizarServiciosInicio);
 
-function renderizarServiciosInicio() {
+async function renderizarServiciosInicio() {
     const contenedor = document.getElementById("servicios-inicio");
     if (!contenedor) return;
+
+    // Los servicios publicados salen de la base de datos (endpoint publico).
+    try {
+        await asegurarServiciosCargados();
+    } catch (error) {
+        console.warn("No se pudieron cargar los servicios del inicio:", error);
+        contenedor.innerHTML = `<div class="inicio-servicios__vacio">No pudimos cargar los servicios en este momento. Intenta de nuevo en unos segundos.</div>`;
+        return;
+    }
 
     const servicios = obtenerServiciosParaInicio();
     if (servicios.length === 0) {

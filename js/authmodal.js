@@ -91,6 +91,34 @@ document.addEventListener("click", function (evento) {
 
 function iniciarAuthModal() {
 
+    document.querySelectorAll(".hv-password-toggle").forEach(function (boton) {
+        if (boton.dataset.inicializado === "true") return;
+
+        boton.dataset.inicializado = "true";
+
+        boton.addEventListener("click", function () {
+            const idCampo = boton.dataset.togglePassword;
+            const campo = document.getElementById(idCampo);
+
+            if (!campo) return;
+
+            const mostrar = campo.type === "password";
+
+            campo.type = mostrar ? "text" : "password";
+            boton.setAttribute(
+                "aria-label",
+                mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
+            );
+            boton.setAttribute("aria-pressed", String(mostrar));
+
+            const icono = boton.querySelector("i");
+            if (icono) {
+                icono.classList.toggle("bi-eye", !mostrar);
+                icono.classList.toggle("bi-eye-slash", mostrar);
+            }
+        });
+    });
+
 
 
 
@@ -454,7 +482,7 @@ function iniciarAuthModal() {
                 const destinoRol = rolSeleccionado === 'ADMINISTRADOR'
                     ? (window.location.pathname.includes('/admin/') ? "html/admin-dashboard.html" : "admin/html/admin-dashboard.html")
                     : rolSeleccionado === 'VETERINARIO'
-                        ? (window.location.pathname.includes('/veterinario/') ? "html/veterinario-dashboard.html" : "veterianrio/html/veterinario-dashboard.html")
+                        ? (window.location.pathname.includes('/veterinario/') ? "html/veterinario-dashboard.html" : "veterinario/html/veterinario-dashboard.html")
                         : './user/html/user-dashboard.html';
                 cerrarAuthModal(document.getElementById("auth-modal"));
                 Swal.fire({
@@ -470,37 +498,16 @@ function iniciarAuthModal() {
                 });
                 return;
             } catch (error) {
-                if (rolSeleccionado !== 'USUARIO') {
-                    if (mensajeErrorLogin) {
-                        mensajeErrorLogin.textContent = 'Las credenciales no corresponden al rol seleccionado.';
-                        mensajeErrorLogin.style.display = 'block';
-                    }
-                    return;
+                // La base de datos es la unica fuente de verdad: si el servidor no
+                // valida las credenciales, no se inicia sesion (sin respaldo local).
+                if (mensajeErrorLogin) {
+                    mensajeErrorLogin.textContent = esErrorDeRedAuth(error)
+                        ? 'No se pudo conectar con el servidor. Intenta de nuevo en unos segundos.'
+                        : (rolSeleccionado !== 'USUARIO'
+                            ? 'Las credenciales no corresponden al rol seleccionado.'
+                            : 'Correo o contraseña incorrectos.');
+                    mensajeErrorLogin.style.display = 'block';
                 }
-
-                const usuarioRegistrado = obtenerUsuarioPorCredenciales(correoIngresado, contrasenaIngresada);
-
-                if (!usuarioRegistrado) {
-                    if (mensajeErrorLogin) {
-                        mensajeErrorLogin.textContent = 'Correo o contraseña incorrectos.';
-                        mensajeErrorLogin.style.display = 'block';
-                    }
-                    return;
-                }
-
-                guardarSesionUsuario(usuarioRegistrado.id);
-                actualizarSesionNavbar();
-                const destinoDespuesDelLogin = tomarDestinoAgendarNavbar();
-                cerrarAuthModal(document.getElementById("auth-modal"));
-                Swal.fire({
-                    title: "¡Inicio de sesión exitoso!",
-                    text: "Bienvenido a HuellaVet",
-                    icon: "success",
-                    confirmButtonText: "Continuar",
-                    confirmButtonColor: "#007b83"
-                }).then(() => {
-                    window.location.href = destinoDespuesDelLogin || './user/html/user-dashboard.html';
-                });
             }
         });
     }
@@ -602,36 +609,20 @@ function iniciarAuthModal() {
             formularioRegistro.reset();
             limpiarErrores();
         } catch (error) {
-            const nuevoUsuario = registrarUsuario(datosUsuario);
-
-            if (!nuevoUsuario) {
-                mostrarMensaje("Ya existe una cuenta con este correo.", "error");
-                return;
-            }
-
-            guardarSesionUsuario(nuevoUsuario.id);
-            actualizarSesionNavbar();
-
-            const destinoDespuesDelRegistro = tomarDestinoAgendarNavbar();
-            if (destinoDespuesDelRegistro) {
-                cerrarAuthModal(document.getElementById("auth-modal"));
-                Swal.fire({
-                    title: "¡Registro exitoso!",
-                    text: "Tu cuenta está lista. Ya puedes agendar tu cita.",
-                    icon: "success",
-                    confirmButtonText: "Continuar",
-                    confirmButtonColor: "#007b83"
-                }).then(() => {
-                    window.location.href = destinoDespuesDelRegistro;
-                });
-                return;
-            }
-
-            mostrarMensaje('¡Registro exitoso!', 'exito');
-            formularioRegistro.reset();
-            limpiarErrores();
+            // Sin respaldo local: si el servidor no crea la cuenta, no existe cuenta.
+            mostrarMensaje(
+                esErrorDeRedAuth(error)
+                    ? "No se pudo conectar con el servidor. Intenta de nuevo en unos segundos."
+                    : (error?.message || "No se pudo completar el registro."),
+                "error"
+            );
         }
     });
+}
+
+/* fetch() rechaza con TypeError cuando no hay conexion con el servidor. */
+function esErrorDeRedAuth(error) {
+    return error instanceof TypeError;
 }
 
 function cerrarAuthModal(modal) {

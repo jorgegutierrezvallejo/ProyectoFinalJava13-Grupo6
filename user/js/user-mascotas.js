@@ -1,4 +1,24 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
+    // Mascotas y citas del cliente vienen de la base de datos (nada en localStorage).
+    const usuarioActivo = obtenerUsuarioRegistrado();
+    if (usuarioActivo) {
+        const resultados = await Promise.allSettled([
+            asegurarMascotasCargadas(usuarioActivo.id),
+            asegurarCitasCargadas(usuarioActivo.id)
+        ]);
+        const fallo = resultados.find(resultado => resultado.status === "rejected");
+        if (fallo) {
+            console.error("No se pudieron cargar los datos desde el servidor:", fallo.reason);
+            if (typeof Swal !== "undefined") {
+                Swal.fire({
+                    icon: "warning",
+                    title: "No pudimos cargar tus mascotas",
+                    text: "Revisa tu conexión y recarga la página.",
+                    confirmButtonColor: "#17a9a7"
+                });
+            }
+        }
+    }
     iniciarPaginaMascotas();
 });
 
@@ -483,9 +503,20 @@ function solicitarCambioCitaDesdeMascota(cita, mascota, nuevoEstado, opciones) {
             }
             return motivo;
         }
-    }).then(resultado => {
+    }).then(async resultado => {
         if (!resultado.isConfirmed) return;
-        actualizarCamposCita(cita.id, { estado: nuevoEstado, motivoEstado: resultado.value });
+        try {
+            // Cancelar o solicitar reprogramacion (sin fecha nueva): la BD guarda estado y motivo.
+            await actualizarEstadoCita(cita.id, nuevoEstado, { motivoEstado: resultado.value });
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "No se pudo actualizar la cita",
+                text: error?.message || "Intenta de nuevo.",
+                confirmButtonColor: "#17a9a7"
+            });
+            return;
+        }
         renderizarDetalleMascota();
         Swal.fire({
             icon: "success",
@@ -592,11 +623,21 @@ function iniciarBotonesDetalleMascota(mascota) {
                 cancelButtonText: "Cancelar",
                 confirmButtonColor: "#e53e3e",
                 cancelButtonColor: "#6c757d"
-            }).then(resultado => {
+            }).then(async resultado => {
                 if (!resultado.isConfirmed) return;
 
-                if (mascota.id) {
-                    eliminarMascota(mascota.id);
+                // Se elimina en la base de datos; solo si el servidor confirma
+                // desaparece de la lista.
+                try {
+                    await eliminarMascota(mascota.id);
+                } catch (error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "No se pudo eliminar en el servidor",
+                        text: error?.message || "Intenta de nuevo.",
+                        confirmButtonColor: "#e53e3e"
+                    });
+                    return;
                 }
 
                 mascotaSeleccionadaId = null;
