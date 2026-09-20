@@ -45,6 +45,21 @@ async function sincronizarTiposServicioDesdeBackend() {
     }
 }
 
+/*
+ * Primera carga de la pagina: si varios scripts piden los tipos de servicio
+ * a la vez comparten una sola peticion al backend.
+ */
+let promesaTiposServicioCargados = null;
+function asegurarTiposServicioCargados() {
+    if (!promesaTiposServicioCargados) {
+        promesaTiposServicioCargados = sincronizarTiposServicioDesdeBackend().catch(error => {
+            promesaTiposServicioCargados = null;
+            throw error;
+        });
+    }
+    return promesaTiposServicioCargados;
+}
+
 function obtenerTipoServicioPorId(idTipo) {
     return obtenerTiposServicio().find(tipo => String(tipo.id) === String(idTipo)) || null;
 }

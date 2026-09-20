@@ -59,10 +59,10 @@ function mostrarFechaActual() {
 ======================================== */
 
 async function cargarResumenDinamicoDashboard() {
-    const citas = typeof obtenerCitasDesdeBackend === "function" &&
+    const citas = typeof asegurarCitasCargadasSegunRol === "function" &&
         typeof tieneSesionBackendActiva === "function" &&
         tieneSesionBackendActiva()
-        ? await obtenerCitasDesdeBackend()
+        ? await asegurarCitasCargadasSegunRol()
         : (typeof obtenerTodasLasCitas === "function" ? obtenerTodasLasCitas() : []);
     const usuarios = typeof apiBackend === "function" &&
         typeof obtenerUsuarioRegistrado === "function" &&

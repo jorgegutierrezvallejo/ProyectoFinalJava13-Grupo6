@@ -59,6 +59,12 @@ function normalizarCitaDesdeBackend(cita = {}) {
         mascotaId: cita.mascotaId ?? cita.mascota?.id ?? "",
         nombreMascota: cita.nombreMascota ?? cita.mascota?.nombre ?? "Mascota",
         servicioNombre: cita.servicioNombre ?? cita.servicio?.nombre ?? "Consulta general",
+        // [AJUSTE CLAUDE] El backend devuelve "veterinario" como texto
+        // (nombre completo) y "veterinarioId" por separado; se guardan los
+        // dos para poder mostrar el nombre y, si hace falta, volver a
+        // consultar al veterinario por su id.
+        veterinarioId: cita.veterinarioId ?? "",
+        veterinarioNombre: cita.veterinario || cita.veterinarioNombre || "",
         fecha: cita.fecha || hoyISO(),
         hora: normalizarHoraVisible(cita.hora),
         estado: cita.estado || "Pendiente",
@@ -142,6 +148,38 @@ async function sincronizarCitasDesdeBackend(idUsuario = null) {
 }
 
 /*
+ * [AJUSTE CLAUDE] El dashboard y la vista de citas del veterinario nunca
+ * llamaban a ninguna funcion que sincronizara citasEnMemoria con el
+ * backend: por eso una cita recien creada y enlazada a un veterinario no
+ * aparecia en su panel. Esta funcion sincroniza segun el rol de quien
+ * tiene la sesion activa (VETERINARIO -> solo sus citas asignadas,
+ * ADMINISTRADOR -> todas), reutilizando obtenerCitasVisiblesSegunRolActual.
+ */
+async function sincronizarCitasSegunRolActual() {
+    if (!tieneSesionBackendActiva()) {
+        citasEnMemoria = [];
+        return [];
+    }
+
+    citasEnMemoria = await obtenerCitasVisiblesSegunRolActual();
+    return obtenerTodasLasCitas();
+}
+
+// [AJUSTE CLAUDE] Cache de la promesa para que, si varios scripts de la
+// pagina del veterinario/administrador piden las citas a la vez, se
+// comparta una sola peticion (mismo patron que asegurarCitasCargadas).
+let promesaCitasRolCargadas = null;
+function asegurarCitasCargadasSegunRol() {
+    if (!promesaCitasRolCargadas) {
+        promesaCitasRolCargadas = sincronizarCitasSegunRolActual().catch(error => {
+            promesaCitasRolCargadas = null;
+            throw error;
+        });
+    }
+    return promesaCitasRolCargadas;
+}
+
+/*
  * Primera carga de la pagina: si varios scripts (topbar, pagina, etc.) piden
  * las mismas citas a la vez comparten una sola peticion. Si falla, se puede reintentar.
  */
@@ -209,6 +247,14 @@ async function guardarCitaEnBackend(cita) {
         clienteDireccion: cliente.direccion || "",
         canalRecordatorio: cliente.canalRecordatorio || ""
     };
+
+    // [AJUSTE CLAUDE] El backend (CitaDto/CitaService) ya soportaba
+    // "veterinarioId", pero aqui nunca se enviaba: por eso la cita nunca
+    // quedaba enlazada al veterinario elegido en el formulario. Solo se
+    // agrega si viene un valor (el campo es opcional en el backend).
+    if (cita.veterinarioId !== undefined && cita.veterinarioId !== null && String(cita.veterinarioId) !== "") {
+        payload.veterinarioId = Number(cita.veterinarioId);
+    }
 
     return apiBackend("/citas", {
         method: "POST",

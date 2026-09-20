@@ -129,7 +129,11 @@ function cargarProximaCita() {
     if (fechaCitaEl) fechaCitaEl.textContent = formatearFechaCita(proximaCita.fecha);
     if (horaCitaEl) horaCitaEl.textContent = proximaCita.hora || "10:00 AM";
     if (servicioCitaEl) servicioCitaEl.textContent = proximaCita.servicioNombre || "Consulta general";
-    if (vetCitaEl) vetCitaEl.textContent = proximaCita.veterinario?.nombre || "Por asignar";
+    // [AJUSTE CLAUDE] El backend devuelve "veterinario" como texto (nombre
+    // completo), no como objeto: "proximaCita.veterinario?.nombre" nunca
+    // iba a mostrar nada. Se usa tambien "veterinarioNombre" (agregado en
+    // citas-storage.js) como respaldo.
+    if (vetCitaEl) vetCitaEl.textContent = proximaCita.veterinario || proximaCita.veterinarioNombre || "Por asignar";
     if (ubicacionCitaEl) ubicacionCitaEl.textContent = proximaCita.ubicacion || "HuellaVet — Sede Centro";
 }
 

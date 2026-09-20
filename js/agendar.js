@@ -1,4 +1,4 @@
-function iniciarAgendarCita() {
+async function iniciarAgendarCita() {
     const hoy = new Date();
     const anioActual = hoy.getFullYear();
     const mesActual = hoy.getMonth();
@@ -17,8 +17,33 @@ function iniciarAgendarCita() {
     const servicioIdDesdeEnlace = new URLSearchParams(window.location.search).get("servicioId");
     const mascotaIdDesdeEnlace = new URLSearchParams(window.location.search).get("mascotaId");
 
+    const usuarioParaPrecarga = typeof obtenerUsuarioRegistrado === "function" ? obtenerUsuarioRegistrado() : null;
+    const tareasPrecarga = [asegurarServiciosCargados(), asegurarTiposServicioCargados()];
+    if (usuarioParaPrecarga && typeof tieneSesionBackendActiva === "function" && tieneSesionBackendActiva()) {
+        tareasPrecarga.push(sincronizarMascotasDesdeBackend(usuarioParaPrecarga.id));
+    }
+    // [AJUSTE CLAUDE] Se agrega la carga de veterinarios a la misma
+    // precarga inicial (junto con servicios, tipos y mascotas) para que el
+    // desplegable de "Veterinario" ya tenga datos cuando se pinte el paso 1.
+    if (typeof asegurarVeterinariosCargados === "function") {
+        tareasPrecarga.push(asegurarVeterinariosCargados());
+    }
+
+    const resultadosPrecarga = await Promise.allSettled(tareasPrecarga);
+    if (resultadosPrecarga.some(resultado => resultado.status === "rejected")) {
+        console.warn("Fallo la carga inicial de agendar:", resultadosPrecarga.filter(r => r.status === "rejected").map(r => r.reason));
+        if (typeof Swal !== "undefined") {
+            Swal.fire({
+                icon: "warning",
+                title: "No pudimos cargar todos los datos",
+                text: "Revisa tu conexion y recarga la pagina para ver los servicios y tus mascotas.",
+                confirmButtonColor: "#17a9a7"
+            });
+        }
+    }
     cargarServiciosDesdeDashboard();
     iniciarFiltroTipoServicioAgendar();
+    iniciarSelectorVeterinarios();
     iniciarSelectorMascotaGuardada();
     precargarDatosDeContacto();
     iniciarEnvioPaso1();
@@ -454,7 +479,30 @@ function iniciarAgendarCita() {
                 }
                 return;
             }
+            const selectVeterinario = document.getElementById("selectVeterinario");
+            const veterinarioId = selectVeterinario?.value || "";
+            const hayVeterinariosParaElegir = selectVeterinario && !selectVeterinario.disabled;
 
+            if (hayVeterinariosParaElegir && !veterinarioId) {
+                if (typeof Swal !== "undefined") {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "Selecciona un veterinario",
+                        text: "Por favor elige el veterinario que atenderá la cita.",
+                        confirmButtonColor: "#17a9a7"
+                    }).then(() => {
+                        selectVeterinario?.focus();
+                    });
+                } else {
+                    alert("Por favor selecciona un veterinario.");
+                    selectVeterinario?.focus();
+                }
+                return;
+            }
+
+            const veterinarioNombre = veterinarioId && typeof obtenerVeterinarioPorId === "function"
+                ? (obtenerVeterinarioPorId(veterinarioId)?.nombreCompleto || "")
+                : "";
             const datosPaso1 = {
                 mascotaId: document.getElementById("selectMascotaGuardada")?.value || "",
                 nombreMascota,
@@ -910,7 +958,8 @@ function iniciarAgendarCita() {
                 servicioNombre: datosP1.servicioNombre || "Consulta general",
                 modalidad: datosP1.modalidad || "clinica",
                 ubicacion: ubicacionCita,
-                veterinario: "",
+                veterinario: datosP1.veterinarioNombre || "",
+                veterinarioId: datosP1.veterinarioId || "",
                 estado: "Pendiente",
                 tieneCostoReserva: datosP1.tieneCostoReserva,
                 costoReserva: datosP1.costoReserva,
@@ -1074,6 +1123,11 @@ function iniciarAgendarCita() {
         if (resumenNombre) resumenNombre.textContent = nombreResumen;
         if (resumenServicio) resumenServicio.textContent = servicioNombre;
 
+        const resumenVeterinario = document.getElementById("resumenVeterinario");
+        if (resumenVeterinario) {
+            resumenVeterinario.textContent = datosPaso1.veterinarioNombre || "Por asignar";
+        }
+
         if (resumenFotoMascota && resumenAvatar) {
             const mascotaGuardada = datosPaso1.mascotaId && typeof obtenerMascotaPorId === "function"
                 ? obtenerMascotaPorId(datosPaso1.mascotaId)
@@ -1155,7 +1209,26 @@ function iniciarAgendarCita() {
         div.textContent = String(valor);
         return div.innerHTML;
     }
+    function iniciarSelectorVeterinarios() {
+        const select = document.getElementById("selectVeterinario");
+        if (!select || typeof obtenerVeterinarios !== "function") {
+            return;
+        }
 
+        const veterinarios = obtenerVeterinarios();
+
+        if (veterinarios.length === 0) {
+            select.innerHTML = `<option value="" selected>No hay veterinarios disponibles</option>`;
+            select.disabled = true;
+            return;
+        }
+
+        select.disabled = false;
+        select.innerHTML = `<option value="" disabled selected>Selecciona un veterinario...</option>` +
+            veterinarios.map(veterinario =>
+                `<option value="${veterinario.id}">${escaparHtml(veterinario.nombreCompleto)}</option>`
+            ).join("");
+    }
     function iniciarFiltroTipoServicioAgendar() {
         const filtroSelect = document.getElementById("filtroTipoServicioAgendar");
         if (!filtroSelect || typeof obtenerTiposServicio !== "function") {

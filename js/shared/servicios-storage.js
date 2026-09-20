@@ -34,10 +34,8 @@ function normalizarServicioDesdeBackend(servicio = {}) {
 }
 
 async function obtenerServiciosDesdeBackend() {
-    if (!tieneSesionBackendActiva()) {
-        return obtenerServicios();
-    }
-
+    // GET /api/servicios es publico (permitAll en el backend): los servicios
+    // deben verse aunque nadie haya iniciado sesion (home, footer, agendar).
     try {
         const respuesta = await apiBackend("/servicios");
         const servicios = Array.isArray(respuesta) ? respuesta : [];
@@ -48,6 +46,22 @@ async function obtenerServiciosDesdeBackend() {
         console.warn("No se pudieron cargar los servicios desde el backend:", error);
         return obtenerServicios();
     }
+}
+
+/*
+ * Primera carga de la pagina: si varios scripts (inicio, footer, agendar, etc.)
+ * piden los servicios a la vez comparten una sola peticion al backend.
+ * Si falla, se puede reintentar en la siguiente llamada.
+ */
+let promesaServiciosCargados = null;
+function asegurarServiciosCargados() {
+    if (!promesaServiciosCargados) {
+        promesaServiciosCargados = obtenerServiciosDesdeBackend().catch(error => {
+            promesaServiciosCargados = null;
+            throw error;
+        });
+    }
+    return promesaServiciosCargados;
 }
 
 function obtenerServicios() {
