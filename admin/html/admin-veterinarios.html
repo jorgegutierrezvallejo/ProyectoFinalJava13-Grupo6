@@ -60,7 +60,36 @@
                         </div>
                         <div>
                             <label for="vetContrasena">Contraseña temporal</label>
-                            <input type="password" id="vetContrasena" required minlength="8" maxlength="20">
+
+                            <div class="position-relative">
+                                <input
+                                    type="password"
+                                    id="vetContrasena"
+                                    required
+                                    minlength="8"
+                                    maxlength="20"
+                                    style="padding-right: 42px;"
+                                >
+
+                                <button
+                                    type="button"
+                                    id="toggleVetContrasena"
+                                    aria-label="Mostrar contraseña"
+                                    aria-pressed="false"
+                                    style="
+                                        position: absolute;
+                                        right: 10px;
+                                        top: 50%;
+                                        transform: translateY(-50%);
+                                        border: 0;
+                                        background: transparent;
+                                        padding: 4px;
+                                        cursor: pointer;
+                                    "
+                                >
+                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <button type="submit" class="admin-btn admin-btn--primario">
