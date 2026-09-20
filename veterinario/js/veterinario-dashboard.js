@@ -8,7 +8,17 @@ document.addEventListener(
 
         iniciarCalendarioDashboard();
 
-        cargarResumenDinamicoDashboard();
+        cargarResumenDinamicoDashboard().catch(function (error) {
+            console.error("No se pudo cargar el resumen del dashboard del veterinario:", error);
+            if (typeof Swal !== "undefined") {
+                Swal.fire({
+                    icon: "warning",
+                    title: "No pudimos cargar tus citas",
+                    text: error?.message || "Revisa tu conexión y recarga la página.",
+                    confirmButtonColor: "#17a9a7"
+                });
+            }
+        });
 
     }
 );

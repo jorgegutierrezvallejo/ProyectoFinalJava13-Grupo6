@@ -131,10 +131,10 @@ async function iniciarNotificacionesAdmin() {
 
     if (!boton || !panel || !insignia || !lista) return;
 
-    const citasFuente = typeof obtenerCitasDesdeBackend === "function" &&
+    const citasFuente = typeof obtenerCitasVisiblesSegunRolActual === "function" &&
         typeof tieneSesionBackendActiva === "function" &&
         tieneSesionBackendActiva()
-        ? await obtenerCitasDesdeBackend()
+        ? await obtenerCitasVisiblesSegunRolActual()
         : leerCitasTopbarAdmin();
     const citas = citasFuente
         .sort((a, b) => fechaActividadAdmin(b) - fechaActividadAdmin(a));
