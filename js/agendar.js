@@ -22,9 +22,7 @@ async function iniciarAgendarCita() {
     if (usuarioParaPrecarga && typeof tieneSesionBackendActiva === "function" && tieneSesionBackendActiva()) {
         tareasPrecarga.push(sincronizarMascotasDesdeBackend(usuarioParaPrecarga.id));
     }
-    // [AJUSTE CLAUDE] Se agrega la carga de veterinarios a la misma
-    // precarga inicial (junto con servicios, tipos y mascotas) para que el
-    // desplegable de "Veterinario" ya tenga datos cuando se pinte el paso 1.
+    
     if (typeof asegurarVeterinariosCargados === "function") {
         tareasPrecarga.push(asegurarVeterinariosCargados());
     }
@@ -522,7 +520,9 @@ async function iniciarAgendarCita() {
                 esVirtual,
                 direccionClinica,
                 modalidad,
-                motivoConsulta: document.getElementById("motivoConsulta")?.value.trim() || ""
+                motivoConsulta: document.getElementById("motivoConsulta")?.value.trim() || "",
+                veterinarioId,
+                veterinarioNombre
             };
 
             sessionStorage.setItem(datosPaso1StorageKey, JSON.stringify(datosPaso1));
