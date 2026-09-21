@@ -64,7 +64,44 @@ async function cargarTopbar() {
    INICIAR TOPBAR
 ======================================== */
 
+function obtenerDatosSesionVeterinario() {
+    const sesion = typeof obtenerUsuarioActual === "function" ? obtenerUsuarioActual() : null;
+    if (!sesion) return null;
+
+    const nombre = sesion.nombreCompleto
+        || [sesion.nombres, sesion.apellidos].filter(Boolean).join(" ").trim()
+        || "Veterinario";
+
+    return {
+        nombre,
+        primerNombre: nombre.split(" ")[0],
+        correo: sesion.correo || sesion.email || "",
+        foto: sesion.foto || ""
+    };
+}
+
+function mostrarDatosSesionTopbar() {
+    const datos = obtenerDatosSesionVeterinario();
+    if (!datos) return;
+
+    const nombreElemento = document.querySelector(".topbar-profile-name");
+    const correoElemento = document.querySelector(".topbar-profile-email");
+    const imagenElemento = document.querySelector(".topbar-profile-image");
+    const saludoElemento = document.getElementById("saludoDashboard");
+
+    if (saludoElemento) saludoElemento.textContent = `Hola, ${datos.primerNombre} 👋`;
+
+    if (nombreElemento) nombreElemento.textContent = datos.nombre;
+    if (correoElemento) correoElemento.textContent = datos.correo;
+    if (imagenElemento) {
+        imagenElemento.alt = datos.nombre;
+        if (datos.foto) imagenElemento.src = datos.foto;
+    }
+}
+
 function iniciarTopbar() {
+
+    mostrarDatosSesionTopbar();
 
     cambiarTituloPagina();
 
@@ -94,10 +131,10 @@ async function iniciarNotificacionesAdmin() {
 
     if (!boton || !panel || !insignia || !lista) return;
 
-    const citasFuente = typeof obtenerCitasDesdeBackend === "function" &&
+    const citasFuente = typeof obtenerCitasVisiblesSegunRolActual === "function" &&
         typeof tieneSesionBackendActiva === "function" &&
         tieneSesionBackendActiva()
-        ? await obtenerCitasDesdeBackend()
+        ? await obtenerCitasVisiblesSegunRolActual()
         : leerCitasTopbarAdmin();
     const citas = citasFuente
         .sort((a, b) => fechaActividadAdmin(b) - fechaActividadAdmin(a));
@@ -126,14 +163,13 @@ async function iniciarNotificacionesAdmin() {
     });
 }
 
+/*
+ * Las citas viven solo en la base de datos. Si esta pagina no cargó
+ * citas-storage.js (o no hay sesión) no hay actividad que mostrar; ya no se
+ * lee ninguna copia local.
+ */
 function leerCitasTopbarAdmin() {
-    try {
-        const citas = JSON.parse(localStorage.getItem("citas") || "[]");
-        return Array.isArray(citas) ? citas : [];
-    } catch (error) {
-        console.warn("No fue posible leer la actividad de citas.", error);
-        return [];
-    }
+    return [];
 }
 
 function crearActividadAdminHtml(cita) {
@@ -199,8 +235,8 @@ function iniciarCerrarSesionAdmin() {
     botonCerrarSesion.addEventListener("click", function () {
         if (typeof cerrarSesionUsuario === "function") {
             cerrarSesionUsuario();
-        } else {
-            localStorage.removeItem("sesionUsuarioId");
+        } else if (typeof cerrarSesionApi === "function") {
+            cerrarSesionApi();
         }
         window.location.href = "../../index.html";
     });

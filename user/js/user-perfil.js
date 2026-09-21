@@ -85,9 +85,18 @@ function renderizarFormularioEdicion(usuario) {
             <label for="editarNombreCompleto">Nombre completo</label>
             <input type="text" class="form-control" id="editarNombreCompleto" value="${escaparHtmlPerfil(usuario.nombreCompleto || "")}">
         </div>
-        <div class="perfil-item campo-perfil-editar" data-campo="email">
-            <label for="editarEmail">Correo electrónico</label>
-            <input type="email" class="form-control" id="editarEmail" value="${escaparHtmlPerfil(usuario.email || "")}">
+        <div class="perfil-item">
+            <label>Correo electrónico</label>
+            <input
+                type="email"
+                class="form-control"
+                value="${escaparHtmlPerfil(usuario.email || "")}"
+                readonly
+                aria-readonly="true"
+            >
+            <small class="perfil-ayuda">
+                El correo electrónico no puede modificarse desde el perfil.
+            </small>
         </div>
         <div class="perfil-item campo-perfil-editar" data-campo="telefono">
             <label for="editarTelefono">Teléfono</label>
@@ -173,7 +182,6 @@ async function guardarEdicionPerfil() {
     limpiarErroresPerfil();
 
     const nombreCompleto = document.getElementById("editarNombreCompleto")?.value.trim() || "";
-    const email = document.getElementById("editarEmail")?.value.trim() || "";
     const indicativoPais = document.getElementById("editarIndicativoPais")?.value || "+57";
     const telefono = document.getElementById("editarTelefono")?.value.trim() || "";
     const ciudad = document.getElementById("editarCiudad")?.value.trim() || "";
@@ -183,11 +191,6 @@ async function guardarEdicionPerfil() {
 
     if (nombreCompleto.length < 3) {
         marcarCampoConError("nombreCompleto");
-        hayErrores = true;
-    }
-
-    if (!validarCorreoPerfil(email)) {
-        marcarCampoConError("email");
         hayErrores = true;
     }
 
@@ -211,7 +214,6 @@ async function guardarEdicionPerfil() {
     const usuario = obtenerUsuarioRegistrado();
     const datosActualizados = {
         nombreCompleto,
-        email,
         indicativoPais,
         telefono,
         ciudad,
@@ -268,17 +270,6 @@ function limpiarErroresPerfil() {
     document.querySelectorAll(".campo-perfil-editar.campo-error").forEach(campo => {
         campo.classList.remove("campo-error");
     });
-}
-
-function validarCorreoPerfil(valor) {
-    const posicionArroba = valor.indexOf("@");
-    const posicionPunto = valor.lastIndexOf(".");
-    return (
-        posicionArroba > 0 &&
-        posicionPunto > posicionArroba + 1 &&
-        posicionPunto < valor.length - 1 &&
-        valor.indexOf(" ") === -1
-    );
 }
 
 // se usa tambien dentro de atributos value="", por eso escapamos comillas

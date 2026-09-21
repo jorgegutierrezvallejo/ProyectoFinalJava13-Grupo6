@@ -79,7 +79,7 @@
                     <div class="kpi-card__info">
                         <span class="kpi-card__label">Recordatorios</span>
                         <span class="kpi-card__valor" id="kpiRecordatoriosValor">0</span>
-                        <span class="kpi-card__subtexto kpi-card__subtexto--naranja">
+                        <span class="kpi-card__subtexto kpi-card__subtexto--naranja" id="kpiRecordatoriosSubtexto">
                             <i class="bi bi-exclamation-circle"></i> Por revisar
                         </span>
                     </div>
@@ -222,14 +222,14 @@
                                 <h2 class="dash-card__title">Recordatorios</h2>
                                 <p class="dash-card__subtitle">Cuidados por vencer</p>
                             </div>
-                            <a href="#" class="dash-card__link">Ver todos</a>
+                            <a href="user-mascotas.html" class="dash-card__link">Ver todos</a>
                         </div>
 
-                        <div class="recordatorios-lista">
+                        <div class="recordatorios-lista" id="listaRecordatoriosDashboard">
                             <div class="recordatorio-item">
                                 <div class="recordatorio-info">
-                                    <span class="recordatorio-titulo">Sin recordatorios pendientes</span>
-                                    <span class="recordatorio-vence">Los recordatorios reales aparecerán aquí.</span>
+                                    <span class="recordatorio-titulo">Cargando recordatorios…</span>
+                                    <span class="recordatorio-vence">Un momento, por favor.</span>
                                 </div>
                             </div>
                         </div>
@@ -264,9 +264,9 @@
     <script src="../../js/shared/citas-storage.js"></script>
     <script src="../../js/shared/mascotas-storage.js"></script>
     <script src="../../js/shared/servicios-storage.js"></script>
+    <script src="../../js/shared/veterinarios-storage.js"></script>
     <script src="../../js/shared/tipos-servicio-storage.js"></script>
     <script src="../../js/shared/servicio-detalle.js"></script>
-    <script src="../../js/shared/data-migrations.js"></script>
     <script src="../js/user-dashboard.js"></script>
     <script src="../../components/agendar-cita/agendar-cita.js"></script>
 

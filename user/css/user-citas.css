@@ -5,6 +5,13 @@
    completo si no hay ninguna cita (ver user-citas.js).
 ======================================== */
 
+
+/* Forzar a que la alerta de SweetAlert siempre quede por encima del modal de agendar */
+
+.swal2-container {
+    z-index: 99999 !important;
+}
+
 .hv-alerta {
     margin-bottom: 1.5rem;
     padding: 1rem 1.1rem;

@@ -66,7 +66,7 @@ function aplicarPermisosSidebarPorRol() {
 
     if (rol !== "VETERINARIO") return;
 
-    document.querySelectorAll('[data-page="clientes"], [data-page="configuracion"]')
+    document.querySelectorAll('[data-page="clientes"]')
         .forEach(link => link.remove());
 }
 

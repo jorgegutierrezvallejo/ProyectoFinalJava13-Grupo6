@@ -423,6 +423,9 @@
     border: 1px solid #e5edea;
     border-radius: 12px;
     transition: background-color 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
 }
 
 .recordatorio-item:hover {

@@ -125,6 +125,14 @@
                             </div>
                         </div>
 
+                        <div class="veterinario-seccion mt-4">
+                            <label for="selectVeterinario" class="form-label">Veterinario</label>
+                            <p class="motivo-subtexto">Selecciona el veterinario que atenderá la cita</p>
+                            <select class="form-select" id="selectVeterinario">
+                                <option value="" selected disabled>Selecciona un veterinario...</option>
+                            </select>
+                        </div>
+
                         <div class="motivo-seccion mt-3">
                             <label for="motivoConsulta" class="form-label">Motivo de la consulta</label>
                             <p class="motivo-subtexto">Cuéntanos brevemente el motivo de tu visita</p>
@@ -327,6 +335,15 @@
                                         </div>
                                     </div>
 
+                                    <!-- Veterinario -->
+                                    <div class="resumen-item">
+                                        <div class="resumen-item__icon"><i class="bi bi-person-check-fill"></i></div>
+                                        <div class="resumen-item__info">
+                                            <span class="resumen-item__label">Veterinario</span>
+                                            <strong class="resumen-item__valor" id="resumenVeterinario">Por asignar</strong>
+                                        </div>
+                                    </div>
+                                    
                                     <!-- Dirección (solo domicilio) -->
                                     <div class="resumen-item d-none" id="resumenFilaDireccion">
                                         <div class="resumen-item__icon"><i class="bi bi-geo-alt-fill"></i></div>
@@ -402,9 +419,9 @@
                         <div class="form-check mt-4">
                             <input class="form-check-input" type="checkbox" id="aceptaTerminos" required>
                             <label class="form-check-label text-suave text-small" for="aceptaTerminos">
-                                Acepto los <a href="#" class="text-accent fw-bold text-decoration-none">Términos y
-                                    condiciones</a> y la <a href="#"
-                                    class="text-accent fw-bold text-decoration-none">Política de privacidad</a>.
+                                Acepto los <a href="legal/terminos-condiciones.html" data-legal-link="legal/terminos-condiciones.html" target="_blank" rel="noopener" class="text-accent fw-bold text-decoration-none">Términos y
+                                    condiciones</a> y la <a href="legal/politica-privacidad.html"
+                                    data-legal-link="legal/politica-privacidad.html" target="_blank" rel="noopener" class="text-accent fw-bold text-decoration-none">Política de privacidad</a>.
                             </label>
                         </div>
 

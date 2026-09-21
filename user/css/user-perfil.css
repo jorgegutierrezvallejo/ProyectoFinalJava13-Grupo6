@@ -72,6 +72,18 @@
     border-color: var(--color-borde);
 }
 
+.perfil-ayuda {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: var(--color-texto-suave);
+}
+
+.perfil-item input[readonly] {
+    background-color: #f2f6f5;
+    cursor: not-allowed;
+}
+
 .perfil-item .perfil-telefono-grupo {
     display: flex;
     gap: 8px;

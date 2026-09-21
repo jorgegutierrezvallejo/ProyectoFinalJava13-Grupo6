@@ -1,33 +1,13 @@
 /*
- * Acceso seguro y centralizado a localStorage.
- * Los repositorios de cada dominio son los unicos que deben conocer
- * las claves usadas para persistir datos.
+ * Utilidades compartidas de recursos.
+ *
+ * IMPORTANTE: los datos de negocio (usuarios, mascotas, citas, servicios,
+ * tipos de servicio) NO se guardan en el navegador: viven en la base de datos
+ * y se leen/escriben a traves de la API. El unico uso legitimo de
+ * localStorage es la sesion (token + usuario actual), definida en js/config.js.
+ * El antiguo helper HuellaVetStorage se elimino para no reintroducir
+ * persistencia local por accidente.
  */
-window.HuellaVetStorage = {
-    leer(clave, valorPorDefecto = []) {
-        try {
-            const valor = localStorage.getItem(clave);
-            return valor === null ? valorPorDefecto : JSON.parse(valor);
-        } catch (error) {
-            console.error(`No fue posible leer localStorage.${clave}:`, error);
-            return valorPorDefecto;
-        }
-    },
-
-    guardar(clave, valor) {
-        try {
-            localStorage.setItem(clave, JSON.stringify(valor));
-            return true;
-        } catch (error) {
-            console.error(`No fue posible guardar localStorage.${clave}:`, error);
-            return false;
-        }
-    },
-
-    existe(clave) {
-        return localStorage.getItem(clave) !== null;
-    }
-};
 
 /* Convierte rutas guardadas desde la raíz del proyecto para páginas que viven
  * dentro de user/html o admin/html. URLs y datos base64 se conservan intactos. */

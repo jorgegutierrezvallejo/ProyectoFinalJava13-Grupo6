@@ -1,6 +1,14 @@
-function iniciarServiciosFooter() {
+async function iniciarServiciosFooter() {
     const lista = document.getElementById("footer-servicios-dinamicos");
     if (!lista || typeof obtenerServiciosParaInicio !== "function") return;
+
+    // Los servicios vienen de la base de datos; si el servidor no responde
+    // se muestra el enlace generico en lugar de datos inventados.
+    try {
+        await asegurarServiciosCargados();
+    } catch (error) {
+        console.warn("No se pudieron cargar los servicios del pie de página:", error);
+    }
 
     // Reutiliza la selección y el orden de los tres servicios destacados.
     const servicios = obtenerServiciosParaInicio();

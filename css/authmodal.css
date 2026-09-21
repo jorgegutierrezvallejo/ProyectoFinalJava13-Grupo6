@@ -208,6 +208,45 @@
     font-family: var(--fuente-principal);
 }
 
+.hv-password-field {
+    position: relative;
+}
+
+.hv-password-field .form-control {
+    padding-right: 46px;
+}
+
+.hv-password-toggle {
+    width: 42px;
+    height: 100%;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    background: transparent;
+
+    color: var(--color-texto-suave);
+
+    cursor: pointer;
+}
+
+.hv-password-toggle:hover,
+.hv-password-toggle:focus-visible {
+    color: var(--color-primario-oscuro);
+}
+
+.hv-password-toggle:focus-visible {
+    outline: 2px solid var(--color-primario);
+    outline-offset: -3px;
+    border-radius: 8px;
+}
+
 .hv-form-login .form-control:focus,
 .register-datos .form-control:focus,
 .register-datos .form-select:focus {

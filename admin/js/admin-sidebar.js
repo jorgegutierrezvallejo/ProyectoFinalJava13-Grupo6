@@ -28,6 +28,7 @@ async function cargarSidebar() {
 
         sidebarContainer.innerHTML = html;
 
+
         marcarOpcionActiva();
 
         iniciarOverlay();

@@ -1,7 +1,20 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    await iniciarServicios();
+    // Los controles que no dependen de la red se activan de inmediato. Antes
+    // iban despues de esperar a la API: si el servidor tardaba (p. ej. Render
+    // "despertando"), el boton "+ Nuevo" y la vista previa no respondian.
+    // Ademas, mientras carga el servicio a editar se evita el envio nativo
+    // del formulario (recargaria la pagina).
+    document.getElementById("formServicio")?.addEventListener("submit", evento => evento.preventDefault());
     iniciarVistaPreviaImagen();
     iniciarTipoServicio();
+
+    await iniciarServicios();
+
+    // En modo edicion, el tipo del servicio se conoce recien al terminar la carga.
+    if (typeof window.refrescarOpcionesTipoServicio === "function") {
+        const selectTipo = document.getElementById("tipoServicio");
+        window.refrescarOpcionesTipoServicio(selectTipo?.value || window.tipoServicioIdPrecargado || "");
+    }
 });
 
 async function iniciarServicios() {
@@ -60,7 +73,7 @@ async function iniciarServicios() {
             if (contenedorDirClinica && inputDirClinica) {
                 if (modalidadGuardada === "clinica") {
                     contenedorDirClinica.classList.remove("d-none");
-                    inputDirClinica.value = servicioExistente.direccionClinica || "HuellaVet — Sede Centro";
+                    inputDirClinica.value = servicioExistente.direccionClinica || "HuellaVet - Sede Centro";
                 } else {
                     contenedorDirClinica.classList.add("d-none");
                 }
@@ -181,10 +194,9 @@ async function iniciarServicios() {
         }
 
         const modalidadSeleccionada = document.querySelector('input[name="modalidadAtencion"]:checked')?.value || "clinica";
-        const direccionClinicaVal = document.getElementById("direccionClinica")?.value.trim() || "HuellaVet — Sede Centro";
+        const direccionClinicaVal = document.getElementById("direccionClinica")?.value.trim() || "HuellaVet - Sede Centro";
         const imagenBase64 = archivoImagen ? await convertirImagenABase64(archivoImagen) : (servicioExistente?.imagen || "");
 
-        servicios = obtenerServicios();
 
         try {
             const payload = {
@@ -230,7 +242,7 @@ async function iniciarServicios() {
                     confirmButtonText: "Aceptar",
                     confirmButtonColor: "#17a9a7"
                 }).then(function () {
-                    window.location.href = "./admin-servicios.html";
+                    window.location.href = "./veterinario-servicios.html";
                 });
                 return;
             }
@@ -251,83 +263,16 @@ async function iniciarServicios() {
                 confirmButtonText: "Aceptar",
                 confirmButtonColor: "#17a9a7"
             }).then(function () {
-                window.location.href = "./admin-servicios.html";
+                window.location.href = "./veterinario-servicios.html";
             });
         } catch (error) {
-            console.warn("No se pudo guardar el servicio en el backend; se usará LocalStorage:", error);
-
-            if (servicioExistente) {
-                const index = servicios.findIndex(s => String(s.id) === String(servicioExistente.id));
-                const servicioActualizado = {
-                    id: servicioExistente.id,
-                    nombre: nombre,
-                    tipoServicioId: tipoServicioId,
-                    descripcion: descripcion,
-                    precio: parseFloat(precio),
-                    duracion: parseInt(duracion),
-                    modalidad: modalidadSeleccionada,
-                    esDomicilio: modalidadSeleccionada === "domicilio",
-                    esVirtual: modalidadSeleccionada === "virtual",
-                    esClinica: modalidadSeleccionada === "clinica",
-                    direccionClinica: modalidadSeleccionada === "clinica" ? direccionClinicaVal : "",
-                    icono: icono,
-                    imagen: imagenBase64,
-                    tieneCostoReserva: tieneReserva,
-                    costoReserva: tieneReserva ? parseFloat(costoReservaVal) : 0,
-                    mostrarEnHome: Boolean(servicioExistente.mostrarEnHome),
-                    destacado: Boolean(servicioExistente.destacado),
-                    ordenInicio: servicioExistente.ordenInicio || null
-                };
-
-                if (index !== -1) {
-                    servicios[index] = servicioActualizado;
-                } else {
-                    servicios.push(servicioActualizado);
-                }
-
-                guardarServicios(servicios);
-
-                Swal.fire({
-                    icon: "success",
-                    title: "¡Servicio actualizado exitosamente!",
-                    text: tieneReserva ? `El servicio tiene un costo de reserva de $${servicioActualizado.costoReserva.toLocaleString("es-CO")}.` : "",
-                    confirmButtonText: "Aceptar",
-                    confirmButtonColor: "#17a9a7"
-                }).then(function () {
-                    window.location.href = "./admin-servicios.html";
-                });
-                return;
-            }
-
-            const nuevoServicio = {
-                id: Date.now(),
-                nombre: nombre,
-                tipoServicioId: tipoServicioId,
-                descripcion: descripcion,
-                precio: parseFloat(precio),
-                duracion: parseInt(duracion),
-                modalidad: modalidadSeleccionada,
-                esDomicilio: modalidadSeleccionada === "domicilio",
-                esVirtual: modalidadSeleccionada === "virtual",
-                esClinica: modalidadSeleccionada === "clinica",
-                direccionClinica: modalidadSeleccionada === "clinica" ? direccionClinicaVal : "",
-                icono: icono,
-                imagen: imagenBase64,
-                tieneCostoReserva: tieneReserva,
-                costoReserva: tieneReserva ? parseFloat(costoReservaVal) : 0
-            };
-
-            servicios.push(nuevoServicio);
-            guardarServicios(servicios);
-
+            console.error("No se pudo guardar el servicio en el backend:", error);
             Swal.fire({
-                icon: "success",
-                title: "¡Servicio creado y guardado exitosamente!",
-                text: tieneReserva ? `El servicio tiene un costo de reserva de $${nuevoServicio.costoReserva.toLocaleString("es-CO")}.` : "",
-                confirmButtonText: "Aceptar",
+                icon: "error",
+                title: "No se pudo guardar el servicio",
+                text: error?.message || "Ocurrió un error al comunicarse con el servidor.",
+                confirmButtonText: "Entendido",
                 confirmButtonColor: "#17a9a7"
-            }).then(function () {
-                window.location.href = "./admin-servicios.html";
             });
         }
     });
@@ -392,7 +337,7 @@ function iniciarTipoServicio() {
         const tipos = obtenerTiposServicio();
 
         if (tipos.length === 0) {
-            selectTipo.innerHTML = `<option value="" disabled selected>Aún no hay tipos — crea el primero con "+ Nuevo"</option>`;
+            selectTipo.innerHTML = `<option value="" disabled selected>Aún no hay tipos, crea el primero con "+ Nuevo"</option>`;
             if (ayudaTexto) {
                 ayudaTexto.textContent = "Todavía no has creado ningún tipo de servicio. Usa el botón \"+ Nuevo\" para crear el primero.";
             }
@@ -407,7 +352,14 @@ function iniciarTipoServicio() {
             tipos.map(tipo => `<option value="${tipo.id}" ${String(tipo.id) === String(idSeleccionado) ? "selected" : ""}>${escaparHtmlTipoServicio(tipo.nombre)}</option>`).join("");
     }
 
+    window.refrescarOpcionesTipoServicio = renderizarOpciones;
     renderizarOpciones(window.tipoServicioIdPrecargado || "");
+
+    if (typeof sincronizarTiposServicioDesdeBackend === "function") {
+        sincronizarTiposServicioDesdeBackend().then(function () {
+            renderizarOpciones(selectTipo.value || window.tipoServicioIdPrecargado || "");
+        });
+    }
 
     if (btnCrear) {
         btnCrear.addEventListener("click", function () {
@@ -424,13 +376,23 @@ function iniciarTipoServicio() {
                         return "Escribe un nombre para el tipo de servicio.";
                     }
                 }
-            }).then(function (resultado) {
+            }).then(async function (resultado) {
                 if (!resultado.isConfirmed) return;
 
-                const tipoCreado = crearTipoServicio(resultado.value);
-                if (!tipoCreado) return;
+                try {
+                    const tipoCreado = await crearTipoServicio(resultado.value);
+                    if (!tipoCreado) return;
 
-                renderizarOpciones(tipoCreado.id);
+                    renderizarOpciones(tipoCreado.id);
+                } catch (error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "No se pudo crear el tipo de servicio",
+                        text: error?.message || "Ocurrió un error al comunicarse con el servidor.",
+                        confirmButtonText: "Entendido",
+                        confirmButtonColor: "#17a9a7"
+                    });
+                }
             });
         });
     }

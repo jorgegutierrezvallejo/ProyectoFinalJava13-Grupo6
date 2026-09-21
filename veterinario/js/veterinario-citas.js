@@ -4,7 +4,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
 let pendientesHTMLOriginal = null;
 
-function iniciarCitas() {
+async function iniciarCitas() {
+    if (typeof asegurarCitasCargadasSegunRol === "function") {
+        try {
+            await asegurarCitasCargadasSegunRol();
+        } catch (error) {
+            console.error("No se pudieron cargar las citas del veterinario:", error);
+            if (typeof Swal !== "undefined") {
+                Swal.fire({
+                    icon: "warning",
+                    title: "No pudimos cargar tus citas",
+                    text: "Revisa tu conexión y recarga la página.",
+                    confirmButtonColor: "#17a9a7"
+                });
+            }
+        }
+    }
+
     renderizarPendientesConfirmar();
     iniciarAgendaDelDia();
 }
@@ -639,8 +655,8 @@ function actualizarTituloAgenda() {
     if (tituloTexto) tituloTexto.textContent = textoTituloAgenda();
 }
 
-// Pinta la lista "Agenda de hoy" con las citas reales guardadas en
-// localStorage para fechaAgendaSeleccionada. Cada franja de HORAS_AGENDA
+// Pinta la lista "Agenda de hoy" con las citas reales cargadas desde la
+// base de datos para fechaAgendaSeleccionada. Cada franja de HORAS_AGENDA
 // que no tenga cita se muestra como "Espacio disponible".
 function renderizarAgendaDelDia() {
     const contenedor = document.getElementById("agendaListaContenedor");
