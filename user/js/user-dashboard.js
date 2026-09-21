@@ -38,6 +38,7 @@ async function iniciarDashboardUsuario() {
     const mascotas = obtenerMascotasPorUsuarioId(usuarioActivo.id);
     cargarMetricasKPIs(mascotas, usuarioActivo.id);
     cargarProximaCita();
+    cargarRecordatoriosDashboard(mascotas);
     iniciarAccionesCita();
 }
 
@@ -45,7 +46,6 @@ async function iniciarDashboardUsuario() {
 function cargarMetricasKPIs(mascotas, usuarioId) {
     const kpiMascotas = document.getElementById("kpiMascotasValor");
     const kpiProximasCitas = document.getElementById("kpiProximasCitasValor");
-    const kpiRecordatorios = document.getElementById("kpiRecordatoriosValor");
     const kpiVacunas = document.getElementById("kpiVacunasValor");
 
     // KPI 1: Total mascotas
@@ -57,13 +57,11 @@ function cargarMetricasKPIs(mascotas, usuarioId) {
         : [];
     if (kpiProximasCitas) kpiProximasCitas.textContent = citasFuturas.length;
 
-    // KPI 3: Recordatorios pendientes
-    let totalRecordatorios = 0;
-    if (typeof obtenerTodasLasCitas === "function") {
-        const citasUsuario = obtenerTodasLasCitas().filter(c => String(c.usuarioId) === String(usuarioId));
-        totalRecordatorios = citasUsuario.filter(c => c.estado?.toUpperCase() === "PENDIENTE").length;
-    }
-    if (kpiRecordatorios) kpiRecordatorios.textContent = totalRecordatorios;
+    // KPI 3 y la lista de la derecha se calculan juntos en
+    // cargarRecordatoriosDashboard(), a partir de los recordatorios reales
+    // que el veterinario deja en las citas completadas (cita.recordatorio).
+    // Antes este KPI contaba citas en estado "Pendiente", que es un concepto
+    // distinto (confirmación de la cita, no un recordatorio de cuidado).
 
     // KPI 4: Mascotas con vacunas pendientes o registradas
     const mascotasConVacunas = mascotas.filter(m => Array.isArray(m.vacunas)
@@ -270,6 +268,126 @@ function escaparHtmlUsuario(valor) {
     const div = document.createElement("div");
     div.textContent = String(valor ?? "");
     return div.innerHTML;
+}
+
+// ============================================================
+// SECCIÓN: RECORDATORIOS (notas reales del veterinario)
+// ============================================================
+// Junta, para todas las mascotas del usuario, las indicaciones que el
+// veterinario dejó al completar una cita (cita.recordatorio: ver
+// js/shared/citas-storage.js -> obtenerCitasConRecordatorioPorMascotaId,
+// el mismo dato que ya se muestra en user-mascotas.js por cada mascota).
+function cargarRecordatoriosDashboard(mascotas) {
+    const contenedor = document.getElementById("listaRecordatoriosDashboard");
+    const kpiRecordatorios = document.getElementById("kpiRecordatoriosValor");
+    const kpiSubtexto = document.getElementById("kpiRecordatoriosSubtexto");
+
+    if (!contenedor) return;
+
+    if (typeof obtenerCitasConRecordatorioPorMascotaId !== "function" || !Array.isArray(mascotas)) {
+        contenedor.innerHTML = plantillaRecordatoriosVacio();
+        if (kpiRecordatorios) kpiRecordatorios.textContent = "0";
+        return;
+    }
+
+    const items = mascotas
+        .flatMap(mascota =>
+            obtenerCitasConRecordatorioPorMascotaId(mascota.id).map(cita => {
+                const analisis = analizarUrgenciaRecordatorio(cita.recordatorio.fecha, cita.fecha);
+                return {
+                    mascotaNombre: mascota.nombre || "tu mascota",
+                    texto: cita.recordatorio.texto,
+                    fechaOrden: cita.recordatorio.fecha || cita.recordatorio.fechaCreacion || cita.fecha,
+                    ...analisis
+                };
+            })
+        )
+        .sort((a, b) => new Date(a.fechaOrden) - new Date(b.fechaOrden));
+
+    if (kpiRecordatorios) kpiRecordatorios.textContent = items.length;
+    if (kpiSubtexto) {
+        kpiSubtexto.innerHTML = items.length
+            ? `<i class="bi bi-exclamation-circle"></i> Por revisar`
+            : `<i class="bi bi-check2"></i> Al día`;
+    }
+
+    if (items.length === 0) {
+        contenedor.innerHTML = plantillaRecordatoriosVacio();
+        return;
+    }
+
+    // La tarjeta es un resumen: se muestran los 4 más próximos y "Ver todos"
+    // lleva al detalle completo por mascota en Mis mascotas.
+    contenedor.innerHTML = items.slice(0, 4).map(item => `
+        <div class="recordatorio-item">
+            <div class="recordatorio-main">
+                <div class="recordatorio-icon recordatorio-icon--${item.claseIcono}">
+                    <i class="bi ${item.claseIcono === "naranja" ? "bi-exclamation-circle" : "bi-clipboard2-pulse"}"></i>
+                </div>
+                <div class="recordatorio-info">
+                    <span class="recordatorio-titulo">${escaparHtmlUsuario(item.texto)}</span>
+                    <span class="recordatorio-vence">${escaparHtmlUsuario(item.mascotaNombre)} · ${escaparHtmlUsuario(item.vence)}</span>
+                </div>
+            </div>
+            <span class="badge-recordatorio badge-recordatorio--${item.claseBadge}">${escaparHtmlUsuario(item.badgeTexto)}</span>
+        </div>
+    `).join("");
+}
+
+// Clasifica un recordatorio según su fecha sugerida (si tiene) para decidir
+// color de icono/badge y el texto de vencimiento que se muestra.
+function analizarUrgenciaRecordatorio(fechaVenceISO, fechaVisitaISO) {
+    if (!fechaVenceISO) {
+        return {
+            claseIcono: "verde",
+            claseBadge: "verde",
+            badgeTexto: "Del veterinario",
+            vence: `De tu visita del ${formatearFechaCita(fechaVisitaISO)}`
+        };
+    }
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    const [anio, mes, dia] = fechaVenceISO.split("-").map(Number);
+    const fechaVence = new Date(anio, mes - 1, dia);
+    const diffDias = Math.round((fechaVence - hoy) / 86400000);
+
+    if (diffDias < 0) {
+        const dias = Math.abs(diffDias);
+        return {
+            claseIcono: "naranja",
+            claseBadge: "naranja",
+            badgeTexto: "Vencido",
+            vence: `Venció hace ${dias} día${dias === 1 ? "" : "s"}`
+        };
+    }
+
+    if (diffDias <= 7) {
+        return {
+            claseIcono: "naranja",
+            claseBadge: "naranja",
+            badgeTexto: "Próximo",
+            vence: diffDias === 0 ? "Vence hoy" : diffDias === 1 ? "Vence mañana" : `Vence en ${diffDias} días`
+        };
+    }
+
+    return {
+        claseIcono: "morado",
+        claseBadge: "lila",
+        badgeTexto: formatearFechaCita(fechaVenceISO),
+        vence: `Sugerida: ${formatearFechaCita(fechaVenceISO)}`
+    };
+}
+
+function plantillaRecordatoriosVacio() {
+    return `
+        <div class="recordatorio-item">
+            <div class="recordatorio-info">
+                <span class="recordatorio-titulo">Sin recordatorios pendientes</span>
+                <span class="recordatorio-vence">Aquí verás las indicaciones que tu veterinario deje después de una cita.</span>
+            </div>
+        </div>
+    `;
 }
 
 function formatearFechaCita(fechaISO) {
