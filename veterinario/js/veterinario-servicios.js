@@ -1,8 +1,63 @@
+let serviciosYaPintados = false;
+
 document.addEventListener("DOMContentLoaded", function () {
     iniciarFiltroTipoServicio();
     iniciarGestionServiciosInicio();
-    mostrarServicios();
+    cargarYMostrarServicios();
 });
+
+/*
+ * La base de datos es la unica fuente de verdad (ya no hay copia en
+ * localStorage): se piden los servicios a la API y recien entonces se pintan.
+ * Mientras tanto se muestra "Cargando..." y, si la API falla, un aviso con
+ * boton "Reintentar" (antes se veia "No hay servicios creados", lo que
+ * parecia que el servicio no se habia guardado).
+ */
+async function cargarYMostrarServicios() {
+    serviciosYaPintados = false;
+    mostrarEstadoServicios("cargando");
+
+    // Los tipos cargan en paralelo: cuando llegan se puebla el filtro y se
+    // repinta (para mostrar el nombre del tipo en cada tarjeta).
+    asegurarTiposServicioCargados().then(function () {
+        poblarFiltroTipoServicio();
+        if (serviciosYaPintados) mostrarServicios();
+    });
+
+    await asegurarServiciosCargados();
+
+    const fallo = typeof ultimaCargaServiciosFallo !== "undefined" && ultimaCargaServiciosFallo;
+    if (fallo) {
+        mostrarEstadoServicios("error");
+        return;
+    }
+
+    serviciosYaPintados = true;
+    mostrarServicios();
+}
+
+function mostrarEstadoServicios(estado) {
+    const contenedor = document.getElementById("contenedorServicios");
+    if (!contenedor) return;
+
+    if (estado === "cargando") {
+        contenedor.innerHTML = `
+            <div class="servicios-vacio">
+                <i class="bi bi-hourglass-split"></i>
+                <h3>Cargando servicios...</h3>
+                <p>Si es la primera carga, el servidor puede tardar unos segundos en responder.</p>
+            </div>`;
+        return;
+    }
+
+    contenedor.innerHTML = `
+        <div class="servicios-vacio">
+            <i class="bi bi-wifi-off"></i>
+            <h3>No se pudieron cargar los servicios</h3>
+            <p>Revisa tu conexión e inténtalo de nuevo.</p>
+            <button type="button" class="btn btn-modificar" onclick="cargarYMostrarServicios()">Reintentar</button>
+        </div>`;
+}
 
 function mostrarServicios() {
     const filtroSelect = document.getElementById("filtroTipoServicio");
@@ -249,10 +304,22 @@ function abrirSelectorServiciosInicio() {
             }
             return idsSeleccionados;
         }
-    }).then(resultado => {
+    }).then(async resultado => {
         if (!resultado.isConfirmed) return;
 
-        guardarServiciosParaInicio(resultado.value);
+        try {
+            await guardarServiciosParaInicio(resultado.value);
+        } catch (error) {
+            console.error("No se pudo guardar la selección del inicio:", error);
+            Swal.fire({
+                icon: "error",
+                title: "No se pudo guardar la selección",
+                text: error?.message || "Ocurrió un error al comunicarse con el servidor.",
+                confirmButtonColor: "#17a9a7"
+            });
+            return;
+        }
+
         mostrarServicios();
         Swal.fire({
             icon: "success",
@@ -304,12 +371,23 @@ function eliminarServicio(idServicio) {
         cancelButtonText: "Cancelar",
         confirmButtonColor: "#ff4d5f",
         cancelButtonColor: "#6c757d"
-    }).then(function (resultado) {
+    }).then(async function (resultado) {
         if (!resultado.isConfirmed) {
             return;
         }
 
-        eliminarServicioGuardado(idServicio);
+        try {
+            await eliminarServicioGuardado(idServicio);
+        } catch (error) {
+            console.error("No se pudo eliminar el servicio:", error);
+            Swal.fire({
+                icon: "error",
+                title: "No se pudo eliminar el servicio",
+                text: error?.message || "Ocurrió un error al comunicarse con el servidor.",
+                confirmButtonColor: "#17a9a7"
+            });
+            return;
+        }
 
         mostrarServicios();
 
@@ -331,14 +409,29 @@ function iniciarFiltroTipoServicio() {
         return;
     }
 
-    const tipos = obtenerTiposServicio();
-
-    filtroSelect.innerHTML = `<option value="" selected>Todos los servicios</option>` +
-        tipos.map(tipo => `<option value="${tipo.id}">${escaparHtmlServicios(tipo.nombre)}</option>`).join("");
+    poblarFiltroTipoServicio();
 
     filtroSelect.addEventListener("change", function () {
         mostrarServicios();
     });
+}
+
+// Llena (o vuelve a llenar) las opciones del filtro conservando la seleccion actual.
+function poblarFiltroTipoServicio() {
+    const filtroSelect = document.getElementById("filtroTipoServicio");
+    if (!filtroSelect || typeof obtenerTiposServicio !== "function") {
+        return;
+    }
+
+    const seleccionActual = filtroSelect.value;
+    const tipos = obtenerTiposServicio();
+
+    filtroSelect.innerHTML = `<option value="">Todos los servicios</option>` +
+        tipos.map(tipo => `<option value="${tipo.id}">${escaparHtmlServicios(tipo.nombre)}</option>`).join("");
+
+    if (seleccionActual && tipos.some(tipo => String(tipo.id) === String(seleccionActual))) {
+        filtroSelect.value = seleccionActual;
+    }
 }
 
 function escaparHtmlServicios(valor) {
