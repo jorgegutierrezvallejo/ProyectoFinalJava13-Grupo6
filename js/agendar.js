@@ -989,7 +989,6 @@ async function iniciarAgendarCita() {
                 }
                 return;
             }
-            sessionStorage.setItem("datosCita", JSON.stringify(citaConfirmada));
 
             if (typeof Swal !== "undefined") {
                 const tieneReserva = datosP1.tieneCostoReserva && datosP1.costoReserva > 0;

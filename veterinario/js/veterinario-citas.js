@@ -655,8 +655,8 @@ function actualizarTituloAgenda() {
     if (tituloTexto) tituloTexto.textContent = textoTituloAgenda();
 }
 
-// Pinta la lista "Agenda de hoy" con las citas reales guardadas en
-// localStorage para fechaAgendaSeleccionada. Cada franja de HORAS_AGENDA
+// Pinta la lista "Agenda de hoy" con las citas reales cargadas desde la
+// base de datos para fechaAgendaSeleccionada. Cada franja de HORAS_AGENDA
 // que no tenga cita se muestra como "Espacio disponible".
 function renderizarAgendaDelDia() {
     const contenedor = document.getElementById("agendaListaContenedor");

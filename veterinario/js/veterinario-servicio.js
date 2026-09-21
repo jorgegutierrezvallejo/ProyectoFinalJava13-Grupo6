@@ -1,390 +1,374 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    await iniciarServicios();
-    iniciarVistaPreviaImagen();
-    iniciarTipoServicio();
+    // La base de datos es la unica fuente de verdad: se cargan servicios y
+    // tipos desde la API antes de pintar (ya no hay copia en localStorage).
+    await Promise.all([asegurarTiposServicioCargados(), asegurarServiciosCargados()]);
+
+    iniciarFiltroTipoServicio();
+    iniciarGestionServiciosInicio();
+    mostrarServicios();
 });
 
-async function iniciarServicios() {
-    const formulario = document.getElementById("formServicio");
-    const checkCostoReserva = document.getElementById("tieneCostoReserva");
-    const contenedorCostoReserva = document.getElementById("contenedorCostoReserva");
-    const inputCostoReserva = document.getElementById("costoReserva");
+function mostrarServicios() {
+    const filtroSelect = document.getElementById("filtroTipoServicio");
+    const filtroTipoId = filtroSelect ? filtroSelect.value : "";
+    const contenedorServicios = document.getElementById("contenedorServicios");
+    const totalServicios = document.getElementById("totalServicios");
 
-    if (!formulario) {
+    if (!contenedorServicios) {
         return;
     }
 
-    // Detectar si estamos en modo modificar/editar
-    const urlParams = new URLSearchParams(window.location.search);
-    const servicioId = urlParams.get("id");
-    let servicioExistente = null;
-    let servicios = obtenerServicios();
+    const todosLosServicios = obtenerServicios();
+    const serviciosInicio = obtenerServiciosParaInicio();
+    const idsServiciosInicio = new Set(serviciosInicio.map(servicio => String(servicio.id)));
+    const idDestacado = String(obtenerServicioDestacado()?.id || "");
+    const servicios = filtroTipoId
+        ? todosLosServicios.filter(s => String(s.tipoServicioId || "") === String(filtroTipoId))
+        : todosLosServicios;
 
-    if (tieneSesionBackendActiva() && !servicioId) {
-        servicios = await obtenerServiciosDesdeBackend();
+    actualizarTotalServicios(servicios, totalServicios);
+    actualizarControlServiciosInicio(todosLosServicios);
+
+    if (servicios.length === 0) {
+        const esPorFiltro = filtroTipoId && todosLosServicios.length > 0;
+        contenedorServicios.innerHTML = esPorFiltro
+            ? `
+            <div class="servicios-vacio">
+                <i class="bi bi-funnel"></i>
+                <h3>Sin servicios de este tipo</h3>
+                <p>No tienes servicios asignados a este tipo todavía.</p>
+            </div>
+        `
+            : `
+            <div class="servicios-vacio">
+                <i class="bi bi-briefcase"></i>
+                <h3>No hay servicios creados</h3>
+                <p>Cuando agregues un servicio desde el formulario, aparecerá en esta sección.</p>
+            </div>
+        `;
+
+        return;
     }
 
-    if (servicioId) {
-        servicios = tieneSesionBackendActiva() ? await obtenerServiciosDesdeBackend() : servicios;
-        servicioExistente = servicios.find(s => String(s.id) === String(servicioId));
-        if (servicioExistente) {
-            // Actualizar interfaz para modo edición
-            const formTitulo = document.getElementById("formTitulo");
-            const breadcrumbItemActivo = document.getElementById("breadcrumbItemActivo");
-            const btnSubmitTexto = document.getElementById("btnSubmitTexto");
+    contenedorServicios.innerHTML = "";
 
-            if (formTitulo) formTitulo.textContent = "Modificar servicio";
-            if (breadcrumbItemActivo) breadcrumbItemActivo.textContent = "Modificar servicio";
-            if (btnSubmitTexto) btnSubmitTexto.textContent = "Actualizar servicio";
+    servicios.forEach(function (servicio) {
+        const tarjetaServicio = document.createElement("article");
 
-            // Precargar datos en los inputs
-            const inputNombre = document.getElementById("nombre");
-            const inputDescripcion = document.getElementById("descripcion");
-            const inputPrecio = document.getElementById("precio");
-            const selectDuracion = document.getElementById("duracion");
-            const inputImagenPreview = document.getElementById("imagenPreview");
+        tarjetaServicio.classList.add("servicio-card");
 
-            if (inputNombre) inputNombre.value = servicioExistente.nombre || "";
-            if (inputDescripcion) inputDescripcion.value = servicioExistente.descripcion || "";
-            if (inputPrecio) inputPrecio.value = servicioExistente.precio || "";
-            if (selectDuracion) selectDuracion.value = servicioExistente.duracion || "";
-            if (servicioExistente.tipoServicioId) window.tipoServicioIdPrecargado = servicioExistente.tipoServicioId;
-
-            // Modalidad
-            const modalidadGuardada = servicioExistente.modalidad || (servicioExistente.esDomicilio ? "domicilio" : (servicioExistente.esVirtual ? "virtual" : "clinica"));
-            const radioModalidad = document.querySelector(`input[name="modalidadAtencion"][value="${modalidadGuardada}"]`);
-            if (radioModalidad) radioModalidad.checked = true;
-
-            const contenedorDirClinica = document.getElementById("contenedorDireccionClinica");
-            const inputDirClinica = document.getElementById("direccionClinica");
-            if (contenedorDirClinica && inputDirClinica) {
-                if (modalidadGuardada === "clinica") {
-                    contenedorDirClinica.classList.remove("d-none");
-                    inputDirClinica.value = servicioExistente.direccionClinica || "HuellaVet - Sede Centro";
-                } else {
-                    contenedorDirClinica.classList.add("d-none");
+        tarjetaServicio.innerHTML = `
+            <div class="servicio-imagen">
+                ${
+                    servicio.imagen
+                        ? `<img src="${resolverRutaRecursoHuellaVet(servicio.imagen)}" alt="${servicio.nombre}">`
+                        : `<div class="servicio-imagen-placeholder"></div>`
                 }
-            }
 
-            // Costo de reserva
-            if (servicioExistente.tieneCostoReserva && checkCostoReserva && contenedorCostoReserva && inputCostoReserva) {
-                checkCostoReserva.checked = true;
-                contenedorCostoReserva.classList.remove("d-none");
-                inputCostoReserva.setAttribute("required", "required");
-                inputCostoReserva.value = servicioExistente.costoReserva || "";
-            }
+                <div class="servicio-icono">
+                    <i class="${servicio.icono || "bi bi-heart-pulse"}"></i>
+                </div>
+            </div>
 
-            // Icono
-            if (servicioExistente.icono) {
-                const radioIcono = document.querySelector(`input[name="icono"][value="${servicioExistente.icono}"]`);
-                if (radioIcono) radioIcono.checked = true;
-            }
+            <div class="servicio-info">
+                ${nombreTipoServicio(servicio.tipoServicioId) ? `<span class="servicio-tipo-badge">${escaparHtmlServicios(nombreTipoServicio(servicio.tipoServicioId))}</span>` : ""}
+                ${idsServiciosInicio.has(String(servicio.id)) ? `<span class="servicio-inicio-badge${String(servicio.id) === idDestacado ? " servicio-inicio-badge--destacado" : ""}"><i class="bi ${String(servicio.id) === idDestacado ? "bi-star-fill" : "bi-house-heart"}"></i>${String(servicio.id) === idDestacado ? "Destacado y visible en inicio" : "Visible en inicio"}</span>` : ""}
+                <h3>${servicio.nombre}</h3>
+                <p>${servicio.descripcion}</p>
+            </div>
 
-            // Imagen
-            if (servicioExistente.imagen && inputImagenPreview) {
-                inputImagenPreview.innerHTML = `<img src="${resolverRutaRecursoHuellaVet(servicioExistente.imagen)}" alt="${servicioExistente.nombre}">`;
-            }
-        }
-    }
+            <div class="servicio-detalles">
+                <div class="servicio-detalle">
+                    <i class="bi bi-currency-dollar"></i>
+                    <div>
+                        <span>Precio</span>
+                        <strong>$ ${formatearPrecio(servicio.precio)}</strong>
+                    </div>
+                </div>
 
-    // Toggle para modalidad en clínica vs domicilio vs virtual
-    const radiosModalidad = document.querySelectorAll('input[name="modalidadAtencion"]');
-    const contenedorDirClinica = document.getElementById("contenedorDireccionClinica");
-    radiosModalidad.forEach(radio => {
-        radio.addEventListener("change", function () {
-            if (contenedorDirClinica) {
-                if (this.value === "clinica") {
-                    contenedorDirClinica.classList.remove("d-none");
-                } else {
-                    contenedorDirClinica.classList.add("d-none");
-                }
-            }
-        });
+                <div class="servicio-detalle">
+                    <i class="bi bi-clock"></i>
+                    <div>
+                        <span>Duración</span>
+                        <strong>${formatearDuracion(servicio.duracion)}</strong>
+                    </div>
+                </div>
+
+                <div class="servicio-detalle">
+                    <i class="${servicio.modalidad === "virtual" || servicio.esVirtual ? "bi bi-camera-video" : (servicio.esDomicilio || servicio.modalidad === "domicilio" ? "bi bi-house-door" : "bi bi-hospital")}"></i>
+                    <div>
+                        <span>Modalidad</span>
+                        <strong>${servicio.modalidad === "virtual" || servicio.esVirtual ? "Virtual" : (servicio.esDomicilio || servicio.modalidad === "domicilio" ? "A domicilio" : "En clínica")}</strong>
+                    </div>
+                </div>
+
+                <div class="servicio-detalle">
+                    <i class="bi bi-credit-card-2-front"></i>
+                    <div>
+                        <span>Reserva</span>
+                        <strong>${servicio.tieneCostoReserva && servicio.costoReserva > 0 ? `$ ${formatearPrecio(servicio.costoReserva)}` : "Sin reserva"}</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="servicio-acciones">
+                <button type="button" class="btn btn-modificar" onclick="modificarServicio('${servicio.id}')">
+                    <i class="bi bi-pencil"></i>
+                    Modificar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-eliminar"
+                    onclick="eliminarServicio('${servicio.id}')"
+                >
+                    <i class="bi bi-trash"></i>
+                    Eliminar
+                </button>
+            </div>
+        `;
+
+        contenedorServicios.appendChild(tarjetaServicio);
     });
+}
 
-    if (checkCostoReserva && contenedorCostoReserva) {
-        checkCostoReserva.addEventListener("change", function () {
-            if (this.checked) {
-                contenedorCostoReserva.classList.remove("d-none");
-                inputCostoReserva.setAttribute("required", "required");
-                inputCostoReserva.focus();
-            } else {
-                contenedorCostoReserva.classList.add("d-none");
-                inputCostoReserva.removeAttribute("required");
-                inputCostoReserva.value = "";
-            }
+function iniciarGestionServiciosInicio() {
+    const boton = document.getElementById("gestionarServiciosInicio");
+    if (!boton) return;
+
+    boton.addEventListener("click", abrirSelectorServiciosInicio);
+}
+
+function actualizarControlServiciosInicio(servicios) {
+    const boton = document.getElementById("gestionarServiciosInicio");
+    const texto = document.getElementById("textoServiciosInicio");
+    if (!boton || !texto) return;
+
+    boton.disabled = servicios.length === 0;
+    texto.textContent = `Elegir servicios del inicio (${obtenerServiciosParaInicio().length}/${MAX_SERVICIOS_INICIO})`;
+}
+
+function abrirSelectorServiciosInicio() {
+    const servicios = obtenerServicios();
+    if (servicios.length === 0 || typeof Swal === "undefined") return;
+
+    let idsSeleccionados = obtenerServiciosParaInicio().map(servicio => String(servicio.id));
+    let filtroTipoId = "";
+    const seleccionAutomatica = servicios.length <= MAX_SERVICIOS_INICIO;
+
+    const obtenerServicio = id => servicios.find(servicio => String(servicio.id) === String(id));
+    const renderizarContenidoModal = () => {
+        const seleccionados = idsSeleccionados.map(obtenerServicio).filter(Boolean);
+        const tipos = obtenerTiposServicio();
+        const areaSeleccionados = document.getElementById("listaServiciosInicioSeleccionados");
+        const areaDisponibles = document.getElementById("listaServiciosInicioDisponibles");
+        const contador = document.getElementById("contadorServiciosInicio");
+        const filtro = document.getElementById("filtroTipoServiciosInicio");
+
+        if (contador) contador.textContent = `${seleccionados.length} de ${MAX_SERVICIOS_INICIO} servicios seleccionados`;
+        if (filtro) {
+            filtro.innerHTML = `<option value="">Todos los tipos</option>` + tipos.map(tipo =>
+                `<option value="${escaparHtmlServicios(tipo.id)}" ${String(tipo.id) === String(filtroTipoId) ? "selected" : ""}>${escaparHtmlServicios(tipo.nombre)}</option>`
+            ).join("");
+        }
+
+        if (areaSeleccionados) {
+            areaSeleccionados.innerHTML = seleccionados.map((servicio, indice) => `
+                <div class="d-flex align-items-center gap-2 py-2 border-bottom text-start">
+                    <input class="form-check-input m-0 selector-servicio-inicio" type="checkbox" checked ${seleccionAutomatica ? "disabled" : ""} data-id="${escaparHtmlServicios(servicio.id)}">
+                    <span class="flex-grow-1">
+                        <strong class="d-block">${indice === 0 ? '<i class="bi bi-star-fill text-warning me-1"></i>Destacado: ' : ""}${escaparHtmlServicios(servicio.nombre)}</strong>
+                        <small class="text-muted">${escaparHtmlServicios(nombreTipoServicio(servicio.tipoServicioId))}</small>
+                    </span>
+                    <div class="btn-group btn-group-sm" aria-label="Cambiar orden">
+                        <button type="button" class="btn btn-outline-secondary mover-servicio-inicio" data-id="${escaparHtmlServicios(servicio.id)}" data-direccion="-1" ${indice === 0 ? "disabled" : ""} aria-label="Subir ${escaparHtmlServicios(servicio.nombre)}"><i class="bi bi-arrow-up"></i></button>
+                        <button type="button" class="btn btn-outline-secondary mover-servicio-inicio" data-id="${escaparHtmlServicios(servicio.id)}" data-direccion="1" ${indice === seleccionados.length - 1 ? "disabled" : ""} aria-label="Bajar ${escaparHtmlServicios(servicio.nombre)}"><i class="bi bi-arrow-down"></i></button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        if (areaDisponibles) {
+            const disponibles = servicios.filter(servicio =>
+                !idsSeleccionados.includes(String(servicio.id)) &&
+                (!filtroTipoId || String(servicio.tipoServicioId) === String(filtroTipoId))
+            );
+            areaDisponibles.innerHTML = seleccionAutomatica
+                ? `<p class="text-muted small mb-0">Todos los servicios se muestran automáticamente mientras existan tres o menos.</p>`
+                : disponibles.length > 0
+                    ? disponibles.map(servicio => `
+                        <label class="d-flex align-items-center gap-2 py-2 border-bottom text-start">
+                            <input class="form-check-input m-0 selector-servicio-disponible" type="checkbox" data-id="${escaparHtmlServicios(servicio.id)}" ${idsSeleccionados.length >= MAX_SERVICIOS_INICIO ? "disabled" : ""}>
+                            <span><strong class="d-block">${escaparHtmlServicios(servicio.nombre)}</strong><small class="text-muted">${escaparHtmlServicios(nombreTipoServicio(servicio.tipoServicioId))}</small></span>
+                        </label>
+                    `).join("")
+                    : `<p class="text-muted small mb-0">No hay servicios disponibles con este filtro.</p>`;
+        }
+
+        document.querySelectorAll(".selector-servicio-inicio").forEach(input => input.addEventListener("change", () => {
+            idsSeleccionados = idsSeleccionados.filter(id => id !== String(input.dataset.id));
+            renderizarContenidoModal();
+        }));
+        document.querySelectorAll(".selector-servicio-disponible").forEach(input => input.addEventListener("change", () => {
+            if (input.checked && idsSeleccionados.length < MAX_SERVICIOS_INICIO) idsSeleccionados.push(String(input.dataset.id));
+            renderizarContenidoModal();
+        }));
+        document.querySelectorAll(".mover-servicio-inicio").forEach(boton => boton.addEventListener("click", () => {
+            const indice = idsSeleccionados.indexOf(String(boton.dataset.id));
+            const destino = indice + Number(boton.dataset.direccion);
+            if (indice < 0 || destino < 0 || destino >= idsSeleccionados.length) return;
+            [idsSeleccionados[indice], idsSeleccionados[destino]] = [idsSeleccionados[destino], idsSeleccionados[indice]];
+            renderizarContenidoModal();
+        }));
+        filtro?.addEventListener("change", () => {
+            filtroTipoId = filtro.value;
+            renderizarContenidoModal();
         });
-    }
+    };
 
-    formulario.addEventListener("submit", async function (evento) {
-        evento.preventDefault();
-
-        const nombre = document.getElementById("nombre").value.trim();
-        const descripcion = document.getElementById("descripcion").value.trim();
-        const precio = document.getElementById("precio").value.trim();
-        const duracion = document.getElementById("duracion").value;
-        const iconoSeleccionado = document.querySelector('input[name="icono"]:checked');
-        const inputImagen = document.getElementById("imagen");
-        const tieneReserva = checkCostoReserva ? checkCostoReserva.checked : false;
-        const costoReservaVal = inputCostoReserva ? inputCostoReserva.value.trim() : "";
-
-        const icono = iconoSeleccionado ? iconoSeleccionado.value : (servicioExistente?.icono || "");
-        const archivoImagen = inputImagen.files[0];
-
-        let errores = [];
-
-        if (nombre === "") {
-            errores.push("El nombre del servicio es obligatorio.");
-        }
-
-        if (descripcion.length < 10) {
-            errores.push("La descripción es muy corta, mínimo 10 caracteres.");
-        }
-
-        const precioNum = parseFloat(precio);
-        if (precio === "" || isNaN(precioNum) || precioNum <= 0) {
-            errores.push("Debes ingresar un precio válido mayor a 0.");
-        }
-
-        if (duracion === "") {
-            errores.push("Debes seleccionar la duración del servicio.");
-        }
-
-        if (icono === "") {
-            errores.push("Debes seleccionar un icono para el servicio.");
-        }
-
-        const selectTipoServicio = document.getElementById("tipoServicio");
-        const tipoServicioId = selectTipoServicio ? selectTipoServicio.value : "";
-        if (tipoServicioId === "") {
-            errores.push("Debes seleccionar (o crear) un tipo de servicio.");
-        }
-
-        if (tieneReserva) {
-            const reservaNum = parseFloat(costoReservaVal);
-            if (costoReservaVal === "" || isNaN(reservaNum) || reservaNum <= 0) {
-                errores.push("Indica un valor válido para el costo de la reserva.");
-            } else if (!isNaN(precioNum) && reservaNum > precioNum) {
-                errores.push("El costo de la reserva no puede ser mayor que el precio total del servicio.");
+    Swal.fire({
+        title: "Servicios que se muestran en Inicio",
+        html: `
+            <p class="text-muted small mb-3">Elige hasta ${MAX_SERVICIOS_INICIO}. El primero es el servicio destacado; usa las flechas para cambiar el orden.</p>
+            <div id="contadorServiciosInicio" class="small fw-bold text-start mb-2"></div>
+            <div class="text-start mb-3" id="listaServiciosInicioSeleccionados"></div>
+            <label class="form-label small fw-bold text-start d-block mb-1" for="filtroTipoServiciosInicio">Filtrar servicios disponibles por tipo</label>
+            <select class="form-select form-select-sm mb-2" id="filtroTipoServiciosInicio"></select>
+            <div class="text-start" id="listaServiciosInicioDisponibles" style="max-height: 220px; overflow-y: auto;"></div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: "Guardar selección",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#17a9a7",
+        cancelButtonColor: "#6c757d",
+        didOpen: renderizarContenidoModal,
+        preConfirm: () => {
+            if (idsSeleccionados.length === 0) {
+                Swal.showValidationMessage("Selecciona al menos un servicio para el inicio.");
+                return false;
             }
+            if (idsSeleccionados.length > MAX_SERVICIOS_INICIO) {
+                Swal.showValidationMessage(`Puedes seleccionar máximo ${MAX_SERVICIOS_INICIO} servicios.`);
+                return false;
+            }
+            return idsSeleccionados;
         }
-
-        if (errores.length > 0) {
-            Swal.fire({
-                icon: "warning",
-                title: "Por favor corrige lo siguiente:",
-                html: `<ul style="text-align: left; margin-bottom: 0;">${errores.map(e => `<li>${e}</li>`).join("")}</ul>`,
-                confirmButtonText: "Entendido",
-                confirmButtonColor: "#17a9a7"
-            });
-            return;
-        }
-
-        const modalidadSeleccionada = document.querySelector('input[name="modalidadAtencion"]:checked')?.value || "clinica";
-        const direccionClinicaVal = document.getElementById("direccionClinica")?.value.trim() || "HuellaVet - Sede Centro";
-        const imagenBase64 = archivoImagen ? await convertirImagenABase64(archivoImagen) : (servicioExistente?.imagen || "");
-
+    }).then(async resultado => {
+        if (!resultado.isConfirmed) return;
 
         try {
-            const payload = {
-                tipoServicioId: Number(tipoServicioId),
-                nombre: nombre,
-                descripcion: descripcion,
-                precio: parseFloat(precio),
-                duracion: parseInt(duracion),
-                modalidad: modalidadSeleccionada,
-                esDomicilio: modalidadSeleccionada === "domicilio",
-                esVirtual: modalidadSeleccionada === "virtual",
-                esClinica: modalidadSeleccionada === "clinica",
-                direccionClinica: modalidadSeleccionada === "clinica" ? direccionClinicaVal : "",
-                icono: icono,
-                imagen: imagenBase64,
-                tieneCostoReserva: tieneReserva,
-                costoReserva: tieneReserva ? parseFloat(costoReservaVal) : 0
-            };
-
-            let servicioPersistido = null;
-
-            if (servicioExistente) {
-                servicioPersistido = await apiBackend(`/servicios/${encodeURIComponent(servicioExistente.id)}`, {
-                    method: "PUT",
-                    body: payload
-                });
-
-                const servicioActualizado = normalizarServicioDesdeBackend(servicioPersistido);
-                const index = servicios.findIndex(s => String(s.id) === String(servicioExistente.id));
-
-                if (index !== -1) {
-                    servicios[index] = servicioActualizado;
-                } else {
-                    servicios.push(servicioActualizado);
-                }
-
-                guardarServicios(servicios);
-
-                Swal.fire({
-                    icon: "success",
-                    title: "¡Servicio actualizado exitosamente!",
-                    text: tieneReserva ? `El servicio tiene un costo de reserva de $${servicioActualizado.costoReserva.toLocaleString("es-CO")}.` : "",
-                    confirmButtonText: "Aceptar",
-                    confirmButtonColor: "#17a9a7"
-                }).then(function () {
-                    window.location.href = "./veterinario-servicios.html";
-                });
-                return;
-            }
-
-            servicioPersistido = await apiBackend("/servicios", {
-                method: "POST",
-                body: payload
-            });
-
-            const nuevoServicio = normalizarServicioDesdeBackend(servicioPersistido);
-            servicios.push(nuevoServicio);
-            guardarServicios(servicios);
-
-            Swal.fire({
-                icon: "success",
-                title: "¡Servicio creado y guardado exitosamente!",
-                text: tieneReserva ? `El servicio tiene un costo de reserva de $${nuevoServicio.costoReserva.toLocaleString("es-CO")}.` : "",
-                confirmButtonText: "Aceptar",
-                confirmButtonColor: "#17a9a7"
-            }).then(function () {
-                window.location.href = "./veterinario-servicios.html";
-            });
+            await guardarServiciosParaInicio(resultado.value);
         } catch (error) {
-            console.error("No se pudo guardar el servicio en el backend:", error);
+            console.error("No se pudo guardar la selección del inicio:", error);
             Swal.fire({
                 icon: "error",
-                title: "No se pudo guardar el servicio",
+                title: "No se pudo guardar la selección",
                 text: error?.message || "Ocurrió un error al comunicarse con el servidor.",
-                confirmButtonText: "Entendido",
                 confirmButtonColor: "#17a9a7"
             });
-        }
-    });
-}
-
-function iniciarVistaPreviaImagen() {
-    const inputImagen = document.getElementById("imagen");
-    const imagenPreview = document.getElementById("imagenPreview");
-
-    if (!inputImagen || !imagenPreview) {
-        return;
-    }
-
-    inputImagen.addEventListener("change", async function () {
-        const archivoImagen = inputImagen.files[0];
-
-        if (!archivoImagen) {
-            imagenPreview.innerHTML = `
-                <i class="bi bi-image"></i>
-                <span>Vista previa de la imagen</span>
-            `;
             return;
         }
 
-        const imagenBase64 = await convertirImagenABase64(archivoImagen);
-
-        imagenPreview.innerHTML = `
-            <img src="${imagenBase64}" alt="Vista previa del servicio">
-        `;
-    });
-}
-
-function convertirImagenABase64(archivo) {
-    return new Promise(function (resolve, reject) {
-        const lector = new FileReader();
-
-        lector.onload = function () {
-            resolve(lector.result);
-        };
-
-        lector.onerror = function () {
-            reject("");
-        };
-
-        lector.readAsDataURL(archivo);
-    });
-}
-// Select "creatable" de Tipo de servicio: se llena con los tipos ya
-// creados (ver js/shared/tipos-servicio-storage.js) y permite
-// crear uno nuevo desde el boton "+ Nuevo" cuando la lista esta vacia
-// o cuando se necesita agregar otro.
-function iniciarTipoServicio() {
-    const selectTipo = document.getElementById("tipoServicio");
-    const btnCrear = document.getElementById("btnCrearTipoServicio");
-    const ayudaTexto = document.getElementById("ayudaTipoServicio");
-
-    if (!selectTipo || typeof obtenerTiposServicio !== "function") {
-        return;
-    }
-
-    function renderizarOpciones(idSeleccionado) {
-        const tipos = obtenerTiposServicio();
-
-        if (tipos.length === 0) {
-            selectTipo.innerHTML = `<option value="" disabled selected>Aún no hay tipos, crea el primero con "+ Nuevo"</option>`;
-            if (ayudaTexto) {
-                ayudaTexto.textContent = "Todavía no has creado ningún tipo de servicio. Usa el botón \"+ Nuevo\" para crear el primero.";
-            }
-            return;
-        }
-
-        if (ayudaTexto) {
-            ayudaTexto.textContent = "Sirve para agrupar y filtrar tus servicios (ej. Laboratorio, Prevención, Estética).";
-        }
-
-        selectTipo.innerHTML = `<option value="" disabled ${idSeleccionado ? "" : "selected"}>Selecciona un tipo</option>` +
-            tipos.map(tipo => `<option value="${tipo.id}" ${String(tipo.id) === String(idSeleccionado) ? "selected" : ""}>${escaparHtmlTipoServicio(tipo.nombre)}</option>`).join("");
-    }
-
-    renderizarOpciones(window.tipoServicioIdPrecargado || "");
-
-    if (typeof sincronizarTiposServicioDesdeBackend === "function") {
-        sincronizarTiposServicioDesdeBackend().then(function () {
-            renderizarOpciones(selectTipo.value || window.tipoServicioIdPrecargado || "");
+        mostrarServicios();
+        Swal.fire({
+            icon: "success",
+            title: "Servicios del inicio actualizados",
+            text: "El primer servicio seleccionado quedó como destacado.",
+            confirmButtonColor: "#17a9a7"
         });
+    });
+}
+
+function modificarServicio(idServicio) {
+    window.location.href = `./agregar-servicio.html?id=${idServicio}`;
+}
+
+function actualizarTotalServicios(servicios, totalServicios) {
+    if (!totalServicios) {
+        return;
     }
 
-    if (btnCrear) {
-        btnCrear.addEventListener("click", function () {
+    totalServicios.textContent =
+        servicios.length === 1
+            ? "1 servicio en total"
+            : `${servicios.length} servicios en total`;
+}
+
+function formatearPrecio(precio) {
+    return Number(precio).toLocaleString("es-CO");
+}
+
+function formatearDuracion(minutos) {
+    minutos = parseInt(minutos);
+    if (isNaN(minutos) || minutos <= 0) return "30 min";
+    if (minutos < 60) return `${minutos} min`;
+    const horas = Math.floor(minutos / 60);
+    const minsRestantes = minutos % 60;
+    if (minsRestantes === 0) {
+        return horas === 1 ? "1 hora" : `${horas} horas`;
+    }
+    return `${horas} h ${minsRestantes} min`;
+}
+
+function eliminarServicio(idServicio) {
+    Swal.fire({
+        icon: "warning",
+        title: "¿Eliminar servicio?",
+        text: "Esta acción eliminará el servicio de la lista.",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+        confirmButtonColor: "#ff4d5f",
+        cancelButtonColor: "#6c757d"
+    }).then(async function (resultado) {
+        if (!resultado.isConfirmed) {
+            return;
+        }
+
+        try {
+            await eliminarServicioGuardado(idServicio);
+        } catch (error) {
+            console.error("No se pudo eliminar el servicio:", error);
             Swal.fire({
-                title: "Nuevo tipo de servicio",
-                input: "text",
-                inputPlaceholder: "Ej. Laboratorio, Prevención, Estética...",
-                showCancelButton: true,
-                confirmButtonText: "Crear",
-                cancelButtonText: "Cancelar",
-                confirmButtonColor: "#17a9a7",
-                inputValidator: function (valor) {
-                    if (!valor || !valor.trim()) {
-                        return "Escribe un nombre para el tipo de servicio.";
-                    }
-                }
-            }).then(async function (resultado) {
-                if (!resultado.isConfirmed) return;
-
-                try {
-                    const tipoCreado = await crearTipoServicio(resultado.value);
-                    if (!tipoCreado) return;
-
-                    renderizarOpciones(tipoCreado.id);
-                } catch (error) {
-                    Swal.fire({
-                        icon: "error",
-                        title: "No se pudo crear el tipo de servicio",
-                        text: error?.message || "Ocurrió un error al comunicarse con el servidor.",
-                        confirmButtonText: "Entendido",
-                        confirmButtonColor: "#17a9a7"
-                    });
-                }
+                icon: "error",
+                title: "No se pudo eliminar el servicio",
+                text: error?.message || "Ocurrió un error al comunicarse con el servidor.",
+                confirmButtonColor: "#17a9a7"
             });
+            return;
+        }
+
+        mostrarServicios();
+
+        Swal.fire({
+            icon: "success",
+            title: "Servicio eliminado",
+            text: "El servicio fue eliminado correctamente.",
+            confirmButtonText: "Aceptar",
+            confirmButtonColor: "#bad641"
         });
+    });
+}
+// Llena el filtro "Todos los servicios" con los tipos de servicio
+// que el admin ha creado (ver js/shared/tipos-servicio-storage.js), y vuelve a pintar
+// la grilla cada vez que el admin cambia el filtro.
+function iniciarFiltroTipoServicio() {
+    const filtroSelect = document.getElementById("filtroTipoServicio");
+    if (!filtroSelect || typeof obtenerTiposServicio !== "function") {
+        return;
     }
+
+    const tipos = obtenerTiposServicio();
+
+    filtroSelect.innerHTML = `<option value="" selected>Todos los servicios</option>` +
+        tipos.map(tipo => `<option value="${tipo.id}">${escaparHtmlServicios(tipo.nombre)}</option>`).join("");
+
+    filtroSelect.addEventListener("change", function () {
+        mostrarServicios();
+    });
 }
 
-function escaparHtmlTipoServicio(valor) {
+function escaparHtmlServicios(valor) {
     const div = document.createElement("div");
     div.textContent = valor == null ? "" : String(valor);
     return div.innerHTML;

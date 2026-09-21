@@ -86,6 +86,25 @@ function obtenerUsuarioActual() {
     }
 }
 
+/*
+ * Limpieza unica: versiones anteriores guardaban datos de negocio en
+ * localStorage. Ahora la base de datos es la fuente de verdad, asi que esas
+ * copias quedan huerfanas (y pueden estar desactualizadas). Se borran del
+ * navegador; no se toca la sesion (token / usuario actual).
+ */
+const CLAVES_LOCALSTORAGE_OBSOLETAS = [
+    "usuarios", "mascotas", "citas", "servicios", "tiposServicio",
+    "huellavetDatosDemo", "migracion_mascotas_desde_citas_v1", "migracion_datos_demo_v2"
+];
+
+(function limpiarLocalStorageObsoleto() {
+    try {
+        CLAVES_LOCALSTORAGE_OBSOLETAS.forEach(clave => localStorage.removeItem(clave));
+    } catch (error) {
+        console.warn("No fue posible limpiar el almacenamiento local obsoleto:", error);
+    }
+})();
+
 function cerrarSesionApi() {
     localStorage.removeItem(TOKEN_STORAGE_KEY);
     localStorage.removeItem(USUARIO_ACTUAL_STORAGE_KEY);

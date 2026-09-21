@@ -163,14 +163,13 @@ async function iniciarNotificacionesAdmin() {
     });
 }
 
+/*
+ * Las citas viven solo en la base de datos. Si esta pagina no cargó
+ * citas-storage.js (o no hay sesión) no hay actividad que mostrar; ya no se
+ * lee ninguna copia local.
+ */
 function leerCitasTopbarAdmin() {
-    try {
-        const citas = JSON.parse(localStorage.getItem("citas") || "[]");
-        return Array.isArray(citas) ? citas : [];
-    } catch (error) {
-        console.warn("No fue posible leer la actividad de citas.", error);
-        return [];
-    }
+    return [];
 }
 
 function crearActividadAdminHtml(cita) {
@@ -236,8 +235,8 @@ function iniciarCerrarSesionAdmin() {
     botonCerrarSesion.addEventListener("click", function () {
         if (typeof cerrarSesionUsuario === "function") {
             cerrarSesionUsuario();
-        } else {
-            localStorage.removeItem("sesionUsuarioId");
+        } else if (typeof cerrarSesionApi === "function") {
+            cerrarSesionApi();
         }
         window.location.href = "../../index.html";
     });

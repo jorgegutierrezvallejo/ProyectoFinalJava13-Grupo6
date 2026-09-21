@@ -1,6 +1,22 @@
-/* Repositorio unico de servicios veterinarios. */
-const SERVICIOS_STORAGE_KEY = "servicios";
+/*
+ * Repositorio unico de servicios veterinarios.
+ *
+ * La base de datos (API Spring Boot -> Supabase) es la UNICA fuente de verdad.
+ * No se persiste nada en localStorage: la lista vive en memoria mientras la
+ * pagina esta abierta y se vuelve a pedir al servidor en cada carga
+ * (asegurarServiciosCargados). Toda escritura se hace primero contra la API;
+ * si el servidor falla, el error se propaga y la memoria no cambia.
+ *
+ * Contrato Spring Boot:
+ *   GET    /api/servicios            (publico)
+ *   POST   /api/servicios            (VETERINARIO / ADMINISTRADOR)
+ *   PUT    /api/servicios/{id}       (VETERINARIO / ADMINISTRADOR)
+ *   PUT    /api/servicios/inicio     body { ids: [..] }  (VETERINARIO / ADMINISTRADOR)
+ *   DELETE /api/servicios/{id}       (VETERINARIO / ADMINISTRADOR)
+ */
 const MAX_SERVICIOS_INICIO = 3;
+
+let serviciosEnMemoria = [];
 
 function tieneSesionBackendActiva() {
     return typeof getTokenActual === "function" && Boolean(getTokenActual());
@@ -33,69 +49,113 @@ function normalizarServicioDesdeBackend(servicio = {}) {
     };
 }
 
+/* ============================================================
+ * CARGA DESDE LA BASE DE DATOS
+ * ============================================================ */
+
+let ultimaCargaServiciosFallo = false;
+
 async function obtenerServiciosDesdeBackend() {
     // GET /api/servicios es publico (permitAll en el backend): los servicios
     // deben verse aunque nadie haya iniciado sesion (home, footer, agendar).
     try {
         const respuesta = await apiBackend("/servicios");
         const servicios = Array.isArray(respuesta) ? respuesta : [];
-        const normalizados = servicios.map(normalizarServicioDesdeBackend);
-        guardarServicios(normalizados);
-        return normalizados;
+        establecerServiciosEnMemoria(servicios.map(normalizarServicioDesdeBackend));
+        ultimaCargaServiciosFallo = false;
     } catch (error) {
+        ultimaCargaServiciosFallo = true;
         console.warn("No se pudieron cargar los servicios desde el backend:", error);
-        return obtenerServicios();
     }
+    return obtenerServicios();
 }
 
 /*
  * Primera carga de la pagina: si varios scripts (inicio, footer, agendar, etc.)
  * piden los servicios a la vez comparten una sola peticion al backend.
- * Si falla, se puede reintentar en la siguiente llamada.
+ * Si la carga falla, la siguiente llamada vuelve a intentarlo.
  */
 let promesaServiciosCargados = null;
 function asegurarServiciosCargados() {
     if (!promesaServiciosCargados) {
-        promesaServiciosCargados = obtenerServiciosDesdeBackend().catch(error => {
-            promesaServiciosCargados = null;
-            throw error;
+        promesaServiciosCargados = obtenerServiciosDesdeBackend().then(servicios => {
+            if (ultimaCargaServiciosFallo) promesaServiciosCargados = null;
+            return servicios;
         });
     }
     return promesaServiciosCargados;
 }
 
+/* ============================================================
+ * LECTURA SINCRONA (sobre la copia en memoria de esta pagina)
+ * ============================================================ */
+
 function obtenerServicios() {
-    const servicios = HuellaVetStorage.leer(SERVICIOS_STORAGE_KEY, []);
-    const lista = Array.isArray(servicios) ? servicios : [];
-
-    if (tieneSesionBackendActiva() && lista.length === 0 && typeof window !== "undefined") {
-        obtenerServiciosDesdeBackend().catch(() => {});
-    }
-
-    return lista;
-}
-
-function guardarServicios(servicios) {
-    const lista = Array.isArray(servicios) ? servicios : [];
-    return HuellaVetStorage.guardar(SERVICIOS_STORAGE_KEY, normalizarServiciosInicio(lista));
+    return [...serviciosEnMemoria];
 }
 
 function obtenerServicioPorId(idServicio) {
-    return obtenerServicios().find(servicio => String(servicio.id) === String(idServicio)) || null;
+    return serviciosEnMemoria.find(servicio => String(servicio.id) === String(idServicio)) || null;
 }
 
-function eliminarServicioGuardado(idServicio) {
-    const servicios = obtenerServicios().filter(servicio => String(servicio.id) !== String(idServicio));
-    guardarServicios(servicios);
+/*
+ * Reemplaza la copia en memoria (NO escribe en ningun almacenamiento del
+ * navegador). Se conserva tambien con el nombre historico guardarServicios
+ * porque veterinario-servicio.js lo invoca despues de que la API confirma.
+ */
+function establecerServiciosEnMemoria(servicios) {
+    const lista = Array.isArray(servicios) ? servicios : [];
+    serviciosEnMemoria = normalizarServiciosInicio(lista);
+    return true;
+}
 
-    if (tieneSesionBackendActiva()) {
-        apiBackend(`/servicios/${encodeURIComponent(idServicio)}`, { method: "DELETE" }).catch(error => {
-            console.warn("No se pudo eliminar el servicio en el backend:", error);
-        });
+function guardarServicios(servicios) {
+    return establecerServiciosEnMemoria(servicios);
+}
+
+/* ============================================================
+ * ESCRITURA (siempre contra la base de datos)
+ * ============================================================ */
+
+/** Elimina el servicio en la BD; solo si el servidor confirma se quita de memoria. */
+async function eliminarServicioGuardado(idServicio) {
+    if (!tieneSesionBackendActiva()) {
+        throw new Error("Debes iniciar sesión para eliminar un servicio.");
     }
 
-    return servicios;
+    await apiBackend(`/servicios/${encodeURIComponent(idServicio)}`, { method: "DELETE" });
+    establecerServiciosEnMemoria(
+        serviciosEnMemoria.filter(servicio => String(servicio.id) !== String(idServicio))
+    );
+    return obtenerServicios();
 }
+
+/**
+ * Guarda en la BD cuales servicios se muestran en el inicio (maximo 3).
+ * El primer id queda como destacado. Usa PUT /api/servicios/inicio.
+ */
+async function guardarServiciosParaInicio(idsServicios) {
+    if (!tieneSesionBackendActiva()) {
+        throw new Error("Debes iniciar sesión para elegir los servicios del inicio.");
+    }
+
+    const ids = [...new Set((Array.isArray(idsServicios) ? idsServicios : []).map(String))]
+        .slice(0, MAX_SERVICIOS_INICIO)
+        .map(Number);
+
+    const respuesta = await apiBackend("/servicios/inicio", {
+        method: "PUT",
+        body: { ids }
+    });
+
+    const servicios = Array.isArray(respuesta) ? respuesta : [];
+    establecerServiciosEnMemoria(servicios.map(normalizarServicioDesdeBackend));
+    return obtenerServiciosParaInicio();
+}
+
+/* ============================================================
+ * SELECCION DE SERVICIOS DEL INICIO (logica de presentacion)
+ * ============================================================ */
 
 // Los primeros tres servicios se publican automáticamente mientras la clínica
 // tenga tres o menos. Con más servicios, el administrador elige hasta tres.
@@ -114,24 +174,6 @@ function obtenerServiciosParaInicio() {
 function obtenerServicioDestacado() {
     const serviciosInicio = obtenerServiciosParaInicio();
     return serviciosInicio.find(servicio => servicio.destacado) || serviciosInicio[0] || null;
-}
-
-function guardarServiciosParaInicio(idsServicios) {
-    const ids = [...new Set((Array.isArray(idsServicios) ? idsServicios : []).map(String))]
-        .slice(0, MAX_SERVICIOS_INICIO);
-
-    const servicios = obtenerServicios().map(servicio => {
-        const indice = ids.indexOf(String(servicio.id));
-        return {
-            ...servicio,
-            mostrarEnHome: indice !== -1,
-            destacado: indice === 0,
-            ordenInicio: indice === -1 ? null : indice + 1
-        };
-    });
-
-    guardarServicios(servicios);
-    return obtenerServiciosParaInicio();
 }
 
 function normalizarServiciosInicio(servicios) {
