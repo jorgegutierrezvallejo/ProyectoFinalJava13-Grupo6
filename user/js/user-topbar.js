@@ -2,7 +2,7 @@ document.addEventListener("userComponentsLoaded", function () {
     iniciarTopbarUsuario();
 });
 
-function iniciarTopbarUsuario() {
+async function iniciarTopbarUsuario() {
     cambiarTituloPaginaUsuario();
     cargarDatosUsuarioTopbar();
 
@@ -23,23 +23,16 @@ function iniciarTopbarUsuario() {
         });
     }
 
+    // Numero real en la campana: se calcula al cargar la topbar, no solo
+    // al hacer clic, para que el usuario vea el conteo correcto de una vez.
+    await actualizarBadgeNotificaciones();
+
     if (notificationButton) {
         notificationButton.addEventListener("click", async function () {
             if (typeof Swal !== "undefined") {
-                const usuario = typeof obtenerUsuarioRegistrado === "function" ? obtenerUsuarioRegistrado() : null;
-                // Las citas salen de la base de datos (comparte la peticion con la pagina).
-                if (usuario && typeof asegurarCitasCargadas === "function") {
-                    try {
-                        await asegurarCitasCargadas(usuario.id);
-                    } catch (error) {
-                        console.warn("No se pudieron cargar las citas para las notificaciones:", error);
-                    }
-                }
-                const citas = usuario && typeof obtenerCitasFuturas === "function"
-                    ? obtenerCitasFuturas(usuario.id).slice(0, 3)
-                    : [];
+                const citas = await obtenerCitasFuturasParaNotificaciones();
                 const contenido = citas.length > 0
-                    ? citas.map(cita => `
+                    ? citas.slice(0, 3).map(cita => `
                         <div class="p-2 border-bottom">
                             <strong>${escaparTextoTopbar(cita.servicioNombre || "Cita veterinaria")}</strong>
                             <p class="text-muted mb-0">${escaparTextoTopbar(cita.nombreMascota || "Tu mascota")} · ${escaparTextoTopbar(cita.fecha || "Fecha pendiente")} · ${escaparTextoTopbar(cita.hora || "Hora pendiente")}</p>
@@ -63,6 +56,39 @@ function iniciarTopbarUsuario() {
         cerrarSesionUsuario();
         window.location.href = "../../index.html";
     });
+}
+
+// Fuente unica de datos para la campana: las citas futuras del usuario
+// (misma peticion/cache que ya usan el dashboard y "Mis citas").
+async function obtenerCitasFuturasParaNotificaciones() {
+    const usuario = typeof obtenerUsuarioRegistrado === "function" ? obtenerUsuarioRegistrado() : null;
+    if (!usuario) return [];
+
+    if (typeof asegurarCitasCargadas === "function") {
+        try {
+            await asegurarCitasCargadas(usuario.id);
+        } catch (error) {
+            console.warn("No se pudieron cargar las citas para las notificaciones:", error);
+            return [];
+        }
+    }
+
+    return typeof obtenerCitasFuturas === "function" ? obtenerCitasFuturas(usuario.id) : [];
+}
+
+// Actualiza el numero de la campana con el total real de citas futuras.
+// Se oculta el badge (en vez de mostrar "0") cuando no hay nada pendiente.
+async function actualizarBadgeNotificaciones() {
+    const badge = document.getElementById("notificationBadge");
+    if (!badge) return;
+
+    const citas = await obtenerCitasFuturasParaNotificaciones();
+    if (citas.length > 0) {
+        badge.textContent = citas.length > 9 ? "9+" : String(citas.length);
+        badge.hidden = false;
+    } else {
+        badge.hidden = true;
+    }
 }
 
 function escaparTextoTopbar(valor) {

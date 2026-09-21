@@ -295,6 +295,7 @@ function cargarRecordatoriosDashboard(mascotas) {
             obtenerCitasConRecordatorioPorMascotaId(mascota.id).map(cita => {
                 const analisis = analizarUrgenciaRecordatorio(cita.recordatorio.fecha, cita.fecha);
                 return {
+                    mascotaId: mascota.id,
                     mascotaNombre: mascota.nombre || "tu mascota",
                     texto: cita.recordatorio.texto,
                     fechaOrden: cita.recordatorio.fecha || cita.recordatorio.fechaCreacion || cita.fecha,
@@ -316,10 +317,11 @@ function cargarRecordatoriosDashboard(mascotas) {
         return;
     }
 
-    // La tarjeta es un resumen: se muestran los 4 más próximos y "Ver todos"
-    // lleva al detalle completo por mascota en Mis mascotas.
+    // La tarjeta es un resumen: se muestran los 4 más próximos. Cada fila
+    // lleva directo al detalle de esa mascota en Mis mascotas (antes eran
+    // divs sin ningun destino, pese al efecto hover ya definido en el CSS).
     contenedor.innerHTML = items.slice(0, 4).map(item => `
-        <div class="recordatorio-item">
+        <a class="recordatorio-item" href="user-mascotas.html?mascotaId=${encodeURIComponent(item.mascotaId || "")}">
             <div class="recordatorio-main">
                 <div class="recordatorio-icon recordatorio-icon--${item.claseIcono}">
                     <i class="bi ${item.claseIcono === "naranja" ? "bi-exclamation-circle" : "bi-clipboard2-pulse"}"></i>
@@ -330,7 +332,7 @@ function cargarRecordatoriosDashboard(mascotas) {
                 </div>
             </div>
             <span class="badge-recordatorio badge-recordatorio--${item.claseBadge}">${escaparHtmlUsuario(item.badgeTexto)}</span>
-        </div>
+        </a>
     `).join("");
 }
 

@@ -22,8 +22,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     iniciarPaginaMascotas();
 });
 
-let mascotaSeleccionadaId = null;
+let mascotaSeleccionadaId = leerMascotaIdDesdeUrl();
 let textoBusqueda = "";
+
+// Permite llegar directo al detalle de una mascota desde otra pagina
+// (por ejemplo, un recordatorio del dashboard: user-mascotas.html?mascotaId=123).
+function leerMascotaIdDesdeUrl() {
+    try {
+        const parametros = new URLSearchParams(window.location.search);
+        return parametros.get("mascotaId") || null;
+    } catch (error) {
+        return null;
+    }
+}
 
 function iniciarPaginaMascotas() {
     const buscador = document.getElementById("buscadorMascotas");
@@ -180,7 +191,7 @@ function renderizarListaMascotas() {
 }
 
 function claveMascota(mascota) {
-    return mascota.id || `nombre:${(mascota.nombre || "").toLowerCase()}`;
+    return String(mascota.id || `nombre:${(mascota.nombre || "").toLowerCase()}`);
 }
 
 function crearTarjetaListaMascota(mascota) {

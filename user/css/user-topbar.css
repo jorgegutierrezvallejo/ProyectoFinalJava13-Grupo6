@@ -167,6 +167,10 @@
     font-weight: 700;
 }
 
+.topbar-notification-badge[hidden] {
+    display: none;
+}
+
 /* ========================================
    PERFIL DE USUARIO
 ======================================== */
