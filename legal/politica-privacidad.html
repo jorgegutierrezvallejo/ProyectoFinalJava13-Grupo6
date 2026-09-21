@@ -185,10 +185,11 @@
 <body>
 
 <div class="topbar">
-  <a class="brand" href="/">Huella<span>Vet</span></a>
+  <a class="brand" href="../index.html">Huella<span>Vet</span></a>
   <nav>
-    <a href="/">Inicio</a>
-    <a href="/legal/terminos-condiciones.html">Términos y condiciones</a>
+    <a id="btn-volver" href="../index.html">← Volver</a>
+    <a href="../index.html">Inicio</a>
+    <a href="terminos-condiciones.html">Términos y condiciones</a>
   </nav>
 </div>
 
@@ -325,15 +326,32 @@
   </section>
 
   <a class="back-top" href="#responsable">↑ Volver al inicio del documento</a>
+
+  <div style="text-align:center; margin-top:32px;">
+    <a id="btn-volver-inferior" href="../index.html" class="back-top" style="font-size:.95rem; font-weight:600;">← Volver a la página anterior</a>
+  </div>
 </div>
 
 <footer>
   <p>© <span id="year"></span> HuellaVet. Todos los derechos reservados.</p>
-  <p><a href="/">Volver al inicio</a> · <a href="/legal/terminos-condiciones.html">Términos y condiciones</a></p>
+  <p><a href="../index.html">Volver al inicio</a> · <a href="terminos-condiciones.html">Términos y condiciones</a></p>
 </footer>
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+  (function corregirBotonVolver() {
+    const referencia = document.referrer;
+    if (!referencia) return;
+    try {
+      const urlReferencia = new URL(referencia);
+      if (urlReferencia.origin === window.location.origin && urlReferencia.href !== window.location.href) {
+        document.querySelectorAll('#btn-volver, #btn-volver-inferior').forEach(function (enlace) {
+          enlace.href = referencia;
+        });
+      }
+    } catch (error) {
+    }
+  })();
 </script>
 
 </body>

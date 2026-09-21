@@ -109,6 +109,13 @@
         selector.value = String(mascotaId);
         selector.dispatchEvent(new Event("change", { bubbles: true }));
     }
+    
+    function corregirEnlacesLegales(contenedor, rutaHtml) {
+        const prefijo = (rutaHtml || "").replace(/components\/agendar-cita\/agendar-cita\.html$/, "");
+        contenedor.querySelectorAll("[data-legal-link]").forEach(function (enlace) {
+            enlace.setAttribute("href", prefijo + enlace.dataset.legalLink);
+        });
+    }
 
     async function iniciarComponenteAgendarCita() {
         const contenedor = document.getElementById("agendar-cita-container");

@@ -166,10 +166,11 @@
 <body>
 
 <div class="topbar">
-  <a class="brand" href="/" >Huella<span>Vet</span></a>
+  <a class="brand" href="../index.html">Huella<span>Vet</span></a>
   <nav>
-    <a href="/">Inicio</a>
-    <a href="/legal/politica-privacidad.html">Política de privacidad</a>
+    <a id="btn-volver" href="../index.html">← Volver</a>
+    <a href="../index.html">Inicio</a>
+    <a href="politica-privacidad.html">Política de privacidad</a>
   </nav>
 </div>
 
@@ -218,7 +219,7 @@
       <li>Ley 1480 de 2011 (Estatuto del Consumidor) y sus decretos reglamentarios, en cuanto aplique a la relación entre el Prestador del Servicio y los Clientes.</li>
       <li>Ley 527 de 1999, sobre comercio electrónico, mensajes de datos y firmas digitales.</li>
       <li>Ley 1273 de 2009, que tipifica los delitos informáticos y protege la información y los datos.</li>
-      <li>Ley 1581 de 2012 y el Decreto 1377 de 2013 (compilado en el Decreto Único Reglamentario 1074 de 2015), sobre protección de datos personales, desarrollados en la <a href="/legal/politica-privacidad.html">Política de Tratamiento de Datos Personales</a>.</li>
+      <li>Ley 1581 de 2012 y el Decreto 1377 de 2013 (compilado en el Decreto Único Reglamentario 1074 de 2015), sobre protección de datos personales, desarrollados en la <a href="politica-privacidad.html">Política de Tratamiento de Datos Personales</a>.</li>
       <li>Demás normas concordantes, complementarias o que las modifiquen, adicionen o sustituyan.</li>
     </ul>
   </section>
@@ -325,15 +326,32 @@
   </section>
 
   <a class="back-top" href="#objeto">↑ Volver al inicio del documento</a>
+
+  <div style="text-align:center; margin-top:32px;">
+    <a id="btn-volver-inferior" href="../index.html" class="back-top" style="font-size:.95rem; font-weight:600;">← Volver a la página anterior</a>
+  </div>
 </div>
 
 <footer>
   <p>© <span id="year"></span> HuellaVet. Todos los derechos reservados.</p>
-  <p><a href="/">Volver al inicio</a> · <a href="/legal/politica-privacidad.html">Política de privacidad</a></p>
+  <p><a href="../index.html">Volver al inicio</a> · <a href="politica-privacidad.html">Política de privacidad</a></p>
 </footer>
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+  (function corregirBotonVolver() {
+    const referencia = document.referrer;
+    if (!referencia) return;
+    try {
+      const urlReferencia = new URL(referencia);
+      if (urlReferencia.origin === window.location.origin && urlReferencia.href !== window.location.href) {
+        document.querySelectorAll('#btn-volver, #btn-volver-inferior').forEach(function (enlace) {
+          enlace.href = referencia;
+        });
+      }
+    } catch (error) {
+    }
+  })();
 </script>
 
 </body>
